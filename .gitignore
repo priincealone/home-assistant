@@ -34,3 +34,6 @@ config/.storage/core.config_entries
 config/.storage/sonoff/
 config/.storage/onboarding
 config/.storage/person
+
+# Dados do container Music Assistant (biblioteca, cache, credenciais)
+music-assistant/
