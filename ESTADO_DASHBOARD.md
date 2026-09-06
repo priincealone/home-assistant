@@ -1121,3 +1121,61 @@ saídas possíveis, em ordem de esforço:
   *Estágio → Beta* ligado; o Apple Music exige ligar também Alfa/Experimental.
 - **Apple Music**: fluxo aberto até a tela "Sign in with Apple"; o login em si
   é do André.
+
+## Apple Music conectado — e por que a "opção 2" não existe mais
+
+**Apple Music está autenticado e funcionando** no Music Assistant
+(`apple_music--Pb5MeLy5`, biblioteca sincronizando — 224 gêneros mapeados no
+primeiro scan; o log mostra "Apple Music Rate Limiter" nas primeiras
+tentativas, o que é normal e se resolve sozinho com o retry).
+
+O que destravou o login foi descobrir a **causa raiz** dos endereços quebrados:
+o Music Assistant tem, em *Configurações → Sistema → Servidor Web*, um campo
+**`URL base`** que vinha em `auto` — e no "auto" ele anuncia o IP do próprio
+container (`172.17.0.3`), que o navegador não alcança. Duas tentativas
+falharam antes disso:
+
+- com `URL base` em `auto`, o popup do Apple Music abria em `172.17.0.3:8095`
+  e morria em página de erro;
+- com `URL base` no IP da LAN (`http://192.168.31.22:8095`), a janela abria mas
+  o login da Apple não completava — **o MusicKit da Apple exige contexto seguro**
+  (HTTPS ou `localhost`), e um IP em HTTP não serve.
+
+O valor que funciona é **`http://localhost:8095`**: o popup abre em contexto
+seguro e o login conclui. A integração no HA não é afetada por isso, porque ela
+guarda o endereço próprio (o IP da LAN) na config entry.
+
+### A opção 2 (player de software no PC) não é mais possível
+
+Ao montá-la, descobri que o **Music Assistant 2.10 não tem mais os provedores
+Snapcast nem Squeezelite** — foram substituídos pelo **Sendspin**, o protocolo
+nativo da Open Home Foundation. Os provedores de player disponíveis hoje são:
+AirPlay, Chromecast, DLNA, Sendspin, Sync Group Player e Universal Player.
+
+E o Sendspin **não tem cliente para desktop Windows** — os clientes suportados
+são a própria interface web (efêmera), clientes móveis e hardware com ESPHome
+(ESP32) ou Linux (Raspberry Pi).
+
+Também verifiquei o resto da casa em busca de um destino de áudio:
+
+- Varredura SSDP na LAN: **nenhum MediaRenderer DLNA respondeu**.
+- A TV (`192.168.31.250`) está ligada e responde, mas com as portas típicas de
+  DMR Samsung (7676, 9197, 52235) fechadas — só 8001 e 8080, que são a API de
+  controle. Ou seja, **a TV não serve como player de áudio**.
+- Com a integração do MA carregada e o Web Player ativo, o HA continua com
+  **zero entidades** do Music Assistant, confirmando que o web player não é
+  exposto como `media_player`.
+
+Para ter um `media_player` de verdade no HA seria preciso hardware: um ESP32
+com ESPHome falando Sendspin (o caminho barato e nativo do ecossistema), o
+Raspberry Pi que já está previsto na migração, ou um Chromecast/alto-falante
+compatível — este último exigindo também resolver a descoberta, já que os
+containers estão em rede `bridge`.
+
+### Deck de mídia ajustado
+
+`scripts/lovelace/deck_midia_ma.py`: o tile do **Apple Music** passou a abrir a
+interface do Music Assistant (`http://192.168.31.22:8095` — IP da LAN, para
+funcionar também no iPad e no celular, ao contrário do `localhost`), que é onde
+a música efetivamente toca. O tile do **YouTube Music** continua apontando para
+o site até o provider ser autenticado.
