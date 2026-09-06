@@ -1379,3 +1379,31 @@ porque lá cada linha é uma entidade só.
 "everything field in `*_action`", então o `service` templatizado é suportado.
 Ainda assim, o teste de clique de verdade não foi feito (era madrugada e
 acenderia luzes da casa) — confirmar no primeiro uso.
+
+## Camada preta ao clicar nos cards de cômodo
+
+Ao tocar num cômodo, os nomes e os estados ficavam pretos. A causa é o **ripple
+padrão do Home Assistant** — uma camada escura desenhada por cima do card no
+clique. Enquanto cada `room_mini` tinha o próprio vidro, ela quase não aparecia;
+depois que os cards viraram "nude" dentro do card único, a camada passou a cair
+direto sobre o texto.
+
+`scripts/lovelace/sem_ripple_preto.py` desliga o ripple e o anel de foco, em
+todas as gerações que o HA já usou (`mwc-ripple`, `ha-ripple`, `md-ripple`,
+mais as variáveis `--*-ripple-*`). O CSS virou a constante `NO_RIPPLE` em
+`scripts/ui.py` e entrou também dentro do `NUDE`, porque **todo card nude sofre
+do mesmo problema**: sem vidro por baixo, a camada de clique aparece sobre o
+texto.
+
+⚠️ **Onde aplicar muda conforme o card**: o `card_mod` definido no card
+sobrescreve o do template, não soma. Por isso os `room_mini` da Geral (que têm
+`card_mod` próprio) receberam o `NUDE` atualizado, enquanto o `room_tile` da
+página Cômodos (cujos cards não definem `card_mod`) recebeu o `NO_RIPPLE` no
+próprio template.
+
+As cores do texto não foram tocadas — seguem as do template: nome em branco,
+estado em `rgba(255,255,255,0.5)`.
+
+📌 Sem validação visual: a extensão do navegador continuava desconectada, então
+a correção foi feita a partir da causa provável (ripple) sem inspecionar o
+elemento na tela. Confirmar no primeiro toque.

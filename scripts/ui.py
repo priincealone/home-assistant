@@ -13,13 +13,33 @@ HAIRLINE_GRADIENT = (
     " rgba(255,255,255,0) 100%)"
 )
 
-# Sem fundo, borda, sombra ou blur proprios -- so o card externo desenha o vidro.
+# O clique num card pintava as legendas de preto: o ripple padrao do Home
+# Assistant e uma camada escura, que so nao aparecia enquanto cada card tinha o
+# proprio vidro por baixo. Com os cards "nude" dentro de um card unico, a camada
+# passou a cair direto sobre o texto. Aqui ela e desligada em todas as geracoes
+# de ripple que o HA ja usou (mwc-, ha-, md-), junto do anel de foco.
+NO_RIPPLE = (
+    "ha-card { --ha-ripple-color: transparent !important; "
+    "--md-ripple-hover-color: transparent !important; "
+    "--md-ripple-pressed-color: transparent !important; "
+    "--mdc-ripple-color: transparent !important; "
+    "--mdc-ripple-press-opacity: 0 !important; "
+    "--mdc-ripple-hover-opacity: 0 !important; }\n"
+    "ha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, "
+    "ha-card ha-ripple::before, ha-card ha-ripple::after "
+    "{ display: none !important; opacity: 0 !important; }\n"
+    "ha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+)
+
+# Sem fundo, borda, sombra ou blur proprios -- so o card externo desenha o
+# vidro. Carrega o NO_RIPPLE junto porque todo card nude sofre do mesmo
+# problema: sem vidro por baixo, a camada de clique aparece sobre o texto.
 NUDE = (
     "ha-card { background: transparent !important; border: none !important; "
     "box-shadow: none !important; backdrop-filter: none !important; "
     "-webkit-backdrop-filter: none !important; }\n"
     "ha-card::before, ha-card::after { display: none !important; }\n"
-)
+) + NO_RIPPLE
 
 
 def hairline(margem_vertical=9, margem_lateral=8):
