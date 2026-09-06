@@ -1213,3 +1213,74 @@ docker rm -f music-assistant bgutil-provider
 docker network rm ma-net
 rm -rf C:/HomeAssistant/music-assistant
 ```
+
+## Saúde: Apple Saúde → Atalhos do iPhone → webhook do HA
+
+Caminho escolhido pelo André em vez da integração Garmin Connect (que exige a
+senha da conta e tem 2FA problemático): o relógio já sincroniza com o Apple
+Saúde, então os dados entram no HA por um webhook alimentado por um Atalho do
+iPhone. Nada de login, nada de MFA.
+
+### Lado do Home Assistant (pronto)
+
+Um bloco novo no fim de `config/template_sensors.yaml` cria **seis sensores
+disparados por webhook** (trigger-based template sensors). O `webhook_id` mora
+em `config/secrets.yaml` (chave `webhook_saude`, fora do versionamento), e o
+gatilho usa `local_only: false` porque o iPhone fora de casa chega pelo
+Tailscale, cuja faixa 100.x não conta como rede local para o HA.
+
+| Entidade | Campo no JSON | Unidade |
+| --- | --- | --- |
+| `sensor.saude_passos` | `passos` | passos |
+| `sensor.saude_distancia` | `distancia` | km |
+| `sensor.saude_calorias` | `calorias` | kcal |
+| `sensor.saude_fc_de_repouso` | `fc_repouso` | bpm |
+| `sensor.saude_sono` | `sono` | h |
+| `sensor.saude_atualizado_em` | — | timestamp |
+
+Cada sensor usa `default(states('sensor.<ele mesmo>'), true)`, então **um campo
+ausente no POST preserva o último valor** em vez de zerar. Testado ponta a
+ponta com um POST de exemplo: os seis sensores atualizaram (os valores atuais
+— 1.234 passos, 0,98 km, 210 kcal, 58 bpm, 6,5 h — são desse teste e serão
+sobrescritos no primeiro envio real).
+
+### Lado do iPhone (falta o André montar)
+
+O Atalho precisa ler o Apple Saúde e fazer um POST em
+`http://192.168.31.22:8123/api/webhook/<webhook_saude>` (em casa) — o id sai de
+`config/secrets.yaml`. Corpo:
+
+```json
+{"passos": 8432, "distancia": 6.1, "calorias": 540, "fc_repouso": 56, "sono": 7.2}
+```
+
+Ações, na ordem: *Obter amostras de saúde* (uma por métrica, período Hoje,
+agregação Soma para passos/distância/calorias e Mais recente para FC de
+repouso), depois *Obter conteúdo da URL* com método POST, `Content-Type:
+application/json` e o JSON acima montado com as variáveis. Fecha com uma
+**Automação Pessoal** de *Hora do dia*, repetindo algumas vezes ao dia, com
+"Executar imediatamente" ligado.
+
+### Deck de saúde na Geral
+
+`scripts/lovelace/deck_saude.py` põe o bloco na **coluna da esquerda, abaixo do
+clima**, replicando a arquitetura do `health_template` da referência (blocos
+separados por `divider`, destaque em cima, métricas menores embaixo):
+
+```
+SAÚDE
+6,5 h Sono          58 bpm Repouso
+────────────────────────────────
+[Passos]  [Distância]  [Calorias]
+Atualizado há 1 minuto
+```
+
+A referência mostra score de sono, estágios (deep/rem/light) e FC min/média/máx
+— nada disso vem do Apple Saúde por esse caminho, então o bloco de sono virou
+horas dormidas e o de coração, a FC de repouso.
+
+Medido depois de aplicar (percorrendo os shadow roots, como nas outras
+passadas): card externo de 234px começando 8px abaixo do card de clima; label
+22px, linha de destaques 56px, divider 4px, linha de tiles 80px e rodapé 20px,
+com 8 a 12px de respiro entre os blocos. O rodapé usa `show_last_changed`, que
+serve de alarme silencioso: se o Atalho parar de rodar, o "há X" cresce.

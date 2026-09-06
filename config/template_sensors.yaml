@@ -77,3 +77,63 @@
             'light.circulacao_switch_1', 'light.circulacao_switch_2',
             'light.closet_switch_1', 'light.led_escritorio_sonoff_1001dff472']
            | map('states') | select('eq', 'on') | list | count }}
+
+# ---------------------------------------------------------------------------
+# Saúde (Apple Saúde -> Atalhos do iPhone -> webhook do HA)
+#
+# O relógio Garmin sincroniza com o Apple Saúde; um Atalho no iPhone lê os
+# valores do dia e faz um POST em /api/webhook/<webhook_saude> com um JSON
+# simples. Cada sensor abaixo só muda quando esse POST chega, e mantém o
+# último valor quando o campo não vem no JSON (`default` com o estado atual).
+#
+# Campos esperados: passos, distancia, calorias, fc_repouso, sono
+# ---------------------------------------------------------------------------
+- trigger:
+    - platform: webhook
+      webhook_id: !secret webhook_saude
+      allowed_methods:
+        - POST
+      # false porque o iPhone fora de casa chega pelo Tailscale (rede 100.x),
+      # que não conta como local para o Home Assistant.
+      local_only: false
+  sensor:
+    - name: "Saúde Passos"
+      unique_id: saude_passos
+      state: "{{ trigger.json.passos | default(states('sensor.saude_passos'), true) | int(0) }}"
+      unit_of_measurement: "passos"
+      state_class: measurement
+      icon: mdi:shoe-print
+
+    - name: "Saúde Distância"
+      unique_id: saude_distancia
+      state: "{{ trigger.json.distancia | default(states('sensor.saude_distancia'), true) | float(0) | round(2) }}"
+      unit_of_measurement: "km"
+      state_class: measurement
+      icon: mdi:map-marker-distance
+
+    - name: "Saúde Calorias"
+      unique_id: saude_calorias
+      state: "{{ trigger.json.calorias | default(states('sensor.saude_calorias'), true) | int(0) }}"
+      unit_of_measurement: "kcal"
+      state_class: measurement
+      icon: mdi:fire
+
+    - name: "Saúde FC de repouso"
+      unique_id: saude_fc_repouso
+      state: "{{ trigger.json.fc_repouso | default(states('sensor.saude_fc_repouso'), true) | int(0) }}"
+      unit_of_measurement: "bpm"
+      state_class: measurement
+      icon: mdi:heart-pulse
+
+    - name: "Saúde Sono"
+      unique_id: saude_sono
+      state: "{{ trigger.json.sono | default(states('sensor.saude_sono'), true) | float(0) | round(1) }}"
+      unit_of_measurement: "h"
+      state_class: measurement
+      icon: mdi:sleep
+
+    - name: "Saúde Atualizado em"
+      unique_id: saude_atualizado_em
+      state: "{{ now().isoformat() }}"
+      device_class: timestamp
+      icon: mdi:clock-check-outline

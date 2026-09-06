@@ -2430,6 +2430,300 @@
                           "show_current": true,
                           "show_forecast": true,
                           "forecast_type": "daily"
+                        },
+                        {
+                          "type": "custom:stack-in-card",
+                          "mode": "vertical",
+                          "cards": [
+                            {
+                              "type": "custom:button-card",
+                              "name": "Saúde",
+                              "show_name": true,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "box-shadow": "none",
+                                    "height": "22px",
+                                    "padding": "8px 4px 0px 4px",
+                                    "justify-content": "start",
+                                    "border-radius": "0px"
+                                  }
+                                ],
+                                "name": [
+                                  {
+                                    "font-size": "11px",
+                                    "font-weight": "700",
+                                    "color": "rgba(255,255,255,0.4)",
+                                    "text-transform": "uppercase",
+                                    "letter-spacing": "0.06em",
+                                    "justify-self": "start"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-rows": "1fr",
+                                    "align-items": "center",
+                                    "align-content": "center"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "entity": "sensor.saude_sono",
+                                  "name": "Sono",
+                                  "icon": "mdi:sleep",
+                                  "show_name": true,
+                                  "show_icon": true,
+                                  "show_state": true,
+                                  "tap_action": {
+                                    "action": "more-info"
+                                  },
+                                  "styles": {
+                                    "grid": [
+                                      {
+                                        "grid-template-areas": "\"i s\" \"i n\"",
+                                        "grid-template-columns": "36px 1fr",
+                                        "grid-template-rows": "24px 16px",
+                                        "align-items": "center"
+                                      }
+                                    ],
+                                    "card": [
+                                      {
+                                        "background": "transparent",
+                                        "height": "56px",
+                                        "padding": "0px 4px",
+                                        "justify-content": "start",
+                                        "justify-items": "start"
+                                      }
+                                    ],
+                                    "img_cell": [
+                                      {
+                                        "width": "28px",
+                                        "height": "28px",
+                                        "justify-self": "start"
+                                      }
+                                    ],
+                                    "icon": [
+                                      {
+                                        "width": "24px",
+                                        "height": "24px",
+                                        "color": "#5E5CE6"
+                                      }
+                                    ],
+                                    "state": [
+                                      {
+                                        "font-size": "19px",
+                                        "font-weight": "600",
+                                        "color": "white",
+                                        "justify-self": "start",
+                                        "align-self": "end"
+                                      }
+                                    ],
+                                    "name": [
+                                      {
+                                        "font-size": "11.5px",
+                                        "font-weight": "500",
+                                        "color": "rgba(255,255,255,0.5)",
+                                        "justify-self": "start",
+                                        "align-self": "start"
+                                      }
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "entity": "sensor.saude_fc_de_repouso",
+                                  "name": "Repouso",
+                                  "icon": "mdi:heart-pulse",
+                                  "show_name": true,
+                                  "show_icon": true,
+                                  "show_state": true,
+                                  "tap_action": {
+                                    "action": "more-info"
+                                  },
+                                  "styles": {
+                                    "grid": [
+                                      {
+                                        "grid-template-areas": "\"i s\" \"i n\"",
+                                        "grid-template-columns": "36px 1fr",
+                                        "grid-template-rows": "24px 16px",
+                                        "align-items": "center"
+                                      }
+                                    ],
+                                    "card": [
+                                      {
+                                        "background": "transparent",
+                                        "height": "56px",
+                                        "padding": "0px 4px",
+                                        "justify-content": "start",
+                                        "justify-items": "start"
+                                      }
+                                    ],
+                                    "img_cell": [
+                                      {
+                                        "width": "28px",
+                                        "height": "28px",
+                                        "justify-self": "start"
+                                      }
+                                    ],
+                                    "icon": [
+                                      {
+                                        "width": "24px",
+                                        "height": "24px",
+                                        "color": "#FF453A"
+                                      }
+                                    ],
+                                    "state": [
+                                      {
+                                        "font-size": "19px",
+                                        "font-weight": "600",
+                                        "color": "white",
+                                        "justify-self": "start",
+                                        "align-self": "end"
+                                      }
+                                    ],
+                                    "name": [
+                                      {
+                                        "font-size": "11.5px",
+                                        "font-weight": "500",
+                                        "color": "rgba(255,255,255,0.5)",
+                                        "justify-self": "start",
+                                        "align-self": "start"
+                                      }
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "ha-card { --ha-card-border-width: 0px; }\n"
+                              }
+                            },
+                            {
+                              "type": "custom:button-card",
+                              "template": "divider"
+                            },
+                            {
+                              "type": "grid",
+                              "columns": 3,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "sensor_tile",
+                                  "entity": "sensor.saude_passos",
+                                  "variables": {
+                                    "var_name": "Passos",
+                                    "var_icon": "mdi:shoe-print",
+                                    "var_color": "#30D158"
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { border: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "sensor_tile",
+                                  "entity": "sensor.saude_distancia",
+                                  "variables": {
+                                    "var_name": "Distância",
+                                    "var_icon": "mdi:map-marker-distance",
+                                    "var_color": "#0A84FF"
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { border: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "sensor_tile",
+                                  "entity": "sensor.saude_calorias",
+                                  "variables": {
+                                    "var_name": "Calorias",
+                                    "var_icon": "mdi:fire",
+                                    "var_color": "#FF9F0A"
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { border: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "ha-card { --ha-card-border-width: 0px; }\n"
+                              }
+                            },
+                            {
+                              "type": "custom:button-card",
+                              "entity": "sensor.saude_atualizado_em",
+                              "name": "Atualizado",
+                              "show_name": true,
+                              "show_icon": false,
+                              "show_state": false,
+                              "show_last_changed": true,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n l\"",
+                                    "grid-template-columns": "max-content 1fr",
+                                    "grid-template-rows": "1fr",
+                                    "align-items": "center"
+                                  }
+                                ],
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "height": "20px",
+                                    "padding": "2px 6px 0px 6px",
+                                    "justify-content": "start"
+                                  }
+                                ],
+                                "name": [
+                                  {
+                                    "font-size": "10.5px",
+                                    "color": "rgba(255,255,255,0.35)",
+                                    "justify-self": "start"
+                                  }
+                                ],
+                                "label": [
+                                  {
+                                    "font-size": "10.5px",
+                                    "color": "rgba(255,255,255,0.35)",
+                                    "justify-self": "start",
+                                    "padding-left": "4px"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            }
+                          ],
+                          "card_mod": {
+                            "style": "ha-card { padding: 6px 12px 12px 12px !important; }\n"
+                          }
                         }
                       ]
                     },
