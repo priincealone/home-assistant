@@ -1284,3 +1284,25 @@ passadas): card externo de 234px começando 8px abaixo do card de clima; label
 22px, linha de destaques 56px, divider 4px, linha de tiles 80px e rodapé 20px,
 com 8 a 12px de respiro entre os blocos. O rodapé usa `show_last_changed`, que
 serve de alarme silencioso: se o Atalho parar de rodar, o "há X" cresce.
+
+### Separador do deck de saúde: de barra a hairline
+
+O `divider` padrão não caía bem entre a linha de destaque (sono/repouso) e os
+tiles de atividade. Medido antes: **4px de caixa para 1px de traço**, linha
+parando a 309px dos 341px do card e opacidade uniforme de 0.10 — lia como
+barra, não como fio.
+
+`scripts/lovelace/deck_saude_divider.py` troca esse bloco por um card de **1px
+com gradiente que desvanece nas pontas** (`transparent → rgba(255,255,255,0.16)
+entre 18% e 82% → transparent`), ocupando a largura inteira do conteúdo.
+
+⚠️ **O gradiente precisa vir pelo `card_mod` com `!important`**. Na primeira
+tentativa ele foi definido em `styles.card.background` do `button-card` e a
+linha simplesmente não apareceu — medido, o elemento subia com
+`background-image: none`, porque o fundo que o tema `apple_home` aplica no
+`ha-card` ganha do estilo inline do button-card. Isso não contraria a regra de
+nunca usar `background !important` genérico em `ha-card`: aqui é um `card_mod`
+de um único card, não uma regra de tema.
+
+Medido depois: `height: 1px`, largura 341px, gradiente aplicado. O template
+`divider` global ficou intacto, porque é usado nas outras páginas já aprovadas.

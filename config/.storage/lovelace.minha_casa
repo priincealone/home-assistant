@@ -2621,7 +2621,34 @@
                             },
                             {
                               "type": "custom:button-card",
-                              "template": "divider"
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 9px 8px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
                             },
                             {
                               "type": "grid",
