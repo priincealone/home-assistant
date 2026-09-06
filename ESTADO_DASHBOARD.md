@@ -1179,3 +1179,37 @@ interface do Music Assistant (`http://192.168.31.22:8095` — IP da LAN, para
 funcionar também no iPad e no celular, ao contrário do `localhost`), que é onde
 a música efetivamente toca. O tile do **YouTube Music** continua apontando para
 o site até o provider ser autenticado.
+
+## Music Assistant desfeito — tiles voltam aos apps nativos
+
+Como não existe player de áudio na casa que vire `media_player` no HA (ver
+seção anterior), o caminho do Music Assistant foi abandonado a pedido do André.
+O que foi desfeito:
+
+- **Tiles de música** (`scripts/lovelace/deck_midia_apps_nativos.py`): Apple
+  Music e YouTube Music voltaram a apontar para `music.apple.com` e
+  `music.youtube.com`. No iPhone/iPad esses links abrem direto os apps nativos
+  instalados — que é o comportamento que o André quer.
+- **Integração no HA**: removida (Configurações → Integrações → Music Assistant
+  → Excluir). Ela já estava em erro de qualquer forma: ao acertar a `URL base`
+  do MA para `http://localhost:8095` (necessário para o login da Apple), a
+  integração passou a herdar esse endereço, e dentro do container do HA
+  `localhost` é o próprio HA.
+- **Containers**: `music-assistant` e `bgutil-provider` parados, com
+  `--restart=no` para não subirem sozinhos no boot. O container do HA foi
+  desconectado da rede `ma-net`.
+
+**O que foi preservado**: os dados do Music Assistant continuam em
+`music-assistant/data` (fora do versionamento), incluindo a conta local e o
+**login do Apple Music já autenticado**. Se um dia entrar um player de verdade
+na casa (ESP32 com ESPHome, Raspberry Pi ou um alto-falante compatível), basta
+`docker start music-assistant bgutil-provider` e refazer a integração — sem
+repetir os logins.
+
+Para remover de vez, incluindo os dados:
+
+```bash
+docker rm -f music-assistant bgutil-provider
+docker network rm ma-net
+rm -rf C:/HomeAssistant/music-assistant
+```

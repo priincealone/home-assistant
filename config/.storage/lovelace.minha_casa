@@ -4278,7 +4278,7 @@
                                   },
                                   "tap_action": {
                                     "action": "url",
-                                    "url_path": "http://192.168.31.22:8095"
+                                    "url_path": "https://music.apple.com"
                                   },
                                   "card_mod": {
                                     "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
