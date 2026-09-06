@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "frontend.user_data_c0b35248cc324c8fbad96cbba945fc6e",
+  "data": {
+    "theme": {
+      "theme": "apple_home"
+    },
+    "core": {
+      "default_panel": "minha-casa"
+    }
+  }
+}

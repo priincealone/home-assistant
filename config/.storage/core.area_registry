@@ -1,0 +1,139 @@
+{
+  "version": 1,
+  "minor_version": 9,
+  "key": "core.area_registry",
+  "data": {
+    "areas": [
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:sofa",
+        "id": "sala_de_estar",
+        "labels": [],
+        "name": "Sala de estar",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-03T23:21:31.279862+00:00",
+        "modified_at": "2026-09-03T23:21:31.279865+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:stove",
+        "id": "cozinha",
+        "labels": [],
+        "name": "Cozinha",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-03T23:21:31.279957+00:00",
+        "modified_at": "2026-09-03T23:21:31.279957+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:bed",
+        "id": "quarto",
+        "labels": [],
+        "name": "Quarto",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-03T23:21:31.279994+00:00",
+        "modified_at": "2026-09-03T23:21:31.279996+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:shower",
+        "id": "banheiro",
+        "labels": [],
+        "name": "Banheiro",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:01:28.502737+00:00",
+        "modified_at": "2026-09-04T00:01:28.502740+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "copa",
+        "labels": [],
+        "name": "Copa",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:04:05.532102+00:00",
+        "modified_at": "2026-09-04T00:04:05.532105+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "corredor",
+        "labels": [],
+        "name": "Circulação",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:04:25.217071+00:00",
+        "modified_at": "2026-09-04T00:37:15.748338+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": null,
+        "id": "area_gourmet",
+        "labels": [],
+        "name": "Area Gourmet",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:04:58.796755+00:00",
+        "modified_at": "2026-09-04T00:04:58.796758+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:teddy-bear",
+        "id": "quarto_luca",
+        "labels": [],
+        "name": "Quarto Luca",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:05:13.285914+00:00",
+        "modified_at": "2026-09-04T00:05:13.285917+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:hanger",
+        "id": "closet",
+        "labels": [],
+        "name": "Closet",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:06:27.679566+00:00",
+        "modified_at": "2026-09-04T00:06:27.679568+00:00"
+      },
+      {
+        "aliases": [],
+        "floor_id": null,
+        "humidity_entity_id": null,
+        "icon": "mdi:tumble-dryer",
+        "id": "lavanderia",
+        "labels": [],
+        "name": "Lavanderia",
+        "picture": null,
+        "temperature_entity_id": null,
+        "created_at": "2026-09-04T00:31:52.884916+00:00",
+        "modified_at": "2026-09-04T00:31:52.884919+00:00"
+      }
+    ]
+  }
+}

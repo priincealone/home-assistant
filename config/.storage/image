@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "image",
+  "data": {
+    "items": [
+      {
+        "id": "676ab13b2f70750176004f01fd8afee1",
+        "filesize": 77319,
+        "content_type": "image/jpeg",
+        "name": "abstract-simple-colors-8k-2560x1600 (1).jpg",
+        "uploaded_at": "2026-09-04T21:54:47.555310+00:00"
+      },
+      {
+        "id": "2519145b6b88881de00478abd0c870da",
+        "filesize": 122540,
+        "content_type": "image/jpeg",
+        "name": "itl.cat_blur-wallpaper-hd_2963070.png.jpeg",
+        "uploaded_at": "2026-09-04T22:23:37.839775+00:00"
+      }
+    ]
+  }
+}

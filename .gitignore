@@ -1,0 +1,36 @@
+# Banco de dados e logs do HA (grandes e voláteis)
+config/home-assistant_v2.db*
+config/*.log
+config/*.log.*
+config/*.fault
+config/.ha_run.lock
+
+# Segredos e credenciais
+config/secrets.yaml
+config/.storage/auth
+config/.storage/auth_provider.homeassistant
+config/.storage/http.auth
+config/.cloud/
+
+# Caches e dependências
+config/deps/
+config/.cache/
+config/tts/
+config/www/community/
+config/custom_components/hacs/
+config/.storage/hacs.*
+config/.storage/core.restore_state
+config/.storage/bluetooth.*
+
+# Backups do lovelace (histórico local, não versionado)
+backups/
+
+# Bytecode Python
+__pycache__/
+*.pyc
+
+# Credenciais de integrações (tokens, api keys de dispositivos)
+config/.storage/core.config_entries
+config/.storage/sonoff/
+config/.storage/onboarding
+config/.storage/person

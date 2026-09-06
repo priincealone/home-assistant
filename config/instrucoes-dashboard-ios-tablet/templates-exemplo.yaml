@@ -1,0 +1,250 @@
+# =============================================================================
+# Templates extraídos e generalizados a partir de:
+# https://github.com/alistairmerritt/iOS-Tablet-Dashboard/blob/main/YAML
+# (post original: r/homeassistant, u/Pivotonian)
+#
+# Estes trechos NÃO contêm credenciais/tokens/IPs do autor original — foram
+# limpos e generalizados com placeholders para você adaptar às suas entidades.
+# Requer: HACS -> custom:button-card, card-mod, custom:modern-circular-gauge
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Config de kiosk mode: esconde o cabeçalho do HA quando o painel entra em
+# "modo standby". Requer o módulo de frontend "kiosk-mode" (HACS).
+# Crie o helper: input_boolean.standby_kiosk_mode
+# -----------------------------------------------------------------------------
+kiosk_mode:
+  non_admin_settings:
+    kiosk: true
+    ignore_entity_settings: true
+  entity_settings:
+    - entity:
+        input_boolean.standby_kiosk_mode: 'on'
+      hide_header: true
+    - entity:
+        input_boolean.standby_kiosk_mode: 'off'
+      hide_header: false
+
+button_card_templates:
+
+  # ---------------------------------------------------------------------------
+  # divider: uma linha fina translúcida pra separar seções dentro de um card
+  # ---------------------------------------------------------------------------
+  divider:
+    type: custom:button-card
+    show_name: false
+    show_state: false
+    show_icon: false
+    styles:
+      grid:
+        - grid-template-areas: '"divider"'
+        - grid-template-columns: 1fr
+        - grid-template-rows: 1fr
+      card:
+        - background-color: transparent
+          padding: 0px 15px 0px 15px
+          margin: 0px
+    custom_fields:
+      divider:
+        card:
+          type: entities
+          entities:
+            - type: divider
+              style:
+                height: 1px
+                width: 100%
+                margin-left: auto
+                margin-right: auto
+                background: rgba(255,255,255,0.1)
+          card_mod:
+            style: |
+              ha-card {
+              background: transparent;
+              }
+              #states.card-content {
+              padding: 0px 0px 0px 0px;
+              }
+
+  # ---------------------------------------------------------------------------
+  # camera_list: botão-pílula clicável usado na lista lateral do card de
+  # câmeras. Ao tocar, seleciona a opção correspondente em
+  # input_select.camera_selecter (crie esse helper com uma opção por câmera).
+  # Uso: template: camera_list, variables: { var_name: "Cozinha" }
+  # ---------------------------------------------------------------------------
+  camera_list:
+    variables:
+      var_name: null
+      var_entity: null
+    type: custom:button-card
+    name: '[[[ return variables.var_name ]]]'
+    entity: input_select.camera_selecter
+    show_icon: false
+    show_state: false
+    tap_action:
+      action: call-service
+      service: input_select.select_option
+      target:
+        entity_id: input_select.camera_selecter
+      data:
+        option: '[[[ return variables.var_name ]]]'
+    styles:
+      card:
+        - background: linear-gradient(45deg, rgba(0,0,0,0.1) 20%, rgba(0,0,0,0.2) 100%)
+        - height: 55px
+        - width: 105px
+        - border-radius: 15px
+        - padding: 0px
+        - transition: all 0.3s ease
+      name:
+        - font-size: 15px
+        - font-weight: 550
+        - justify-self: center
+        - align-self: center
+        - text-align: center
+        - color: rgba(255,255,255,0.5)
+    # Quando esta pílula é a câmera atualmente selecionada, destaque-a:
+    state:
+      - value: '[[[ return variables.var_name ]]]'
+        styles:
+          card:
+            - box-shadow: inset 0px 0px 0px 1px rgba(255,255,255,0.3)
+          name:
+            - color: white
+
+  # ---------------------------------------------------------------------------
+  # heading / subheading: título e subtítulo simples, alinhados à esquerda,
+  # usados no topo de cada seção (ex: "Hoje", "Amanhã" no calendário).
+  # Uso: template: heading, variables: { var_name: "Hoje" }
+  # ---------------------------------------------------------------------------
+  heading:
+    variables:
+      var_name: null
+    type: custom:button-card
+    name: '[[[ return variables.var_name ]]]'
+    styles:
+      grid:
+        - grid-template-areas: '"n"'
+          align-content: start
+          align-self: start
+          justify-content: start
+          justify-self: start
+      card:
+        - background-color: transparent
+          padding: 15px 0px 0px 15px
+          margin: 0px
+          overflow-x: auto
+          border-radius: 0px
+      name:
+        - align-content: start
+          align-self: start
+          justify-content: start
+          justify-self: start
+          font-size: 18px
+          font-weight: 550
+
+  subheading:
+    variables:
+      var_name: null
+    type: custom:button-card
+    name: '[[[ return variables.var_name ]]]'
+    styles:
+      grid:
+        - grid-template-areas: '"n"'
+          align-content: start
+          align-self: start
+          justify-content: start
+          justify-self: start
+      card:
+        - background-color: transparent
+          padding: 5px 0px 0px 15px
+          margin: 0px
+      name:
+        - align-content: start
+          align-self: start
+          justify-content: start
+          justify-self: start
+          font-size: 13px
+          font-weight: 500
+          color: rgba(255,255,255,0.6)
+
+  # ---------------------------------------------------------------------------
+  # gauge: gauge circular pequeno e reaproveitável (usado no card de Saúde,
+  # por exemplo, para passos/frequência cardíaca/etc).
+  # Requer HACS: custom:modern-circular-gauge
+  # Uso: template: gauge, variables: { var_entity: sensor.x, var_icon: "mdi:walk",
+  #      var_min: 0, var_max: 10000, var_path: "/lovelace/saude" }
+  # ---------------------------------------------------------------------------
+  gauge:
+    variables:
+      var_entity: null
+      var_color: null
+      var_icon: icon
+      var_min: min
+      var_max: max
+      var_path: path
+    type: custom:button-card
+    tap_action:
+      action: navigate
+      navigation_path: '[[[ return variables.var_path]]]'
+    show_name: false
+    show_icon: false
+    show_state: false
+    styles:
+      grid:
+        - grid-template-areas: '"gauge"'
+        - grid-template-columns: 1fr
+        - grid-template-rows: 1fr
+      card:
+        - background-color: transparent
+          padding: 0px
+          margin: '-3px 0px 0px 0px'
+          height: 85px
+          width: 85px
+    custom_fields:
+      gauge:
+        card:
+          type: custom:modern-circular-gauge
+          entity: '[[[ return variables.var_entity]]]'
+          secondary: {}
+          max: '[[[ return variables.var_max]]]'
+          gauge_width: 10
+          show_header: false
+          adaptive_icon_color: true
+          icon: '[[[ return variables.var_icon]]]'
+
+# -----------------------------------------------------------------------------
+# Estrutura de topo da view original (generalizada) — mostra o padrão que ele
+# usou: view tipo "sections", imagem de fundo, e um grid de header com áreas
+# nomeadas. Adapte "image" para uma imagem sua (ou remova para fundo sólido).
+# -----------------------------------------------------------------------------
+views:
+  - type: sections
+    title: Painel Cozinha
+    layout:
+      grid-rows: auto
+    background:
+      opacity: 100
+      alignment: left center
+      size: cover
+      repeat: repeat
+      attachment: fixed
+      image: /local/wallpapers/seu-wallpaper.jpg
+    sections:
+      - type: grid
+        cards:
+          - type: custom:button-card
+            styles:
+              grid:
+                - grid-template-areas: '"notifications time_pics"'
+                  align-items: center
+                  align-content: center
+              card:
+                - background-color: transparent
+                  border-radius: 0px
+                  height: 80px
+                  width: 1300px
+                  padding: 5px 5px 5px 5px
+                  margin: 10px 25px 0px 5px
+            # custom_fields.notifications e custom_fields.time_pics entram
+            # aqui — são os "chips" condicionais do header (lavagem, louça,
+            # portão, sono do bebê) e o relógio/data, respectivamente.

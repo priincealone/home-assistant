@@ -1,0 +1,79 @@
+# Sensores de contagem de luzes acesas por cômodo.
+# Replicam o padrão da dashboard de referência (var_sensor do template room_card),
+# permitindo que os badges usem `entity` + `state:` em vez de templates JS
+# (que não funcionam em cards aninhados por falta de propagação do hass).
+- sensor:
+    - name: "Luzes Sala de Estar"
+      unique_id: luzes_sala_de_estar_count
+      state: >
+        {{ ['light.luz_sala', 'light.painel']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Cozinha"
+      unique_id: luzes_cozinha_count
+      state: >
+        {{ ['light.cozinha_copa_varanda_switch_3']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Copa"
+      unique_id: luzes_copa_count
+      state: >
+        {{ ['light.cozinha_copa_varanda_switch_2']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Lavanderia"
+      unique_id: luzes_lavanderia_count
+      state: >
+        {{ ['light.cozinha_copa_varanda_switch_1']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Area Gourmet"
+      unique_id: luzes_area_gourmet_count
+      state: >
+        {{ ['light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
+             'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Quarto do Luca"
+      unique_id: luzes_quarto_luca_count
+      state: >
+        {{ ['light.quarto_luca_switch_1']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Banheiro"
+      unique_id: luzes_banheiro_count
+      state: >
+        {{ ['switch.banheiro_switch_1', 'switch.banheiro_switch_2']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Circulacao"
+      unique_id: luzes_circulacao_count
+      state: >
+        {{ ['light.circulacao_switch_1', 'light.circulacao_switch_2']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    - name: "Luzes Closet"
+      unique_id: luzes_closet_count
+      state: >
+        {{ ['light.closet_switch_1', 'light.led_escritorio_sonoff_1001dff472']
+           | map('states') | select('eq', 'on') | list | count }}
+
+    # Total de luzes de AMBIENTE acesas na casa.
+    # Usa a mesma curadoria da página "Luzes" — exclui de propósito as
+    # luzes de fundo dos interruptores (light.*_luz_de_fundo), que são
+    # indicadores do botão e não iluminação do cômodo.
+    - name: "Luzes Acesas Total"
+      unique_id: luzes_acesas_total
+      icon: mdi:lightbulb-group
+      state: >
+        {{ ['light.luz_sala', 'light.painel',
+            'light.cozinha_copa_varanda_switch_3',
+            'light.cozinha_copa_varanda_switch_2',
+            'light.cozinha_copa_varanda_switch_1',
+            'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
+            'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
+            'light.quarto_luca_switch_1',
+            'switch.banheiro_switch_1', 'switch.banheiro_switch_2',
+            'light.circulacao_switch_1', 'light.circulacao_switch_2',
+            'light.closet_switch_1', 'light.led_escritorio_sonoff_1001dff472']
+           | map('states') | select('eq', 'on') | list | count }}
