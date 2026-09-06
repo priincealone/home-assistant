@@ -2728,6 +2728,230 @@
                           "card_mod": {
                             "style": "ha-card { padding: 6px 12px 12px 12px !important; }\n"
                           }
+                        },
+                        {
+                          "type": "custom:stack-in-card",
+                          "mode": "vertical",
+                          "cards": [
+                            {
+                              "type": "custom:button-card",
+                              "name": "Buscar",
+                              "show_name": true,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "box-shadow": "none",
+                                    "height": "22px",
+                                    "padding": "8px 4px 0px 4px",
+                                    "justify-content": "start",
+                                    "border-radius": "0px"
+                                  }
+                                ],
+                                "name": [
+                                  {
+                                    "font-size": "11px",
+                                    "font-weight": "700",
+                                    "color": "rgba(255,255,255,0.4)",
+                                    "text-transform": "uppercase",
+                                    "letter-spacing": "0.06em",
+                                    "justify-self": "start"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-rows": "1fr",
+                                    "align-items": "center",
+                                    "align-content": "center"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "custom:button-card",
+                              "entity": "device_tracker.iphone_de_andre",
+                              "name": "iPhone de André",
+                              "icon": "mdi:cellphone",
+                              "show_name": true,
+                              "show_icon": true,
+                              "show_state": false,
+                              "show_label": true,
+                              "label": "[[[ const s = states['device_tracker.iphone_de_andre']; let onde = s ? s.state : 'desconhecido'; if (onde === 'home') { onde = 'Em casa'; } else if (onde === 'not_home') {   const g = states['sensor.iphone_de_andre_geocoded_location'];   onde = (g && g.state && !['unknown','unavailable',''].includes(g.state))     ? g.state.split(',')[0] : 'Fora de casa'; } const b = states['sensor.iphone_de_andre_battery_level']; const bat = (b && !isNaN(parseInt(b.state))) ? ' · ' + parseInt(b.state) + '%' : ''; return onde + bat; ]]]",
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "styles": {
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"i n\" \"i l\"",
+                                    "grid-template-columns": "34px 1fr",
+                                    "grid-template-rows": "17px 15px",
+                                    "align-items": "center"
+                                  }
+                                ],
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "height": "44px",
+                                    "padding": "0px 4px",
+                                    "justify-content": "start",
+                                    "justify-items": "start"
+                                  }
+                                ],
+                                "img_cell": [
+                                  {
+                                    "width": "26px",
+                                    "height": "26px",
+                                    "justify-self": "start"
+                                  }
+                                ],
+                                "icon": [
+                                  {
+                                    "width": "22px",
+                                    "height": "22px",
+                                    "color": "[[[ const s = states['device_tracker.iphone_de_andre']; return (s && s.state === 'home') ? '#30D158' : '#0A84FF'; ]]]"
+                                  }
+                                ],
+                                "name": [
+                                  {
+                                    "font-size": "13.5px",
+                                    "font-weight": "550",
+                                    "color": "white",
+                                    "justify-self": "start",
+                                    "align-self": "end"
+                                  }
+                                ],
+                                "label": [
+                                  {
+                                    "font-size": "12px",
+                                    "font-weight": "400",
+                                    "color": "rgba(255,255,255,0.5)",
+                                    "justify-self": "start",
+                                    "align-self": "start",
+                                    "white-space": "nowrap",
+                                    "overflow": "hidden",
+                                    "text-overflow": "ellipsis"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "custom:button-card",
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 4px 6px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "custom:button-card",
+                              "entity": "device_tracker.ipad_de_andre",
+                              "name": "iPad de André",
+                              "icon": "mdi:tablet",
+                              "show_name": true,
+                              "show_icon": true,
+                              "show_state": false,
+                              "show_label": true,
+                              "label": "[[[ const s = states['device_tracker.ipad_de_andre']; let onde = s ? s.state : 'desconhecido'; if (onde === 'home') { onde = 'Em casa'; } else if (onde === 'not_home') {   const g = states['sensor.ipad_de_andre_geocoded_location'];   onde = (g && g.state && !['unknown','unavailable',''].includes(g.state))     ? g.state.split(',')[0] : 'Fora de casa'; } const b = states['sensor.ipad_de_andre_battery_level']; const bat = (b && !isNaN(parseInt(b.state))) ? ' · ' + parseInt(b.state) + '%' : ''; return onde + bat; ]]]",
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "styles": {
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"i n\" \"i l\"",
+                                    "grid-template-columns": "34px 1fr",
+                                    "grid-template-rows": "17px 15px",
+                                    "align-items": "center"
+                                  }
+                                ],
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "height": "44px",
+                                    "padding": "0px 4px",
+                                    "justify-content": "start",
+                                    "justify-items": "start"
+                                  }
+                                ],
+                                "img_cell": [
+                                  {
+                                    "width": "26px",
+                                    "height": "26px",
+                                    "justify-self": "start"
+                                  }
+                                ],
+                                "icon": [
+                                  {
+                                    "width": "22px",
+                                    "height": "22px",
+                                    "color": "[[[ const s = states['device_tracker.ipad_de_andre']; return (s && s.state === 'home') ? '#30D158' : '#0A84FF'; ]]]"
+                                  }
+                                ],
+                                "name": [
+                                  {
+                                    "font-size": "13.5px",
+                                    "font-weight": "550",
+                                    "color": "white",
+                                    "justify-self": "start",
+                                    "align-self": "end"
+                                  }
+                                ],
+                                "label": [
+                                  {
+                                    "font-size": "12px",
+                                    "font-weight": "400",
+                                    "color": "rgba(255,255,255,0.5)",
+                                    "justify-self": "start",
+                                    "align-self": "start",
+                                    "white-space": "nowrap",
+                                    "overflow": "hidden",
+                                    "text-overflow": "ellipsis"
+                                  }
+                                ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            }
+                          ],
+                          "card_mod": {
+                            "style": "ha-card { padding: 6px 12px 12px 12px !important; }\n"
+                          }
                         }
                       ]
                     },

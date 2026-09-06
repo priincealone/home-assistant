@@ -1446,3 +1446,46 @@ anterior, que era mudança não pedida em cima de diagnóstico errado.
 confirmou na prática o **botão de luz padronizado**: um toque acendeu as duas
 luzes de uma vez e o toque seguinte apagou as duas — sem inverter estados. As
 luzes foram devolvidas ao estado em que estavam.
+
+## Deck "Buscar" na Geral
+
+Card novo na coluna da esquerda, abaixo do de saúde
+(`scripts/lovelace/deck_buscar.py`), com uma linha por aparelho:
+
+```
+BUSCAR
+📱 iPhone de André    Rua Jorge de Lima · 20%
+──────────────────────────────────────────
+📱 iPad de André      Em casa · 65%
+```
+
+Cada linha mostra **onde o aparelho está e a bateria**, e o ícone muda de cor
+conforme a presença — verde `#30D158` em casa, azul `#0A84FF` fora. O texto de
+localização usa o estado do `device_tracker`: `home` vira "Em casa", e fora de
+casa cai para o `sensor.*_geocoded_location` (o endereço que o próprio app do HA
+publica), com "Fora de casa" como último recurso. Toque abre o `more-info`, que
+traz o mapa. Separador: o mesmo `hairline` dos outros decks, via `scripts/ui.py`.
+
+**Nada disso passa pela conta iCloud**: os dados vêm do app do Home Assistant já
+instalado no iPhone e no iPad. Sem senha, sem 2FA, sem integração de terceiros —
+e com atualização mais frequente que a do iCloud.
+
+### AirTags e outros itens do app Buscar
+
+Não entram por esse caminho, e vale registrar por quê:
+
+- A **Apple não expõe API** para o Find My. A integração `icloud` do core (que
+  continua existindo no HA 2026.9) lista iDevices da conta, mas **não enxerga
+  AirTags** — é limitação conhecida e relatada na comunidade.
+- As alternativas são integrações de terceiros que fazem login na conta Apple e
+  falam com os servidores do Find My por engenharia reversa: **AirTagSync**
+  (instalável por HACS, cria `device_tracker` nativos sem depender de celular ou
+  nuvem de terceiros) e **FindMy Fleet** (cada item vira um `device_tracker`).
+- Ambas exigem a senha do Apple ID e lidam com 2FA — passo que depende do André
+  e que eu não executo.
+
+Para os demais aparelhos da conta (Mac, Apple Watch, AirPods), a integração
+`icloud` nativa daria conta, com a mesma ressalva de login e com histórico de
+instabilidade por causa das mudanças de autenticação da Apple. Para iPhone e
+iPad especificamente ela seria um retrocesso: o app do HA já entrega o mesmo com
+mais precisão.
