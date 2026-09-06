@@ -962,6 +962,12 @@ junto com a sessão) e passou a ser um projeto de verdade, com raiz em
 - **`referencias/`** — passou a concentrar `reference_ios_dashboard.yaml` (antes
   solto na raiz), a pesquisa da dashboard iOS, os templates de exemplo e o
   `INSTRUCOES_DASHBOARD_HA.md`.
-- **`.gitignore`** preparado para o caso de versionar a pasta: ignora banco,
-  logs, `secrets.yaml`, tokens de autenticação em `.storage`, caches, HACS e a
-  pasta `backups/`. O `git init` ainda não foi feito.
+- **Git**: a pasta virou um repositório local (sem remote), com commit inicial
+  de 208 arquivos. O `.gitignore` deixa de fora o banco, os logs, os caches, o
+  HACS, a pasta `backups/` e tudo que carrega credencial — `secrets.yaml`, os
+  tokens em `.storage/auth*`, `core.config_entries` (senhas/tokens das
+  integrações) e `.storage/sonoff/` (api keys por dispositivo). O que importa
+  está versionado: a dashboard, o tema, os registries de área/dispositivo/
+  entidade, os custom_components instalados à mão e os scripts. A partir daqui,
+  cada alteração na dashboard fecha com um commit — pontos de retorno melhores
+  que os arquivos `.bak_*`.

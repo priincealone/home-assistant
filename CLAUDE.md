@@ -47,7 +47,16 @@ restart()                  # docker restart homeassistant
 
 **O `docker restart homeassistant` não é opcional**: mudanças no `.storage` não
 entram com recarregamento de YAML. Ao terminar, registrar o que mudou no fim do
-`ESTADO_DASHBOARD.md`.
+`ESTADO_DASHBOARD.md` e fechar o ciclo com um commit:
+
+```bash
+git add -A && git commit -m "<o que mudou na dashboard>"
+```
+
+A pasta é um repositório git local (sem remote). Ficam fora do versionamento o
+banco, logs, caches, HACS e tudo que carrega credencial (`secrets.yaml`, os
+tokens em `.storage/auth*`, `core.config_entries`, `.storage/sonoff/`) — ao
+adicionar arquivo novo com segredo, incluir no `.gitignore` antes do commit.
 
 ## Regras de design
 
