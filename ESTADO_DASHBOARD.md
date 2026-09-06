@@ -1022,9 +1022,13 @@ exige um Chromecast ou MPD como destino.
 
 Falta, e depende do André:
 
-1. **PO Token Generator** (`brainicism/bgutil-ytdlp-pot-provider`, porta 4416)
-   — obrigatório para o provider do YouTube Music. O `docker pull` falhou com
-   `input/output error` do Docker Desktop; precisa ser repetido.
+1. ~~PO Token Generator~~ — **resolvido**. O container `bgutil-provider`
+   (`brainicism/bgutil-ytdlp-pot-provider:1.2.1`, a versão que o Music
+   Assistant suporta) está de pé. Ele e o `music-assistant` foram colocados na
+   rede docker `ma-net`, então o endereço a informar no provider é
+   `http://bgutil-provider:4416` — testado de dentro do container do MA,
+   responde `{"version":"1.2.1"}`. O primeiro `docker pull` falhou com
+   `input/output error` do Docker Desktop; repetir resolveu.
 2. **Cookie de login do YouTube Music** — é a única forma de autenticação que o
    Google permite para apps de terceiros. O cookie é copiado do navegador
    (DevTools → Network → requisição `/browse` → cabeçalho `Cookie`) e colado na
