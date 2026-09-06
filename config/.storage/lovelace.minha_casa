@@ -1263,9 +1263,7 @@
               ]
             }
           },
-          "card_mod": {
-            "style": "ha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
-          }
+          "card_mod": null
         },
         "room_header": {
           "variables": {
@@ -1653,31 +1651,6 @@
               }
             }
           },
-          "state": [
-            {
-              "operator": ">",
-              "value": 0,
-              "styles": {
-                "card": [
-                  {
-                    "background": "white"
-                  }
-                ],
-                "name": [
-                  {
-                    "color": "black"
-                  }
-                ],
-                "custom_fields": {
-                  "num": [
-                    {
-                      "color": "rgba(0,0,0,0.5)"
-                    }
-                  ]
-                }
-              }
-            }
-          ],
           "styles": {
             "grid": [
               {
@@ -1721,9 +1694,7 @@
               }
             ]
           },
-          "card_mod": {
-            "style": "ha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
-          }
+          "card_mod": null
         }
       },
       "views": [
@@ -2785,7 +2756,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
@@ -2800,7 +2771,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -2856,7 +2827,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
@@ -2871,7 +2842,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -2930,7 +2901,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
@@ -2945,7 +2916,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3002,7 +2973,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
@@ -3018,7 +2989,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3075,7 +3046,7 @@
                                     ]
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
@@ -3088,7 +3059,7 @@
                                     "var_lights": []
                                   },
                                   "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { --ha-ripple-color: transparent !important; --md-ripple-hover-color: transparent !important; --md-ripple-pressed-color: transparent !important; --mdc-ripple-color: transparent !important; --mdc-ripple-press-opacity: 0 !important; --mdc-ripple-hover-opacity: 0 !important; }\nha-card ha-ripple, ha-card mwc-ripple, ha-card md-ripple, ha-card ha-ripple::before, ha-card ha-ripple::after { display: none !important; opacity: 0 !important; }\nha-card:focus, ha-card:focus-visible { outline: none !important; }\n"
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],

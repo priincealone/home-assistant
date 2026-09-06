@@ -1380,7 +1380,13 @@ porque lá cada linha é uma entidade só.
 Ainda assim, o teste de clique de verdade não foi feito (era madrugada e
 acenderia luzes da casa) — confirmar no primeiro uso.
 
-## Camada preta ao clicar nos cards de cômodo
+## Camada preta ao clicar nos cards de cômodo — ❌ diagnóstico errado
+
+> **Esta seção está errada e a mudança foi revertida.** O ripple do Home
+> Assistant é branco (`--md-ripple-pressed-color: #FFFFFF`, opacidade 0.12) e
+> nunca escureceu nada. A causa real está na seção seguinte. Fica registrada
+> como lembrete de não corrigir problema visual por hipótese.
+
 
 Ao tocar num cômodo, os nomes e os estados ficavam pretos. A causa é o **ripple
 padrão do Home Assistant** — uma camada escura desenhada por cima do card no
@@ -1407,3 +1413,36 @@ estado em `rgba(255,255,255,0.5)`.
 📌 Sem validação visual: a extensão do navegador continuava desconectada, então
 a correção foi feita a partir da causa provável (ripple) sem inspecionar o
 elemento na tela. Confirmar no primeiro toque.
+
+## A causa real do texto preto: o bloco `state` do `room_mini`
+
+Diagnosticado no navegador, com a luz da sala acesa (o Browser pane interno abre
+o HA já autenticado; `javascript_tool` atravessa os shadow roots e lê o estilo
+computado). O que apareceu:
+
+```
+div "Sala de Estar"  -> color: rgb(0,0,0)   inline: "... color: black ..."
+ha-card              -> inline: "... background: white ..."
+```
+
+Não era ripple. O próprio template `room_mini` tinha um bloco `state` para
+`sensor > 0` (alguma luz acesa) que pintava **o card de branco e o texto de
+preto** — um efeito Apple Home legítimo enquanto cada card tinha vidro próprio:
+o cômodo aceso ficava claro, com texto escuro por cima.
+
+Depois que os cômodos viraram um card único com os internos "nude"
+(`background: transparent !important`), o fundo branco passou a ser bloqueado
+pelo `!important` e sobrava só o texto preto sobre fundo escuro. Por isso o
+sintoma aparecia "ao clicar": o clique acende a luz.
+
+`scripts/lovelace/comodo_texto_legivel.py` remove o bloco `state` inteiro. O
+cômodo aceso continua sinalizado pelo ícone laranja da lâmpada e pelo texto
+"N acesas", e as escritas voltam ao padrão (nome branco, estado em
+`rgba(255,255,255,0.5)`). O mesmo script reverte o `NO_RIPPLE` da tentativa
+anterior, que era mudança não pedida em cima de diagnóstico errado.
+
+**Validado na tela**, com as duas luzes da sala acesas: nome em
+`rgb(255,255,255)`, card com fundo transparente, tudo legível. O teste também
+confirmou na prática o **botão de luz padronizado**: um toque acendeu as duas
+luzes de uma vez e o toque seguinte apagou as duas — sem inverter estados. As
+luzes foram devolvidas ao estado em que estavam.
