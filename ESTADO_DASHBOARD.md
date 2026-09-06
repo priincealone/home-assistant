@@ -1345,3 +1345,37 @@ Como o hairline passou a ser usado em mais de um lugar, o estilo saiu do script
 do deck de saúde e virou `scripts/ui.py`, com `hairline(margem_vertical,
 margem_lateral)` e a constante `NUDE`. Os próximos scripts importam de lá, para
 o fio não virar cópia divergente.
+
+## Botão de luz do cômodo: padrão em vez de inversão
+
+O botão de lâmpada dos cards de cômodo chamava `homeassistant.toggle` passando
+a **lista** de luzes do cômodo. Esse serviço inverte **cada entidade
+individualmente**: num cômodo com uma luz acesa e outra apagada, o toque
+trocava as duas de lugar em vez de deixar o cômodo todo aceso ou todo apagado —
+o resultado dependia do estado inicial de cada lâmpada.
+
+Padrão novo, previsível (`scripts/lovelace/comodo_toggle_padrao.py`):
+
+> **Se qualquer luz do cômodo estiver acesa, apaga todas. Se estiverem todas
+> apagadas, acende todas.**
+
+O serviço é escolhido por template JS dentro do próprio `tap_action`:
+
+```js
+[[[ const l = variables.var_lights || [];
+    const algumaAcesa = l.some(e => states[e] && states[e].state === 'on');
+    return algumaAcesa ? 'homeassistant.turn_off' : 'homeassistant.turn_on'; ]]]
+```
+
+Usa `homeassistant.turn_on/turn_off` e não `light.*` porque alguns cômodos
+listam interruptores (`switch.*`) junto das luzes.
+
+Aplicado nos dois templates que faziam isso — `room_mini` (Geral) e `room_tile`
+(página Cômodos); foram as únicas duas ocorrências de `homeassistant.toggle` com
+lista no storage. O `light_row` da página Luzes continua com toggle simples,
+porque lá cada linha é uma entidade só.
+
+📌 A documentação do button-card confirma que templates valem para
+"everything field in `*_action`", então o `service` templatizado é suportado.
+Ainda assim, o teste de clique de verdade não foi feito (era madrugada e
+acenderia luzes da casa) — confirmar no primeiro uso.

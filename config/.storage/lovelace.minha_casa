@@ -919,7 +919,7 @@
                 "show_icon": true,
                 "tap_action": {
                   "action": "call-service",
-                  "service": "homeassistant.toggle",
+                  "service": "[[[ const l = variables.var_lights || []; const algumaAcesa = l.some(e => states[e] && states[e].state === 'on'); return algumaAcesa ? 'homeassistant.turn_off' : 'homeassistant.turn_on'; ]]]",
                   "data": {
                     "entity_id": "[[[ return variables.var_lights ]]]"
                   }
@@ -1584,7 +1584,7 @@
                 "show_state": false,
                 "tap_action": {
                   "action": "call-service",
-                  "service": "homeassistant.toggle",
+                  "service": "[[[ const l = variables.var_lights || []; const algumaAcesa = l.some(e => states[e] && states[e].state === 'on'); return algumaAcesa ? 'homeassistant.turn_off' : 'homeassistant.turn_on'; ]]]",
                   "data": {
                     "entity_id": "[[[ return variables.var_lights ]]]"
                   }
