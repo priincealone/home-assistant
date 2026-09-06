@@ -971,3 +971,68 @@ junto com a sessão) e passou a ser um projeto de verdade, com raiz em
   entidade, os custom_components instalados à mão e os scripts. A partir daqui,
   cada alteração na dashboard fecha com um commit — pontos de retorno melhores
   que os arquivos `.bak_*`.
+
+## Deck de mídia na Geral
+
+A coluna da direita da Geral tinha o card da TV solto (um `stack-in-card`
+horizontal com o `mushroom-media-player-card` e o botão do controle remoto),
+sem nenhuma relação visual com o resto da mídia da casa. Ele virou a primeira
+linha de um **deck único de mídia** (`scripts/lovelace/deck_midia.py`):
+
+```
+stack-in-card (vertical)
+├── legenda "MÍDIA"
+├── [player da TV + botão do controle remoto]   ← o card que já existia
+└── grid 2×2 de shortcut_tile
+    ├── YouTube Music   ├── Apple Music
+    └── TV              └── PS5
+```
+
+- Os tiles usam o template `shortcut_tile` (74px, ícone + nome) com o gradiente
+  sobrescrito por card: vermelho `255,0,0` no YouTube Music, `250,36,60` no
+  Apple Music.
+- **TV e PS5 têm gradiente reativo**: forte quando o aparelho está ligado,
+  quase transparente quando está `off`/`standby`/`unavailable` — mesma lógica
+  de cor por estado usada no resto da dashboard.
+- O tile da TV **reaproveita o `tap_action` do botão do controle remoto** (o
+  popup do Browser Mod é copiado do card existente pelo próprio script, em vez
+  de duplicado à mão). O do PS5 abre o `more-info` do `media_player.sala_de_estar_ps5`.
+- O `stack-in-card` interno da TV recebeu o `card_mod` "nude" (sem fundo,
+  borda ou blur próprios), para só o deck externo desenhar a borda.
+
+**Limitação atual**: YouTube Music e Apple Music são, por enquanto, atalhos que
+abrem o serviço no navegador — não há entidade `media_player` para eles. Isso
+depende do Music Assistant (ver seção abaixo) estar autenticado.
+
+## Music Assistant (em andamento)
+
+Para tocar YouTube Music dentro do HA foi levantado um container separado,
+`music-assistant` (`ghcr.io/music-assistant/server:latest`, portas 8095 e
+8097, dados em `music-assistant/data`, fora do versionamento). Ele já sobe e
+responde em http://localhost:8095.
+
+O caminho foi escolhido depois de constatar duas limitações da casa: **não há
+player de áudio compatível** (a TV Samsung de 2016 fala websocket, não aceita
+áudio arbitrário; o PS5 também não) e **o container do HA roda em rede
+`bridge`**, então descoberta por mDNS/SSDP não funciona — Chromecast, Sonos ou
+DLNA teriam de ser adicionados por IP. Por isso o destino escolhido foi o
+**Web Player** do Music Assistant, que toca no próprio navegador/tablet onde a
+dashboard está aberta. O `ytube_music_player` do HACS foi descartado: ele
+exige um Chromecast ou MPD como destino.
+
+Falta, e depende do André:
+
+1. **PO Token Generator** (`brainicism/bgutil-ytdlp-pot-provider`, porta 4416)
+   — obrigatório para o provider do YouTube Music. O `docker pull` falhou com
+   `input/output error` do Docker Desktop; precisa ser repetido.
+2. **Cookie de login do YouTube Music** — é a única forma de autenticação que o
+   Google permite para apps de terceiros. O cookie é copiado do navegador
+   (DevTools → Network → requisição `/browse` → cabeçalho `Cookie`) e colado na
+   interface do Music Assistant. Conta Premium é obrigatória (a do André é) e o
+   cookie expira de tempos em tempos — erro `401` significa refazer esse passo.
+3. **Integração Music Assistant no HA** — apontando para
+   `http://192.168.31.22:8095`, já que o HA em bridge não enxerga `localhost`
+   do host.
+
+Quando isso estiver de pé, os dois tiles do deck deixam de ser atalhos web e
+passam a controlar os `media_player` reais.
