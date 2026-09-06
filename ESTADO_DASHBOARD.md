@@ -1034,9 +1034,18 @@ Falta, e depende do André:
    (DevTools → Network → requisição `/browse` → cabeçalho `Cookie`) e colado na
    interface do Music Assistant. Conta Premium é obrigatória (a do André é) e o
    cookie expira de tempos em tempos — erro `401` significa refazer esse passo.
-3. **Integração Music Assistant no HA** — apontando para
-   `http://192.168.31.22:8095`, já que o HA em bridge não enxerga `localhost`
-   do host.
+3. **Integração Music Assistant no HA** — o container do HA foi conectado à
+   rede `ma-net`, então o endereço a informar na integração é
+   `http://music-assistant:8095` (testado: responde 200 de dentro do HA). Isso
+   evita depender do IP do PC.
+
+⚠️ **Armadilha, igual à do Glances**: a ligação do `homeassistant` à rede
+`ma-net` sobrevive a `docker restart`, mas **se perde se o container for
+recriado do zero**. Nesse caso, reaplicar:
+
+```bash
+docker network connect ma-net homeassistant
+```
 
 Quando isso estiver de pé, os dois tiles do deck deixam de ser atalhos web e
 passam a controlar os `media_player` reais.
