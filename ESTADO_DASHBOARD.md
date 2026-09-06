@@ -1529,3 +1529,18 @@ compartilham localização mas não vão instalar o app.
 Exige um **Mac com SIP desabilitado**, FindMy.app aberto e acesso SSH para ler as
 chaves da memória do app — inviável aqui, e o próprio projeto está marcado como
 substituído pelo `presencesync-addon`.
+
+### ⚠️ "Already in progress": dois fluxos de configuração ao mesmo tempo
+
+Ao tentar fazer o login do Apple ID, o HA respondeu **"already in progress"**. A
+causa: o fluxo de configuração do FindMy já estava aberto (a tela que eu havia
+deixado preparada no navegador) e o Home Assistant **não permite dois fluxos do
+mesmo domínio ao mesmo tempo** — a segunda tentativa é recusada com essa
+mensagem, mesmo vindo de outro navegador.
+
+Fluxos de configuração vivem em memória, então `docker restart homeassistant`
+limpa todos os pendentes. Depois disso, **abrir uma tela só** e preencher nela.
+
+Regra para as próximas vezes: quando eu deixar um formulário de integração
+pronto para o André, ele precisa preencher **naquela mesma tela**; se preferir
+outro navegador, o formulário que eu abri tem que ser fechado antes.
