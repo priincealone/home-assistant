@@ -1544,3 +1544,36 @@ limpa todos os pendentes. Depois disso, **abrir uma tela só** e preencher nela.
 Regra para as próximas vezes: quando eu deixar um formulário de integração
 pronto para o André, ele precisa preencher **naquela mesma tela**; se preferir
 outro navegador, o formulário que eu abri tem que ser fechado antes.
+
+### Resultado: conta autenticada, mas AirTag e família esbarram no Mac
+
+A conta Apple **autenticou** e aparece na integração como
+`Account: an.diogo98@gmail.com`. No caminho, o 2FA por **SMS** falhou três vezes
+com `UnhandledProtocolError: Error response for GSA request: 503` (erro do lado
+da Apple, no `sms_2fa_submit`); o login passou por outra via.
+
+Ao tentar adicionar um AirTag (*Adicionar dispositivo → FindMy Device →
+Rolling-key tag (AirTag)*), a tela pede: **"Upload your device keys in .json or
+.plist format"**. A integração **não lista os AirTags da conta** — cada tag entra
+por um arquivo de chaves.
+
+E essas chaves só saem de um **Mac**: ficam no keychain da conta, acessível
+apenas em hardware Apple. O procedimento é `python3 -m findmy decrypt` num
+macOS logado na conta, com o app Buscar enxergando o item — gera um JSON por
+acessório. É **uma vez só** (dá para pedir um Mac emprestado por meia hora).
+Existe pesquisa para entrar no "keychain circle" fora do macOS, mas não está
+implementada.
+
+**Localização de familiares pelo Find My** esbarra no mesmo muro, e pior: o
+único método conhecido (**FollowMyFriends**) é um app de macOS 14+ que precisa
+ficar **ligado 24 horas** lendo o banco do Buscar e publicando por MQTT.
+
+Ou seja, para a casa do André — Windows, iPhone e iPad, sem Mac — nada disso é
+viável hoje. O que sobra, e funciona melhor:
+
+- **Pessoas**: o app do Home Assistant no celular de cada familiar. Tempo real
+  de verdade, sem Mac, sem risco de bloqueio pela Apple, e cada um vira uma
+  `person` que entra no card Buscar como o iPhone e o iPad já estão.
+- **AirTags**: ficam pendentes até haver acesso a um Mac. A conta e o servidor
+  anisette continuam configurados; quando os arquivos de chave existirem, é só
+  subir cada um em *Adicionar dispositivo*.
