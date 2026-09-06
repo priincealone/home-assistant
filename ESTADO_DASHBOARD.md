@@ -1306,3 +1306,42 @@ de um único card, não uma regra de tema.
 
 Medido depois: `height: 1px`, largura 341px, gradiente aplicado. O template
 `divider` global ficou intacto, porque é usado nas outras páginas já aprovadas.
+
+## Cômodos da Geral unificados num card só
+
+A coluna do meio era um `grid` de 2 colunas com **10 `room_mini` soltos**, cada
+um com o próprio vidro e separados por gap de 10px. Virou **um único
+`stack-in-card`** com cinco fileiras de dois cômodos, separadas pelo mesmo
+hairline do deck de saúde (`scripts/lovelace/comodos_card_unico.py`):
+
+```
+┌──────────────────────────────┐
+│ Sala de Estar   Cozinha      │
+│ ──────────────────────────── │
+│ Copa            Lavanderia   │
+│ ──────────────────────────── │
+│ Área Gourmet    Quarto Luca  │
+│ ──────────────────────────── │
+│ Banheiro        Circulação   │
+│ ──────────────────────────── │
+│ Closet          Quarto       │
+└──────────────────────────────┘
+```
+
+Os `room_mini` recebem o `card_mod` "nude" (sem fundo, borda, sombra ou blur
+próprios), então só a moldura externa desenha o vidro — mesma técnica usada nos
+grids de `device_tile` das páginas de cômodo.
+
+**Proporção**: o bloco antigo media 5×70px + 4 gaps de 10px = **390px**. Para
+não crescer, o hairline aqui usa margem vertical de 4px (4+1+4 = 9px por
+separador), fechando 350 + 36 + 12 de padding = **~398px** — 8px a mais que
+antes. ⚠️ Esse número é **cálculo, não medição**: a extensão do navegador caiu
+antes da conferência, então a passada de régua (percorrendo os shadow roots,
+como nas outras vezes) ainda está pendente.
+
+### `scripts/ui.py` (novo)
+
+Como o hairline passou a ser usado em mais de um lugar, o estilo saiu do script
+do deck de saúde e virou `scripts/ui.py`, com `hairline(margem_vertical,
+margem_lateral)` e a constante `NUDE`. Os próximos scripts importam de lá, para
+o fio não virar cópia divergente.

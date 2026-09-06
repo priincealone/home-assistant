@@ -2758,138 +2758,341 @@
                       "type": "vertical-stack",
                       "cards": [
                         {
-                          "type": "grid",
-                          "columns": 2,
-                          "square": false,
+                          "type": "custom:stack-in-card",
+                          "mode": "vertical",
                           "cards": [
                             {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Sala de Estar",
-                                "var_sensor": "sensor.luzes_sala_de_estar",
-                                "var_path": "/minha-casa/sala-de-estar",
-                                "var_lights": [
-                                  "light.luz_sala",
-                                  "light.painel"
-                                ]
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Sala de Estar",
+                                    "var_sensor": "sensor.luzes_sala_de_estar",
+                                    "var_path": "/minha-casa/sala-de-estar",
+                                    "var_lights": [
+                                      "light.luz_sala",
+                                      "light.painel"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Cozinha",
+                                    "var_sensor": "sensor.luzes_cozinha",
+                                    "var_path": "/minha-casa/cozinha",
+                                    "var_lights": [
+                                      "light.cozinha_copa_varanda_switch_3"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "#root { gap: 10px !important; } ha-card { --ha-card-border-width: 0px; }\n"
                               }
                             },
                             {
                               "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Cozinha",
-                                "var_sensor": "sensor.luzes_cozinha",
-                                "var_path": "/minha-casa/cozinha",
-                                "var_lights": [
-                                  "light.cozinha_copa_varanda_switch_3"
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
                                 ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 4px 6px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Copa",
+                                    "var_sensor": "sensor.luzes_copa",
+                                    "var_path": "/minha-casa/copa",
+                                    "var_lights": [
+                                      "light.cozinha_copa_varanda_switch_2"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Lavanderia",
+                                    "var_sensor": "sensor.luzes_lavanderia",
+                                    "var_path": "/minha-casa/lavanderia",
+                                    "var_lights": [
+                                      "light.cozinha_copa_varanda_switch_1"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "#root { gap: 10px !important; } ha-card { --ha-card-border-width: 0px; }\n"
                               }
                             },
                             {
                               "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Copa",
-                                "var_sensor": "sensor.luzes_copa",
-                                "var_path": "/minha-casa/copa",
-                                "var_lights": [
-                                  "light.cozinha_copa_varanda_switch_2"
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
                                 ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 4px 6px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Área Gourmet",
+                                    "var_sensor": "sensor.luzes_area_gourmet",
+                                    "var_path": "/minha-casa/area-gourmet",
+                                    "var_lights": [
+                                      "light.luzes_externas_switch_1",
+                                      "light.luzes_externas_switch_2",
+                                      "light.luzes_externas_switch_3",
+                                      "light.luzes_externas_switch_4"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Quarto Luca",
+                                    "var_sensor": "sensor.luzes_quarto_do_luca",
+                                    "var_path": "/minha-casa/quarto-luca",
+                                    "var_lights": [
+                                      "light.quarto_luca_switch_1"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "#root { gap: 10px !important; } ha-card { --ha-card-border-width: 0px; }\n"
                               }
                             },
                             {
                               "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Lavanderia",
-                                "var_sensor": "sensor.luzes_lavanderia",
-                                "var_path": "/minha-casa/lavanderia",
-                                "var_lights": [
-                                  "light.cozinha_copa_varanda_switch_1"
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
                                 ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 4px 6px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                              }
+                            },
+                            {
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Banheiro",
+                                    "var_sensor": "sensor.luzes_banheiro",
+                                    "var_path": "/minha-casa/banheiro",
+                                    "var_lights": [
+                                      "switch.banheiro_switch_1",
+                                      "switch.banheiro_switch_2"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Circulação",
+                                    "var_sensor": "sensor.luzes_circulacao",
+                                    "var_path": "/minha-casa/circulacao",
+                                    "var_lights": [
+                                      "light.circulacao_switch_1",
+                                      "light.circulacao_switch_2"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "#root { gap: 10px !important; } ha-card { --ha-card-border-width: 0px; }\n"
                               }
                             },
                             {
                               "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Área Gourmet",
-                                "var_sensor": "sensor.luzes_area_gourmet",
-                                "var_path": "/minha-casa/area-gourmet",
-                                "var_lights": [
-                                  "light.luzes_externas_switch_1",
-                                  "light.luzes_externas_switch_2",
-                                  "light.luzes_externas_switch_3",
-                                  "light.luzes_externas_switch_4"
+                              "show_name": false,
+                              "show_icon": false,
+                              "show_state": false,
+                              "tap_action": {
+                                "action": "none"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "height": "1px",
+                                    "min-height": "1px",
+                                    "padding": "0px",
+                                    "border-radius": "0px",
+                                    "border": "none",
+                                    "box-shadow": "none"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"n\"",
+                                    "grid-template-rows": "1px",
+                                    "grid-template-columns": "1fr"
+                                  }
                                 ]
+                              },
+                              "card_mod": {
+                                "style": "ha-card { background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.16) 18%, rgba(255,255,255,0.16) 82%, rgba(255,255,255,0) 100%) !important; min-height: 0 !important; height: 1px !important; margin: 4px 6px !important; padding: 0px !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; border-radius: 0px !important; overflow: hidden !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                               }
                             },
                             {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Quarto Luca",
-                                "var_sensor": "sensor.luzes_quarto_do_luca",
-                                "var_path": "/minha-casa/quarto-luca",
-                                "var_lights": [
-                                  "light.quarto_luca_switch_1"
-                                ]
-                              }
-                            },
-                            {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Banheiro",
-                                "var_sensor": "sensor.luzes_banheiro",
-                                "var_path": "/minha-casa/banheiro",
-                                "var_lights": [
-                                  "switch.banheiro_switch_1",
-                                  "switch.banheiro_switch_2"
-                                ]
-                              }
-                            },
-                            {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Circulação",
-                                "var_sensor": "sensor.luzes_circulacao",
-                                "var_path": "/minha-casa/circulacao",
-                                "var_lights": [
-                                  "light.circulacao_switch_1",
-                                  "light.circulacao_switch_2"
-                                ]
-                              }
-                            },
-                            {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Closet",
-                                "var_sensor": "sensor.luzes_closet",
-                                "var_path": "/minha-casa/closet",
-                                "var_lights": [
-                                  "light.closet_switch_1",
-                                  "light.led_escritorio_sonoff_1001dff472"
-                                ]
-                              }
-                            },
-                            {
-                              "type": "custom:button-card",
-                              "template": "room_mini",
-                              "variables": {
-                                "var_name": "Quarto",
-                                "var_sensor": null,
-                                "var_path": "/minha-casa/quarto",
-                                "var_lights": []
+                              "type": "grid",
+                              "columns": 2,
+                              "square": false,
+                              "cards": [
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Closet",
+                                    "var_sensor": "sensor.luzes_closet",
+                                    "var_path": "/minha-casa/closet",
+                                    "var_lights": [
+                                      "light.closet_switch_1",
+                                      "light.led_escritorio_sonoff_1001dff472"
+                                    ]
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                },
+                                {
+                                  "type": "custom:button-card",
+                                  "template": "room_mini",
+                                  "variables": {
+                                    "var_name": "Quarto",
+                                    "var_sensor": null,
+                                    "var_path": "/minha-casa/quarto",
+                                    "var_lights": []
+                                  },
+                                  "card_mod": {
+                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                                  }
+                                }
+                              ],
+                              "card_mod": {
+                                "style": "#root { gap: 10px !important; } ha-card { --ha-card-border-width: 0px; }\n"
                               }
                             }
                           ],
                           "card_mod": {
-                            "style": "#root { grid-auto-rows: min-content !important; gap: 10px !important; }"
+                            "style": "ha-card { padding: 6px 10px !important; }\n"
                           }
                         }
                       ]
