@@ -37,3 +37,6 @@ config/.storage/person
 
 # Dados do container Music Assistant (biblioteca, cache, credenciais)
 music-assistant/
+
+# Dados do servidor anisette (provisionamento da "máquina" Apple)
+anisette/

@@ -1489,3 +1489,43 @@ Para os demais aparelhos da conta (Mac, Apple Watch, AirPods), a integração
 instabilidade por causa das mudanças de autenticação da Apple. Para iPhone e
 iPad especificamente ela seria um retrocesso: o app do HA já entrega o mesmo com
 mais precisão.
+
+## AirTags e família: integração FindMy + servidor anisette
+
+Pedido: localização dos AirTags e dos aparelhos do **grupo familiar** no painel.
+Nada disso sai da integração `icloud` do core (que enxerga só iDevices da própria
+conta e ignora AirTags), então o caminho é a integração comunitária
+**`malmeloo/hass-FindMy`**, que fala com a rede Find My da Apple.
+
+### O que já está montado
+
+- **Servidor anisette** em container próprio: `dadoum/anisette-v3-server`, porta
+  6969, dados em `anisette/data` (fora do versionamento). Ele baixou as
+  bibliotecas da Apple, criou e provisionou a "máquina" no primeiro boot —
+  testado de dentro do HA: `http://192.168.31.22:6969` responde 200 e devolve os
+  cabeçalhos `X-Apple-I-MD`. Sem esse servidor a integração não autentica.
+- **Integração FindMy** instalada pelo HACS (repositório personalizado
+  `malmeloo/hass-FindMy`, tipo Integration) em `config/custom_components/findmy`,
+  já carregada pelo HA.
+- **Fluxo de configuração aberto** em *Apple Account Login*, com o campo
+  *Remote Anisette URL* preenchido (`http://192.168.31.22:6969`). Faltam o
+  e-mail e a senha do Apple ID, que são do André.
+
+### ⚠️ Não é tempo real — e isso é de propósito
+
+A integração busca posições **uma vez a cada 15 minutos**, por decisão do autor,
+"para reduzir o risco de ser banido pela Apple". Dá para acelerar somando contas
+Apple: 2 contas atualizam a cada 7,5 min, 3 contas a cada 5 min. Não existe modo
+contínuo.
+
+Para **pessoas** da família em tempo real de verdade, o caminho continua sendo o
+**app do Home Assistant no celular de cada um**: atualização contínua, sem risco
+de bloqueio e virando `person` no HA — é o que já acontece com o iPhone e o iPad
+do André. A FindMy resolve o que o app não alcança: AirTags, e familiares que
+compartilham localização mas não vão instalar o app.
+
+### Descartado: AirTagSync
+
+Exige um **Mac com SIP desabilitado**, FindMy.app aberto e acesso SSH para ler as
+chaves da memória do app — inviável aqui, e o próprio projeto está marcado como
+substituído pelo `presencesync-addon`.

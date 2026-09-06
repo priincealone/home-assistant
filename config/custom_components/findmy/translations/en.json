@@ -1,0 +1,81 @@
+{
+  "title": "FindMy",
+  "config": {
+    "step": {
+      "user": {
+        "title": "Add entity",
+        "description": "Select whether you want to add a new Apple Account or FindMy-enabled device."
+      },
+      "acc_login": {
+        "title": "Apple Account Login",
+        "data": {
+          "email": "E-mail address",
+          "password": "Password"
+        },
+        "sections": {
+          "advanced_options": {
+            "name": "Advanced options",
+            "data": {
+              "anisette_url": "Remote Anisette URL (optional)"
+            }
+          }
+        }
+      },
+      "acc_2fa_request": {
+        "title": "Two-Factor Authentication",
+        "description": "Select a method to receive your 2FA code.",
+        "data": {
+          "method_id": "2FA method"
+        }
+      },
+      "acc_2fa_submit": {
+        "title": "Two-Factor Authentication",
+        "description": "Enter the 2FA code you received.",
+        "data": {
+          "code": "2FA code"
+        }
+      },
+      "dev_choose": {
+        "title": "Choose device type",
+        "data": {
+          "device_type": "Type of device to add"
+        }
+      },
+      "dev_static": {
+        "title": "Add a static-key device",
+        "description": "Enter the PRIVATE key of your custom, static-key tag and give it a memorable name.",
+        "data": {
+          "name": "Name",
+          "private_key": "Private key"
+        }
+      },
+      "dev_rolling": {
+        "title": "Add a rolling-key device",
+        "description": "Upload your device keys in .json or .plist format.",
+        "data": {
+          "name": "Name",
+          "file": "Device keys"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username or password",
+      "2fa_unavailable": "No available 2FA methods found. Please try another account",
+      "2fa_invalid": "Error while validating 2FA code. Please try again",
+      "invalid_dev": "Invalid device specified",
+      "invalid_dev_key": "Invalid key specified"
+    },
+    "abort": {
+      "protocol_error": "A protocol exception occurred. Please report this error and try again later.",
+      "unknown_error": "An unexpected error occurred. Please try again later."
+    }
+  },
+  "selector": {
+    "device_type": {
+      "options": {
+        "static": "Static-key tag (OpenHaystack)",
+        "rolling": "Rolling-key tag (AirTag)"
+      }
+    }
+  }
+}
