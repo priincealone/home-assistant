@@ -75,6 +75,10 @@ Documento de referência do que foi construído nesta sessão, pra retomar rapid
 5. **Migração pra dispositivo dedicado** (Raspberry Pi/mini PC) — planejada, não iniciada; resolveria a limitação de HA parar quando o PC dorme
 6. **Foto de fundo real** — trocar a imagem temporária da página Geral pela foto real da casa, e decidir se replica nas outras 10 páginas
 7. **Termostato (clima)/Calendário** — sem entidades `climate.*` ou `calendar.*` no sistema ainda; usuário precisa integrar um termostato (tem um, mas está offline) e um serviço de calendário (ex. Google Calendar) antes de adicionar esses widgets à dashboard
+8. **Larissa no Home Assistant** — criar o usuário (`larissa`, senha definida pelo André; deixar *Apenas acesso local* e *Administrador* desligados), instalar o app do HA no iPhone dela e conceder localização **"Sempre"** com precisão exata. Só então o `device_tracker` dela existe e entra no card Buscar, vinculado à pessoa Larissa. A tela de criação chegou a ser aberta e preenchida com o nome, mas foi cancelada — **nada foi criado**, o HA segue com um único usuário.
+9. **Acesso remoto para o iPhone da Larissa** — hoje o HA é alcançável de fora só pela tailnet do André. Sem resolver isso, o app dela reportaria posição apenas dentro de casa, que é o oposto do objetivo. Caminhos: instalar Tailscale no iPhone dela e convidá-la para a tailnet (mais simples, a estrutura já existe) ou expor o HA por Nabu Casa/domínio próprio com HTTPS.
+10. **AirTags no FindMy** — a conta Apple e o servidor anisette já estão configurados; falta o arquivo de chaves de cada AirTag, que só pode ser extraído de um **Mac** logado na conta (`python3 -m findmy decrypt`, uma vez só). Adiado por falta de Mac.
+11. **Atalho do Apple Saúde no iPhone** — os seis sensores de saúde e o deck da Geral estão prontos e testados por webhook, mas os valores atuais ainda são do POST de teste. Falta montar o Atalho que lê o Apple Saúde e faz o POST, com automação diária.
 
 ## Polimento visual extraído da dashboard de referência
 

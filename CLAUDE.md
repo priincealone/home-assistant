@@ -110,3 +110,9 @@ Ver `ESTADO_DASHBOARD.md` (seção "Pendências"): luz/ventilador do quarto via
 LocalTuya, scan 3D da casa, IP fixo do PS5, login do Alexa Media Player,
 migração para um dispositivo dedicado, foto de fundo real e widgets de
 termostato/calendário (sem entidades ainda).
+
+Em aberto também, do trabalho recente: o **Atalho do Apple Saúde** no iPhone
+(os sensores e o deck já estão prontos, esperando dados reais), a **Larissa**
+como usuária do HA com o app no iPhone dela — o que depende de resolver o
+**acesso remoto** para fora da tailnet — e os **AirTags** no FindMy, parados
+até haver um Mac para exportar as chaves.
