@@ -1069,3 +1069,55 @@ mesmo motivo pelo qual o IP fixo do PS5 já é uma pendência antiga.
 
 Quando isso estiver de pé, os dois tiles do deck deixam de ser atalhos web e
 passam a controlar os `media_player` reais.
+
+## Music Assistant: integração de pé, e o que o `172.17.0.3` quebra
+
+A integração **Music Assistant no HA está criada e sem erro**
+(`http://192.168.31.22:8095`, entry `01M1T7P0A2MFQ9962GJQC3G20W`). Dois
+obstáculos apareceram no caminho, os dois pela mesma causa — o Music Assistant
+roda em container e anuncia o **próprio IP de container** em fluxos que
+precisam ser abertos pelo **navegador**, que não alcança esse IP:
+
+1. **Autorização da integração**: o login do MA redireciona para
+   `http://homeassistant.local:8123/auth/external/callback?...`. Esse hostname
+   não resolve no Windows, então o fluxo morria na última etapa mesmo com o
+   login já feito. Solução: reabrir a mesma URL de callback trocando o host por
+   `localhost:8123` — o `code` e o `state` continuam válidos e a integração se
+   cria na hora.
+2. **Login do Apple Music**: o diálogo mostra "Opens 172.17.0.3:8095" e a
+   janela abre em página de erro. Solução: pegar a URL do link "Click here if
+   the window did not open" (`/apple_music_auth/<id>/index.html`) e reabri-la em
+   `localhost:8095`. A tela de sign-in da Apple carrega normalmente assim.
+
+**Regra geral**: qualquer fluxo do MA que precise do navegador tem que ser
+aberto por `localhost:8095` (ou pelo IP da LAN); o `172.17.0.3` só serve para
+comunicação entre containers.
+
+### Descoberta importante: o Web Player não vira entidade no HA
+
+O "Web (Chrome on Windows)" que aparece no rodapé do Music Assistant é um
+player **da sessão do navegador** — abrir a UI numa aba nova já mostra "Nenhum
+reprodutor selecionado". Ele não é um player persistente e, portanto, **a
+integração não cria nenhum `media_player` no HA** por causa dele. Hoje o HA tem
+a integração do MA configurada e **zero entidades**.
+
+Consequência para o deck: enquanto não houver um player persistente, os tiles
+de YouTube Music e Apple Music não podem controlar reprodução pelo HA. As
+saídas possíveis, em ordem de esforço:
+
+1. Tiles que abrem a interface do Music Assistant (funciona hoje, som sai no
+   navegador/tablet) — eventualmente com o painel do MA embutido no HA via
+   HACS, para não sair da dashboard.
+2. Um player persistente de software no PC (Snapcast/Squeezelite como cliente
+   na LAN), que aí sim vira `media_player` no HA.
+3. Hardware compatível (Chromecast, Sonos, AirPlay) — que também exigiria tirar
+   os containers da rede `bridge` para a descoberta funcionar.
+
+### Ainda pendente (depende de login do André)
+
+- **YouTube Music**: formulário preenchido com o PO Token correto
+  (`http://bgutil-provider:4416`); faltam usuário e o cookie de sessão.
+  O provider está marcado como **BETA** e só aparece na lista com o filtro
+  *Estágio → Beta* ligado; o Apple Music exige ligar também Alfa/Experimental.
+- **Apple Music**: fluxo aberto até a tela "Sign in with Apple"; o login em si
+  é do André.
