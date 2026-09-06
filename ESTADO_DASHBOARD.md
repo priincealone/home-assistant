@@ -1034,10 +1034,26 @@ Falta, e depende do André:
    (DevTools → Network → requisição `/browse` → cabeçalho `Cookie`) e colado na
    interface do Music Assistant. Conta Premium é obrigatória (a do André é) e o
    cookie expira de tempos em tempos — erro `401` significa refazer esse passo.
-3. **Integração Music Assistant no HA** — o container do HA foi conectado à
-   rede `ma-net`, então o endereço a informar na integração é
-   `http://music-assistant:8095` (testado: responde 200 de dentro do HA). Isso
-   evita depender do IP do PC.
+3. **Integração Music Assistant no HA** — o endereço correto é
+   **`http://192.168.31.22:8095`** (o IP do PC na LAN).
+
+   Isso não é detalhe: a integração do MA usa um fluxo de autorização em que o
+   **navegador** também precisa abrir a mesma URL para fazer login e liberar o
+   acesso. Os dois primeiros endereços testados falharam por isso:
+
+   - `http://music-assistant:8095` (nome na rede `ma-net`) e
+     `http://172.17.0.3:8095` (o IP de container que a descoberta automática
+     do HA propõe) funcionam de dentro do HA, mas **o navegador do Windows não
+     resolve nenhum dos dois** — a aba de autorização abre em página de erro.
+   - O IP da LAN funciona dos dois lados (verificado: o container do HA
+     responde 200 nele, e o navegador também).
+
+   Portanto: recusar o card "Descoberto" e usar *Adicionar integração →
+   Music Assistant → Configurar outra instância*, digitando o IP da LAN.
+
+A rede `ma-net` continua útil para o outro lado da ligação: é por ela que o
+**Music Assistant alcança o PO Token Generator** pelo nome
+(`http://bgutil-provider:4416`), sem depender de IP.
 
 ⚠️ **Armadilha, igual à do Glances**: a ligação do `homeassistant` à rede
 `ma-net` sobrevive a `docker restart`, mas **se perde se o container for
@@ -1046,6 +1062,10 @@ recriado do zero**. Nesse caso, reaplicar:
 ```bash
 docker network connect ma-net homeassistant
 ```
+
+⚠️ **Segunda armadilha**: o IP da LAN do PC (`192.168.31.22`) está gravado na
+integração. Se o PC trocar de IP, a integração do Music Assistant cai — o
+mesmo motivo pelo qual o IP fixo do PS5 já é uma pendência antiga.
 
 Quando isso estiver de pé, os dois tiles do deck deixam de ser atalhos web e
 passam a controlar os `media_player` reais.
