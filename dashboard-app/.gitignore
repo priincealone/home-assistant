@@ -1,0 +1,14 @@
+# Segredos deste projeto (token do HA)
+config/secrets.yaml
+
+# Dependências e build do frontend, quando existirem
+node_modules/
+dist/
+.env
+.env.*
+.cache/
+
+# Next.js
+.next/
+next-env.d.ts
+!.env.local.example

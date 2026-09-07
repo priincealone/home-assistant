@@ -1,0 +1,310 @@
+{
+  "gerado_de": {
+    "estados_ao_vivo": 250,
+    "fonte_comodos": "lovelace.minha_casa (room_mini) + template_sensors.yaml",
+    "fonte_estados": "API /api/states (ao vivo)"
+  },
+  "comodos": [
+    {
+      "nome": "Sala de Estar",
+      "rota": "/minha-casa/sala-de-estar",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_sala_de_estar",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Sala de Estar",
+        "estado": "1",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.luz_sala",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Luz Sala",
+          "estado": "on",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.painel",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Painel",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 2,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Cozinha",
+      "rota": "/minha-casa/cozinha",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_cozinha",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Cozinha",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.cozinha_copa_varanda_switch_3",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Cozinha",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 1,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Copa",
+      "rota": "/minha-casa/copa",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_copa",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Copa",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.cozinha_copa_varanda_switch_2",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Copa",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 1,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Lavanderia",
+      "rota": "/minha-casa/lavanderia",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_lavanderia",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Lavanderia",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.cozinha_copa_varanda_switch_1",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Lavanderia",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 1,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Área Gourmet",
+      "rota": "/minha-casa/area-gourmet",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_area_gourmet",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Area Gourmet",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.luzes_externas_switch_1",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Circulação",
+          "estado": "off",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.luzes_externas_switch_2",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Pendente",
+          "estado": "off",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.luzes_externas_switch_3",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Led",
+          "estado": "off",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.luzes_externas_switch_4",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Spots",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 4,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Quarto Luca",
+      "rota": "/minha-casa/quarto-luca",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_quarto_do_luca",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Quarto do Luca",
+        "estado": "1",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.quarto_luca_switch_1",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Luz",
+          "estado": "on",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 1,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Banheiro",
+      "rota": "/minha-casa/banheiro",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_banheiro",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Banheiro",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "switch.banheiro_switch_1",
+          "dominio": "switch",
+          "existe": true,
+          "nome": "Banheiro Switch 1",
+          "estado": "off",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "switch.banheiro_switch_2",
+          "dominio": "switch",
+          "existe": true,
+          "nome": "Banheiro Switch 2",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 2,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Circulação",
+      "rota": "/minha-casa/circulacao",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_circulacao",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Circulacao",
+        "estado": "0",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.circulacao_switch_1",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Muro",
+          "estado": "off",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.circulacao_switch_2",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Corredor",
+          "estado": "off",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 2,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Closet",
+      "rota": "/minha-casa/closet",
+      "sensor_contagem": {
+        "entity_id": "sensor.luzes_closet",
+        "dominio": "sensor",
+        "existe": true,
+        "nome": "Luzes Closet",
+        "estado": "2",
+        "indisponivel": false
+      },
+      "entidades": [
+        {
+          "entity_id": "light.closet_switch_1",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Closet",
+          "estado": "on",
+          "indisponivel": false
+        },
+        {
+          "entity_id": "light.led_escritorio_sonoff_1001dff472",
+          "dominio": "light",
+          "existe": true,
+          "nome": "Led escritório ",
+          "estado": "on",
+          "indisponivel": false
+        }
+      ],
+      "total_entidades": 2,
+      "todas_respondem": true
+    },
+    {
+      "nome": "Quarto",
+      "rota": "/minha-casa/quarto",
+      "sensor_contagem": null,
+      "entidades": [],
+      "total_entidades": 0,
+      "todas_respondem": true
+    }
+  ],
+  "luzes_sem_comodo": [
+    {
+      "entity_id": "switch.entrada_switch_1",
+      "dominio": "switch",
+      "existe": true,
+      "nome": "Muro",
+      "estado": "off",
+      "indisponivel": false,
+      "rotulo_na_pagina_luzes": "Muro"
+    },
+    {
+      "entity_id": "switch.entrada_switch_2",
+      "dominio": "switch",
+      "existe": true,
+      "nome": "Corredor",
+      "estado": "off",
+      "indisponivel": false,
+      "rotulo_na_pagina_luzes": "Corredor"
+    }
+  ],
+  "divergencias": []
+}
