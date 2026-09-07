@@ -794,7 +794,7 @@
             "card": [
               {
                 "background": "transparent",
-                "padding": "10px 6px 10px 4px",
+                "padding": "4px 6px 4px 4px",
                 "border-radius": "0px"
               }
             ],
@@ -837,7 +837,8 @@
                     "styles": {
                       "card": [
                         {
-                          "background-color": "transparent"
+                          "background-color": "transparent",
+                          "background-clip": "content-box"
                         }
                       ],
                       "icon": [
@@ -852,7 +853,8 @@
                     "styles": {
                       "card": [
                         {
-                          "background": "#FF9F0A"
+                          "background": "#FF9F0A",
+                          "background-clip": "content-box"
                         }
                       ],
                       "icon": [
@@ -866,15 +868,17 @@
                 "styles": {
                   "card": [
                     {
-                      "width": "32px",
-                      "height": "32px",
+                      "width": "44px",
+                      "height": "44px",
                       "border-radius": "100%",
-                      "padding": "0px"
+                      "padding": "6px",
+                      "background-clip": "content-box",
+                      "box-sizing": "border-box"
                     }
                   ],
                   "icon": [
                     {
-                      "width": "15px"
+                      "width": "17px"
                     }
                   ],
                   "grid": [

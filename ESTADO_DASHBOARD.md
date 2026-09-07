@@ -1663,3 +1663,28 @@ então ficou só o número, formatado em pt-BR.
 
 **Verificação final**, com o mesmo coletor da auditoria nas 13 páginas, em 375px
 e 1027px: **zero transbordos, zero textos truncados, zero textos mortos**.
+
+## P2 #6: os botões da página Luzes viraram alvos de 44px
+
+A página Luzes tinha **18 botões circulares de 32×32px** — abaixo dos 44×44 de
+WCAG 2.5.5 e do HIG, e é a tela que se usa com a mão ocupada.
+
+A correção (`scripts/lovelace/p2_alvos_luzes.py`) **não mexe no desenho**: o
+botão passou a medir 44×44 com `padding: 6px` e **`background-clip:
+content-box`**, então o círculo pintado continua com os mesmos 32px e só a área
+que responde ao toque cresceu. O ícone subiu de 15px para 17px, mantendo a
+proporção. O `background-clip` foi replicado nas regras do bloco `state`, senão
+o preenchimento laranja do estado aceso ignoraria o recorte.
+
+⚠️ **O alvo maior empurrou a linha**: medido logo depois, a linha passou de 52
+para **64px** e a página de 840 para 948px — o botão virou o elemento mais alto
+e somava ao padding de 10px. Corrigido em `p2_altura_linha_luzes.py`, baixando
+o padding vertical da linha para 4px: 44 + 4 + 4 = **52px**, a altura original.
+
+**Medido no fim**: 18 alvos com 44×44, nenhum abaixo disso, linhas de 52px e
+página de 840px — exatamente as medidas de antes da mudança, com o dobro de
+área de toque.
+
+Continuam pendentes os alvos pequenos da Geral (chips de 36×36 e botões de
+42×42 e 32×32 do card de mídia) e o `button-card` de 22px da Sala de Estar —
+itens #7 e #8 da auditoria.
