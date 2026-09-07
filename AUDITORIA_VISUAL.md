@@ -33,8 +33,8 @@ JSON + card-mod em vez de código de frontend.
 | 6 ✅ | **Página Luzes** | ~~**18 botões de 32×32px**~~ **corrigido**: alvo de 44×44 com o círculo pintado ainda em 32px. O mínimo confortável é 44×44 (WCAG 2.5.5 / HIG). É a tela com pior ergonomia da casa, e é justamente a que se usa com a mão ocupada. |
 | 7 | Geral | 5 alvos abaixo de 44: chips de status (36×36), botões do card de mídia (42×42 e 32×32) e um `ha-icon-button` de 32×32. |
 | 8 | Sala de Estar | 2 alvos pequenos, incluindo um `button-card` de 22px de altura. |
-| 9 | Geral | **7 textos abaixo de 11px**: os quatro chips do topo a 10,8px, "Atualizado / há 8 horas" a 10,5px e "Lista de compras" a **10px**. No iPhone isso fica no limite do ilegível. |
-| 10 | Closet, PC, Quarto do Luca | 3 a 6 textos abaixo de 11px em cada. |
+| 9 ✅ | Geral | ~~**7 textos abaixo de 11px**~~ **corrigido**: os quatro chips do topo a 10,8px, "Atualizado / há 8 horas" a 10,5px e "Lista de compras" a **10px**. No iPhone isso fica no limite do ilegível. |
+| 10 ✅ | Closet, PC, Quarto do Luca | ~~3 a 6 textos abaixo de 11px em cada~~ **corrigido**. |
 
 **Contraste**: nenhum problema. Medindo contra o fundo real de cada elemento,
 as 13 páginas passam em AA — inclusive os cards claros com texto escuro.
@@ -70,8 +70,8 @@ excesso, mas é o número a vigiar se a dashboard começar a engasgar no iPad.
 
 1. ~~P1 inteiro~~ — **feito**.
 2. ~~#6 (botões de 32px na página Luzes)~~ — **feito**.
-3. **#9 e #10 (tipografia abaixo de 11px)** — uma passada de escala tipográfica
-   resolve os dois e encosta no #14.
+3. ~~#9 e #10 (tipografia abaixo de 11px)~~ — **feito**. O #14 (escala dispersa)
+   continua aberto.
 4. **P3** — dívida: limpar os 7 templates órfãos e extrair o CSS repetido para
    template, o que reduz o storage e evita divergência futura.
 5. **P4** — decisão de produto, não de código: precisa da sua opinião antes.

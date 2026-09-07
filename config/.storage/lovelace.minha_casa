@@ -1823,7 +1823,7 @@
                                         ],
                                         "name": [
                                           {
-                                            "font-size": "9.5px",
+                                            "font-size": "11px",
                                             "font-weight": "700",
                                             "color": "rgba(255,255,255,0.45)",
                                             "text-transform": "uppercase",
@@ -1994,7 +1994,7 @@
                                         ],
                                         "name": [
                                           {
-                                            "font-size": "9.5px",
+                                            "font-size": "11px",
                                             "font-weight": "700",
                                             "color": "rgba(255,255,255,0.45)",
                                             "text-transform": "uppercase",
@@ -2041,7 +2041,10 @@
                                             }
                                           ],
                                           "card_mod": {
-                                            "style": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                            "style": {
+                                              ".": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                              "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                            }
                                           }
                                         },
                                         {
@@ -2065,7 +2068,10 @@
                                             }
                                           ],
                                           "card_mod": {
-                                            "style": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                            "style": {
+                                              ".": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                              "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                            }
                                           }
                                         },
                                         {
@@ -2089,7 +2095,10 @@
                                             }
                                           ],
                                           "card_mod": {
-                                            "style": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                            "style": {
+                                              ".": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                              "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                            }
                                           }
                                         }
                                       ],
@@ -2118,7 +2127,7 @@
                                         ],
                                         "name": [
                                           {
-                                            "font-size": "9.5px",
+                                            "font-size": "11px",
                                             "font-weight": "700",
                                             "color": "rgba(255,255,255,0.45)",
                                             "text-transform": "uppercase",
@@ -2144,7 +2153,7 @@
                                       "entities": [
                                         {
                                           "entity": "sensor.pc_andre_memory_usage",
-                                          "name": "RAM"
+                                          "name": "Memória"
                                         },
                                         {
                                           "entity": "sensor.pc_andre_c_disk_usage",
@@ -2165,7 +2174,7 @@
                                         "fill": "fade"
                                       },
                                       "card_mod": {
-                                        "style": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 4px 2px !important; }\n"
+                                        "style": "ha-card { border: none !important; box-shadow: none !important; background: transparent !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { padding: 4px 2px !important; }\n\n.graph__legend__item span, .graph__legend span,\n.graph__labels span, .graph__labels .label--min, .graph__labels .label--max\n{ font-size: 11px !important; }\n"
                                       },
                                       "line_color": [
                                         "#0A84FF",
@@ -2194,7 +2203,7 @@
                                         ],
                                         "name": [
                                           {
-                                            "font-size": "9.5px",
+                                            "font-size": "11px",
                                             "font-weight": "700",
                                             "color": "rgba(255,255,255,0.45)",
                                             "text-transform": "uppercase",
@@ -2358,7 +2367,7 @@
                         }
                       ],
                       "card_mod": {
-                        "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+                        "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n\nha-card { --chip-font-size: 12px !important; }\n"
                       }
                     },
                     {
@@ -2711,14 +2720,14 @@
                                 ],
                                 "name": [
                                   {
-                                    "font-size": "10.5px",
+                                    "font-size": "11px",
                                     "color": "rgba(255,255,255,0.35)",
                                     "justify-self": "start"
                                   }
                                 ],
                                 "label": [
                                   {
-                                    "font-size": "10.5px",
+                                    "font-size": "11.5px",
                                     "color": "rgba(255,255,255,0.35)",
                                     "justify-self": "start",
                                     "padding-left": "4px"
@@ -3413,7 +3422,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -3593,7 +3602,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -4120,7 +4129,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -4174,7 +4183,7 @@
                                                             ],
                                                             "name": [
                                                               {
-                                                                "font-size": "9.5px",
+                                                                "font-size": "11px",
                                                                 "font-weight": "700",
                                                                 "color": "rgba(255,255,255,0.45)",
                                                                 "text-transform": "uppercase",
@@ -4320,7 +4329,7 @@
                                                             ],
                                                             "name": [
                                                               {
-                                                                "font-size": "9.5px",
+                                                                "font-size": "11px",
                                                                 "font-weight": "700",
                                                                 "color": "rgba(255,255,255,0.45)",
                                                                 "text-transform": "uppercase",
@@ -4602,7 +4611,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -5058,7 +5067,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -5238,7 +5247,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -5765,7 +5774,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -5819,7 +5828,7 @@
                                                             ],
                                                             "name": [
                                                               {
-                                                                "font-size": "9.5px",
+                                                                "font-size": "11px",
                                                                 "font-weight": "700",
                                                                 "color": "rgba(255,255,255,0.45)",
                                                                 "text-transform": "uppercase",
@@ -5965,7 +5974,7 @@
                                                             ],
                                                             "name": [
                                                               {
-                                                                "font-size": "9.5px",
+                                                                "font-size": "11px",
                                                                 "font-weight": "700",
                                                                 "color": "rgba(255,255,255,0.45)",
                                                                 "text-transform": "uppercase",
@@ -6247,7 +6256,7 @@
                                                 ],
                                                 "name": [
                                                   {
-                                                    "font-size": "9.5px",
+                                                    "font-size": "11px",
                                                     "font-weight": "700",
                                                     "color": "rgba(255,255,255,0.45)",
                                                     "text-transform": "uppercase",
@@ -6625,7 +6634,7 @@
                             ],
                             "name": [
                               {
-                                "font-size": "10px",
+                                "font-size": "11px",
                                 "font-weight": "700",
                                 "color": "rgba(255,255,255,0.45)",
                                 "text-transform": "uppercase",
@@ -6794,7 +6803,10 @@
                                 "name": "Temperatura e Umidade",
                                 "height": 88,
                                 "line_width": 2,
-                                "font_size": 60
+                                "font_size": 60,
+                                "card_mod": {
+                                  "style": ".graph__legend__item span, .graph__legend span,\n.graph__labels span, .graph__labels .label--min, .graph__labels .label--max\n{ font-size: 11px !important; }\n"
+                                }
                               }
                             },
                             {
@@ -6827,7 +6839,10 @@
                                     }
                                   ],
                                   "card_mod": {
-                                    "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                    "style": {
+                                      ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                      "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                    }
                                   }
                                 },
                                 {
@@ -6851,7 +6866,10 @@
                                     }
                                   ],
                                   "card_mod": {
-                                    "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                    "style": {
+                                      ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                      "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                    }
                                   }
                                 }
                               ]
@@ -7334,7 +7352,10 @@
                             }
                           ],
                           "card_mod": {
-                            "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                            "style": {
+                              ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                              "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                            }
                           }
                         },
                         {
@@ -7345,7 +7366,10 @@
                           "name": "Consumo de Energia",
                           "height": 88,
                           "line_width": 2,
-                          "font_size": 60
+                          "font_size": 60,
+                          "card_mod": {
+                            "style": ".graph__legend__item span, .graph__legend span,\n.graph__labels span, .graph__labels .label--min, .graph__labels .label--max\n{ font-size: 11px !important; }\n"
+                          }
                         }
                       ]
                     }
@@ -7592,7 +7616,10 @@
                             }
                           ],
                           "card_mod": {
-                            "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                            "style": {
+                              ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                              "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                            }
                           }
                         },
                         {
@@ -7603,7 +7630,10 @@
                           "name": "Consumo de Energia",
                           "height": 88,
                           "line_width": 2,
-                          "font_size": 60
+                          "font_size": 60,
+                          "card_mod": {
+                            "style": ".graph__legend__item span, .graph__legend span,\n.graph__labels span, .graph__labels .label--min, .graph__labels .label--max\n{ font-size: 11px !important; }\n"
+                          }
                         }
                       ]
                     }
@@ -7710,7 +7740,10 @@
                                 }
                               ],
                               "card_mod": {
-                                "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                "style": {
+                                  ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                  "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                }
                               }
                             },
                             {
@@ -7734,7 +7767,10 @@
                                 }
                               ],
                               "card_mod": {
-                                "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                "style": {
+                                  ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                  "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                }
                               }
                             },
                             {
@@ -7758,7 +7794,10 @@
                                 }
                               ],
                               "card_mod": {
-                                "style": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 155px !important; margin: 0 auto !important; }\n"
+                                "style": {
+                                  ".": "ha-card { padding: 10px !important; }\nha-card .container { max-width: 168px !important; margin: 0 auto !important; }\n",
+                                  "modern-circular-gauge-state$": "text tspan, text { font-size: 11px !important; }\n"
+                                }
                               }
                             }
                           ]
@@ -7766,13 +7805,22 @@
                         {
                           "type": "custom:mini-graph-card",
                           "entities": [
-                            "sensor.pc_andre_memory_usage",
-                            "sensor.pc_andre_c_disk_usage"
+                            {
+                              "entity": "sensor.pc_andre_memory_usage",
+                              "name": "Memória"
+                            },
+                            {
+                              "entity": "sensor.pc_andre_c_disk_usage",
+                              "name": "Disco C:"
+                            }
                           ],
                           "name": "Uso de Memoria e Disco",
                           "height": 88,
                           "line_width": 2,
-                          "font_size": 60
+                          "font_size": 60,
+                          "card_mod": {
+                            "style": ".graph__legend__item span, .graph__legend span,\n.graph__labels span, .graph__labels .label--min, .graph__labels .label--max\n{ font-size: 11px !important; }\n"
+                          }
                         },
                         {
                           "type": "custom:button-card",

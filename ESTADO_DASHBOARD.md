@@ -1688,3 +1688,27 @@ página de 840px — exatamente as medidas de antes da mudança, com o dobro de
 Continuam pendentes os alvos pequenos da Geral (chips de 36×36 e botões de
 42×42 e 32×32 do card de mídia) e o `button-card` de 22px da Sala de Estar —
 itens #7 e #8 da auditoria.
+
+## P2 #9 e #10: piso tipográfico de 11px
+
+Levantamento com régua no navegador, antes: 7 textos abaixo de 11px na Geral e
+3 a 6 em cada uma de Closet, PC e Quarto do Luca. O menor era **7,92px**.
+
+Piso adotado: **11px**, com 12px nos chips do topo — que são o primeiro texto
+que se lê na Geral. `scripts/lovelace/p2_tipografia.py`, 39 ajustes:
+
+| Onde | Antes | Depois | Como |
+|---|---|---|---|
+| Chips do topo (Geral) | 10,8px | 12px | `--chip-font-size`, a variável do próprio Mushroom — mexer nela evita brigar com o CSS interno do componente |
+| Rótulos de seção | 10px | 11px | `styles.name` do `button-card` |
+| Rodapé do deck de saúde | 10,5px | 11,5px | idem |
+| Legenda e min/max do `mini-graph-card` | 8,4 e 9,76px | 11px | `card_mod` mirando `.graph__legend__item span` e `.graph__labels span` |
+| Unidade do `modern-circular-gauge` | 7,92px | 11px | `card_mod` com `modern-circular-gauge-state$`, porque o texto mora no shadow root do componente interno; o container subiu de 155 para 168px |
+
+Junto veio um ganho que não era de tipografia: a legenda dos gráficos do PC
+mostrava o **nome bruto da entidade** ("PC André Memory usage", "PC André C:\
+disk usage"). As séries foram renomeadas para **"Memória"** e **"Disco C:"**.
+
+**Medido depois**, nas páginas Geral, PC, Closet, Quarto do Luca, Sala de
+Estar, Luzes, Cozinha e Banheiro: **nenhum texto abaixo de 11px**, e nenhum
+transbordo ou truncamento novo — o aumento de corpo não estourou nenhum card.
