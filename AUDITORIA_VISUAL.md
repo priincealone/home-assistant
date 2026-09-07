@@ -12,7 +12,11 @@ JSON + card-mod em vez de código de frontend.
 
 ---
 
-## P1 — Erros visíveis na tela
+## P1 — Erros visíveis na tela ✅ CORRIGIDO em 07/09/2026
+
+> Os cinco foram corrigidos por `scripts/lovelace/p1_erros_visiveis.py` e
+> `p1_passos_sem_unidade.py`. Verificação final nas 13 páginas, em 375px e
+> 1027px: **zero transbordos, zero textos truncados, zero textos mortos**.
 
 | # | Onde | O que está errado |
 |---|---|---|
@@ -64,7 +68,7 @@ excesso, mas é o número a vigiar se a dashboard começar a engasgar no iPad.
 
 ## Ordem sugerida
 
-1. **P1 inteiro** — são cinco correções pequenas e todas visíveis ao usuário.
+1. ~~P1 inteiro~~ — **feito**.
 2. **#6 (botões de 32px na página Luzes)** — maior ganho de uso por esforço.
 3. **#9 e #10 (tipografia abaixo de 11px)** — uma passada de escala tipográfica
    resolve os dois e encosta no #14.

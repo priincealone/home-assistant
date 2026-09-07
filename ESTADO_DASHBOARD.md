@@ -1629,3 +1629,37 @@ CSS existente e só reordena as regras — cada página mantém o layout que tin
 **Medido depois, com régua no navegador**: 375px → 1 coluna, 768px → 2 colunas,
 desktop → 3 colunas na Geral e 2 nas páginas de cômodo; **zero cards
 transbordando** nas três faixas.
+
+## P1 da auditoria: os cinco erros visíveis, corrigidos
+
+Primeira leva de correções saída da auditoria (`AUDITORIA_VISUAL.md`), aplicada
+por `scripts/lovelace/p1_erros_visiveis.py`:
+
+1. **"NaN °C" na Sala de Estar** — o `mini-graph-card` imprimia a conta com o
+   sensor de temperatura `unavailable`. Passou a viver dentro de um
+   `conditional`: some enquanto não há dado e volta sozinho quando o sensor
+   responder.
+2. **"Indisponível" no Quarto** — mesmo tratamento para o
+   `custom:mushroom-fan-card` do `fan.luz_ventilador`, que depende da pendência
+   do LocalTuya. A página fica sem o card em vez de exibir um card avisando que
+   não funciona.
+3. **Lista de compras transbordando** — medido antes: o `span` do item com
+   352px terminando em 1087px numa viewport de 1027. O `card_mod` do
+   `todo-list` já usava a forma aninhada (dict), então as regras de quebra
+   (`white-space: normal`, `overflow-wrap: anywhere`) entraram na chave `"."`,
+   que alcança o shadow root do card, **sem perder** o estilo do campo
+   "Adicionar item" que morava na outra chave.
+4. **"Sensor de Luz TV" truncado** — passou a quebrar em duas linhas
+   (`white-space: normal` + 12,5px) em vez de virar reticências.
+5. **Dois cards fantasma removidos** — Banheiro e Closet tinham cards de
+   movimento apontando para `binary_sensor.sensor_banheiro_movimento` e
+   `..._closet_movimento`, que não existem no registro de entidades: nunca
+   acenderiam.
+
+Um sexto apareceu na verificação e foi corrigido junto
+(`p1_passos_sem_unidade.py`): na faixa de ~1000px, "7.842 passos" era cortado no
+deck de saúde. A unidade é redundante com o rótulo "Passos" do próprio tile,
+então ficou só o número, formatado em pt-BR.
+
+**Verificação final**, com o mesmo coletor da auditoria nas 13 páginas, em 375px
+e 1027px: **zero transbordos, zero textos truncados, zero textos mortos**.

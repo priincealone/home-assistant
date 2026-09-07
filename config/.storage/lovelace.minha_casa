@@ -2643,7 +2643,8 @@
                                   },
                                   "card_mod": {
                                     "style": "ha-card { border: none !important; }\n"
-                                  }
+                                  },
+                                  "state_display": "[[[ const n = Number(entity.state); return isNaN(n) ? entity.state : n.toLocaleString('pt-BR'); ]]]"
                                 },
                                 {
                                   "type": "custom:button-card",
@@ -6646,7 +6647,7 @@
                           "card_mod": {
                             "style": {
                               "ha-input$wa-input$": ".text-field {\n  background-color: rgba(255,255,255,0.07) !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n  border-radius: 12px !important;\n  height: 44px !important;\n}\n.text-field:focus-within {\n  border-color: rgba(10,132,255,0.6) !important;\n  background-color: rgba(255,255,255,0.10) !important;\n}\ninput { color: white !important; font-size: 14px !important; }\ninput::placeholder { color: rgba(255,255,255,0.45) !important; }\n",
-                              ".": ".addRow { padding: 12px 12px 4px 12px !important; }\np.empty { color: rgba(255,255,255,0.45) !important; font-size: 13px !important; padding: 4px 12px 14px 12px !important; }\n"
+                              ".": ".addRow { padding: 12px 12px 4px 12px !important; }\np.empty { color: rgba(255,255,255,0.45) !important; font-size: 13px !important; padding: 4px 12px 14px 12px !important; }\n\nha-card { overflow: hidden !important; }\nha-check-list-item, ha-list-item, .mdc-list-item, .mdc-list-item__text,\nha-check-list-item span, .mdc-list-item__primary-text {\n  white-space: normal !important;\n  overflow-wrap: anywhere !important;\n  word-break: break-word !important;\n  text-overflow: clip !important;\n  line-height: 1.25 !important;\n}\n"
                             }
                           }
                         }
@@ -6716,6 +6717,9 @@
                             "var_entity": "switch.sala_de_estar_light_sensor_tv",
                             "var_icon": "mdi:brightness-auto",
                             "var_color": "#FF9F0A"
+                          },
+                          "card_mod": {
+                            "style": "ha-card #name, ha-card .name {\n  white-space: normal !important;\n  overflow: visible !important;\n  text-overflow: clip !important;\n  line-height: 1.15 !important;\n  font-size: 12.5px !important;\n}\n"
                           }
                         },
                         {
@@ -6764,15 +6768,30 @@
                           "type": "custom:stack-in-card",
                           "cards": [
                             {
-                              "type": "custom:mini-graph-card",
-                              "entities": [
-                                "sensor.sensor_temperatura_e_humidade_temperatura",
-                                "sensor.sensor_temperatura_e_humidade_umidade"
+                              "type": "conditional",
+                              "conditions": [
+                                {
+                                  "condition": "state",
+                                  "entity": "sensor.sensor_temperatura_e_humidade_temperatura",
+                                  "state_not": "unavailable"
+                                },
+                                {
+                                  "condition": "state",
+                                  "entity": "sensor.sensor_temperatura_e_humidade_temperatura",
+                                  "state_not": "unknown"
+                                }
                               ],
-                              "name": "Temperatura e Umidade",
-                              "height": 88,
-                              "line_width": 2,
-                              "font_size": 60
+                              "card": {
+                                "type": "custom:mini-graph-card",
+                                "entities": [
+                                  "sensor.sensor_temperatura_e_humidade_temperatura",
+                                  "sensor.sensor_temperatura_e_humidade_umidade"
+                                ],
+                                "name": "Temperatura e Umidade",
+                                "height": 88,
+                                "line_width": 2,
+                                "font_size": 60
+                              }
                             },
                             {
                               "type": "grid",
@@ -7166,12 +7185,27 @@
                       "square": false,
                       "cards": [
                         {
-                          "type": "custom:mushroom-fan-card",
-                          "entity": "fan.luz_ventilador",
-                          "name": "Luz/Ventilador",
-                          "show_percentage_control": true,
-                          "card_mod": {
-                            "style": "ha-card {\n  border: none !important;\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border-radius: 10px !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
+                          "type": "conditional",
+                          "conditions": [
+                            {
+                              "condition": "state",
+                              "entity": "fan.luz_ventilador",
+                              "state_not": "unavailable"
+                            },
+                            {
+                              "condition": "state",
+                              "entity": "fan.luz_ventilador",
+                              "state_not": "unknown"
+                            }
+                          ],
+                          "card": {
+                            "type": "custom:mushroom-fan-card",
+                            "entity": "fan.luz_ventilador",
+                            "name": "Luz/Ventilador",
+                            "show_percentage_control": true,
+                            "card_mod": {
+                              "style": "ha-card {\n  border: none !important;\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border-radius: 10px !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
+                            }
                           }
                         },
                         {
@@ -7373,15 +7407,6 @@
                       "card_mod": {
                         "style": "#root { grid-auto-rows: min-content !important; gap: 10px !important; }"
                       }
-                    },
-                    {
-                      "type": "custom:bubble-card",
-                      "card_type": "button",
-                      "button_type": "name",
-                      "entity": "binary_sensor.sensor_banheiro_movimento",
-                      "name": "Movimento",
-                      "icon": "mdi:motion-sensor",
-                      "show_last_changed": true
                     }
                   ],
                   "card_mod": {
@@ -7542,15 +7567,6 @@
                     {
                       "type": "vertical-stack",
                       "cards": [
-                        {
-                          "type": "custom:bubble-card",
-                          "card_type": "button",
-                          "button_type": "name",
-                          "entity": "binary_sensor.sensor_closet_movimento",
-                          "name": "Movimento",
-                          "icon": "mdi:motion-sensor",
-                          "show_last_changed": true
-                        },
                         {
                           "type": "custom:modern-circular-gauge",
                           "entity": "sensor.computador_energia_total",
