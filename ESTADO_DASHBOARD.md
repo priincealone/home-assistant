@@ -643,7 +643,12 @@ Visualmente é uma janela só; o `tap_action` continua abrindo o mesmo popup
 completo do Browser Mod. Validado no desktop e no iPhone (o botão continua
 visível e clicável em 375px).
 
-## Responsividade (iPhone / tablet / desktop)
+## Responsividade (iPhone / tablet / desktop) — ⚠️ invertido depois
+
+> Os breakpoints continuam valendo, mas **a ordem das regras foi invertida**
+> para mobile-first — ver "Layout quebrado no app do iPhone", no fim deste
+> documento. O formato `max-width` descrito aqui é o antigo.
+
 
 O layout de painel em 3 colunas ficava ilegível no iPhone. Resolvido com
 **media queries dentro do `card_mod`** (é CSS real, então `@media` funciona).
@@ -1581,3 +1586,46 @@ viável hoje. O que sobra, e funciona melhor:
 - **AirTags**: ficam pendentes até haver acesso a um Mac. A conta e o servidor
   anisette continuam configurados; quando os arquivos de chave existirem, é só
   subir cada um em *Adicionar dispositivo*.
+
+## Layout quebrado no app do iPhone — mobile-first
+
+Sintoma (print do André): a Geral abria no app do iPhone com **as três colunas
+espremidas**, textos cortados ("Boa tard…", "P…", "Di.", "Yo…") e os nomes dos
+cômodos sumidos — e **só se ajeitava ao atualizar a página**.
+
+**Causa**: o layout responsivo era desktop-first. A regra base do `card_mod`
+trazia as colunas do desktop e as media queries `max-width` iam reduzindo:
+
+```css
+#root { grid-template-columns: 1.05fr 1.35fr 1.2fr !important; }  /* base */
+@media (max-width: 1000px) { #root { grid-template-columns: 1fr 1fr !important; } }
+@media (max-width: 700px)  { #root { grid-template-columns: 1fr !important; } }
+```
+
+O `card_mod` é um **recurso do frontend**: enquanto ele não carrega, nada desse
+CSS existe — e o `horizontal-stack` nativo renderiza suas colunas iguais. Ou
+seja, o primeiro paint no celular usava o layout de desktop numa tela de 375px.
+No refresh o recurso já está em cache, aplica a tempo, e a tela "conserta".
+
+**Correção**: inverter para mobile-first, de modo que **o layout do celular não
+dependa de CSS nenhum**:
+
+- os stacks de coluna viraram `vertical-stack`, que empilha nativamente;
+- as colunas só aparecem por `min-width` (701px → 2 colunas; 1001px → layout
+  completo);
+- no desktop, se o CSS atrasar, o pior caso é um instante de coluna única.
+
+⚠️ **`minmax(0, 1fr)` não é detalhe**: na primeira tentativa, com
+`grid-template-columns: 1fr`, o card de clima subiu com **422px numa viewport de
+375** — seis cards transbordando. Todo item de grid tem `min-width: auto`, então
+o `1fr` não encolhe abaixo da largura natural do conteúdo. A correção é
+`minmax(0, 1fr)` em todas as faixas mais `#root > * { min-width: 0 }`.
+
+Aplicado na Geral (`scripts/lovelace/geral_mobile_first.py` +
+`geral_mobile_first_fix.py`) e, em lote, nas 12 páginas restantes
+(`scripts/lovelace/paginas_mobile_first.py`, que lê os valores de cada faixa do
+CSS existente e só reordena as regras — cada página mantém o layout que tinha).
+
+**Medido depois, com régua no navegador**: 375px → 1 coluna, 768px → 2 colunas,
+desktop → 3 colunas na Geral e 2 nas páginas de cômodo; **zero cards
+transbordando** nas três faixas.

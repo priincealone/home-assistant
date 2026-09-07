@@ -1707,7 +1707,7 @@
               "type": "vertical-stack",
               "cards": [
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "custom:button-card",
@@ -2392,11 +2392,11 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(300px, 1.3fr) auto minmax(130px, 0.7fr) !important;\n  align-items: center !important;\n  gap: 16px !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr auto !important; gap: 10px !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; gap: 6px !important; }\n  #root > *:last-child { display: none !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 6px !important;\n  align-items: center !important;\n}\n#root > * { min-width: 0 !important; }\n/* relogio escondido por padrao: o iOS ja mostra a hora na barra de status */\n#root > *:last-child { display: none !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) auto !important; gap: 10px !important; }\n}\n@media (min-width: 1001px) {\n  #root {\n    grid-template-columns: minmax(300px, 1.3fr) auto minmax(130px, 0.7fr) !important;\n    gap: 16px !important;\n  }\n  #root > *:last-child { display: block !important; }\n}\n"
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "vertical-stack",
@@ -6654,7 +6654,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1.05fr 1.35fr 1.2fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n@media (min-width: 1001px) {\n  #root {\n    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.35fr) minmax(0, 1.2fr) !important;\n  }\n}\n"
                   }
                 }
               ],
@@ -6685,7 +6685,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -6839,7 +6839,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -6868,7 +6868,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -6892,7 +6892,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(340px, 620px) 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -6921,7 +6921,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -6945,7 +6945,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(340px, 620px) 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -6974,7 +6974,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "vertical-stack",
@@ -7037,7 +7037,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(340px, 620px) 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7066,7 +7066,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7129,7 +7129,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7158,7 +7158,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7191,7 +7191,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(340px, 620px) 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7220,7 +7220,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7313,7 +7313,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7342,7 +7342,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7385,7 +7385,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7414,7 +7414,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7448,7 +7448,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(340px, 620px) 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7477,7 +7477,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "grid",
@@ -7589,7 +7589,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7618,7 +7618,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "horizontal-stack",
@@ -7768,7 +7768,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
@@ -7797,7 +7797,7 @@
                   }
                 },
                 {
-                  "type": "horizontal-stack",
+                  "type": "vertical-stack",
                   "cards": [
                     {
                       "type": "custom:stack-in-card",
@@ -8355,7 +8355,7 @@
                     }
                   ],
                   "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr 1fr !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
+                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],
