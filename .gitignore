@@ -40,3 +40,8 @@ music-assistant/
 
 # Dados do servidor anisette (provisionamento da "máquina" Apple)
 anisette/
+
+# Ferramentas de agente instaladas na pasta (não são configuração da casa)
+.agents/
+.claude/skills/
+skills-lock.json
