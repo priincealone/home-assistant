@@ -2052,11 +2052,11 @@
                                               "color": "#30D158"
                                             },
                                             {
-                                              "from": 60.0,
+                                              "from": 60,
                                               "color": "#FF9F0A"
                                             },
                                             {
-                                              "from": 85.0,
+                                              "from": 85,
                                               "color": "#FF375F"
                                             }
                                           ],
@@ -2076,11 +2076,11 @@
                                               "color": "#30D158"
                                             },
                                             {
-                                              "from": 60.0,
+                                              "from": 60,
                                               "color": "#FF9F0A"
                                             },
                                             {
-                                              "from": 85.0,
+                                              "from": 85,
                                               "color": "#FF375F"
                                             }
                                           ],
@@ -6664,7 +6664,10 @@
             }
           ],
           "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
-          "type": "panel"
+          "type": "panel",
+          "theme": "apple_home",
+          "subview": true,
+          "show_icon_and_title": true
         },
         {
           "title": "Sala de Estar",
@@ -6846,7 +6849,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Cozinha",
@@ -6898,7 +6902,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Copa",
@@ -6950,7 +6955,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Lavanderia",
@@ -7041,7 +7047,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Área Gourmet",
@@ -7132,7 +7139,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Quarto",
@@ -7193,7 +7201,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Quarto do Luca",
@@ -7314,7 +7323,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Banheiro",
@@ -7385,7 +7395,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Circulação",
@@ -7447,7 +7458,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Closet",
@@ -7587,7 +7599,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "PC",
@@ -7765,7 +7778,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         },
         {
           "title": "Luzes",
@@ -8351,323 +8365,8 @@
             }
           ],
           "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
-        },
-        {
-          "title": "Cômodos",
-          "path": "comodos",
-          "icon": "mdi:view-grid",
-          "cards": [
-            {
-              "type": "vertical-stack",
-              "cards": [
-                {
-                  "type": "custom:button-card",
-                  "template": "room_header",
-                  "variables": {
-                    "var_name": "Cômodos"
-                  }
-                },
-                {
-                  "type": "horizontal-stack",
-                  "cards": [
-                    {
-                      "type": "grid",
-                      "columns": 5,
-                      "square": false,
-                      "cards": [
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Sala de Estar",
-                            "var_path": "/minha-casa/sala-de-estar",
-                            "var_lights": [
-                              "light.luz_sala",
-                              "light.painel"
-                            ],
-                            "var_motion": null,
-                            "var_temp": "sensor.sensor_temperatura_e_humidade_temperatura",
-                            "var_sensor": "sensor.luzes_sala_de_estar"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Cozinha",
-                            "var_path": "/minha-casa/cozinha",
-                            "var_lights": [
-                              "light.cozinha_copa_varanda_switch_3"
-                            ],
-                            "var_motion": null,
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_cozinha"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Copa",
-                            "var_path": "/minha-casa/copa",
-                            "var_lights": [
-                              "light.cozinha_copa_varanda_switch_2"
-                            ],
-                            "var_motion": null,
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_copa"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Lavanderia",
-                            "var_path": "/minha-casa/lavanderia",
-                            "var_lights": [
-                              "light.cozinha_copa_varanda_switch_1"
-                            ],
-                            "var_motion": "binary_sensor.sensor_lavanderia_movimento",
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_lavanderia"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Área Gourmet",
-                            "var_path": "/minha-casa/area-gourmet",
-                            "var_lights": [
-                              "light.luzes_externas_switch_1",
-                              "light.luzes_externas_switch_2",
-                              "light.luzes_externas_switch_3",
-                              "light.luzes_externas_switch_4"
-                            ],
-                            "var_motion": "binary_sensor.sensor_area_gourmet_movimento",
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_area_gourmet"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Quarto",
-                            "var_path": "/minha-casa/quarto",
-                            "var_lights": [],
-                            "var_motion": null,
-                            "var_temp": null
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Quarto do Luca",
-                            "var_path": "/minha-casa/quarto-luca",
-                            "var_lights": [
-                              "light.quarto_luca_switch_1"
-                            ],
-                            "var_motion": null,
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_quarto_do_luca"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Banheiro",
-                            "var_path": "/minha-casa/banheiro",
-                            "var_lights": [
-                              "switch.banheiro_switch_1",
-                              "switch.banheiro_switch_2"
-                            ],
-                            "var_motion": "binary_sensor.sensor_banheiro_movimento",
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_banheiro"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Circulação",
-                            "var_path": "/minha-casa/circulacao",
-                            "var_lights": [
-                              "light.circulacao_switch_1",
-                              "light.circulacao_switch_2"
-                            ],
-                            "var_motion": null,
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_circulacao"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "type": "custom:button-card",
-                          "template": "room_tile",
-                          "variables": {
-                            "var_name": "Closet",
-                            "var_path": "/minha-casa/closet",
-                            "var_lights": [
-                              "light.closet_switch_1",
-                              "light.led_escritorio_sonoff_1001dff472"
-                            ],
-                            "var_motion": "binary_sensor.sensor_closet_movimento",
-                            "var_temp": null,
-                            "var_sensor": "sensor.luzes_closet"
-                          },
-                          "styles": {
-                            "name": [
-                              {
-                                "font-size": "17px",
-                                "font-weight": "bold",
-                                "justify-self": "start",
-                                "align-self": "start",
-                                "color": "white",
-                                "white-space": "normal",
-                                "line-height": "1.15"
-                              }
-                            ]
-                          }
-                        }
-                      ],
-                      "card_mod": {
-                        "style": "#root { grid-template-columns: repeat(5, 1fr) !important; gap: 10px !important; }\n@media (max-width: 1000px) {\n  #root { grid-template-columns: repeat(3, 1fr) !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: repeat(2, 1fr) !important; }\n}\n"
-                      }
-                    }
-                  ],
-                  "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: 1fr !important;\n  gap: 0px !important;\n  align-items: start !important;\n}\n@media (max-width: 1000px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n@media (max-width: 700px) {\n  #root { grid-template-columns: 1fr !important; }\n}\n"
-                  }
-                }
-              ],
-              "card_mod": {
-                "style": "@media (max-width: 1400px) {\n  #root {\n    padding: 18px 16px 28px 16px !important;\n    box-sizing: border-box !important;\n  }\n}\n@media (max-width: 500px) {\n  #root {\n    padding: 16px 14px 26px 14px !important;\n  }\n}\n"
-              }
-            }
-          ],
-          "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')"
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true
         }
       ],
       "background": {

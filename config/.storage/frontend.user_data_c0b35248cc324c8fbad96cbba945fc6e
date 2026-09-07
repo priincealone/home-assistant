@@ -4,10 +4,26 @@
   "key": "frontend.user_data_c0b35248cc324c8fbad96cbba945fc6e",
   "data": {
     "theme": {
-      "theme": "apple_home"
+      "theme": "default"
     },
     "core": {
-      "default_panel": "minha-casa"
+      "default_panel": "minha-casa",
+      "apps_info_dismissed": true
+    },
+    "sidebar": {
+      "panelOrder": [
+        "minha-casa",
+        "dashboard-dashboard",
+        "map",
+        "energy",
+        "logbook",
+        "history",
+        "browser-mod",
+        "hacs",
+        "media-browser",
+        "todo"
+      ],
+      "hiddenPanels": []
     }
   }
 }
