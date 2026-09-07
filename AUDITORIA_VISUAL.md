@@ -43,10 +43,10 @@ as 13 páginas passam em AA — inclusive os cards claros com texto escuro.
 
 | # | Achado | Número |
 |---|---|---|
-| 11 | **Templates órfãos** — definidos e não usados por nenhum card: `divider`, `heading`, `room_row`, `weather_widget`, `device_tile`, `room_tile`, `panel_tile` | 7 de 15 |
-| 12 | **CSS repetido** literalmente card a card: o bloco "sem borda/sombra" aparece 36 vezes, o "nude" 28, outro 16 | 43 blocos distintos, 16 repetidos 5+ vezes |
-| 13 | **Cores fora da paleta** declarada no CLAUDE.md (`#FF9F0A`, azul, verde, vermelho, roxo) | 10 cores; `#ff375f` sozinha com 12 usos |
-| 14 | **Escala tipográfica dispersa**: 9,1 / 10 / 10,5 / 10,8 / 12 / 13 / 13,5 / 14 / 16 / 20 / 24 / 30px | 12 tamanhos |
+| 11 ✅ | ~~**Templates órfãos**~~ arquivados — definidos e não usados por nenhum card: `divider`, `heading`, `room_row`, `weather_widget`, `device_tile`, `room_tile`, `panel_tile` | 7 de 15 |
+| 12 ✅ | ~~**CSS repetido**~~ virou 4 templates de estilo literalmente card a card: o bloco "sem borda/sombra" aparece 36 vezes, o "nude" 28, outro 16 | 43 blocos distintos, 16 repetidos 5+ vezes |
+| 13 ✅ | ~~**Cores fora da paleta**~~ consolidadas declarada no CLAUDE.md (`#FF9F0A`, azul, verde, vermelho, roxo) | 10 cores; `#ff375f` sozinha com 12 usos |
+| 14 ⏸ | **Escala tipográfica**: caiu de 12 para 13 tamanhos, todos agora ≥11px (11 / 11,5 / 12 / 12,5 / 13 / 13,5 / 14 / 15 / 17 / 19 / 30 / 32 / 40). Consolidar os pares vizinhos mexeria em alinhamentos já medidos, com ganho invisível — **adiado por decisão de custo/risco**. | 13 tamanhos |
 
 ## P4 — Densidade e propósito das páginas
 
@@ -72,6 +72,5 @@ excesso, mas é o número a vigiar se a dashboard começar a engasgar no iPad.
 2. ~~#6 (botões de 32px na página Luzes)~~ — **feito**.
 3. ~~#9 e #10 (tipografia abaixo de 11px)~~ — **feito**. O #14 (escala dispersa)
    continua aberto.
-4. **P3** — dívida: limpar os 7 templates órfãos e extrair o CSS repetido para
-   template, o que reduz o storage e evita divergência futura.
+4. ~~P3~~ — **feito**, menos o #14 (escala tipográfica), adiado de propósito.
 5. **P4** — decisão de produto, não de código: precisa da sua opinião antes.

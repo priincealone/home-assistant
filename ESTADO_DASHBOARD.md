@@ -1712,3 +1712,61 @@ disk usage"). As séries foram renomeadas para **"Memória"** e **"Disco C:"**.
 **Medido depois**, nas páginas Geral, PC, Closet, Quarto do Luca, Sala de
 Estar, Luzes, Cozinha e Banheiro: **nenhum texto abaixo de 11px**, e nenhum
 transbordo ou truncamento novo — o aumento de corpo não estourou nenhum card.
+
+## P3: a dívida acumulada da dashboard
+
+Três dos quatro itens de dívida foram fechados. O storage saiu de **177.463
+para 144.888 bytes — 18,4% menor**, sem uma única mudança visual.
+
+### #11 Templates órfãos → arquivados
+
+Sete dos quinze `button_card_templates` não eram usados por card nenhum
+(confirmado procurando `"template": "<nome>"` e a forma em lista no storage
+inteiro, inclusive dentro de outros templates). Em vez de apagar, foram para
+`referencias/templates-arquivados.json`: `device_tile` e `room_tile` foram
+desenhados com cuidado, e o `room_tile` é o único registro do que a página
+Cômodos usava antes de ser removida. Para reativar, é colar de volta.
+
+### #12 CSS repetido → quatro templates de estilo
+
+Era o achado mais pesado: **47.524 bytes de `card_mod` em texto, dos quais
+34.356 eram repetição literal** — 20,8% do arquivo. Os quatro blocos mais
+copiados apareciam **só** em `custom:button-card`, que aceita herança por
+template. Viraram:
+
+| Template | Usos | O que faz |
+|---|---|---|
+| `sem_moldura` | 36 | sem borda, sombra ou blur, e sem arredondamento |
+| `nu` | 28 | transparente e sem moldura nenhuma |
+| `borda_fina` | 16 | sem sombra nem blur, com a borda de 1px do vidro |
+| `sem_fundo` | 13 | transparente, mantendo o arredondamento herdado |
+
+⚠️ **Regra que precisou ser respeitada**: um card só troca `card_mod` por
+template se o template que ele já usa não definir `card_mod` próprio.
+`shortcut_tile` e `room_header` definem — e no button-card o `card_mod` de um
+template **sobrescreve** o do outro em vez de somar. Esses cards ficaram como
+estavam.
+
+### #13 Paleta → duas consolidações
+
+`#ff9800` (laranja do Material) virou `#FF9F0A`, o laranja iOS do projeto; e
+`#FF375F` virou `#FF453A` — o rosa-vermelho aparecia 12 vezes como topo das
+escalas dos medidores, papel legítimo, mas era um vermelho diferente do que a
+dashboard já usava. Cores de marca ficaram intactas.
+
+### #14 Escala tipográfica → adiado de propósito
+
+Depois do piso de 11px, a escala tem 13 tamanhos entre 11 e 40px. Consolidar os
+pares vizinhos (11/11,5 · 13/13,5 · 14/15) mexeria em alinhamentos que já foram
+medidos e aprovados, com ganho visual nulo. Fica registrado como opção, não
+como pendência.
+
+**Verificação**: 13 páginas medidas depois da refatoração — zero transbordos,
+truncados, textos abaixo de 11px ou entidades mortas; contagem de cards
+transparentes, com borda e com blur igual à de antes; e as capturas de Geral e
+Luzes idênticas às anteriores.
+
+📌 **Nota de método**: medir logo após a troca de página dá **falso positivo de
+truncamento** — elementos ainda sem largura final aparecem como cortados. Com
+1,1s apareciam "truncados" em sete páginas; com 2,5s, nenhum. Esperar ao menos
+2s antes de medir.

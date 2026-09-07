@@ -72,10 +72,23 @@ adicionar arquivo novo com segredo, incluir no `.gitignore` antes do commit.
   dizer isso cedo em vez de preencher com substituto genérico.
 - Botão de luz ligada usa `#FF9F0A`; apagada, `transparent`. Tomadas e não-luzes
   mantêm cor própria via `var_color`.
+- Paleta: `#FF9F0A` (laranja/aceso), `#0A84FF` (azul), `#30D158` (verde),
+  `#FF453A` (vermelho/alerta), `#5E5CE6` (roxo). As escalas dos medidores vão
+  verde → laranja → vermelho. Cores de marca (Netflix, Prime, Spotify, Disney)
+  são exceção legítima; fora isso, não introduza tom novo.
 - Templates disponíveis em `button_card_templates` (dentro do próprio storage):
-  `apple_scene`, `device_tile`, `divider`, `entity_card`, `heading`, `light_row`,
-  `now_playing`, `panel_tile`, `room_header`, `room_mini`, `room_row`, `room_tile`,
-  `sensor_tile`, `shortcut_tile`, `weather_widget`.
+  `apple_scene`, `entity_card`, `light_row`, `now_playing`, `room_header`,
+  `room_mini`, `sensor_tile`, `shortcut_tile`.
+- Quatro templates **só de estilo**, criados para acabar com o CSS copiado card
+  a card — use-os em vez de repetir `card_mod`: `nu` (transparente, sem moldura),
+  `sem_moldura` (sem borda/sombra/blur e sem arredondamento), `sem_fundo`
+  (transparente mantendo o arredondamento) e `borda_fina` (sem sombra/blur, com
+  a borda de 1px do vidro). Num `button-card` que já usa template, some na lista:
+  `"template": ["room_mini", "nu"]`. ⚠️ Não combine com `shortcut_tile` nem
+  `room_header`: eles trazem `card_mod` próprio, e um sobrescreve o outro.
+- Sete templates sem uso foram para `referencias/templates-arquivados.json`
+  (`device_tile`, `room_tile`, `weather_widget`, `divider`, `heading`,
+  `room_row`, `panel_tile`) — para reativar, é só colar de volta.
 
 ## Armadilhas conhecidas
 

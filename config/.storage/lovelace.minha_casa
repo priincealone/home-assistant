@@ -5,81 +5,6 @@
   "data": {
     "config": {
       "button_card_templates": {
-        "divider": {
-          "type": "custom:button-card",
-          "show_name": false,
-          "show_state": false,
-          "show_icon": false,
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"divider\"",
-                "grid-template-columns": "1fr",
-                "grid-template-rows": "1fr"
-              }
-            ],
-            "card": [
-              {
-                "background-color": "transparent",
-                "padding": "0px 15px 0px 15px",
-                "margin": "0px"
-              }
-            ]
-          },
-          "custom_fields": {
-            "divider": {
-              "card": {
-                "type": "entities",
-                "entities": [
-                  {
-                    "type": "divider",
-                    "style": {
-                      "height": "1px",
-                      "width": "100%",
-                      "margin-left": "auto",
-                      "margin-right": "auto",
-                      "background": "rgba(255,255,255,0.1)"
-                    }
-                  }
-                ],
-                "card_mod": {
-                  "style": "ha-card { background: transparent; }\n#states.card-content { padding: 0px; }"
-                }
-              }
-            }
-          }
-        },
-        "heading": {
-          "variables": {
-            "var_name": null
-          },
-          "type": "custom:button-card",
-          "name": "[[[ return variables.var_name ]]]",
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"n\"",
-                "align-self": "start",
-                "justify-self": "start"
-              }
-            ],
-            "card": [
-              {
-                "background-color": "transparent",
-                "padding": "10px 0px 0px 5px",
-                "margin": "0px"
-              }
-            ],
-            "name": [
-              {
-                "font-size": "20px",
-                "font-weight": "700",
-                "color": "white",
-                "justify-self": "start"
-              }
-            ]
-          }
-        },
         "apple_scene": {
           "variables": {
             "var_name": null,
@@ -142,148 +67,6 @@
           },
           "show_state": false
         },
-        "room_row": {
-          "variables": {
-            "var_name": null,
-            "var_icon": "mdi:sofa",
-            "var_light": null,
-            "var_color": "#0A84FF",
-            "var_path": "/",
-            "var_light_list": null
-          },
-          "type": "custom:button-card",
-          "entity": "[[[ return variables.var_light ]]]",
-          "name": "[[[ return variables.var_name ]]]",
-          "icon": "[[[ return variables.var_icon ]]]",
-          "show_name": true,
-          "show_icon": true,
-          "show_state": false,
-          "tap_action": {
-            "action": "navigate",
-            "navigation_path": "[[[ return variables.var_path ]]]"
-          },
-          "custom_fields": {
-            "toggle": {
-              "card": {
-                "type": "custom:button-card",
-                "entity": "[[[ return variables.var_light ]]]",
-                "icon": "mdi:power",
-                "show_name": false,
-                "show_state": false,
-                "show_icon": true,
-                "tap_action": {
-                  "action": "toggle"
-                },
-                "state": [
-                  {
-                    "value": "off",
-                    "styles": {
-                      "card": [
-                        {
-                          "background-color": "transparent",
-                          "background": "transparent"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "rgba(255,255,255,0.35)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": "on",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "#FF9F0A"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "white"
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "styles": {
-                  "card": [
-                    {
-                      "width": "32px",
-                      "height": "32px",
-                      "border-radius": "100%",
-                      "padding": "0px"
-                    }
-                  ],
-                  "icon": [
-                    {
-                      "width": "15px"
-                    }
-                  ],
-                  "grid": [
-                    {
-                      "grid-template-rows": "1fr",
-                      "align-items": "center",
-                      "align-content": "center"
-                    }
-                  ]
-                },
-                "card_mod": {
-                  "style": "ha-card {\n  backdrop-filter: blur(10px) saturate(160%) !important;\n  -webkit-backdrop-filter: blur(10px) saturate(160%) !important;\n}\n"
-                }
-              }
-            }
-          },
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"i n toggle\"",
-                "grid-template-columns": "40px 1fr min-content"
-              }
-            ],
-            "card": [
-              {
-                "background": "transparent",
-                "padding": "8px 4px",
-                "border-radius": "0px",
-                "display": "[[[ const list = variables.var_light_list; if (!list) return 'block'; return list.some(e => states[e] && states[e].state === 'on') ? 'block' : 'none'; ]]]"
-              }
-            ],
-            "name": [
-              {
-                "font-weight": "550",
-                "font-size": "15px",
-                "justify-self": "start",
-                "color": "white",
-                "letter-spacing": "-0.01em"
-              }
-            ],
-            "img_cell": [
-              {
-                "width": "30px",
-                "height": "30px",
-                "border-radius": "12px",
-                "background-color": "[[[ return variables.var_color ]]]",
-                "margin-right": "6px"
-              }
-            ],
-            "icon": [
-              {
-                "width": "16px",
-                "color": "white"
-              }
-            ],
-            "custom_fields": {
-              "toggle": [
-                {
-                  "justify-self": "end",
-                  "align-self": "center"
-                }
-              ]
-            }
-          }
-        },
         "shortcut_tile": {
           "variables": {
             "var_name": null,
@@ -339,210 +122,6 @@
                 "height": "26px",
                 "justify-self": "start",
                 "align-self": "center"
-              }
-            ]
-          },
-          "card_mod": {
-            "style": "ha-card {\n  backdrop-filter: blur(20px) saturate(160%) !important;\n  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;\n}\n"
-          }
-        },
-        "weather_widget": {
-          "type": "custom:button-card",
-          "entity": "weather.forecast_casa",
-          "show_name": false,
-          "show_icon": true,
-          "show_state": false,
-          "tap_action": {
-            "action": "more-info"
-          },
-          "custom_fields": {
-            "temp": {
-              "card": {
-                "type": "custom:button-card",
-                "show_name": true,
-                "show_icon": false,
-                "name": "[[[ return Math.round(states['weather.forecast_casa'].attributes.temperature) + '°'; ]]]",
-                "styles": {
-                  "card": [
-                    {
-                      "background": "transparent",
-                      "padding": "0px",
-                      "height": "auto"
-                    }
-                  ],
-                  "name": [
-                    {
-                      "font-size": "48px",
-                      "font-weight": "600",
-                      "color": "white"
-                    }
-                  ]
-                }
-              }
-            },
-            "cond": {
-              "card": {
-                "type": "custom:button-card",
-                "show_name": true,
-                "show_icon": false,
-                "name": "[[[ return states['weather.forecast_casa'].state; ]]]",
-                "styles": {
-                  "card": [
-                    {
-                      "background": "transparent",
-                      "padding": "0px"
-                    }
-                  ],
-                  "name": [
-                    {
-                      "font-size": "15px",
-                      "color": "rgba(255,255,255,0.7)",
-                      "text-transform": "capitalize"
-                    }
-                  ]
-                }
-              }
-            }
-          },
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"icon temp\" \"icon cond\"",
-                "grid-template-columns": "min-content 1fr"
-              }
-            ],
-            "card": [
-              {
-                "background": "transparent",
-                "height": "130px",
-                "padding": "10px"
-              }
-            ],
-            "icon": [
-              {
-                "width": "72px",
-                "color": "white"
-              }
-            ],
-            "custom_fields": {
-              "temp": [
-                {
-                  "justify-self": "start"
-                }
-              ],
-              "cond": [
-                {
-                  "justify-self": "start"
-                }
-              ]
-            }
-          }
-        },
-        "device_tile": {
-          "variables": {
-            "var_name": null,
-            "var_icon": "mdi:lightbulb",
-            "var_color": "#FF9F0A"
-          },
-          "type": "custom:button-card",
-          "name": "[[[ return variables.var_name ]]]",
-          "icon": "[[[ return variables.var_icon ]]]",
-          "show_name": true,
-          "show_icon": true,
-          "show_state": true,
-          "tap_action": {
-            "action": "toggle"
-          },
-          "hold_action": {
-            "action": "more-info"
-          },
-          "state": [
-            {
-              "value": "off",
-              "styles": {
-                "card": [
-                  {
-                    "background": "transparent"
-                  }
-                ],
-                "icon": [
-                  {
-                    "color": "rgba(255,255,255,0.35)"
-                  }
-                ],
-                "name": [
-                  {
-                    "color": "rgba(255,255,255,0.6)"
-                  }
-                ],
-                "state": [
-                  {
-                    "color": "rgba(255,255,255,0.4)"
-                  }
-                ]
-              }
-            },
-            {
-              "value": "on",
-              "styles": {
-                "card": [
-                  {
-                    "background": "[[[ return variables.var_color ]]]"
-                  }
-                ],
-                "icon": [
-                  {
-                    "color": "white"
-                  }
-                ],
-                "name": [
-                  {
-                    "color": "white"
-                  }
-                ],
-                "state": [
-                  {
-                    "color": "rgba(255,255,255,0.85)"
-                  }
-                ]
-              }
-            }
-          ],
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"i\" \"n\" \"s\"",
-                "grid-template-rows": "min-content min-content min-content"
-              }
-            ],
-            "card": [
-              {
-                "border-radius": "20px",
-                "height": "108px",
-                "padding": "14px",
-                "justify-content": "start",
-                "justify-items": "start",
-                "border": "1px solid rgba(255,255,255,0.1)"
-              }
-            ],
-            "icon": [
-              {
-                "width": "26px"
-              }
-            ],
-            "name": [
-              {
-                "font-size": "14px",
-                "font-weight": "550",
-                "padding-top": "10px",
-                "justify-self": "start",
-                "letter-spacing": "-0.01em"
-              }
-            ],
-            "state": [
-              {
-                "font-size": "12px",
-                "justify-self": "start"
               }
             ]
           },
@@ -893,382 +472,6 @@
             }
           }
         },
-        "room_tile": {
-          "variables": {
-            "var_name": null,
-            "var_path": "/",
-            "var_motion": null,
-            "var_temp": null,
-            "var_sensor": null,
-            "var_lights": []
-          },
-          "type": "custom:button-card",
-          "entity": "[[[ return variables.var_motion ]]]",
-          "name": "[[[ return variables.var_name ]]]",
-          "show_icon": false,
-          "show_name": true,
-          "show_state": false,
-          "tap_action": {
-            "action": "navigate",
-            "navigation_path": "[[[ return variables.var_path ]]]"
-          },
-          "custom_fields": {
-            "one": {
-              "card": {
-                "type": "custom:button-card",
-                "entity": "[[[ return variables.var_sensor ]]]",
-                "icon": "mdi:lightbulb",
-                "show_name": false,
-                "show_state": true,
-                "show_icon": true,
-                "tap_action": {
-                  "action": "call-service",
-                  "service": "[[[ const l = variables.var_lights || []; const algumaAcesa = l.some(e => states[e] && states[e].state === 'on'); return algumaAcesa ? 'homeassistant.turn_off' : 'homeassistant.turn_on'; ]]]",
-                  "data": {
-                    "entity_id": "[[[ return variables.var_lights ]]]"
-                  }
-                },
-                "state": [
-                  {
-                    "value": "0",
-                    "styles": {
-                      "card": [
-                        {
-                          "background-color": "rgba(255,255,255,0.10)"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "rgba(255,255,255,0.45)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": "unavailable",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "transparent"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "transparent"
-                        }
-                      ],
-                      "state": [
-                        {
-                          "color": "transparent"
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "styles": {
-                  "grid": [
-                    {
-                      "grid-template-areas": "\"i s\"",
-                      "align-items": "center",
-                      "grid-template-columns": "14px 1fr",
-                      "gap": "3px",
-                      "grid-template-rows": "1fr",
-                      "align-content": "center",
-                      "justify-content": "center"
-                    }
-                  ],
-                  "icon": [
-                    {
-                      "width": "12px",
-                      "color": "white",
-                      "padding-left": "2px"
-                    }
-                  ],
-                  "state": [
-                    {
-                      "color": "white",
-                      "font-size": "12px",
-                      "justify-self": "start",
-                      "padding-right": "5px",
-                      "font-weight": "600"
-                    }
-                  ],
-                  "card": [
-                    {
-                      "height": "25px",
-                      "width": "42px",
-                      "background-color": "#ff9800",
-                      "padding": "0px 4px",
-                      "border-radius": "6px",
-                      "display": "[[[ return variables.var_sensor ? 'grid' : 'none' ]]]"
-                    }
-                  ],
-                  "img_cell": [
-                    {
-                      "width": "14px",
-                      "height": "14px"
-                    }
-                  ]
-                },
-                "card_mod": {
-                  "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }"
-                }
-              }
-            },
-            "two": {
-              "card": {
-                "type": "custom:button-card",
-                "entity": "[[[ return variables.var_motion ]]]",
-                "icon": "mdi:motion-sensor-off",
-                "show_name": false,
-                "show_state": false,
-                "show_icon": true,
-                "state": [
-                  {
-                    "value": "on",
-                    "icon": "mdi:motion-sensor",
-                    "styles": {
-                      "card": [
-                        {
-                          "background-color": "rgba(255,255,255,0.22)"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "rgba(255,255,255,0.9)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": "unavailable",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "transparent"
-                        }
-                      ],
-                      "icon": [
-                        {
-                          "color": "transparent"
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "styles": {
-                  "icon": [
-                    {
-                      "width": "12px",
-                      "color": "rgba(255,255,255,0.45)"
-                    }
-                  ],
-                  "card": [
-                    {
-                      "height": "25px",
-                      "width": "25px",
-                      "background-color": "rgba(255,255,255,0.10)",
-                      "padding": "0px",
-                      "border-radius": "6px",
-                      "display": "[[[ return variables.var_motion ? 'grid' : 'none' ]]]"
-                    }
-                  ],
-                  "img_cell": [
-                    {
-                      "width": "14px",
-                      "height": "14px"
-                    }
-                  ],
-                  "grid": [
-                    {
-                      "grid-template-rows": "1fr",
-                      "align-items": "center",
-                      "align-content": "center",
-                      "justify-content": "center"
-                    }
-                  ]
-                },
-                "card_mod": {
-                  "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }"
-                }
-              }
-            },
-            "three": {
-              "card": {
-                "type": "custom:button-card",
-                "entity": "[[[ return variables.var_temp ]]]",
-                "show_name": false,
-                "show_state": true,
-                "show_icon": false,
-                "state": [
-                  {
-                    "value": 15,
-                    "operator": "<",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "var(--label-badge-green)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": 20,
-                    "operator": "<=",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "var(--label-badge-blue)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": 25,
-                    "operator": "<=",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "var(--label-badge-red)"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": 30,
-                    "operator": "<=",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "#a357d7"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": 35,
-                    "operator": "<=",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "#f7ce46"
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    "value": "unavailable",
-                    "styles": {
-                      "card": [
-                        {
-                          "background": "transparent"
-                        }
-                      ],
-                      "state": [
-                        {
-                          "color": "transparent"
-                        }
-                      ]
-                    }
-                  }
-                ],
-                "styles": {
-                  "state": [
-                    {
-                      "color": "white",
-                      "font-size": "12px",
-                      "font-weight": "600"
-                    }
-                  ],
-                  "card": [
-                    {
-                      "height": "25px",
-                      "width": "65px",
-                      "background-color": "rgba(255,255,255,0.10)",
-                      "padding": "0px",
-                      "border-radius": "6px",
-                      "display": "[[[ return variables.var_temp ? 'grid' : 'none' ]]]"
-                    }
-                  ],
-                  "grid": [
-                    {
-                      "grid-template-rows": "1fr",
-                      "align-items": "center",
-                      "align-content": "center",
-                      "justify-content": "center"
-                    }
-                  ]
-                },
-                "card_mod": {
-                  "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }"
-                }
-              }
-            }
-          },
-          "state": [
-            {
-              "value": "on",
-              "styles": {
-                "card": [
-                  {
-                    "opacity": "1"
-                  }
-                ]
-              }
-            }
-          ],
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"n n n\" \"one two three\"",
-                "grid-template-columns": "min-content min-content 1fr",
-                "grid-template-rows": "1fr min-content",
-                "gap": "6px"
-              }
-            ],
-            "card": [
-              {
-                "padding": "13px 16px 14px 16px",
-                "height": "102px",
-                "align-content": "end",
-                "opacity": "[[[ return variables.var_motion ? '0.75' : '1' ]]]",
-                "border-radius": "22px"
-              }
-            ],
-            "name": [
-              {
-                "font-size": "22px",
-                "font-weight": "bold",
-                "justify-self": "start",
-                "align-self": "start",
-                "padding-top": "5px",
-                "color": "white",
-                "white-space": "nowrap"
-              }
-            ],
-            "custom_fields": {
-              "one": [
-                {
-                  "justify-self": "start",
-                  "align-self": "end"
-                }
-              ],
-              "two": [
-                {
-                  "justify-self": "start",
-                  "align-self": "end"
-                }
-              ],
-              "three": [
-                {
-                  "justify-self": "start",
-                  "align-self": "end"
-                }
-              ]
-            }
-          },
-          "card_mod": null
-        },
         "room_header": {
           "variables": {
             "var_name": "name"
@@ -1340,7 +543,7 @@
             "var_name": null,
             "var_icon": null,
             "var_entity": null,
-            "var_color": "#ff9800"
+            "var_color": "#FF9F0A"
           },
           "type": "custom:button-card",
           "entity": "[[[ return variables.var_entity ]]]",
@@ -1489,76 +692,6 @@
             ]
           }
         },
-        "panel_tile": {
-          "variables": {
-            "var_name": null,
-            "var_icon": "mdi:card-outline",
-            "var_color": "#0A84FF",
-            "var_label": "",
-            "var_tap": null
-          },
-          "type": "custom:button-card",
-          "name": "[[[ return variables.var_name ]]]",
-          "icon": "[[[ return variables.var_icon ]]]",
-          "show_name": true,
-          "show_icon": true,
-          "show_state": false,
-          "show_label": true,
-          "label": "[[[ return variables.var_label ]]]",
-          "styles": {
-            "grid": [
-              {
-                "grid-template-areas": "\"i\" \"n\" \"l\"",
-                "grid-template-rows": "1fr min-content min-content",
-                "gap": "2px"
-              }
-            ],
-            "card": [
-              {
-                "height": "140px",
-                "padding": "14px",
-                "justify-content": "start",
-                "justify-items": "start"
-              }
-            ],
-            "img_cell": [
-              {
-                "justify-self": "start",
-                "width": "34px",
-                "height": "34px"
-              }
-            ],
-            "icon": [
-              {
-                "width": "28px",
-                "color": "[[[ return variables.var_color ]]]"
-              }
-            ],
-            "name": [
-              {
-                "justify-self": "start",
-                "font-size": "14px",
-                "font-weight": "550",
-                "color": "white",
-                "padding-top": "8px",
-                "white-space": "normal",
-                "line-height": "1.15",
-                "text-align": "left"
-              }
-            ],
-            "label": [
-              {
-                "justify-self": "start",
-                "font-size": "13px",
-                "font-weight": "400",
-                "color": "rgba(255,255,255,0.5)",
-                "white-space": "normal",
-                "text-align": "left",
-                "line-height": "1.15"
-              }
-            ]
-          }
-        },
         "room_mini": {
           "variables": {
             "var_name": null,
@@ -1699,6 +832,26 @@
             ]
           },
           "card_mod": null
+        },
+        "sem_moldura": {
+          "card_mod": {
+            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
+          }
+        },
+        "nu": {
+          "card_mod": {
+            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }\n"
+          }
+        },
+        "borda_fina": {
+          "card_mod": {
+            "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
+          }
+        },
+        "sem_fundo": {
+          "card_mod": {
+            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
+          }
         }
       },
       "views": [
@@ -1903,9 +1056,7 @@
                                               }
                                             ]
                                           },
-                                          "card_mod": {
-                                            "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                          }
+                                          "template": "borda_fina"
                                         },
                                         {
                                           "type": "custom:button-card",
@@ -1964,9 +1115,7 @@
                                               }
                                             ]
                                           },
-                                          "card_mod": {
-                                            "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                          }
+                                          "template": "borda_fina"
                                         }
                                       ],
                                       "card_mod": {
@@ -2037,7 +1186,7 @@
                                             },
                                             {
                                               "from": 0.85,
-                                              "color": "#FF375F"
+                                              "color": "#FF453A"
                                             }
                                           ],
                                           "card_mod": {
@@ -2064,7 +1213,7 @@
                                             },
                                             {
                                               "from": 85,
-                                              "color": "#FF375F"
+                                              "color": "#FF453A"
                                             }
                                           ],
                                           "card_mod": {
@@ -2091,7 +1240,7 @@
                                             },
                                             {
                                               "from": 85,
-                                              "color": "#FF375F"
+                                              "color": "#FF453A"
                                             }
                                           ],
                                           "card_mod": {
@@ -2283,9 +1432,7 @@
                                               }
                                             ]
                                           },
-                                          "card_mod": {
-                                            "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                          }
+                                          "template": "borda_fina"
                                         },
                                         {
                                           "type": "custom:button-card",
@@ -2341,9 +1488,7 @@
                                               }
                                             ]
                                           },
-                                          "card_mod": {
-                                            "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                          }
+                                          "template": "borda_fina"
                                         }
                                       ],
                                       "card_mod": {
@@ -2785,9 +1930,7 @@
                                   }
                                 ]
                               },
-                              "card_mod": {
-                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
-                              }
+                              "template": "sem_fundo"
                             },
                             {
                               "type": "custom:button-card",
@@ -2856,9 +1999,7 @@
                                   }
                                 ]
                               },
-                              "card_mod": {
-                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
-                              }
+                              "template": "sem_fundo"
                             },
                             {
                               "type": "custom:button-card",
@@ -2958,9 +2099,7 @@
                                   }
                                 ]
                               },
-                              "card_mod": {
-                                "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
-                              }
+                              "template": "sem_fundo"
                             }
                           ],
                           "card_mod": {
@@ -2983,7 +2122,10 @@
                               "cards": [
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Sala de Estar",
                                     "var_sensor": "sensor.luzes_sala_de_estar",
@@ -2992,14 +2134,14 @@
                                       "light.luz_sala",
                                       "light.painel"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Cozinha",
                                     "var_sensor": "sensor.luzes_cozinha",
@@ -3007,9 +2149,6 @@
                                     "var_lights": [
                                       "light.cozinha_copa_varanda_switch_3"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3055,7 +2194,10 @@
                               "cards": [
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Copa",
                                     "var_sensor": "sensor.luzes_copa",
@@ -3063,14 +2205,14 @@
                                     "var_lights": [
                                       "light.cozinha_copa_varanda_switch_2"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Lavanderia",
                                     "var_sensor": "sensor.luzes_lavanderia",
@@ -3078,9 +2220,6 @@
                                     "var_lights": [
                                       "light.cozinha_copa_varanda_switch_1"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3126,7 +2265,10 @@
                               "cards": [
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Área Gourmet",
                                     "var_sensor": "sensor.luzes_area_gourmet",
@@ -3137,14 +2279,14 @@
                                       "light.luzes_externas_switch_3",
                                       "light.luzes_externas_switch_4"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Quarto Luca",
                                     "var_sensor": "sensor.luzes_quarto_do_luca",
@@ -3152,9 +2294,6 @@
                                     "var_lights": [
                                       "light.quarto_luca_switch_1"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3200,7 +2339,10 @@
                               "cards": [
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Banheiro",
                                     "var_sensor": "sensor.luzes_banheiro",
@@ -3209,14 +2351,14 @@
                                       "switch.banheiro_switch_1",
                                       "switch.banheiro_switch_2"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Circulação",
                                     "var_sensor": "sensor.luzes_circulacao",
@@ -3225,9 +2367,6 @@
                                       "light.circulacao_switch_1",
                                       "light.circulacao_switch_2"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3273,7 +2412,10 @@
                               "cards": [
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Closet",
                                     "var_sensor": "sensor.luzes_closet",
@@ -3282,22 +2424,19 @@
                                       "light.closet_switch_1",
                                       "light.led_escritorio_sonoff_1001dff472"
                                     ]
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 },
                                 {
                                   "type": "custom:button-card",
-                                  "template": "room_mini",
+                                  "template": [
+                                    "room_mini",
+                                    "sem_fundo"
+                                  ],
                                   "variables": {
                                     "var_name": "Quarto",
                                     "var_sensor": null,
                                     "var_path": "/minha-casa/quarto",
                                     "var_lights": []
-                                  },
-                                  "card_mod": {
-                                    "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\n"
                                   }
                                 }
                               ],
@@ -3439,9 +2578,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -3508,9 +2645,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -3572,9 +2707,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -3619,9 +2752,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "custom:stack-in-card",
@@ -3656,9 +2787,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3698,9 +2827,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3727,9 +2854,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3769,9 +2894,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3856,9 +2979,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3885,9 +3006,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3927,9 +3046,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -3956,9 +3073,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     }
                                                   ],
                                                   "card_mod": {
@@ -4035,9 +3150,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -4099,9 +3212,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -4146,9 +3257,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -4199,9 +3308,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -4243,9 +3350,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -4287,9 +3392,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         }
                                                       ],
                                                       "card_mod": {
@@ -4345,9 +3448,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -4389,9 +3490,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -4433,9 +3532,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         }
                                                       ],
                                                       "card_mod": {
@@ -4517,9 +3614,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -4581,9 +3676,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -4628,9 +3721,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -5084,9 +4175,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -5153,9 +4242,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -5217,9 +4304,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -5264,9 +4349,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "custom:stack-in-card",
@@ -5301,9 +4384,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5343,9 +4424,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5372,9 +4451,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5414,9 +4491,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5501,9 +4576,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5530,9 +4603,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5572,9 +4643,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     },
                                                     {
                                                       "type": "custom:button-card",
@@ -5601,9 +4670,7 @@
                                                           }
                                                         ]
                                                       },
-                                                      "card_mod": {
-                                                        "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                      }
+                                                      "template": "sem_moldura"
                                                     }
                                                   ],
                                                   "card_mod": {
@@ -5680,9 +4747,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -5744,9 +4809,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -5791,9 +4854,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -5844,9 +4905,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -5888,9 +4947,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -5932,9 +4989,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         }
                                                       ],
                                                       "card_mod": {
@@ -5990,9 +5045,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -6034,9 +5087,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         },
                                                         {
                                                           "type": "custom:button-card",
@@ -6078,9 +5129,7 @@
                                                               }
                                                             ]
                                                           },
-                                                          "card_mod": {
-                                                            "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                                          }
+                                                          "template": "sem_moldura"
                                                         }
                                                       ],
                                                       "card_mod": {
@@ -6162,9 +5211,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 },
                                                 {
                                                   "type": "custom:button-card",
@@ -6226,9 +5273,7 @@
                                                       }
                                                     ]
                                                   },
-                                                  "card_mod": {
-                                                    "style": "ha-card {\n  box-shadow: none !important;\n  backdrop-filter: none !important;\n  -webkit-backdrop-filter: none !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n}\nha-card::before, ha-card::after { display: none !important; }\n"
-                                                  }
+                                                  "template": "borda_fina"
                                                 }
                                               ],
                                               "card_mod": {
@@ -6273,9 +5318,7 @@
                                                   }
                                                 ]
                                               },
-                                              "card_mod": {
-                                                "style": "ha-card { border: none !important; box-shadow: none !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card { border-radius: 0 !important; }\n"
-                                              }
+                                              "template": "sem_moldura"
                                             },
                                             {
                                               "type": "grid",
@@ -6742,7 +5785,7 @@
                             "var_name": "Fita LED",
                             "var_entity": "light.painel",
                             "var_icon": "mdi:led-strip-variant",
-                            "var_color": "#ff9800"
+                            "var_color": "#FF9F0A"
                           }
                         },
                         {
@@ -6835,7 +5878,7 @@
                                     },
                                     {
                                       "from": 34,
-                                      "color": "#FF375F"
+                                      "color": "#FF453A"
                                     }
                                   ],
                                   "card_mod": {
@@ -6862,7 +5905,7 @@
                                     },
                                     {
                                       "from": 85,
-                                      "color": "#FF375F"
+                                      "color": "#FF453A"
                                     }
                                   ],
                                   "card_mod": {
@@ -7320,7 +6363,7 @@
                             "var_name": "Bloqueio Infantil",
                             "var_entity": "switch.tomada_inteligente_bloqueio_para_criancas",
                             "var_icon": "mdi:lock",
-                            "var_color": "#FF375F"
+                            "var_color": "#FF453A"
                           }
                         }
                       ],
@@ -7348,7 +6391,7 @@
                             },
                             {
                               "from": 3,
-                              "color": "#FF375F"
+                              "color": "#FF453A"
                             }
                           ],
                           "card_mod": {
@@ -7584,7 +6627,7 @@
                             "var_name": "Bloqueio Infantil",
                             "var_entity": "switch.computador_bloqueio_para_criancas",
                             "var_icon": "mdi:lock",
-                            "var_color": "#FF375F"
+                            "var_color": "#FF453A"
                           }
                         }
                       ],
@@ -7612,7 +6655,7 @@
                             },
                             {
                               "from": 3,
-                              "color": "#FF375F"
+                              "color": "#FF453A"
                             }
                           ],
                           "card_mod": {
@@ -7736,7 +6779,7 @@
                                 },
                                 {
                                   "from": 0.85,
-                                  "color": "#FF375F"
+                                  "color": "#FF453A"
                                 }
                               ],
                               "card_mod": {
@@ -7763,7 +6806,7 @@
                                 },
                                 {
                                   "from": 85,
-                                  "color": "#FF375F"
+                                  "color": "#FF453A"
                                 }
                               ],
                               "card_mod": {
@@ -7790,7 +6833,7 @@
                                 },
                                 {
                                   "from": 85,
-                                  "color": "#FF375F"
+                                  "color": "#FF453A"
                                 }
                               ],
                               "card_mod": {
@@ -7900,30 +6943,28 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz Sala",
                             "var_entity": "light.luz_sala"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Fita LED",
                             "var_entity": "light.painel"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -7956,19 +6997,17 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz",
                             "var_entity": "light.cozinha_copa_varanda_switch_3"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8001,19 +7040,17 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz",
                             "var_entity": "light.cozinha_copa_varanda_switch_2"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8046,19 +7083,17 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz",
                             "var_entity": "light.cozinha_copa_varanda_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8091,52 +7126,50 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Circulação",
                             "var_entity": "light.luzes_externas_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Pendente",
                             "var_entity": "light.luzes_externas_switch_2"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Led",
                             "var_entity": "light.luzes_externas_switch_3"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Spots",
                             "var_entity": "light.luzes_externas_switch_4"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         }
                       ],
@@ -8177,19 +7210,17 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz",
                             "var_entity": "light.quarto_luca_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8222,30 +7253,28 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz 1",
                             "var_entity": "switch.banheiro_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz 2",
                             "var_entity": "switch.banheiro_switch_2"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8278,30 +7307,28 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Muro",
                             "var_entity": "light.circulacao_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Corredor",
                             "var_entity": "light.circulacao_switch_2"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8334,30 +7361,28 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Luz",
                             "var_entity": "light.closet_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Led Escritório",
                             "var_entity": "light.led_escritorio_sonoff_1001dff472"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
@@ -8390,30 +7415,28 @@
                               }
                             ]
                           },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
-                          }
+                          "template": "nu"
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Muro",
                             "var_entity": "switch.entrada_switch_1"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         },
                         {
                           "type": "custom:button-card",
-                          "template": "light_row",
+                          "template": [
+                            "light_row",
+                            "nu"
+                          ],
                           "variables": {
                             "var_name": "Corredor",
                             "var_entity": "switch.entrada_switch_2"
-                          },
-                          "card_mod": {
-                            "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; border-radius: 0px !important; }"
                           }
                         }
                       ],
