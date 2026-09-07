@@ -45,3 +45,8 @@ anisette/
 .agents/
 .claude/skills/
 skills-lock.json
+
+# Projeto paralelo (interface propria em Next.js, desenvolvida no Antigravity).
+# Tem repositorio git proprio desde 07/09/2026 -- o que acontece la nao entra no
+# historico da casa. Os commits anteriores a essa data continuam neste historico.
+dashboard-app/
