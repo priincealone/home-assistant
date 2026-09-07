@@ -1770,3 +1770,50 @@ Luzes idênticas às anteriores.
 truncamento** — elementos ainda sem largura final aparecem como cortados. Com
 1,1s apareciam "truncados" em sete páginas; com 2,5s, nenhum. Esperar ao menos
 2s antes de medir.
+
+## P2 #7 e #8: os alvos restantes — e o que não era problema
+
+A auditoria contou 7 alvos abaixo de 44px na Geral e na Sala de Estar. Medindo
+de novo com uma pergunta a mais — **esse alvo pequeno está dentro de uma área
+clicável maior?** — três caíram:
+
+| Alvo | Está dentro de |
+|---|---|
+| `mushroom-shape-icon` 36×36 (Geral) | `mushroom-state-item` 244×56 |
+| `mushroom-shape-icon` 36×36 (Sala) | `mushroom-state-item` 241×56 |
+| `button-card` 392×22 "Nada tocando" | bloco clicável de 464×70 |
+
+Nesses o dedo acerta a linha inteira; o elemento pequeno é só o desenho. Teria
+sido fácil "consertar" o que não estava quebrado.
+
+Sobraram três alvos isolados de verdade, todos na Geral, corrigidos em
+`p2_alvos_restantes.py` e `p2_botao_adicionar.py`:
+
+- **power e volume do media player** (166×42 e 42×42): faltavam 2px. Resolvido
+  pela variável `--control-height` do próprio Mushroom, que vale 42px por
+  padrão.
+- **botão "+" da lista de compras** (32×32): a primeira tentativa foi por
+  `--mdc-icon-button-size`. ⚠️ Medido depois, **a variável estava aplicada no
+  elemento e ele continuava 32×32** — o `ha-icon-button` desta versão embrulha
+  um `ha-button` do Material Web, que ignora a variável antiga. Resolvido
+  dimensionando o host e descendo pela cadeia `ha-input$ha-icon-button$` para
+  esticar o botão interno junto.
+
+Um `button 89×32` apareceu e sumiu entre duas medições: era o "Dispensar" do
+aviso "O Home Assistant foi iniciado", que o próprio HA mostra depois de cada
+restart. Não é da dashboard.
+
+### Estado final da auditoria
+
+13 páginas medidas em conjunto, todos os critérios zerados:
+
+| Critério | Antes | Agora |
+|---|---|---|
+| Transbordos horizontais | 1 | **0** |
+| Textos truncados | 4 | **0** |
+| Textos abaixo de 11px | 20 | **0** |
+| Entidades mortas na tela | 2 | **0** |
+| Alvos de toque isolados < 44px | 21 | **0** |
+
+Continuam abertos apenas o **#14** (escala tipográfica, adiado por custo/risco)
+e o **P4** (densidade das páginas de cômodo), que é decisão de produto.

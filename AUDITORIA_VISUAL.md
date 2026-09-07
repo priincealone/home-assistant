@@ -31,8 +31,8 @@ JSON + card-mod em vez de código de frontend.
 | # | Onde | Medido |
 |---|---|---|
 | 6 ✅ | **Página Luzes** | ~~**18 botões de 32×32px**~~ **corrigido**: alvo de 44×44 com o círculo pintado ainda em 32px. O mínimo confortável é 44×44 (WCAG 2.5.5 / HIG). É a tela com pior ergonomia da casa, e é justamente a que se usa com a mão ocupada. |
-| 7 | Geral | 5 alvos abaixo de 44: chips de status (36×36), botões do card de mídia (42×42 e 32×32) e um `ha-icon-button` de 32×32. |
-| 8 | Sala de Estar | 2 alvos pequenos, incluindo um `button-card` de 22px de altura. |
+| 7 ✅ | Geral | ~~5 alvos abaixo de 44~~ **corrigido** (3 eram falso positivo, dentro de área clicável maior): chips de status (36×36), botões do card de mídia (42×42 e 32×32) e um `ha-icon-button` de 32×32. |
+| 8 ✅ | Sala de Estar | ~~2 alvos pequenos~~ — **ambos falso positivo**: o ícone e o texto "Nada tocando" vivem dentro de cards clicáveis de 56px e 70px. |
 | 9 ✅ | Geral | ~~**7 textos abaixo de 11px**~~ **corrigido**: os quatro chips do topo a 10,8px, "Atualizado / há 8 horas" a 10,5px e "Lista de compras" a **10px**. No iPhone isso fica no limite do ilegível. |
 | 10 ✅ | Closet, PC, Quarto do Luca | ~~3 a 6 textos abaixo de 11px em cada~~ **corrigido**. |
 
@@ -66,6 +66,20 @@ excesso, mas é o número a vigiar se a dashboard começar a engasgar no iPad.
 
 ---
 
+## Estado final da medição
+
+Depois das correções, as 13 páginas medidas em conjunto:
+
+| Critério | Antes | Agora |
+|---|---|---|
+| Transbordos horizontais | 1 | **0** |
+| Textos truncados | 4 | **0** |
+| Textos abaixo de 11px | 20 | **0** |
+| Entidades mortas na tela | 2 | **0** |
+| Alvos de toque isolados < 44px | 21 | **0** |
+
+---
+
 ## Ordem sugerida
 
 1. ~~P1 inteiro~~ — **feito**.
@@ -73,4 +87,4 @@ excesso, mas é o número a vigiar se a dashboard começar a engasgar no iPad.
 3. ~~#9 e #10 (tipografia abaixo de 11px)~~ — **feito**. O #14 (escala dispersa)
    continua aberto.
 4. ~~P3~~ — **feito**, menos o #14 (escala tipográfica), adiado de propósito.
-5. **P4** — decisão de produto, não de código: precisa da sua opinião antes.
+5. **P4** — decisão de produto, não de código: precisa da sua opinião antes. **Único item aberto**, junto do #14 (adiado por escolha).
