@@ -20,6 +20,15 @@
         "title": "Casa",
         "url_path": "minha-casa",
         "mode": "storage"
+      },
+      {
+        "id": "painel_casa",
+        "icon": "mdi:view-dashboard-variant",
+        "title": "Painel Casa",
+        "url_path": "painel-casa",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "mode": "storage"
       }
     ]
   }

@@ -1853,3 +1853,56 @@ virou `["room_mini", "nu"]`. Testar pertinência, não igualdade.
 
 **Verificação**: 11 páginas medidas — transbordo, truncados, textos abaixo de
 11px e entidades mortas seguem em zero.
+
+## dashboard-app entrou em produção como container próprio
+
+`dashboard-app/` (repositório git separado, dentro desta pasta) é um painel
+Next.js novo, escrito do zero, que fala com o HA pela REST API (`lib/ha.ts`,
+token de longa duração em `.env.local`) em vez de editar o Lovelace. Ele tinha
+sido desenhado para instalar como **Add-on do Home Assistant** (pasta
+`ha-addon/`, `config.yaml` com `homeassistant_api: true` e `ingress: true`,
+usando `SUPERVISOR_TOKEN`) — isso **não funciona aqui**: esta instalação é HA
+**Container** (`docker run ghcr.io/home-assistant/home-assistant:stable`, só
+`/config` montado), que não tem Supervisor. Sem Supervisor não há Add-on
+Store, não há `/addons`, não existe `SUPERVISOR_TOKEN`. A pasta `ha-addon/`
+só serviria se um dia a casa migrar para HAOS/Supervised num Raspberry Pi
+(pendência já registrada no `CLAUDE.md` raiz).
+
+O caminho que funciona nesta instalação:
+
+1. **Container Docker separado**, na mesma máquina, ligado a uma rede dedicada
+   (`docker network create casa-net` + `docker network connect casa-net
+   homeassistant`) para os dois containers se resolverem por nome. A imagem é
+   o `Dockerfile` da raiz de `dashboard-app/` (standalone build do Next.js).
+   Sobe assim:
+   ```bash
+   docker build -t painel-casa:latest dashboard-app
+   docker run -d --name painel-casa --network casa-net \
+     -e HA_URL=http://homeassistant:8123 -e HA_TOKEN=<token> \
+     -p 3001:3000 --restart unless-stopped painel-casa:latest
+   ```
+   `lib/ha.ts` já detecta a ausência de `SUPERVISOR_TOKEN` e cai no modo
+   `HA_URL`/`HA_TOKEN` — nenhuma mudança de código foi necessária.
+2. **Painel na sidebar sem Supervisor**: a integração `panel_iframe` (que
+   seria o caminho óbvio) **foi removida do HA** — não existe mais no core a
+   partir desta versão (2026.9); declará-la em `configuration.yaml` dá
+   `Integration 'panel_iframe' not found` e a chave é ignorada. O substituto
+   é registrar um **dashboard de storage novo** com uma view `panel: true` e
+   um card `type: iframe`, feito por `scripts/lovelace/painel_casa_iframe.py`
+   (segue o padrão do `ha.py`: grava em `config/.storage/lovelace_dashboards`
+   + `config/.storage/lovelace.painel_casa`, com backup, e reinicia o
+   container). A URL do card usa o **IP Tailscale** da máquina
+   (`http://100.74.130.30:3001`), não `localhost` — quem abre o painel pelo
+   celular fora da rede local está vendo o HA pelo Tailscale, e um iframe em
+   `localhost` resolveria para o dispositivo do usuário, não para o PC.
+3. Resultado: **"Painel Casa"** aparece como item próprio na sidebar (ícone
+   `mdi:view-dashboard-variant`, ao lado de "Casa" e "Mapa"), path
+   `/painel-casa/painel-casa`, sem tocar no Lovelace existente da dashboard
+   "Casa".
+
+**Pendências deste painel**: não reinicia junto com o Home Assistant por
+docker-compose (foi criado com `docker run` direto — não há compose file
+neste projeto); se a máquina reiniciar, o `--restart unless-stopped` cobre o
+Docker Desktop subir de novo, mas vale confirmar depois de um reboot real.
+Falta também expor isso em algum lugar do fluxo de backup do projeto (o
+container e a rede `casa-net` não são recriados por nenhum script).

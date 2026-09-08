@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.painel_casa",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "title": "Painel Casa",
+          "path": "painel-casa",
+          "panel": true,
+          "cards": [
+            {
+              "type": "iframe",
+              "url": "http://100.74.130.30:3001",
+              "aspect_ratio": "100%"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
