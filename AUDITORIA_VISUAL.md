@@ -48,7 +48,10 @@ as 13 páginas passam em AA — inclusive os cards claros com texto escuro.
 | 13 ✅ | ~~**Cores fora da paleta**~~ consolidadas declarada no CLAUDE.md (`#FF9F0A`, azul, verde, vermelho, roxo) | 10 cores; `#ff375f` sozinha com 12 usos |
 | 14 ⏸ | **Escala tipográfica**: caiu de 12 para 13 tamanhos, todos agora ≥11px (11 / 11,5 / 12 / 12,5 / 13 / 13,5 / 14 / 15 / 17 / 19 / 30 / 32 / 40). Consolidar os pares vizinhos mexeria em alinhamentos já medidos, com ganho invisível — **adiado por decisão de custo/risco**. | 13 tamanhos |
 
-## P4 — Densidade e propósito das páginas
+## P4 — Densidade e propósito das páginas ✅ RESOLVIDO em 07/09/2026
+
+> Cozinha e Copa viraram popup a partir da Geral, no mesmo padrão do PC.
+> A dashboard foi de 13 para 11 páginas.
 
 As páginas de cômodo simples têm **muito pouco conteúdo**: Cozinha e Copa com
 3 textos na tela inteira, Circulação com 5, Banheiro com 6, Lavanderia com 7.
@@ -87,4 +90,4 @@ Depois das correções, as 13 páginas medidas em conjunto:
 3. ~~#9 e #10 (tipografia abaixo de 11px)~~ — **feito**. O #14 (escala dispersa)
    continua aberto.
 4. ~~P3~~ — **feito**, menos o #14 (escala tipográfica), adiado de propósito.
-5. **P4** — decisão de produto, não de código: precisa da sua opinião antes. **Único item aberto**, junto do #14 (adiado por escolha).
+5. ~~P4~~ — **feito**: Cozinha e Copa viraram popup. Resta só o #14, adiado por escolha.

@@ -1817,3 +1817,39 @@ restart. Não é da dashboard.
 
 Continuam abertos apenas o **#14** (escala tipográfica, adiado por custo/risco)
 e o **P4** (densidade das páginas de cômodo), que é decisão de produto.
+
+## P4: Cozinha e Copa viraram popup
+
+As duas tinham **3 textos na tela inteira** — uma página para um único
+interruptor, com a navegação custando mais que a ação. Agora abrem em popup a
+partir do card da Geral, no mesmo padrão que o PC já usava. A dashboard foi de
+**13 para 11 páginas** (`scripts/lovelace/p4_cozinha_copa_popup.py`).
+
+O conteúdo do popup usa `tile` **nativo**, não o `entity_card`: aquele template
+tem `custom_fields` com um button-card aninhado, e essa combinação não recebe
+`hass` dentro do popup do Browser Mod — abre em branco. O vidro do diálogo foi
+copiado do popup do PC, lido do próprio storage, para não divergir.
+
+**Testado clicando de verdade**: os dois popups abrem com título e o tile da luz
+funcionando. Vale registrar como se testa isso, porque duas tentativas falharam
+antes:
+
+- **evento sintético não serve**: `dispatchEvent` de pointerdown/click no card
+  não dispara o `fire-dom-event` do button-card. Só clique real do navegador.
+- **as coordenadas precisam ser convertidas**: o JavaScript enxerga o viewport
+  da página (1027×687) e o clique do navegador usa o frame da captura
+  (800×535). Sem multiplicar pela escala (0,779 aqui), o clique cai noutro card
+  — na primeira tentativa abriu o more-info da TV.
+
+⚠️ **Remover páginas mudou os índices das views.** A ordem agora é: 0 Geral,
+1 Sala de Estar, 2 Lavanderia, 3 Área Gourmet, 4 Quarto, 5 Quarto do Luca,
+6 Banheiro, 7 Circulação, 8 Closet, 9 PC, 10 Luzes. Scripts antigos em
+`scripts/lovelace/` que usam `views[N]` fixo apontam para a página errada agora
+— reler antes de reaproveitar.
+
+⚠️ **Depois do P3, `template` pode ser lista.** O primeiro rodar deste script
+não achou card nenhum, porque procurava `template == "room_mini"` e o valor
+virou `["room_mini", "nu"]`. Testar pertinência, não igualdade.
+
+**Verificação**: 11 páginas medidas — transbordo, truncados, textos abaixo de
+11px e entidades mortas seguem em zero.

@@ -2145,10 +2145,41 @@
                                   "variables": {
                                     "var_name": "Cozinha",
                                     "var_sensor": "sensor.luzes_cozinha",
-                                    "var_path": "/minha-casa/cozinha",
                                     "var_lights": [
                                       "light.cozinha_copa_varanda_switch_3"
                                     ]
+                                  },
+                                  "tap_action": {
+                                    "action": "fire-dom-event",
+                                    "browser_mod": {
+                                      "service": "popup",
+                                      "data": {
+                                        "title": "Cozinha",
+                                        "content": {
+                                          "type": "vertical-stack",
+                                          "cards": [
+                                            {
+                                              "type": "tile",
+                                              "entity": "light.cozinha_copa_varanda_switch_3",
+                                              "name": "Luz",
+                                              "icon": "mdi:lightbulb",
+                                              "tap_action": {
+                                                "action": "toggle"
+                                              },
+                                              "icon_tap_action": {
+                                                "action": "toggle"
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "initial_style": "normal",
+                                        "card_mod": {
+                                          "style": {
+                                            "ha-dialog$": "wa-dialog::part(dialog) {\n  background: rgba(18,23,46,0.55) !important;\n  backdrop-filter: blur(34px) saturate(170%) !important;\n  -webkit-backdrop-filter: blur(34px) saturate(170%) !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n  border-radius: 26px !important;\n  box-shadow: 0 24px 60px rgba(0,0,0,0.45) !important;\n}\n"
+                                          }
+                                        }
+                                      }
+                                    }
                                   }
                                 }
                               ],
@@ -2201,10 +2232,41 @@
                                   "variables": {
                                     "var_name": "Copa",
                                     "var_sensor": "sensor.luzes_copa",
-                                    "var_path": "/minha-casa/copa",
                                     "var_lights": [
                                       "light.cozinha_copa_varanda_switch_2"
                                     ]
+                                  },
+                                  "tap_action": {
+                                    "action": "fire-dom-event",
+                                    "browser_mod": {
+                                      "service": "popup",
+                                      "data": {
+                                        "title": "Copa",
+                                        "content": {
+                                          "type": "vertical-stack",
+                                          "cards": [
+                                            {
+                                              "type": "tile",
+                                              "entity": "light.cozinha_copa_varanda_switch_2",
+                                              "name": "Luz",
+                                              "icon": "mdi:lightbulb",
+                                              "tap_action": {
+                                                "action": "toggle"
+                                              },
+                                              "icon_tap_action": {
+                                                "action": "toggle"
+                                              }
+                                            }
+                                          ]
+                                        },
+                                        "initial_style": "normal",
+                                        "card_mod": {
+                                          "style": {
+                                            "ha-dialog$": "wa-dialog::part(dialog) {\n  background: rgba(18,23,46,0.55) !important;\n  backdrop-filter: blur(34px) saturate(170%) !important;\n  -webkit-backdrop-filter: blur(34px) saturate(170%) !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n  border-radius: 26px !important;\n  box-shadow: 0 24px 60px rgba(0,0,0,0.45) !important;\n}\n"
+                                          }
+                                        }
+                                      }
+                                    }
                                   }
                                 },
                                 {
@@ -5925,112 +5987,6 @@
                   ],
                   "card_mod": {
                     "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important; }\n}\n"
-                  }
-                }
-              ],
-              "card_mod": {
-                "style": "@media (max-width: 1400px) {\n  #root {\n    padding: 18px 16px 28px 16px !important;\n    box-sizing: border-box !important;\n  }\n}\n@media (max-width: 500px) {\n  #root {\n    padding: 16px 14px 26px 14px !important;\n  }\n}\n"
-              }
-            }
-          ],
-          "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
-          "show_icon_and_title": true
-        },
-        {
-          "title": "Cozinha",
-          "path": "cozinha",
-          "icon": "mdi:stove",
-          "cards": [
-            {
-              "type": "vertical-stack",
-              "cards": [
-                {
-                  "type": "custom:button-card",
-                  "template": "room_header",
-                  "variables": {
-                    "var_name": "Cozinha"
-                  }
-                },
-                {
-                  "type": "vertical-stack",
-                  "cards": [
-                    {
-                      "type": "grid",
-                      "columns": 2,
-                      "square": false,
-                      "cards": [
-                        {
-                          "type": "custom:button-card",
-                          "template": "entity_card",
-                          "variables": {
-                            "var_name": "Cozinha",
-                            "var_entity": "light.cozinha_copa_varanda_switch_3",
-                            "var_icon": "mdi:lightbulb",
-                            "var_color": "#FF9F0A"
-                          }
-                        }
-                      ],
-                      "card_mod": {
-                        "style": "#root { grid-auto-rows: min-content !important; gap: 10px !important; }"
-                      }
-                    }
-                  ],
-                  "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
-                  }
-                }
-              ],
-              "card_mod": {
-                "style": "@media (max-width: 1400px) {\n  #root {\n    padding: 18px 16px 28px 16px !important;\n    box-sizing: border-box !important;\n  }\n}\n@media (max-width: 500px) {\n  #root {\n    padding: 16px 14px 26px 14px !important;\n  }\n}\n"
-              }
-            }
-          ],
-          "type": "panel",
-          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
-          "show_icon_and_title": true
-        },
-        {
-          "title": "Copa",
-          "path": "copa",
-          "icon": "mdi:silverware",
-          "cards": [
-            {
-              "type": "vertical-stack",
-              "cards": [
-                {
-                  "type": "custom:button-card",
-                  "template": "room_header",
-                  "variables": {
-                    "var_name": "Copa"
-                  }
-                },
-                {
-                  "type": "vertical-stack",
-                  "cards": [
-                    {
-                      "type": "grid",
-                      "columns": 2,
-                      "square": false,
-                      "cards": [
-                        {
-                          "type": "custom:button-card",
-                          "template": "entity_card",
-                          "variables": {
-                            "var_name": "Luz",
-                            "var_entity": "light.cozinha_copa_varanda_switch_2",
-                            "var_icon": "mdi:lightbulb",
-                            "var_color": "#FF9F0A"
-                          }
-                        }
-                      ],
-                      "card_mod": {
-                        "style": "#root { grid-auto-rows: min-content !important; gap: 10px !important; }"
-                      }
-                    }
-                  ],
-                  "card_mod": {
-                    "style": "#root {\n  display: grid !important;\n  grid-template-columns: minmax(0, 1fr) !important;\n  gap: 12px !important;\n  align-items: start !important;\n}\n#root > * { min-width: 0 !important; }\n@media (min-width: 701px) {\n  #root { grid-template-columns: minmax(340px, 620px) minmax(0, 1fr) !important; }\n}\n"
                   }
                 }
               ],

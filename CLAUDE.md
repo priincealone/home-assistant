@@ -2,7 +2,7 @@
 
 Projeto da casa inteligente do André: instalação self-hosted de Home Assistant
 (Docker Desktop no PC Windows, imagem `ghcr.io/home-assistant/home-assistant:stable`,
-porta 8123, acesso remoto via Tailscale) e a dashboard **"Casa"** — 14 páginas em
+porta 8123, acesso remoto via Tailscale) e a dashboard **"Casa"** — 11 páginas em
 estilo Apple Home / iOS, construída com `button-card` + `card-mod` sobre o tema
 `apple_home`.
 
