@@ -921,6 +921,27 @@
                       "alignment": "center",
                       "chips": [
                         {
+                          "type": "template",
+                          "icon": "mdi:menu",
+                          "icon_color": "blue",
+                          "tap_action": {
+                            "action": "fire-dom-event",
+                            "browser_mod": {
+                              "service": "javascript",
+                              "data": {
+                                "code": "document.querySelector('home-assistant').dispatchEvent(new CustomEvent('hass-toggle-menu',{bubbles: true, composed: true}))"
+                              }
+                            }
+                          },
+                          "hold_action": {
+                            "action": "call-service",
+                            "service": "input_boolean.toggle",
+                            "service_data": {
+                              "entity_id": "input_boolean.modo_quiosque"
+                            }
+                          }
+                        },
+                        {
                           "type": "weather",
                           "entity": "weather.forecast_casa",
                           "show_temperature": true,
@@ -7442,10 +7463,12 @@
         }
       },
       "kiosk_mode": {
+        "hide_header": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
+        "hide_sidebar": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
         "mobile_settings": {
           "custom_width": 1400,
-          "hide_sidebar": true,
-          "hide_header": true
+          "hide_header": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
+          "hide_sidebar": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]"
         }
       },
       "swipe_nav": {

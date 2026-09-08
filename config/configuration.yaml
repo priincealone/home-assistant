@@ -11,3 +11,11 @@ script: !include scripts.yaml
 scene: !include scenes.yaml
 template: !include template_sensors.yaml
 
+
+# Interruptor do modo quiosque (tela cheia). Desligado = cabecalho e barra
+# lateral do Home Assistant visiveis, inclusive no celular; ligado = tela cheia.
+# Lido pelo bloco `kiosk_mode` da dashboard "Casa".
+input_boolean:
+  modo_quiosque:
+    name: Modo quiosque
+    icon: mdi:fullscreen

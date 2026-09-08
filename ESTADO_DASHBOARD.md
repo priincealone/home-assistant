@@ -1906,3 +1906,48 @@ neste projeto); se a máquina reiniciar, o `--restart unless-stopped` cobre o
 Docker Desktop subir de novo, mas vale confirmar depois de um reboot real.
 Falta também expor isso em algum lugar do fluxo de backup do projeto (o
 container e a rede `casa-net` não são recriados por nenhum script).
+
+---
+
+## Menu lateral no celular e tela cheia opcional (08/09/2026)
+
+O `kiosk_mode` da dashboard "Casa" escondia cabeçalho e barra lateral de forma
+**incondicional** em qualquer tela abaixo de 1400px:
+
+```yaml
+kiosk_mode:
+  mobile_settings: {custom_width: 1400, hide_sidebar: true, hide_header: true}
+```
+
+Sem cabeçalho não há botão de menu, e sem botão de menu a barra lateral fica
+inalcançável — no celular, as outras 10 páginas, o "Painel Casa", o "Mapa" e as
+Configurações simplesmente deixavam de existir. Era o achado #1 do
+`CRITIQUE_DESIGN.md`.
+
+`scripts/lovelace/menu_lateral_mobile.py` mudou duas coisas:
+
+1. **Os dois `true` viraram um template preso a `input_boolean.modo_quiosque`**
+   (declarado em `configuration.yaml`). Desligado — o padrão — o painel é um app
+   normal do HA em qualquer aparelho; ligado, vira tela cheia. O `custom_width:
+   1400` foi mantido, porque é ele que classifica o tablet de parede.
+
+   Usa a forma **JS** do template (`[[[ return is_state(...) ]]]`), não a Jinja:
+   Jinja devolveria a string `"False"`, que é verdadeira em JavaScript. As duas
+   formas estão implementadas em `www/custom-cards/kiosk-mode.js`, que expõe
+   `is_state` no escopo do template JS.
+
+2. **Um chip `mdi:menu` na Geral.** Necessário porque a Geral é `subview: true`,
+   e numa subview o HA desenha uma seta de voltar no lugar do botão de menu —
+   devolver o cabeçalho, sozinho, não devolveria a barra lateral justamente na
+   página inicial. O chip dispara `hass-toggle-menu` via `browser_mod`
+   (`fire-dom-event` + `service: javascript`), o mesmo padrão que os popups da
+   dashboard já usam. **Segurar** o chip alterna o modo quiosque.
+
+Escapes embutidos no kiosk-mode, independentes disto: `?disable_km` na URL
+desliga tudo, `?disable_km&cache` grava a escolha só naquele aparelho,
+`?kiosk&cache` faz o contrário e `?clear_km_cache` limpa.
+
+⚠️ **Não verificado visualmente**: o navegador integrado não conseguiu abrir
+`localhost:8123` nesta sessão. A configuração foi conferida no storage gravado e
+`input_boolean.modo_quiosque` responde `off` na API, mas o comportamento do chip
+e do cabeçalho no celular ainda precisa de confirmação em tela real.

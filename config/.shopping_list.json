@@ -3,5 +3,15 @@
     "name": "Tomada inteligente para máquina de lavar e lava louças",
     "id": "f5ff98cb8b29492a95b444070c56bdd6",
     "complete": false
+  },
+  {
+    "name": "secador",
+    "id": "21b2d4bb41d4436fb5f1f4e611daa2a9",
+    "complete": false
+  },
+  {
+    "name": "pomada cabelo",
+    "id": "75dc942487874558adbc11b5f2eff72e",
+    "complete": false
   }
 ]
