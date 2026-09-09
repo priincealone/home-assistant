@@ -2095,3 +2095,93 @@ alteração. Não usar `restart` para mexer no registro.
 físico `eb831a8f3dedb06ad1tric` é exposto duas vezes — a nuvem Tuya dá só
 `fan.luz_ventilador_2` (sem luz), e o **LocalTuya** o abre em dois:
 `light.luz_sala` no DP 5 e `fan.ventilador_sala` no DP 1, com direção no DP 101.
+
+---
+
+# HANDOFF — dispositivos e pendências (09/09/2026)
+
+Consolidação feita a pedido do André, para retomar de um ponto limpo.
+**Supersede a lista de "Pendências" antiga**, que tinha itens já resolvidos.
+Escopo: **apenas o projeto original** (instalação do HA + dashboard "Casa").
+O `dashboard-app` fica fora desta sessão por decisão dele.
+
+## Retrato de agora (medido, não lembrado)
+
+248 entidades, 37 indisponíveis. **Nenhuma luz, tomada ou ventilador entre as
+indisponíveis** — a casa está inteira de pé.
+
+**22 integrações**: `tuya` e `localtuya` (iluminação/ventiladores), `sonoff`,
+`smartthings`, `samsungtv`, `ps5`, `glances` (PC), `browser_mod`, `findmy`,
+`hacs`, `mobile_app` ×2 (iPhone e iPad do André), `switch_as_x` ×11,
+`shopping_list`, `met` (clima), `go2rtc`, `ping`, `wake_on_lan`, `sun`,
+`radio_browser`, `google_translate`, `backup`, `analytics`.
+
+**Domínios que ainda não existem**: `climate.*` e `calendar.*` — zero entidades.
+
+## Como os dispositivos foram implementados
+
+| Caminho | O que entrou por ele |
+| --- | --- |
+| **Tuya (nuvem)** | interruptores de parede, `light.painel`, os dois "Luz/ventilador" |
+| **LocalTuya** | **só a Sala**: abre o aparelho `eb831a8f3dedb06ad1tric` em dois — `light.luz_sala` (DP 5) e `fan.ventilador_sala` (DP 1, direção no DP 101). É a "separação" que o Quarto ainda não tem. |
+| **switch_as_x** (11×) | converte `switch` em `light` para os pontos que são lâmpadas — é o que dá o par `circulacao_*` / `entrada_*` |
+| **Sonoff** | `light.led_escritorio_sonoff_…` |
+| **SmartThings / SamsungTV / PS5** | TV da sala e console |
+| **Glances** | métricas do PC ⚠️ patch de timeout se perde a cada recriação do container |
+| **mobile_app** | `device_tracker` do iPhone e do iPad do André |
+| **Webhook + template** | os 6 sensores de saúde (Apple Saúde) |
+
+## Pendências, na ordem em que destravam
+
+**1. Separar luz e ventilador do Quarto.** O `fan.luz_ventilador`
+(`eb956546b52fa8a4ddyfom`, mesmo modelo da Sala) **voltou a funcionar**. Falta
+replicar o LocalTuya: `light` no DP 5 e `fan` no DP 1 com direção no DP 101,
+protocolo 3.4. 🔒 **Bloqueado**: o formulário exige `local_key` e IP do
+aparelho, e a lista de descoberta vem vazia — o HA roda em Docker *bridge* e não
+recebe o broadcast UDP do LocalTuya. Caminho: LocalTuya → Configurar →
+*Reconfigure Cloud API account*; com a nuvem respondendo, a lista aparece **com
+o `local_key` já preenchido**. Depois disso eu ligo na página do Quarto e
+conserto o card da Geral.
+
+**2. Card "Quarto" da Geral está quebrado.** `var_lights: []` e
+`var_sensor: null` — ao toque dispara `turn_on` com lista vazia, não faz nada e
+não avisa, com o mesmo peso visual dos 9 que funcionam. Sai junto com o item 1.
+
+**3. Confirmar `light.luzes_externas_switch_1`** — chama-se "Circulação" mas
+está na área **Área Gourmet**, e é a Área Gourmet que a usa. Ou o nome está
+errado, ou a área. Só o André sabe qual.
+
+**4. Cinco entidades sem área**: `fan.ventilador_sala` e `light.luz_sala` (o par
+da Sala) e os três `switch.smart_socket_with_usb_type_c_3_*`.
+
+**5. Três *helpers* órfãos**, registrados e `unavailable` por não terem mais
+configuração por trás: `input_boolean.modo_quiosque` (resíduo da volta ao
+nativo, meu), `input_boolean.modo_painel` e `input_number.fundo_escurecimento`.
+Mais duas cenas mortas: `scene.banheiro_em_uso` e `scene.banheiro_vazio`.
+
+**6. `fan.luz_ventilador_2`** — entidade de nuvem do mesmo aparelho da Sala que
+o LocalTuya já expõe separado. Duplicata; some quando o item 1 definir o padrão.
+
+**7. Larissa no HA** — usuário não criado (o sistema segue com **1 pessoa**).
+Depende de **acesso remoto** para fora da tailnet, senão o `device_tracker` dela
+só reporta dentro de casa. Caminhos: Tailscale no iPhone dela, ou Nabu Casa.
+
+**8. Atalho do Apple Saúde** — os 6 sensores e o deck estão prontos e testados
+por webhook, mas os valores são do POST de teste. Falta o Atalho no iPhone com
+automação diária.
+
+**9. AirTags no FindMy** — conta Apple e servidor anisette de pé; falta o
+arquivo de chaves, que só sai de um **Mac** (`python3 -m findmy decrypt`).
+
+**10. Termostato e calendário** — sem `climate.*` nem `calendar.*` no sistema.
+O termostato existe mas está offline; o calendário precisa ser integrado.
+
+**11. IP fixo do PS5** — `media_player.sala_de_estar_ps5` está `unavailable`.
+
+**12. Alexa Media Player** — login trava na verificação da Amazon. Pausado.
+
+**13. Migração para dispositivo dedicado** (Raspberry Pi / mini PC) — resolveria
+o HA cair quando o PC dorme.
+
+**14. Foto de fundo real** e **scan 3D** (LiDAR do iPad, `floor3d-card` já
+instalado) — ambos esperando material do André.
