@@ -2498,7 +2498,9 @@
                                     "var_name": "Quarto",
                                     "var_sensor": null,
                                     "var_path": "/minha-casa/quarto",
-                                    "var_lights": []
+                                    "var_lights": [
+                                      "light.luz_quarto"
+                                    ]
                                   }
                                 }
                               ],
@@ -6211,18 +6213,18 @@
                           "conditions": [
                             {
                               "condition": "state",
-                              "entity": "fan.luz_ventilador",
+                              "entity": "fan.ventilador_quarto",
                               "state_not": "unavailable"
                             },
                             {
                               "condition": "state",
-                              "entity": "fan.luz_ventilador",
+                              "entity": "fan.ventilador_quarto",
                               "state_not": "unknown"
                             }
                           ],
                           "card": {
                             "type": "custom:mushroom-fan-card",
-                            "entity": "fan.luz_ventilador",
+                            "entity": "fan.ventilador_quarto",
                             "name": "Luz/Ventilador",
                             "show_percentage_control": true,
                             "card_mod": {

@@ -12,6 +12,7 @@
     },
     "sidebar": {
       "panelOrder": [
+        "dashboard-dispositivos",
         "minha-casa",
         "painel-casa",
         "map",

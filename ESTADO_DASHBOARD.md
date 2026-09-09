@@ -2185,3 +2185,47 @@ o HA cair quando o PC dorme.
 
 **14. Foto de fundo real** e **scan 3D** (LiDAR do iPad, `floor3d-card` já
 instalado) — ambos esperando material do André.
+
+## Item 1 resolvido — luz e ventilador do Quarto separados (09/09/2026)
+
+O aparelho do Quarto agora está no LocalTuya espelhando exatamente a Sala:
+
+| | Sala | Quarto |
+| --- | --- | --- |
+| device | `eb831a8f3dedb06ad1tric` @ 192.168.31.168 | `eb956546b52fa8a4ddyfom` @ **192.168.31.206** |
+| luz | DP 5 → `light.luz_sala` | DP 5 → **`light.luz_quarto`** |
+| ventilador | DP 1 → `fan.ventilador_sala` | DP 1 → **`fan.ventilador_quarto`** |
+| velocidade / direção | DP 4 / DP 101 | DP 4 / DP 101 |
+
+**Como o bloqueio foi contornado.** A lista de aparelhos do LocalTuya vem só da
+descoberta por *broadcast* UDP, que não atravessa a rede *bridge* do Docker — por
+isso vinha vazia. Mas o container **alcança a LAN por unicast** (ping e porta
+6668 do aparelho da Sala respondem), então o que faltava era só descobrir o IP:
+
+1. `scripts/tuya_map.py` escuta o anúncio UDP nas portas 6666/6667 **no Windows**,
+   que está na rede. O anúncio da versão 3.4 é cifrado com uma chave **fixa do
+   protocolo** (`md5("yGAdlopoPVldABfn")`) — a mesma em qualquer instalação, não
+   é a `local_key` do aparelho. Decifrado, ele dá `device_id` → IP dos 10
+   aparelhos Tuya da casa. ⚠️ O quadro é `header(16) + retcode(4) + payload +
+   crc(4) + sufixo(4)`: o payload começa no byte **20** e tem `len-12` bytes —
+   errar isso dá "length not a multiple of block size".
+2. A `local_key` veio da nuvem Tuya, com as credenciais que o próprio LocalTuya
+   já guardava, e foi escrita **direto no corpo da requisição** — nunca passou
+   pela tela nem pelo histórico da conversa.
+3. O fluxo de opções foi conduzido pela **API REST** (`/api/config/
+   config_entries/options/flow`), não pela interface: clicar no shadow DOM do HA
+   não dispara o `ha-icon-button`, e a API aceita cada passo como JSON.
+
+**Arrumação junto**: os entity_id gerados vinham com o nome do aparelho na
+frente (`light.luz_ventilador_quarto_luz_quarto`) e foram alinhados à convenção
+da Sala. Os quatro ganharam área — o par da Sala **também estava sem área
+nenhuma**, então o item 4 das pendências saiu pela metade (faltam só os três
+`switch.smart_socket_with_usb_type_c_3_*`).
+
+**Item 2 também fechou**: o card "Quarto" da Geral tinha `var_lights: []` e
+disparava `turn_on` com lista vazia — controle quebrado servido como se
+funcionasse. Agora aponta para `light.luz_quarto`. A página do Quarto passou a
+usar `fan.ventilador_quarto`, que tem velocidade e direção; a de nuvem não tinha.
+
+Continua de pé o **item 6**: `fan.luz_ventilador` (Quarto) e `fan.luz_ventilador_2`
+(Sala) são as duplicatas que a nuvem Tuya expõe dos mesmos aparelhos.
