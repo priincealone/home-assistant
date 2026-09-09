@@ -5,7 +5,13 @@
   "data": {
     "core": {
       "onboarded_version": "2026.9.0",
-      "onboarded_date": "2026-09-03T23:22:22.038Z"
+      "onboarded_date": "2026-09-03T23:22:22.038Z",
+      "surveys": {
+        "onboarding": {
+          "date": "2026-09-08T23:47:39.104Z",
+          "action": "dismissed"
+        }
+      }
     }
   }
 }

@@ -536,6 +536,15 @@
           },
           "card_mod": {
             "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card:hover #img-cell { background: rgba(255,255,255,0.18) !important; }\n"
+          },
+          "hold_action": {
+            "action": "fire-dom-event",
+            "browser_mod": {
+              "service": "javascript",
+              "data": {
+                "code": "document.querySelector('home-assistant').dispatchEvent(new CustomEvent('hass-toggle-menu',{bubbles: true, composed: true}))"
+              }
+            }
           }
         },
         "entity_card": {
@@ -7467,8 +7476,8 @@
         "hide_sidebar": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
         "mobile_settings": {
           "custom_width": 1400,
-          "hide_header": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
-          "hide_sidebar": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]"
+          "hide_header": true,
+          "hide_sidebar": false
         }
       },
       "swipe_nav": {

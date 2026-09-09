@@ -1951,3 +1951,32 @@ desliga tudo, `?disable_km&cache` grava a escolha só naquele aparelho,
 `localhost:8123` nesta sessão. A configuração foi conferida no storage gravado e
 `input_boolean.modo_quiosque` responde `off` na API, mas o comportamento do chip
 e do cabeçalho no celular ainda precisa de confirmação em tela real.
+
+### Ajuste: celular volta a abrir em tela cheia (08/09/2026)
+
+Pedido: em dispositivo móvel, tela cheia. A armadilha estava em como o
+kiosk-mode implementa `hide_sidebar` — lendo o bundle, ele faz **duas** coisas:
+
+```js
+this.styleManager.addStyle(We.SIDEBAR, ...)                 // some com a barra
+main.host.addEventListener('hass-toggle-menu', blockEventHandler, true)
+```
+
+O segundo é um bloqueio em fase de captura do `hass-toggle-menu` — justamente o
+evento que o chip de menu dispara. **`hide_sidebar: true` engole o chip**; as
+duas coisas não convivem.
+
+E `hide_sidebar` não paga nada em troca: numa tela estreita a barra lateral já é
+gaveta modal, fechada por padrão, ocupando zero pixel. Quem ocupa espaço é o
+cabeçalho. Logo, `scripts/lovelace/tela_cheia_mobile.py` deixou o celular com
+`hide_header: true` e `hide_sidebar: false` — tela cheia de verdade, chip vivo.
+
+Telas acima de 1400px seguem governadas por `input_boolean.modo_quiosque`.
+
+Como o cabeçalho some no celular também nas páginas de cômodo, o template
+`room_header` ganhou um `hold_action`: segurar o título de qualquer cômodo abre
+a barra lateral direto. Uma edição no template, vale para as 10 páginas — e o
+chevron que já existia continua levando à Geral.
+
+⚠️ Ainda **não verificado em tela**: o navegador integrado segue sem conseguir
+abrir `localhost:8123` nesta sessão.
