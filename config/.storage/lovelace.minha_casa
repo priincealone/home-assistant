@@ -536,15 +536,6 @@
           },
           "card_mod": {
             "style": "ha-card { background: transparent !important; border: none !important; box-shadow: none !important; backdrop-filter: none !important; }\nha-card::before, ha-card::after { display: none !important; }\nha-card:hover #img-cell { background: rgba(255,255,255,0.18) !important; }\n"
-          },
-          "hold_action": {
-            "action": "fire-dom-event",
-            "browser_mod": {
-              "service": "javascript",
-              "data": {
-                "code": "document.querySelector('home-assistant').dispatchEvent(new CustomEvent('hass-toggle-menu',{bubbles: true, composed: true}))"
-              }
-            }
           }
         },
         "entity_card": {
@@ -929,27 +920,6 @@
                       "type": "custom:mushroom-chips-card",
                       "alignment": "center",
                       "chips": [
-                        {
-                          "type": "template",
-                          "icon": "mdi:menu",
-                          "icon_color": "blue",
-                          "tap_action": {
-                            "action": "fire-dom-event",
-                            "browser_mod": {
-                              "service": "javascript",
-                              "data": {
-                                "code": "document.querySelector('home-assistant').dispatchEvent(new CustomEvent('hass-toggle-menu',{bubbles: true, composed: true}))"
-                              }
-                            }
-                          },
-                          "hold_action": {
-                            "action": "call-service",
-                            "service": "input_boolean.toggle",
-                            "service_data": {
-                              "entity_id": "input_boolean.modo_quiosque"
-                            }
-                          }
-                        },
                         {
                           "type": "weather",
                           "entity": "weather.forecast_casa",
@@ -7469,15 +7439,6 @@
               }
             ]
           }
-        }
-      },
-      "kiosk_mode": {
-        "hide_header": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
-        "hide_sidebar": false,
-        "mobile_settings": {
-          "custom_width": 1400,
-          "hide_header": true,
-          "hide_sidebar": false
         }
       },
       "swipe_nav": {

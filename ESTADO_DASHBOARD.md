@@ -2027,3 +2027,31 @@ problema **pior**: é uma view `panel: true` com um único card de iframe, sem
 chip nenhum. Ligado o interruptor, no desktop aquela página fica sem cabeçalho,
 sem barra lateral e sem controle próprio — só `?disable_km` na URL sai de lá.
 Correção pendente de decisão.
+
+### Volta à visualização nativa do Home Assistant (09/09/2026)
+
+Decisão do André: as duas dashboards voltam ao cabeçalho e à barra lateral que
+o Home Assistant desenha por padrão, em qualquer largura de tela. O que fazer
+com quiosque/tela cheia fica para depois.
+
+`scripts/lovelace/voltar_visualizacao_nativa.py` removeu, num único restart:
+
+| Onde | O quê |
+| --- | --- |
+| `lovelace.minha_casa` | bloco `kiosk_mode` |
+| `lovelace.painel_casa` | bloco `kiosk_mode` (herdado em `b097bd0`) |
+| Geral | chip `mdi:menu` (5 → 4 chips) |
+| template `room_header` | `hold_action` — valia para as 10 páginas |
+
+O chip e o `hold_action` saíram junto porque **só existiam para compensar o que
+o quiosque escondia**: com o cabeçalho nativo de volta, o botão de menu do
+próprio HA cumpre esse papel nas duas.
+
+`input_boolean.modo_quiosque` saiu do `configuration.yaml` pelo mesmo motivo —
+alimentava exclusivamente aqueles templates e, sem eles, seria um interruptor
+morto na interface. Confirmado depois do restart: a entidade responde 404 e o
+boot não registrou nenhum erro de configuração.
+
+Nada disso se perdeu: `menu_lateral_mobile.py`, `tela_cheia_mobile.py` e
+`barra_lateral_desktop.py` continuam em `scripts/lovelace/` e servem de base
+quando a decisão vier. Os backups de cada etapa estão em `backups/`.
