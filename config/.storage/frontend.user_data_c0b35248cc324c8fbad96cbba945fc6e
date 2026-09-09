@@ -13,7 +13,7 @@
     "sidebar": {
       "panelOrder": [
         "minha-casa",
-        "dashboard-dashboard",
+        "painel-casa",
         "map",
         "energy",
         "logbook",

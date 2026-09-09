@@ -7473,7 +7473,7 @@
       },
       "kiosk_mode": {
         "hide_header": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
-        "hide_sidebar": "[[[ return is_state('input_boolean.modo_quiosque', 'on') ]]]",
+        "hide_sidebar": false,
         "mobile_settings": {
           "custom_width": 1400,
           "hide_header": true,

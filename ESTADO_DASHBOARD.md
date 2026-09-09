@@ -1993,3 +1993,37 @@ chevron que já existia continua levando à Geral.
 
 ⚠️ Ainda **não verificado em tela**: o navegador integrado segue sem conseguir
 abrir `localhost:8123` nesta sessão.
+
+### A barra lateral sumindo no desktop (09/09/2026)
+
+Sintoma relatado: no desktop da dashboard "Casa" a barra lateral não aparecia.
+
+**Não era bug.** `input_boolean.modo_quiosque` estava ligado — o histórico da
+entidade mostra três trocas em cinco segundos às 02:19 de 09/09, a assinatura do
+gesto de segurar sendo testado. Com ele ligado, o template escondia cabeçalho e
+barra lateral em telas acima de 1400px, exatamente como configurado. Descartadas
+as outras causas: `hiddenPanels` vazio e ordem normal em `frontend.user_data`.
+
+O erro estava na configuração. O pedido original foi *tela cheia no celular*;
+esconder a barra também no desktop foi decisão minha, e cobra caro por dois
+motivos:
+
+1. **Mata o toque do chip de menu.** Com `hide_sidebar` ligado, o kiosk-mode
+   registra um bloqueio em fase de captura do `hass-toggle-menu` — o evento que
+   o chip dispara. Sobrevivia só o gesto de segurar, que chama
+   `input_boolean.toggle` (um serviço, e por isso escapa do bloqueio). Um botão
+   com dois gestos e apenas um funcionando.
+2. **No desktop a barra lateral é a navegação inteira.** Diferente do celular,
+   onde é gaveta modal de custo zero, no desktop ela é o único caminho para os
+   outros painéis.
+
+`scripts/lovelace/barra_lateral_desktop.py` deixou `hide_sidebar: false` também
+no desktop. Tela cheia continua existindo — é o `hide_header`, que é quem ocupa
+espaço de fato, preso ao interruptor no desktop e sempre ligado no celular. A
+barra volta **mesmo com o interruptor ligado**, sem mexer no quiosque do tablet.
+
+⚠️ O `painel_casa` herdou o mesmo `kiosk_mode` no commit `b097bd0` e tem o
+problema **pior**: é uma view `panel: true` com um único card de iframe, sem
+chip nenhum. Ligado o interruptor, no desktop aquela página fica sem cabeçalho,
+sem barra lateral e sem controle próprio — só `?disable_km` na URL sai de lá.
+Correção pendente de decisão.
