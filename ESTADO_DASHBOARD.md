@@ -2229,3 +2229,42 @@ usar `fan.ventilador_quarto`, que tem velocidade e direção; a de nuvem não ti
 
 Continua de pé o **item 6**: `fan.luz_ventilador` (Quarto) e `fan.luz_ventilador_2`
 (Sala) são as duplicatas que a nuvem Tuya expõe dos mesmos aparelhos.
+
+## Item 6 resolvido — duplicatas de nuvem desativadas (09/09/2026)
+
+`fan.luz_ventilador` (Quarto) e `fan.luz_ventilador_2` (Sala) eram as entidades
+que a **nuvem Tuya** expunha dos mesmos dois aparelhos que o LocalTuya já abre em
+luz + ventilador. Conferido antes: cada um desses dispositivos de nuvem tinha
+**essa única entidade**, e não havia nenhuma referência às duas no lovelace nem
+nos YAML.
+
+Feito por `scripts/lovelace/remove_duplicatas_nuvem.py`. Elas foram
+**desativadas** (`disabled_by: user`), não apagadas: a integração Tuya de nuvem
+continua necessária — é ela que entrega o `light.painel` — e uma entidade apagada
+do registro voltaria na próxima atualização da integração.
+
+**Verificação depois do restart** — 248 entidades e 37 indisponíveis, exatamente
+os mesmos números de antes; `light.painel` respondendo (integração de nuvem
+intacta); `fan` caiu de 3 para 2 e `light` subiu de 17 para 18, que é o esperado.
+
+⚠️ Durante o boot a contagem aparece bem menor (chegou a 135) porque as
+plataformas carregam progressivamente. **Não conferir totais antes de o boot
+terminar** — dá falso alarme.
+
+### Teste funcional, com controle
+
+| Ação | Quarto (novo) | Sala (config antiga, não tocada) |
+| --- | --- | --- |
+| luz liga/desliga | ✅ | — |
+| ventilador liga/desliga | ✅ | ✅ |
+| `turn_on` com `percentage` | **ignorado** | **ignorado** |
+| `fan.set_percentage` | ✅ 47 → 80 | ✅ 66 → 80 |
+
+O `percentage` passado dentro do `turn_on` ser ignorado é **comportamento
+pré-existente do LocalTuya**, não regressão: a Sala, que não foi tocada, faz
+exatamente o mesmo. Quem funciona é o serviço `fan.set_percentage` separado — que
+é o que o `mushroom-fan-card` e o `/api/control` já chamam.
+
+Efeito colateral do teste, registrado por honestidade: a **velocidade lembrada**
+dos dois ventiladores mudou (Sala 66 → 80, Quarto 47 → 80). O estado ligado/
+desligado foi devolvido como estava; os dois estão apagados.
