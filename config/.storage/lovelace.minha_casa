@@ -2146,7 +2146,7 @@
                                     "var_name": "Cozinha",
                                     "var_sensor": "sensor.luzes_cozinha",
                                     "var_lights": [
-                                      "light.cozinha_copa_varanda_switch_3"
+                                      "light.cozinha_copa_varanda_switch_1"
                                     ]
                                   },
                                   "tap_action": {
@@ -2160,7 +2160,7 @@
                                           "cards": [
                                             {
                                               "type": "tile",
-                                              "entity": "light.cozinha_copa_varanda_switch_3",
+                                              "entity": "light.cozinha_copa_varanda_switch_1",
                                               "name": "Luz",
                                               "icon": "mdi:lightbulb",
                                               "tap_action": {
@@ -2280,7 +2280,7 @@
                                     "var_sensor": "sensor.luzes_lavanderia",
                                     "var_path": "/minha-casa/lavanderia",
                                     "var_lights": [
-                                      "light.cozinha_copa_varanda_switch_1"
+                                      "light.cozinha_copa_varanda_switch_3"
                                     ]
                                   }
                                 }
@@ -6030,7 +6030,7 @@
                               "template": "entity_card",
                               "variables": {
                                 "var_name": "Luz",
-                                "var_entity": "light.cozinha_copa_varanda_switch_1",
+                                "var_entity": "light.cozinha_copa_varanda_switch_3",
                                 "var_icon": "mdi:lightbulb",
                                 "var_color": "#FF9F0A"
                               }
@@ -6964,7 +6964,7 @@
                           ],
                           "variables": {
                             "var_name": "Luz",
-                            "var_entity": "light.cozinha_copa_varanda_switch_3"
+                            "var_entity": "light.cozinha_copa_varanda_switch_1"
                           }
                         },
                         {
@@ -7050,7 +7050,7 @@
                           ],
                           "variables": {
                             "var_name": "Luz",
-                            "var_entity": "light.cozinha_copa_varanda_switch_1"
+                            "var_entity": "light.cozinha_copa_varanda_switch_3"
                           }
                         },
                         {

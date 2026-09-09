@@ -2055,3 +2055,43 @@ boot não registrou nenhum erro de configuração.
 Nada disso se perdeu: `menu_lateral_mobile.py`, `tela_cheia_mobile.py` e
 `barra_lateral_desktop.py` continuam em `scripts/lovelace/` e servem de base
 quando a decisão vier. Os backups de cada etapa estão em `backups/`.
+
+### Auditoria de localização dos dispositivos + troca Cozinha/Lavanderia (09/09/2026)
+
+**A troca.** O aparelho `cozinha_copa_varanda` é um interruptor de 3 teclas. O
+cadastro era coerente consigo mesmo e errado com a casa: as teclas 1 e 3 estão
+invertidas na parede. Por isso a correção teve de ser feita **nos dois lados** —
+mexer só num deles apenas mudaria a inconsistência de lugar:
+
+| | antes | depois |
+| --- | --- | --- |
+| `…switch_1` | "Lavanderia" / área Lavanderia | **"Cozinha" / área Cozinha** |
+| `…switch_2` | "Copa" / área Copa | inalterado |
+| `…switch_3` | "Cozinha" / área Cozinha | **"Lavanderia" / área Lavanderia** |
+| lovelace | Cozinha→switch_3, Lavanderia→switch_1 | **Cozinha→switch_1, Lavanderia→switch_3** |
+
+Feito por `scripts/lovelace/corrige_cozinha_lavanderia.py`. ⚠️ O script **para o
+container** antes de tocar em `core.entity_registry` e sobe depois — o Home
+Assistant reescreve esse arquivo no shutdown, então editar com ele no ar perde a
+alteração. Não usar `restart` para mexer no registro.
+
+**O resto da auditoria**, levantado cruzando `core.area_registry`,
+`core.device_registry` e `core.entity_registry`:
+
+- `light.luzes_externas_switch_1` chama-se **"Circulação"** mas está na área
+  **Área Gourmet** (e é usada no `var_lights` da Área Gourmet). Ou o nome está
+  errado, ou a área — pendente de confirmação.
+- **Cinco entidades sem área nenhuma**: `fan.ventilador_sala` e `light.luz_sala`
+  (justamente o par separado da Sala, via LocalTuya) e os três
+  `switch.smart_socket_with_usb_type_c_3_*`.
+- `light.led_escritorio_sonoff_…` está no **Closet** — plausível, já que a
+  página "PC" mora ali, mas vale confirmar.
+- `fan.luz_ventilador_2` é a entidade **da nuvem Tuya** para o mesmo aparelho da
+  Sala que o LocalTuya já expõe separado. Duplicata redundante.
+- Nomes de área inconsistentes: "Sala de estar" (e minúsculo), "Area Gourmet"
+  (sem acento), e o id da Circulação é `corredor`.
+
+**Como a Sala foi separada** (modelo a replicar no Quarto): o mesmo aparelho
+físico `eb831a8f3dedb06ad1tric` é exposto duas vezes — a nuvem Tuya dá só
+`fan.luz_ventilador_2` (sem luz), e o **LocalTuya** o abre em dois:
+`light.luz_sala` no DP 5 e `fan.ventilador_sala` no DP 1, com direção no DP 101.
