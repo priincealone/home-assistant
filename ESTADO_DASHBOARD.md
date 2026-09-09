@@ -2353,3 +2353,28 @@ Com isso, **a lista de pendências de dispositivos está zerada** — restam só
 itens que dependem de hardware ou de terceiros (Larissa e acesso remoto, Atalho
 do Apple Saúde, AirTags/Mac, termostato e calendário, IP fixo do PS5, Alexa,
 migração para dispositivo dedicado, foto de fundo e scan 3D).
+
+## Correção: o que a tomada "Ventilação ps5" alimenta (09/09/2026)
+
+Registro corrigido pelo André. Eu havia **deduzido pelo nome** que essa tomada
+alimentava o console, e concluí daí que o PS5 estava sem energia. Errado nas
+duas pontas:
+
+- A `Ventilação ps5` (Smart Socket with USB/Type-C, `sala_de_estar`) alimenta um
+  **sistema de ventilação externo** do console — não o console.
+- Logo, o `media_player.sala_de_estar_ps5` estar `unavailable` com a tomada
+  desligada é **coincidência**, não causa. O que a varredura mostrou continua
+  valendo, e é o que sustenta a conclusão: nenhum console respondeu ao protocolo
+  de descoberta (UDP 987) em nenhum dos 254 endereços da LAN. O PS5 está
+  desligado, e a tomada não tem nada a ver com isso.
+
+A área continua correta: o ventilador fica junto do console, na Sala de estar.
+
+### Automação pretendida (ainda não construída)
+
+Ligar a tomada da ventilação **junto com o PS5**, e desligar quando ele sair do
+ar. Gatilho natural: `media_player.sala_de_estar_ps5` mudando para `on`/`playing`
+→ `switch.smart_socket_with_usb_type_c_3_socket_1` (e `_2`, a confirmar qual dos
+dois é o ventilador). Depende do console estar ligado para descobrir quais
+estados ele reporta de verdade — em repouso, ligado e jogando — antes de escolher
+o gatilho, senão a ventilação liga quando não deve.
