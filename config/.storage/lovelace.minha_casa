@@ -6120,7 +6120,7 @@
                           "type": "custom:button-card",
                           "template": "entity_card",
                           "variables": {
-                            "var_name": "Circulação",
+                            "var_name": "Plafons",
                             "var_entity": "light.luzes_externas_switch_1",
                             "var_icon": "mdi:lightbulb",
                             "var_color": "#FF9F0A"
@@ -7094,7 +7094,7 @@
                             "nu"
                           ],
                           "variables": {
-                            "var_name": "Circulação",
+                            "var_name": "Plafons",
                             "var_entity": "light.luzes_externas_switch_1"
                           }
                         },

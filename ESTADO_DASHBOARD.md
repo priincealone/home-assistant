@@ -2318,3 +2318,38 @@ Sobra apenas o **item 3** da lista, que depende do André:
 `light.luzes_externas_switch_1` chama-se "Circulação" mas está na área Área
 Gourmet. As duas cenas do banheiro seguem existindo na conta Tuya, apenas
 ocultas aqui — se ele quiser, dá para apagá-las no app da Tuya.
+
+## Item 3 resolvido — "Circulação" na Área Gourmet vira "Plafons" (09/09/2026)
+
+O André confirmou que o errado era o **nome**, não a área: a luz continua na
+Área Gourmet, onde já estava e onde o painel a usa.
+
+**Onde o rótulo morava, e por que não foi na Tuya.** O `original_name` das duas
+entidades ainda é **"Switch 1"**. Nome vindo da Tuya apareceria justamente aí;
+"Circulação" estava no campo `name`, que só existe quando alguém renomeia
+**dentro do Home Assistant**. Ou seja, o rótulo errado era daqui — mudar no app
+da Tuya não teria efeito nenhum sobre o que a dashboard mostra, porque o `name`
+do registro sobrescreve o que a integração informa.
+
+Quatro lugares para o mesmo ponto físico, todos corrigidos por
+`scripts/lovelace/renomeia_plafons.py`:
+
+| Onde | O quê |
+| --- | --- |
+| `switch.luzes_externas_switch_1` | registro — a tecla crua da Tuya |
+| `light.luzes_externas_switch_1` | registro — o embrulho do `switch_as_x` |
+| view 3 (Área Gourmet) | `var_name` do card |
+| view 10 (Luzes) | `var_name` da linha |
+
+⚠️ A palavra "Circula" aparece **6 vezes** no lovelace e as outras 4 são o cômodo
+Circulação de verdade. Por isso a troca no painel foi feita **só** nos objetos
+que também trazem `var_entity: light.luzes_externas_switch_1` — nunca por busca
+e substituição no texto inteiro. Conferido depois: sobraram as 4 do cômodo, e
+elas apontam para `sensor.luzes_circulacao` e `light.circulacao_switch_*`.
+
+Verificado na API: a entidade responde com `friendly_name: "Plafons"`.
+
+Com isso, **a lista de pendências de dispositivos está zerada** — restam só os
+itens que dependem de hardware ou de terceiros (Larissa e acesso remoto, Atalho
+do Apple Saúde, AirTags/Mac, termostato e calendário, IP fixo do PS5, Alexa,
+migração para dispositivo dedicado, foto de fundo e scan 3D).
