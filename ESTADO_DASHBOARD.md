@@ -1973,6 +1973,19 @@ cabeçalho. Logo, `scripts/lovelace/tela_cheia_mobile.py` deixou o celular com
 
 Telas acima de 1400px seguem governadas por `input_boolean.modo_quiosque`.
 
+### Mesma tela cheia estendida ao Painel Casa (08/09/2026)
+
+O `kiosk_mode` acima só existia em `lovelace.minha_casa`. O "Painel Casa"
+(dashboard novo, iframe do `dashboard-app`, ver seção anterior) tinha só a
+view `panel: true` + card iframe — nada de `kiosk_mode` — então abri-lo pela
+sidebar mostrava cabeçalho e barra lateral do HA por cima do iframe, sem a
+tela cheia que a dashboard "Casa" já tinha. `scripts/lovelace/
+painel_casa_tela_cheia.py` copiou o bloco `kiosk_mode` inteiro (mobile
+sempre `hide_header: true` / `hide_sidebar: false`; telas largas presas ao
+mesmo `input_boolean.modo_quiosque`) de `lovelace.minha_casa` para
+`lovelace.painel_casa`, ponto a ponto — os dois dashboards agora se
+comportam de forma idêntica nesse aspecto.
+
 Como o cabeçalho some no celular também nas páginas de cômodo, o template
 `room_header` ganhou um `hold_action`: segurar o título de qualquer cômodo abre
 a barra lateral direto. Uma edição no template, vale para as 10 páginas — e o
