@@ -2268,3 +2268,53 @@ exatamente o mesmo. Quem funciona é o serviço `fan.set_percentage` separado �
 Efeito colateral do teste, registrado por honestidade: a **velocidade lembrada**
 dos dois ventiladores mudou (Sala 66 → 80, Quarto 47 → 80). O estado ligado/
 desligado foi devolvido como estava; os dois estão apagados.
+
+## Itens 4 e 5 resolvidos — área faltante e registros órfãos (09/09/2026)
+
+### Item 4 — o que estava sem área
+
+Levantando a lista inteira (e não só `light`/`switch`/`fan`, como no primeiro
+diagnóstico), a maioria das entidades sem área **não é defeito**: `sun`,
+`backup`, os sensores do iPhone/iPad, o Glances do PC e os sensores template são
+**serviços**, não objetos de cômodo. Sobraram dois casos reais, com desfechos
+opostos:
+
+- **`Ventilação ps5`** (Smart Socket with USB/Type-C). Não era um socket solto —
+  o nome diz o que ele alimenta, e o device `PS5` já estava em `sala_de_estar`.
+  Marcado o **device**, e as **9 entidades** herdaram a área de uma vez.
+- **`Cozinha/Copa/Varanda`** (W603) **fica sem área de propósito**: é um único
+  aparelho físico atendendo três cômodos. Quem carrega a área são as entidades
+  `light.*` que o `switch_as_x` cria, e essas já estão certas desde a correção da
+  troca Cozinha/Lavanderia. Dar uma área só a ele seria escolher arbitrariamente
+  um dos três.
+
+### Item 5 — cinco registros órfãos
+
+Conferido antes de apagar: não existe `.storage/input_boolean` nem
+`.storage/input_number`, não há bloco `input_*` em YAML nenhum, e as cinco
+entradas tinham **zero referências** no lovelace e nos YAML.
+
+⚠️ **Apagar do registro não funciona para tudo.** Os três *helpers* saíram e não
+voltaram, mas `scene.banheiro_em_uso` e `scene.banheiro_vazio` **reapareceram no
+boot seguinte** — a integração Tuya as recria, ou seja, elas ainda existem na
+conta e apenas respondem `unavailable`. Para essas o caminho é **desativar**
+(`disabled_by: user`), o mesmo usado nas duplicatas de nuvem dos ventiladores.
+Regra geral: registro órfão de verdade se apaga; entidade que uma integração viva
+ainda enxerga só se desativa.
+
+### Verificação
+
+| | antes | depois |
+| --- | --- | --- |
+| entidades | 248 | **243** (−5, os cinco órfãos) |
+| indisponíveis | 37 | **32** (−5) |
+| cenas | 6 | **4**, todas boas |
+| luzes e ventiladores | 20 de pé | **20 de pé**, nenhuma indisponível |
+
+`scene.ligar_tv` continua `unknown`, e isso é normal: cena nunca acionada não
+tem estado.
+
+Sobra apenas o **item 3** da lista, que depende do André:
+`light.luzes_externas_switch_1` chama-se "Circulação" mas está na área Área
+Gourmet. As duas cenas do banheiro seguem existindo na conta Tuya, apenas
+ocultas aqui — se ele quiser, dá para apagá-las no app da Tuya.
