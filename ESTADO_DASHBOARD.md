@@ -2743,3 +2743,40 @@ foi então aberto pela interface.
 Se a conta entrar mas nenhum dispositivo aparecer, o próximo palpite é trocar a
 região para **United States**. Se nem logar, aí vale definir a `internal_url` e
 ir para a integração oficial.
+
+### A causa real: a Xiaomi exige verificação de identidade
+
+O login foi submetido e o log mostrou:
+
+```
+custom_components.xiaomi_miot.core.xiaomi_cloud.MiCloudNeedVerify: need_verify
+```
+
+⚠️ **Não era o redirect do OAuth** — minha primeira hipótese estava errada, ou ao
+menos incompleta. A Xiaomi está pedindo **verificação em duas etapas** para essa
+conta, e o fluxo para aí. Nenhuma entrada de configuração chegou a ser criada
+(`xiaomi_miot` não aparece em `components`), então os dispositivos que apareceram
+na tela vieram do *diálogo* da Xiaomi, não do Home Assistant.
+
+**Como o `hass-xiaomi-miot` trata isso** (lido no código, não suposto):
+
+- `config_flow.py:180` guarda `verify_url` no contexto e mostra no formulário um
+  link *"Open the verification page"*;
+- `config_flow.py:375` acrescenta ao formulário um campo novo, **`verify_ticket`**;
+- `xiaomi_cloud.py:811` consome esse ticket chamando
+  `/identity/auth/verifyPhone` (flag 4) ou `/identity/auth/verifyEmail` (flag 8).
+
+⚠️ **O campo `verify_ticket` quer o CÓDIGO que a Xiaomi manda por SMS ou e-mail**
+— não uma URL, não um token copiado da barra de endereços. Esse é o ponto
+não-óbvio, e é o candidato natural para o que derrubou a tentativa anterior.
+
+**Sequência correta**, então:
+
+1. Preencher usuário e senha e enviar.
+2. **Falhar é esperado**: o formulário volta com o link de verificação e o campo
+   `verify_ticket`.
+3. Abrir o link — a Xiaomi envia o código por SMS/e-mail.
+4. Digitar o **código** em `verify_ticket` e enviar de novo.
+
+Se depois disso a conta entrar mas nenhum dispositivo aparecer, aí sim é região:
+trocar Singapore por **United States**.
