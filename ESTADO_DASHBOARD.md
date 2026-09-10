@@ -3408,3 +3408,32 @@ piso do cômodo aceso fica laranja, os demais brancos.
 
 Outro deslize corrigido: `piso_banheiro_2` entrou duas vezes no mapeamento,
 porque o laço principal já o tratava e um bloco extra repetiu.
+
+## "Painel Casa" removido do Home Assistant (10/09/2026)
+
+O André voltou a trabalhar no `dashboard-app` dentro do Antigravity e vai
+resubir uma versão otimizada depois. Até lá o painel sai da barra lateral.
+
+Feito por `scripts/lovelace/remove_painel_casa.py`:
+
+| | |
+| --- | --- |
+| entrada `painel_casa` em `lovelace_dashboards` | removida |
+| `.storage/lovelace.painel_casa` | apagado, cópia em `backups/lovelace.painel_casa.bak_removido` |
+| dashboards restantes | Mapa, Casa, Dispositivos |
+
+**O que deliberadamente não foi tocado:**
+
+- O container **`painel-casa`** segue no ar (34 h de uptime, porta 3001
+  respondendo 200). Ele é a ferramenta de trabalho do André no Antigravity —
+  derrubar seria atrapalhar, e o pedido era tirar o painel do Home Assistant,
+  não parar o app.
+- O diretório `dashboard-app/`, que só se toca com pedido inequívoco.
+
+Para trazer de volta é só recolocar: o conteúdo era uma view `panel: true` com
+um único card `iframe` apontando para o IP Tailscale na porta 3001 — está
+inteiro no backup. ⚠️ Lembrar de rever o `aspect_ratio: "100%"`, que é o defeito
+nº 2 da auditoria: no celular ele transforma o iframe numa janela quadrada de
+375 px de altura para um app que precisa de 1604.
+
+Verificado depois: `check_config` válido, 338 entidades, três dashboards.
