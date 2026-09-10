@@ -2565,6 +2565,60 @@
                               }
                             },
                             {
+                              "type": "custom:button-card",
+                              "template": "sem_fundo",
+                              "entity": "sensor.sala_atividade",
+                              "show_name": false,
+                              "show_icon": true,
+                              "show_state": true,
+                              "tap_action": {
+                                "action": "more-info"
+                              },
+                              "styles": {
+                                "card": [
+                                  {
+                                    "background": "transparent",
+                                    "box-shadow": "none",
+                                    "height": "26px",
+                                    "padding": "0px 6px 4px 6px",
+                                    "justify-content": "start",
+                                    "border-radius": "0px"
+                                  }
+                                ],
+                                "grid": [
+                                  {
+                                    "grid-template-areas": "\"i s\"",
+                                    "grid-template-columns": "20px 1fr",
+                                    "grid-template-rows": "1fr",
+                                    "align-items": "center",
+                                    "gap": "6px"
+                                  }
+                                ],
+                                "icon": [
+                                  {
+                                    "width": "15px",
+                                    "color": "#FF9F0A"
+                                  }
+                                ],
+                                "img_cell": [
+                                  {
+                                    "justify-self": "start",
+                                    "width": "15px",
+                                    "height": "15px"
+                                  }
+                                ],
+                                "state": [
+                                  {
+                                    "font-size": "12.5px",
+                                    "font-weight": "550",
+                                    "color": "rgba(255,255,255,0.82)",
+                                    "justify-self": "start",
+                                    "letter-spacing": "-0.01em"
+                                  }
+                                ]
+                              }
+                            },
+                            {
                               "type": "custom:stack-in-card",
                               "mode": "horizontal",
                               "cards": [

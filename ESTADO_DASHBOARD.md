@@ -2675,3 +2675,28 @@ hdmi1) → "PS5 ligado" → o que a TV estiver mostrando → "Sala livre". Carre
 É o mais perto de "conteúdo em uso" possível hoje: o nome do jogo não existe
 porque o console não o anuncia, e o título do que passa na TV nenhuma das duas
 integrações expõe.
+
+### `sala_atividade` no deck de Mídia da Geral (09/09/2026)
+
+A linha entrou **entre o rótulo "MÍDIA" e o player** — é ali que ela responde a
+pergunta que o deck levanta ("o que está tocando?") antes de mostrar os
+controles. `scripts/lovelace/deck_midia_atividade.py`.
+
+O sensor já carrega o próprio ícone (alterna entre PlayStation, TV e sofá
+conforme o contexto), então o card só exibe `icon` + `state`. Toque abre o
+`more-info`.
+
+Estilo pelo template **`sem_fundo`**, em vez de repetir o bloco de `card_mod`
+que os cards vizinhos repetem um a um — é o que o `CLAUDE.md` pede desde a
+limpeza do P3.
+
+**Medido na tela**, com o console em uso:
+
+| elemento | tamanho | peso | cor |
+| --- | --- | --- | --- |
+| rótulo "MÍDIA" | 11px | 700 | branco 40% |
+| "Jogando no PS5" | 12,5px | 550 | branco 82% |
+
+Hierarquia na ordem certa — o rótulo recua, o dado vivo avança — e acima do piso
+de 11px fixado na auditoria. Sem transbordo. As três peças originais do deck
+seguem na posição (verificado por asserção no próprio script).
