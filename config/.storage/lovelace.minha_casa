@@ -7836,6 +7836,317 @@
           "type": "panel",
           "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
           "show_icon_and_title": true
+        },
+        {
+          "title": "Planta",
+          "path": "planta",
+          "icon": "mdi:floor-plan",
+          "type": "panel",
+          "background": "center center / cover no-repeat fixed url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=1920&q=80')",
+          "show_icon_and_title": true,
+          "cards": [
+            {
+              "type": "custom:floor3d-card",
+              "path": "/local/",
+              "objfile": "casa3d.glb",
+              "backgroundColor": "#0a0d12",
+              "globalLightPower": 0.35,
+              "shadow": "no",
+              "header": "no",
+              "entities": [
+                {
+                  "entity": "sensor.luzes_quarto_do_luca",
+                  "type3d": "color",
+                  "object_id": "piso_quarto_luca",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_sala_de_estar",
+                  "type3d": "color",
+                  "object_id": "piso_sala",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_closet",
+                  "type3d": "color",
+                  "object_id": "piso_closet",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_banheiro",
+                  "type3d": "color",
+                  "object_id": "piso_banheiro",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_copa",
+                  "type3d": "color",
+                  "object_id": "piso_copa",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "light.luz_quarto",
+                  "type3d": "color",
+                  "object_id": "piso_quarto",
+                  "colorcondition": [
+                    {
+                      "state": "on",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_banheiro",
+                  "type3d": "color",
+                  "object_id": "piso_banheiro_2",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "sensor.luzes_cozinha",
+                  "type3d": "color",
+                  "object_id": "piso_cozinha",
+                  "colorcondition": [
+                    {
+                      "state": "1",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "2",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "3",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "4",
+                      "color": "#FF9F0A"
+                    },
+                    {
+                      "state": "5",
+                      "color": "#FF9F0A"
+                    }
+                  ]
+                },
+                {
+                  "entity": "light.quarto_luca_switch_1",
+                  "type3d": "light",
+                  "object_id": "luz_quarto_luca_switch_1",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.luz_sala",
+                  "type3d": "light",
+                  "object_id": "luz_luz_sala",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.painel",
+                  "type3d": "light",
+                  "object_id": "luz_painel",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.closet_switch_1",
+                  "type3d": "light",
+                  "object_id": "luz_closet_switch_1",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.led_escritorio_sonoff_1001dff472",
+                  "type3d": "light",
+                  "object_id": "luz_led_escritorio_sonoff_1001dff472",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "switch.banheiro_switch_1",
+                  "type3d": "light",
+                  "object_id": "luz_banheiro_switch_1",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "switch.banheiro_switch_2",
+                  "type3d": "light",
+                  "object_id": "luz_banheiro_switch_2",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.cozinha_copa_varanda_switch_2",
+                  "type3d": "light",
+                  "object_id": "luz_cozinha_copa_varanda_switch_2",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.luz_quarto",
+                  "type3d": "light",
+                  "object_id": "luz_luz_quarto",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                },
+                {
+                  "entity": "light.cozinha_copa_varanda_switch_1",
+                  "type3d": "light",
+                  "object_id": "luz_cozinha_copa_varanda_switch_1",
+                  "light": {
+                    "lumens": 900,
+                    "color": "#FF9F0A"
+                  }
+                }
+              ]
+            }
+          ]
         }
       ],
       "background": {

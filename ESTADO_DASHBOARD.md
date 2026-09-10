@@ -3346,3 +3346,65 @@ que o problema era estrutural do fluxo de login, não de configuração.
 Tudo o mais permanece pronto e validado para quando houver credencial que passe:
 integração instalada, compatibilidade do MC1808 confirmada, `force_api: dreame`,
 IP e região corretos, token testado contra o aparelho, identidade estabilizada.
+
+## Planta 3D interativa (10/09/2026)
+
+Página **"Planta"** (view 11) com o modelo da casa em 3D, onde o piso de cada
+cômodo acende quando há luz ligada nele.
+
+⚠️ **Mudança de regra**: a planta 2D/3D era território do `dashboard-app`. O
+André decidiu que a versão 3D entra no **Lovelace**, pelo `floor3d-card` que já
+estava instalado aqui. A memória do projeto foi atualizada.
+
+### Por que gerar o modelo em vez de converter
+
+O `floor3d-card` liga entidade a **objeto nomeado** (`object_id`). Os dois
+arquivos entregues não serviam:
+
+| arquivo | conteúdo | problema |
+| --- | --- | --- |
+| `Meu novo projeto.ifc` (magicplan, 39 KB) | 18 paredes, 6 portas, 4 janelas | tudo nomeado "Wall"/"Door"/"Window", **zero `IFCSPACE`** |
+| `…Andar Térreo.usdz` (5,6 MB) | malha com texturas | bloco anônimo — extraí a tabela de nomes: só ruído |
+
+E a máquina não tem Blender nem biblioteca 3D (`pxr`, `usd`, `trimesh`,
+`ifcopenshell` — todas ausentes). Então `scripts/planta3d.py` **gera o GLB do
+zero** a partir do IFC, em Python puro: GLB é um cabeçalho JSON mais um buffer
+binário. Como a geometria é construída aqui, os nomes são decididos por nós — e
+o modelo fica **regenerável**.
+
+**19 objetos nomeados**: `paredes`, 8 × `piso_<cômodo>`, 10 × `luz_<entidade>`.
+Modelo de 58 KB, 7,81 × 2,70 × 11,39 m.
+
+### Como os cômodos foram identificados
+
+O IFC não tem ambientes. Detectei-os por **componentes conexos** na planta 2D
+renderizada: cada região fechada e cercada por paredes é um cômodo. Filtro de
+área ≥ 1,2 m² **e** menor lado ≥ 0,6 m — sem o segundo critério entram as 30
+frestas entre as linhas duplas das paredes. Resultado: 8 regiões, que o André
+nomeou.
+
+O Banheiro aparece como **duas regiões** (a parede entre elas é a divisória do
+box), então tem `piso_banheiro` e `piso_banheiro_2`, ambos ligados ao mesmo
+sensor.
+
+Não estão nesta planta: **Lavanderia, Área Gourmet e Circulação** — o
+escaneamento é só do térreo.
+
+### A cor do piso vem do sensor de contagem
+
+Preferi `sensor.luzes_<cômodo>` a amarrar o piso a uma única lâmpada: o sensor
+já resolve "qualquer luz acesa", o que importa em cômodos com duas. O **Quarto**
+é a exceção — não tem sensor de contagem, porque até ontem não tinha luz alguma;
+usa `light.luz_quarto` direto.
+
+### ⚠️ O bug que quase passou: material compartilhado
+
+Na primeira versão todos os objetos apontavam para o **mesmo material**. O card
+troca a cor mexendo no material, então ou repintaria a casa inteira ou nada —
+e o resultado foi nada: os pisos ficaram brancos mesmo com o Closet aceso.
+
+Corrigido com **um material por objeto** (19 materiais). Confirmado na tela: o
+piso do cômodo aceso fica laranja, os demais brancos.
+
+Outro deslize corrigido: `piso_banheiro_2` entrou duas vezes no mapeamento,
+porque o laço principal já o tratava e um bloco extra repetiu.
