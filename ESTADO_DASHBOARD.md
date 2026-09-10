@@ -3206,3 +3206,60 @@ E uma verificação minha que deu falso negativo: usei `^chave:\s*(.*)$` para ve
 se a senha fora preenchida, e `\s` **casa quebra de linha** — o padrão pulou para
 a linha seguinte, vazia, e reportou "pendente" quando já estava lá. Para ler
 valor na mesma linha, `[ \t]*`, nunca `\s*`.
+
+### A causa raiz do login que nunca colava (10/09/2026)
+
+Depois de duas hipóteses erradas minhas — primeiro o OAuth, depois a verificação
+em duas etapas da conta — fui capturar a resposta bruta do servidor, rodando o
+login com a **própria classe da integração**. A Xiaomi respondeu:
+
+```
+code: 0        description: 成功 (sucesso)
+securityStatus: 16
+notificationUrl: <página de verificação>
+```
+
+⚠️ **A senha sempre esteve certa.** O que a Xiaomi pedia era validar a *origem*
+do login. E aí veio o achado que explica tudo:
+
+```python
+def generate_device_id() -> str:
+    return "".join((chr(random.randint(97, 122)) for _ in range(6)))
+```
+
+O extractor **sorteia um identificador de aparelho a cada login** — e o agente
+também. Para a Xiaomi, toda tentativa era um **aparelho novo**, e conta com
+verificação de origem exige validação a cada aparelho novo. Um laço fechado:
+validar nunca resolvia, porque a tentativa seguinte já era outro aparelho. Foi
+por isso que a verificação de 01:25 funcionou e o restart seguinte falhou.
+
+**Correção**: `generate_device_id` e `generate_agent` passaram a devolver valores
+fixos, em `common/xiaomi_cloud_connector.py`. Com identidade estável, uma
+validação basta e vale para as próximas.
+
+⚠️ **É um patch em código de terceiro.** Uma atualização do HACS reescreve o
+arquivo e o problema volta. O original está preservado ao lado como
+`xiaomi_cloud_connector.py.original`.
+
+Efeito imediato: a câmera passou a expor o atributo **`url_2fa`** com a página de
+verificação — o caminho correto que a integração prevê, e que antes nem chegava a
+aparecer porque o erro morria como "check credentials".
+
+### Duas outras correções de configuração
+
+⚠️ `force_api: dreame` — sem isso o extractor tenta descobrir o tipo pedindo o
+nome do mapa ao aparelho por **miIO local**, comando que o mc1808 recusa
+("Unable to recover failed command"). Declarado o tipo, ele usa `DreameVacuum`,
+cujo `should_get_map_from_vacuum()` é `False`: pula a chamada local e busca o
+mapa direto da nuvem.
+
+⚠️ `scan_interval` de 5 → 15 s. Com as tentativas do extractor, cada ciclo
+estourava o intervalo e enchia o log de *"took longer than the scheduled update
+interval"*.
+
+### O token estava certo o tempo todo
+
+Testado isoladamente pelo `python-miio`, sem nuvem:
+`LOCAL OK -> dreame.vacuum.mc1808, firmware 4.3.3_1122`.
+O "Unable to recover failed command" era consequência do login de nuvem falhar
+antes, não do token.

@@ -31,8 +31,17 @@
   password: !secret xiaomi_pass
   country: us
   # a cada 5 s é o padrão do projeto; suficiente para acompanhar a varredura
-  scan_interval: 5
+  # ⚠️ 5 s era agressivo demais: com as tentativas do extractor, cada ciclo
+  # estourava o intervalo e enchia o log de "took longer than the scheduled
+  # update interval". 15 s continua de sobra para acompanhar a varredura.
+  scan_interval: 15
   auto_update: true
+  # ⚠️ Sem isto o extractor tenta descobrir o tipo pedindo o nome do mapa ao
+  # aparelho por miIO local -- comando que o mc1808 recusa
+  # ("Unable to recover failed command"). Declarando o tipo, ele usa
+  # DreameVacuum, cujo should_get_map_from_vacuum() e False: pula a chamada
+  # local e busca o mapa direto da nuvem.
+  force_api: dreame
   draw:
     # `all` cobre tudo o que o modelo suporta -- mais seguro que enumerar:
     # a lista de validos nao tem `rooms` (so `room_names`), e errar um item

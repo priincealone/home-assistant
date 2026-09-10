@@ -25,6 +25,13 @@
             "should_expose": false
           }
         }
+      },
+      "camera.mapa_do_aspirador": {
+        "assistants": {
+          "conversation": {
+            "should_expose": false
+          }
+        }
       }
     }
   }

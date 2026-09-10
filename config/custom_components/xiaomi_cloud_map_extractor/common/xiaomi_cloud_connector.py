@@ -288,17 +288,23 @@ class XiaomiCloudConnector:
         nonce_bytes = os.urandom(8) + (int(millis / 60000)).to_bytes(4, byteorder='big')
         return base64.b64encode(nonce_bytes).decode()
 
+    # ⚠️ PATCH LOCAL — identidade estável (ver ESTADO_DASHBOARD.md).
+    # No original, agent e device_id eram sorteados a cada login. Para a Xiaomi,
+    # cada tentativa parecia um aparelho novo, e uma conta com verificação de
+    # origem exige validação a cada aparelho novo — o que tornava o login
+    # impossível de estabilizar: verificar nunca resolvia, porque a tentativa
+    # seguinte já era "outro aparelho". Fixando os dois, uma verificação basta.
+    # Uma atualização do HACS reescreve este arquivo e o problema volta;
+    # o original está em xiaomi_cloud_connector.py.original.
     @staticmethod
     def generate_agent() -> str:
-        agent_id = "".join(
-            map(lambda i: chr(i), [random.randint(65, 69) for _ in range(13)])
-        )
-        random_text = "".join(map(lambda i: chr(i), [random.randint(97, 122) for _ in range(18)]))
+        agent_id = "EDCBAEDCBAEDC"
+        random_text = "casahomeassistant"
         return f"{random_text}-{agent_id} APP/com.xiaomi.mihome APPV/10.5.201"
 
     @staticmethod
     def generate_device_id() -> str:
-        return "".join((chr(random.randint(97, 122)) for _ in range(6)))
+        return "hacasa"
 
     @staticmethod
     def generate_signature(url, signed_nonce: str, nonce: str, params: Dict[str, str]) -> str:
