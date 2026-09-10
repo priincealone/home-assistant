@@ -3306,3 +3306,43 @@ cada 15 s alimenta exatamente esse estado.
 
 Tudo o mais já está pronto e validado: integração instalada, `force_api: dreame`,
 `host` e `country` corretos, token conferido localmente, identidade estável.
+
+### Mapa do aspirador: inviável por este caminho (10/09/2026)
+
+Rodado o procedimento completo, com 8 horas de descanso da conta:
+
+1. Include reativado → reiniciado → **pediu verificação já na primeira tentativa**
+2. André confirmou o código
+3. **Reiniciado logo em seguida** — o passo que faltava ontem
+4. Resultado: **`url_2fa` de novo**
+
+⚠️ **A hipótese da "conta esquentada" estava errada.** As 8 horas não mudaram
+nada: a Xiaomi pediu verificação na primeira tentativa do dia. Não é penalidade
+temporária por excesso de logins — é o comportamento fixo dessa conta com
+clientes de terceiros que fazem login por senha.
+
+Descartado também o caminho mais elegante: a integração **oficial**
+`xiaomi_home`, que autentica por OAuth e funciona, **não tem plataforma de
+câmera** — só uma entidade `vacuum`. Ela não sabe renderizar mapa.
+
+**Conclusão**: o mapa exige o extractor; o extractor exige login por senha; essa
+conta exige verificação a cada login por senha. O laço não fecha.
+
+O extractor foi desligado de novo (`camera: !include` comentado) para não tentar
+a cada 15 s indefinidamente.
+
+**O que ainda poderia funcionar**, em ordem de probabilidade:
+
+1. **Conta Xiaomi secundária** com o aspirador compartilhado, sem o mesmo
+   endurecimento de segurança. É o contorno padrão da comunidade para este caso.
+2. Procurar em `account.xiaomi.com` → segurança alguma opção específica de
+   *proteção de login* / *dispositivos confiáveis*, separada da verificação em
+   duas etapas que já foi desativada.
+
+Custo já pago que não deve se repetir: **quatro códigos de verificação digitados
+pelo André** em duas sessões, nenhum resolvendo. Eu deveria ter percebido antes
+que o problema era estrutural do fluxo de login, não de configuração.
+
+Tudo o mais permanece pronto e validado para quando houver credencial que passe:
+integração instalada, compatibilidade do MC1808 confirmada, `force_api: dreame`,
+IP e região corretos, token testado contra o aparelho, identidade estabilizada.
