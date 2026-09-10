@@ -2891,3 +2891,31 @@ aparelho que só aparece após trocar a região no app.
 
 Os três dispositivos caíram todos na área **Closet**, herdada dos cômodos do Mi
 Home. "Luminária Luca" quase certamente pertence ao **Quarto do Luca**.
+
+### Áreas dos dispositivos Xiaomi corrigidas (09/09/2026)
+
+Tudo veio na área **Closet**, herdada dos cômodos do Mi Home. Corrigido por
+`scripts/lovelace/areas_xiaomi.py`, com a localização informada pelo André:
+
+| dispositivo | de | para |
+| --- | --- | --- |
+| Luminária Luca | Closet | **Quarto Luca** |
+| Roteador (nó principal) | Closet | Closet (já estava certo) |
+| rd15_minet_4138 | Closet | **Sala de estar** |
+
+⚠️ **É uma rede mesh, e isso invalidou a evidência que eu tinha.** Eu ia inferir
+a localização pelos aparelhos conectados — 24 num nó, 0 no outro, com o MAC do PC
+na lista do "Roteador". Mas em malha o nó principal reporta os clientes da rede
+**inteira** e o satélite reporta zero: o número não localiza nada, e a presença
+do MAC do PC não prova proximidade. Quem desempatou foi o André.
+
+⚠️ **O nome da luminária tem espaço à direita** (`'Luminária Luca '`). A primeira
+execução casou nomes sem `strip()`, não a encontrou e abortou **com o container
+já parado**. Duas lições: comparar nomes vindos de integração sempre com
+`strip()`, e pôr as validações **antes** do `docker stop`, não depois.
+
+As 7 entidades da luminária estão `unavailable`, coerente com ela estar
+desligada. Nada foi desativado nem oculto — quando voltar à tomada, aparece
+sozinha.
+
+Verificado: HA `RUNNING`, `xiaomi_home` viva, 273 entidades.
