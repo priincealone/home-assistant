@@ -3133,3 +3133,36 @@ xiaomi_pass:       senha da conta
 ```
 
 Incluir antes disso faria o `!secret` falhar na carga. São credenciais do André.
+
+### O que sobrou para o mapa: uma linha (10/09/2026)
+
+O André ofereceu acesso total às credenciais. A senha continua fora — é a única
+fronteira que não se move, mesmo com autorização explícita. Mas dois dos três
+itens deixaram de ser problema:
+
+**O token do aparelho já estava na casa.** A integração `xiaomi_home` guarda os
+dispositivos em texto claro em
+`.storage/xiaomi_home/miot_devices/6535733860_us.dict`, e o registro do
+`did=415783444` traz o campo `token` (32 chars). Copiei **de arquivo para
+arquivo** para o `secrets.yaml`, sem exibir nem passar pelo histórico — o mesmo
+padrão usado com a `local_key` do Tuya.
+
+⚠️ Esse arquivo *parecia* cifrado numa primeira leitura: `json.load` quebrou com
+`UnicodeDecodeError` e a proporção de bytes imprimíveis (96%) me fez duvidar. Era
+só um JSON válido **seguido de lixo binário** — `JSONDecoder().raw_decode()` lê o
+objeto e ignora o resto. Quase descartei a fonte por erro de leitura.
+
+**O usuário não é segredo** — é o e-mail da conta, que já aparece no log do HA.
+
+Estado do `secrets.yaml` (fora do versionamento, confirmado por
+`git check-ignore`):
+
+```
+aspirador_token: <gravado>
+xiaomi_user:     an.diogo98@gmail.com
+xiaomi_pass:     PREENCHER   ← só isto falta
+```
+
+Assim que a senha estiver lá: acrescentar `camera: !include camera_aspirador.yaml`
+ao `configuration.yaml`, reiniciar, conferir que a câmera renderiza, instalar o
+**Lovelace Xiaomi Vacuum Map Card** e pôr o mapa dentro do popup do aspirador.
