@@ -3437,3 +3437,36 @@ nº 2 da auditoria: no celular ele transforma o iframe numa janela quadrada de
 375 px de altura para um app que precisa de 1604.
 
 Verificado depois: `check_config` válido, 338 entidades, três dashboards.
+
+### O app também removido (10/09/2026)
+
+Pedido do André: fica só o projeto sendo trabalhado no Antigravity.
+
+| | |
+| --- | --- |
+| container `painel-casa` | parado e removido |
+| imagem `painel-casa:latest` | removida (**290 MB** liberados) |
+| porta 3001 | fora do ar |
+| containers restantes | `homeassistant`, `anisette` |
+
+Levantado antes de remover: o container **não tinha volume nenhum** — todo o
+estado vive no código-fonte, então remover não perde nada. E tinha política
+`unless-stopped`, ou seja, voltaria sozinho no próximo boot do Docker se
+apenas parado; por isso foi **removido**, não só parado.
+
+⚠️ **O código-fonte está intacto**: `dashboard-app/` inteiro, com o commit
+`a772665` e as 49 alterações não commitadas do trabalho no Antigravity. Nada ali
+foi tocado — a regra de nunca editar esse diretório continua valendo.
+
+Para resubir: `docker build` no `dashboard-app/` e recriar o container na 3001,
+depois recolocar a dashboard a partir de
+`backups/lovelace.painel_casa.bak_removido`.
+
+**Duas redes órfãs ficaram**, e não foram removidas por precaução:
+
+- `casa-net` — só o `homeassistant` restou nela, ligado ali por causa do painel.
+  Desconectar exige mexer na rede do HA em produção; sem ganho real.
+- `ma-net` — vazia, resíduo da tentativa do Music Assistant.
+
+Limpar as duas é seguro quando houver conveniência, com
+`docker network rm ma-net` e, para a `casa-net`, desconectar o HA antes.
