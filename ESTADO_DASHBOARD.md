@@ -2466,3 +2466,48 @@ integração conversa direto com `192.168.31.245`. Essa é a fonte confiável.
 
 O MAC do PC bate com o já gravado na integração **Wake on LAN** — confirmação
 cruzada. Ambos vieram da tabela ARP do Windows, não do scanner.
+
+### A automação do PS5 ficou surda — e por quê (09/09/2026)
+
+A primeira versão decidia por `condition: trigger` (qual gatilho disparou). Isso
+a quebrou de um jeito que só apareceu em uso real:
+
+```
+00:10:16  PS5 -> off          (o `for: 2min` começa, terminaria ~00:12:50)
+00:12:17  container reinicia  (para o rename da tomada)
+```
+
+O restart **matou o temporizador pendente**. Ao voltar, o Home Assistant viu o
+console já em `off` — estado assentado, sem transição nova — então nada rearmou o
+gatilho. A ventilação teria ficado ligada **indefinidamente**, e nenhum log
+acusaria erro: a automação simplesmente nunca mais dispararia.
+
+⚠️ **Lição geral, não só desta automação**: gatilho de estado com `for:` perde o
+temporizador em qualquer reinício, e um estado que já estava assentado não gera
+transição nova. Automação que decide por `condition: trigger` fica surda depois
+de um restart. Como aqui o `.storage` é editado com frequência — e cada edição
+exige parar o container — esse cenário não é raro, é rotina.
+
+**A correção**: a decisão passou a ser tomada pelo **estado atual do console**,
+não pelo gatilho, e foram acrescentados dois gatilhos de rede de segurança:
+
+| gatilho | para quê |
+| --- | --- |
+| estado → `on`/`playing` | liga na hora |
+| estado → ocioso, `for: 2min` | desliga com a folga contra oscilação |
+| `homeassistant` / `start` | reconcilia logo após qualquer reinício |
+| `time_pattern` a cada 5 min | rede de segurança para transições perdidas |
+
+O ramo de desligar usa condição de template — `not in ['on','playing']` **e**
+`last_changed` há mais de 120 s — para que os gatilhos de reconciliação não
+atropelem a folga de 2 minutos.
+
+**Teste dos dois ramos, agora completo**:
+
+| ramo | resultado |
+| --- | --- |
+| entrar em uso | ✅ ventilação `off` → `on` |
+| sair de uso | ✅ ventilação `on` → `off`, com o console em `off` |
+
+O segundo virou testável justamente por causa da mudança: como as condições
+olham estado e não gatilho, `automation.trigger` manual é um teste válido.

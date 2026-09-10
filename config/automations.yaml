@@ -1,15 +1,24 @@
 - id: '1757462400000'
   alias: Ventilação do PS5 acompanha o console
   description: >-
-    Liga a tomada do ventilador externo quando o PS5 entra em uso e desliga
-    quando ele sai. O socket_1 é o ventilador (confirmado pelo André); o
-    socket_2 fica de fora.
+    Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5
+    entra em uso e desliga quando ele sai.
 
-    O desligamento espera 2 minutos porque um dos estados que o dispara é
-    "unavailable", e a integração do PS5 fala por rede: uma oscilação de
-    segundos marcaria o console como fora do ar e cortaria a ventilação com ele
-    ainda quente. Ligar não tem espera — aí o atraso seria justamente o que se
-    quer evitar.
+    Duas decisões que não são óbvias:
+
+    1. O desligar espera 2 minutos. "unavailable" é um dos estados que o dispara,
+    e a integração do PS5 fala por rede — uma oscilação de segundos cortaria a
+    ventilação com o console ainda quente. Ligar não tem espera, aí o atraso
+    seria justamente o que se quer evitar.
+
+    2. A decisão é tomada pelo **estado atual** do console, não por qual gatilho
+    disparou. A primeira versão usava `condition: trigger` e ficou surda: o PS5
+    foi para "off" às 00:10:16, o container reiniciou às 00:12:17 e o
+    temporizador pendente de 2 minutos morreu junto. Ao voltar, o console já
+    estava "off" — sem transição nova, nada rearmava, e a ventilação teria ficado
+    ligada indefinidamente. Com a decisão baseada em estado, mais os gatilhos de
+    partida do Home Assistant e de tempo, a automação se reconcilia sozinha em no
+    máximo 5 minutos, aconteça o que acontecer.
   mode: single
   triggers:
     - trigger: state
@@ -17,7 +26,7 @@
       to:
         - 'on'
         - playing
-      id: em_uso
+      id: entrou_em_uso
     - trigger: state
       entity_id: media_player.sala_de_estar_ps5
       to:
@@ -26,20 +35,35 @@
         - idle
         - unavailable
       for: '00:02:00'
-      id: fora_de_uso
+      id: saiu_de_uso
+    - trigger: homeassistant
+      event: start
+      id: partida
+    - trigger: time_pattern
+      minutes: /5
+      id: reconciliacao
   conditions: []
   actions:
     - choose:
-        - conditions:
-            - condition: trigger
-              id: em_uso
+        - alias: Console em uso — ventilação ligada
+          conditions:
+            - condition: state
+              entity_id: media_player.sala_de_estar_ps5
+              state:
+                - 'on'
+                - playing
           sequence:
             - action: switch.turn_on
               target:
                 entity_id: switch.ventilacao_ps5
-        - conditions:
-            - condition: trigger
-              id: fora_de_uso
+        - alias: Console fora de uso há mais de 2 minutos — ventilação desligada
+          conditions:
+            - condition: template
+              value_template: >-
+                {% set ps5 = states.media_player.sala_de_estar_ps5 %}
+                {{ ps5 is not none
+                   and ps5.state not in ['on', 'playing']
+                   and (now() - ps5.last_changed).total_seconds() > 120 }}
           sequence:
             - action: switch.turn_off
               target:
