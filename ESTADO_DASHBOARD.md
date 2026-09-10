@@ -2851,3 +2851,43 @@ exatamente por isso que ela é a próxima tentativa.
 
 O `xiaomi_miot` fica instalado, sem entrada de configuração, como plano B pelo
 caminho de **host/token** (por aparelho, 100% local).
+
+### Vínculo Xiaomi concluído (09/09/2026)
+
+A integração **oficial** entrou: `xiaomi_home` carregada, **248 → 273 entidades**.
+
+| dispositivo | modelo | entidades |
+| --- | --- | --- |
+| Luminária Luca | `yeelink.light.bslamp2` (Yeelight Bedside Lamp 2) | 7 |
+| Roteador | `xiaomi.router.rd15` — 24 conectados, 364 KB/s | 9 |
+| rd15_minet_4138 | `xiaomi.router.rd15` (nó mesh, 0 conectados) | 9 |
+
+⚠️ **A região da conta era `cn` (China) o tempo todo** — os `entity_id` saem como
+`xiaomi_cn_771718035_...`. Nem Singapura, nem Estados Unidos, que foram as duas
+que tentamos às cegas com a integração anterior. Lição: **não adivinhar região**;
+ou o app informa, ou se usa a integração oficial, cujo fluxo lista as casas.
+
+**O que finalmente destravou**, na ordem: `internal_url` definida → integração
+oficial instalada → `homeassistant.local` resolvendo pelo `hosts`
+(`127.0.0.1  homeassistant.local`, escrito pelo André num PowerShell elevado) →
+OAuth com endereço de retorno alcançável.
+
+⚠️ O endereço de retorno é **fixo no código** da integração
+(`OAUTH_REDIRECT_URL = 'http://homeassistant.local:8123'`, `miot/const.py:135`) e
+o formulário oferece só ele. A `internal_url` **não** é usada para isso — foi
+hipótese minha que se mostrou incompleta. O que resolve é o nome resolver.
+
+⚠️ Como o HA guarda sessão **por endereço**, foi preciso fazer login de novo ao
+abrir `homeassistant.local:8123`.
+
+### Um segundo servidor para o dispositivo que faltou
+
+O `unique_id` da integração é `f'{cloud_server}{uid}'` (`config_flow.py:557`) —
+**inclui o servidor**. Logo, a mesma conta em outra região gera identificador
+diferente e o HA aceita **duas entradas lado a lado**. É o caminho para o
+aparelho que só aparece após trocar a região no app.
+
+### Pendente de arrumação
+
+Os três dispositivos caíram todos na área **Closet**, herdada dos cômodos do Mi
+Home. "Luminária Luca" quase certamente pertence ao **Quarto do Luca**.
