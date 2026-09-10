@@ -2591,3 +2591,53 @@ continua desenhando "TV Sala de Estar — Ligado · 10%" com o controle de volum
 
 Resultado para o André: **uma TV na lista de dispositivos**, com a de nuvem
 alimentando o painel por trás.
+
+## Informação em tempo real de mídia: o que dá e o que não dá (09/09/2026)
+
+Pergunta do André: as mídias expõem o que está sendo consumido — conteúdo na TV,
+jogo no PS5? Medido com console e TV ligados, e com um jogo aberto.
+
+| entidade | expõe | conteúdo em uso |
+| --- | --- | --- |
+| `media_player.sala_de_estar_ps5` | `state`, "pode ligar" | ❌ nada |
+| `media_player.tv_un65du8000gxzd` (local) | volume, mudo, `source_list` | ❌ nem a fonte atual |
+| `media_player.sala_de_estar_tv` (nuvem) | volume, **`source: hdmi1`**, app `com.samsung.tv.csfs` | ⚠️ parcial |
+
+As automações não têm relação com isso — o limite é o que cada integração publica.
+
+### PS5: a integração suporta, o console não entrega
+
+`media_player.py` **já implementa** `media_title` e `media_content_id`, lendo
+`running-app-name` e `running-app-titleid` do DDP. Mas o diagnóstico da própria
+integração, com um jogo aberto, devolve:
+
+```json
+{"on": true, "standby": false, "host_name": "PS5-115",
+ "title_id": null, "title_name": null, "system_version": "13600007"}
+```
+
+⚠️ **É o console que não anuncia o app em execução pelo DDP** — diferente do PS4,
+que anunciava. Não é ajustável do nosso lado. E o módulo `psn/` da integração faz
+**só autenticação** (obter o `account_id` para a credencial de wakeup); não tem
+API de presença, então também não serve para pegar o título.
+
+Caminho que funcionaria: uma integração de **presença da PSN** (ex.
+`ha-playstation-network`, do HACS), que consulta a conta em vez do console e
+reporta o `titleName`. Exige o token NPSSO da conta.
+
+### ⚠️ Por que meus scanners de rede davam falso negativo
+
+O código da integração revela: ela **liga a porta de origem em 987**
+(`src_port: int = DDP_SRCH_PORT`). O console **só responde a quem pergunta dessa
+porta**. Todos os meus probes usavam porta efêmera — por isso o `ps5_wait.py`
+varreu a LAN duas vezes sem achar nada com o console ligado, e por isso a sonda
+de dentro do container também deu timeout.
+
+Qualquer sonda DDP futura precisa fazer `bind(('', 987))` na origem.
+
+### O que dá para construir hoje
+
+1. **"TV em: HDMI 1 / TV aberta"** — traduzir `source` da entidade de nuvem.
+2. **Contexto cruzado**: TV em `hdmi1` + PS5 `on` = "jogando no PS5". Sensor de
+   template, sem integração nova.
+3. O **título do jogo** só com a integração de presença da PSN.
