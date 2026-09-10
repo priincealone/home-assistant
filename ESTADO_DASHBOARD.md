@@ -3166,3 +3166,43 @@ xiaomi_pass:     PREENCHER   ← só isto falta
 Assim que a senha estiver lá: acrescentar `camera: !include camera_aspirador.yaml`
 ao `configuration.yaml`, reiniciar, conferir que a câmera renderiza, instalar o
 **Lovelace Xiaomi Vacuum Map Card** e pôr o mapa dentro do popup do aspirador.
+
+### Mapa ativado: token bom, nuvem barrada (10/09/2026)
+
+`camera.mapa_do_aspirador` existe. Mas o log trouxe **dois erros diferentes**, e
+separá-los mudou o diagnóstico:
+
+```
+Unable to log in, check credentials        -> login na NUVEM
+Unable to recover failed command           -> comando LOCAL
+```
+
+**O local não estava quebrado.** Testando o token direto pelo `python-miio`,
+sem tocar na nuvem:
+
+```
+LOCAL OK -> modelo=dreame.vacuum.mc1808  firmware=4.3.3_1122  hardware=Linux
+```
+
+O token que copiei do armazenamento da `xiaomi_home` está **correto**. O
+"failed command" era consequência do login de nuvem ter falhado antes.
+
+⚠️ **A causa provável é a verificação em duas etapas da conta.** O
+`xiaomi_miot` bateu em `need_verify` duas vezes hoje com essa mesma conta, e o
+extractor faz login por usuário e senha **sem nenhum passo de verificação** —
+não há onde digitar o código. Só o OAuth da integração oficial passou por esse
+obstáculo.
+
+Duas correções ao longo do caminho, ambas minhas:
+
+⚠️ **`draw: - rooms` não existe** — a lista de válidos tem `room_names`. Um item
+inválido derruba a plataforma inteira na carga. Trocado por `- all`.
+
+⚠️ **A senha começa com `@`**, caractere reservado em YAML como primeiro de um
+escalar. Sem aspas, ela quebrava a carga do `configuration.yaml` inteiro — não
+só a câmera. Citada com aspas simples.
+
+E uma verificação minha que deu falso negativo: usei `^chave:\s*(.*)$` para ver
+se a senha fora preenchida, e `\s` **casa quebra de linha** — o padrão pulou para
+a linha seguinte, vazia, e reportou "pendente" quando já estava lá. Para ler
+valor na mesma linha, `[ \t]*`, nunca `\s*`.

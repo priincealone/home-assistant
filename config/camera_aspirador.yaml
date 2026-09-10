@@ -34,26 +34,14 @@
   scan_interval: 5
   auto_update: true
   draw:
-    - charger        # base de carregamento
-    - vacuum_position
-    - path           # por onde já passou
-    - goto_path
-    - predicted_path
-    - no_go_zones
-    - no_mopping_zones
-    - virtual_walls
-    - zones
-    - rooms
-    - room_names
-    - cleaned_area
+    # `all` cobre tudo o que o modelo suporta -- mais seguro que enumerar:
+    # a lista de validos nao tem `rooms` (so `room_names`), e errar um item
+    # derruba a plataforma inteira na carga.
+    - all
   attributes:
-    # necessários para o card de mapa posicionar o robô sobre a imagem
+    # necessarios para o card de mapa posicionar o robo sobre a imagem
     - calibration_points
     - charger
     - vacuum_position
-    - vacuum_room
-    - vacuum_room_name
     - rooms
     - image
-    - is_empty
-    - map_name
