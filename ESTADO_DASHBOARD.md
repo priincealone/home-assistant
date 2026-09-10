@@ -2919,3 +2919,38 @@ desligada. Nada foi desativado nem oculto — quando voltar à tomada, aparece
 sozinha.
 
 Verificado: HA `RUNNING`, `xiaomi_home` viva, 273 entidades.
+
+### Segunda entrada Xiaomi: o aspirador (09/09/2026)
+
+O aparelho que faltava estava no servidor **`us`**, não numa região "Brasil" —
+que não existe na lista da integração (`cn`, `de`, `i2`, `ru`, `sg`, `us`).
+"Brasil" no app é o **país** da conta; ele mapeia para um desses seis.
+
+A segunda entrada entrou lado a lado com a primeira, como o código previa
+(`unique_id = servidor + conta`). **273 → 347 entidades.**
+
+| dispositivo | modelo | servidor | área | entidades |
+| --- | --- | --- | --- | --- |
+| **Aspirador** | `dreame.vacuum.mc1808` | us | Closet | **64** |
+| **Repetidor** | `xiaomi.repeater.v6` | us | *Atelier Amelia* | 10 |
+| Roteador | `xiaomi.router.rd15` | cn | Closet | 9 |
+| rd15_minet_4138 | `xiaomi.router.rd15` | cn | Sala de estar | 9 |
+| Luminária Luca | `yeelink.light.bslamp2` | cn | Quarto Luca | 7 |
+
+O aspirador responde: `vacuum.…mc1808` em `idle`, bateria **100% carregando**,
+`No faults`, 307 limpezas e 10.968 m² acumulados.
+
+⚠️ **Correção de uma leitura minha**: contei entidades por servidor procurando
+`_de_` no `entity_id` e achei "80 na Europa". Era **falso positivo** —
+`iphone_de_andre` e `ipad_de_andre` contêm `_de_`. A contagem correta usa o
+padrão `<marca>_<servidor>_<id>_`: **cn 25, us 74**, mais nenhum.
+
+### Duas coisas para decidir
+
+1. **Uma área nova apareceu**: *Atelier Amelia*, criada pela integração a partir
+   do nome do cômodo no Mi Home daquela conta/região. As áreas passaram de 10
+   para 11, e o Repetidor caiu nela.
+2. **O aspirador traz 64 entidades, 50 delas propriedades cruas do MIoT** — nomes
+   como "Aspirador * clean start-clean", "* audio play-sound". Sobram **14 úteis**:
+   a entidade `vacuum` em si, bateria, estado de carga, falha e a vida dos
+   consumíveis (escovas, filtro). As 50 restantes são ruído nas listagens.
