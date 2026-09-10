@@ -12,4 +12,5 @@ scene: !include scenes.yaml
 template: !include template_sensors.yaml
 
 # Mapa do aspirador com posicao ao vivo (Xiaomi Cloud Map Extractor).
-camera: !include camera_aspirador.yaml
+# DESLIGADO temporariamente: ver ESTADO_DASHBOARD.md.
+# camera: !include camera_aspirador.yaml

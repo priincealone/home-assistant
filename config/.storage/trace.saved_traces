@@ -7,12 +7,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "07322226fb0a77de9606a419713eba79",
+          "run_id": "b88547a748831cae0bdcbef370e83c7b",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T04:29:54.151254+00:00",
-            "finish": "2026-09-10T04:29:54.767533+00:00"
+            "start": "2026-09-10T04:33:27.013991+00:00",
+            "finish": "2026-09-10T04:33:27.626957+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -21,23 +21,23 @@
             "trigger/2": [
               {
                 "path": "trigger/2",
-                "timestamp": "2026-09-10T04:29:54.151296+00:00",
+                "timestamp": "2026-09-10T04:33:27.014067+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T04:25:00.058012+00:00",
+                      "last_triggered": "2026-09-10T04:30:00.092409+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T04:27:08.735868+00:00",
-                    "last_reported": "2026-09-10T04:27:08.735868+00:00",
-                    "last_updated": "2026-09-10T04:27:08.735868+00:00",
+                    "last_changed": "2026-09-10T04:30:42.306443+00:00",
+                    "last_reported": "2026-09-10T04:30:42.306443+00:00",
+                    "last_updated": "2026-09-10T04:30:42.306443+00:00",
                     "context": {
-                      "id": "01M24S3K1ZEJQJS6B59T4DWK9S",
+                      "id": "01M24SA3M2WMA0CKCKVCWXBAWA",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -56,10 +56,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T04:29:54.151446+00:00",
+                "timestamp": "2026-09-10T04:33:27.014326+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M24S8MK7Y5E795BDXYV1ZP9Q",
+                    "id": "01M24SF4F50E3DNJK8K453PS7G",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -72,7 +72,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T04:29:54.151823+00:00",
+                "timestamp": "2026-09-10T04:33:27.014948+00:00",
                 "result": {
                   "result": false
                 }
@@ -81,7 +81,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T04:29:54.151849+00:00",
+                "timestamp": "2026-09-10T04:33:27.014998+00:00",
                 "result": {
                   "result": false
                 }
@@ -90,7 +90,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T04:29:54.151861+00:00",
+                "timestamp": "2026-09-10T04:33:27.015013+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -101,7 +101,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T04:29:54.151898+00:00",
+                "timestamp": "2026-09-10T04:33:27.015051+00:00",
                 "result": {
                   "result": true
                 }
@@ -110,7 +110,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T04:29:54.151906+00:00",
+                "timestamp": "2026-09-10T04:33:27.015061+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -122,7 +122,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T04:29:54.152431+00:00",
+                "timestamp": "2026-09-10T04:33:27.016084+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -225,19 +225,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M24S8MK7Y5E795BDXYV1ZP9Q",
+            "id": "01M24SF4F50E3DNJK8K453PS7G",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "07322226fb0a77de9606a419713eba79",
+          "run_id": "b88547a748831cae0bdcbef370e83c7b",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T04:29:54.151254+00:00",
-            "finish": "2026-09-10T04:29:54.767533+00:00"
+            "start": "2026-09-10T04:33:27.013991+00:00",
+            "finish": "2026-09-10T04:33:27.626957+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -247,12 +247,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "9c2f7cb01917779f13c680b82b383eff",
+          "run_id": "2ab5ed0790c15796f7a6f8860f46d631",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T04:30:00.092233+00:00",
-            "finish": "2026-09-10T04:30:00.095702+00:00"
+            "start": "2026-09-10T04:35:00.151986+00:00",
+            "finish": "2026-09-10T04:35:01.009062+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -261,23 +261,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T04:30:00.092297+00:00",
+                "timestamp": "2026-09-10T04:35:00.152043+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T04:29:54.151361+00:00",
+                      "last_triggered": "2026-09-10T04:33:27.014189+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T04:27:08.735868+00:00",
-                    "last_reported": "2026-09-10T04:29:54.767270+00:00",
-                    "last_updated": "2026-09-10T04:29:54.767270+00:00",
+                    "last_changed": "2026-09-10T04:30:42.306443+00:00",
+                    "last_reported": "2026-09-10T04:33:27.626691+00:00",
+                    "last_updated": "2026-09-10T04:33:27.626691+00:00",
                     "context": {
-                      "id": "01M24S8MK7Y5E795BDXYV1ZP9Q",
+                      "id": "01M24SF4F50E3DNJK8K453PS7G",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -287,7 +287,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-10T01:30:00.092044-03:00",
+                    "now": "2026-09-10T01:35:00.151829-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -296,10 +296,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T04:30:00.092542+00:00",
+                "timestamp": "2026-09-10T04:35:00.152263+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M24S8TCWXAP7D1AQYWW092EQ",
+                    "id": "01M24SHZDQ4DFR3T6YPKM603KM",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -312,7 +312,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T04:30:00.092592+00:00",
+                "timestamp": "2026-09-10T04:35:00.152313+00:00",
                 "result": {
                   "result": false
                 }
@@ -321,7 +321,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T04:30:00.092609+00:00",
+                "timestamp": "2026-09-10T04:35:00.152329+00:00",
                 "result": {
                   "result": false
                 }
@@ -330,7 +330,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T04:30:00.092633+00:00",
+                "timestamp": "2026-09-10T04:35:00.152340+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -341,7 +341,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T04:30:00.092665+00:00",
+                "timestamp": "2026-09-10T04:35:00.152370+00:00",
                 "result": {
                   "result": true
                 }
@@ -350,7 +350,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T04:30:00.092674+00:00",
+                "timestamp": "2026-09-10T04:35:00.152378+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -362,7 +362,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T04:30:00.092961+00:00",
+                "timestamp": "2026-09-10T04:35:00.152559+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -465,19 +465,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M24S8TCWXAP7D1AQYWW092EQ",
+            "id": "01M24SHZDQ4DFR3T6YPKM603KM",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "9c2f7cb01917779f13c680b82b383eff",
+          "run_id": "2ab5ed0790c15796f7a6f8860f46d631",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T04:30:00.092233+00:00",
-            "finish": "2026-09-10T04:30:00.095702+00:00"
+            "start": "2026-09-10T04:35:00.151986+00:00",
+            "finish": "2026-09-10T04:35:01.009062+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",

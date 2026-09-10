@@ -3263,3 +3263,46 @@ Testado isoladamente pelo `python-miio`, sem nuvem:
 `LOCAL OK -> dreame.vacuum.mc1808, firmware 4.3.3_1122`.
 O "Unable to recover failed command" era consequência do login de nuvem falhar
 antes, não do token.
+
+### Mapa pausado: a conta Xiaomi está exigindo verificação a cada login (10/09/2026)
+
+Depois da identidade estabilizada e de **duas verificações confirmadas pelo
+André**, o extractor voltou a pedir uma terceira. O login não cola.
+
+Duas descobertas no caminho, ambas do código:
+
+⚠️ **A ausência de "Unable to log in" não prova sucesso.** O extractor só emite
+essa mensagem `if self._logged_in_previously` — ou seja, apenas quando já esteve
+logado antes. Numa sequência de falhas desde o boot, ele registra uma vez e cala.
+Cheguei a comemorar o sumiço do erro; era ilusão.
+
+⚠️ **Uma vez em `TWO_FACTOR_AUTH_REQUIRED`, ele nunca mais tenta logar:**
+
+```python
+if self._status != CameraStatus.TWO_FACTOR_AUTH_REQUIRED and not self._logged_in:
+    self._handle_login()
+```
+
+O estado trava até reiniciar. Verificar sem reiniciar não adianta — foi o que
+aconteceu na primeira confirmação.
+
+**A leitura mais provável agora**: a conta acumulou **9 eventos de verificação
+hoje**, entre `xiaomi_miot` e o extractor, mais os logins do vínculo oficial.
+A Xiaomi eleva o `securityStatus` depois de muitas tentativas de origem nova e
+passa a exigir validação **em todo login** por um período. Continuar tentando a
+cada 15 s alimenta exatamente esse estado.
+
+**Por isso o extractor foi desligado**: o `camera: !include` está comentado no
+`configuration.yaml`. Confirmado depois do restart — 0 câmeras, 338 entidades,
+`check_config` válido, aspirador respondendo.
+
+**Para retomar** (algumas horas depois, ou amanhã):
+
+1. Descomentar `camera: !include camera_aspirador.yaml`.
+2. Reiniciar o Home Assistant.
+3. Se pedir verificação: abrir o `url_2fa` do atributo da câmera, confirmar o
+   código, e **reiniciar de novo** — o passo que faltava, por causa do estado
+   travado.
+
+Tudo o mais já está pronto e validado: integração instalada, `force_api: dreame`,
+`host` e `country` corretos, token conferido localmente, identidade estável.
