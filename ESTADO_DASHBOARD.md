@@ -2535,3 +2535,39 @@ reconciliar depois de reinício.
 **bufferizada** — o arquivo de log fica vazio até o processo terminar. Para
 acompanhar em tempo real, consultar a API direto em vez de esperar o log (ou
 lançar com `python -u`).
+
+## Uma TV física, três dispositivos no HA (09/09/2026)
+
+O André notou duas TVs na lista tendo só uma. Eram **três**, e nenhuma era
+engano de cadastro — a mesma TV vista por caminhos diferentes:
+
+| dispositivo | integração | entrega | destino |
+| --- | --- | --- | --- |
+| `Tv` | SmartThings (nuvem) | `media_player` + 7 sensores; **única** com fonte, canal e consumo | → **`TV Sala (nuvem)`** |
+| `Tv (UN65DU8000GXZD)` | SamsungTV (local) | `media_player` + **`remote`**, usado em **30 lugares** do painel | → **`TV Sala (local)`** |
+| `Light Sensor - Tv` | SmartThings | sensor de luz ambiente embutido | desativado |
+
+As duas primeiras ficam: o painel usa as duas de propósito. Consolidar custaria
+ou o controle remoto (que só existe na local) ou fonte/canal/energia (que só
+existem na de nuvem). O que faltava era **o nome dizer qual é qual**.
+
+Renomear o *dispositivo* propaga para o rótulo composto de todas as entidades:
+"Tv Energia" virou "TV Sala (nuvem) Energia". Os `entity_id` não mudam, então
+nada no painel quebrou — `check_config` válido e o `remote` de pé.
+
+### Apagar o sensor de luz saiu pela culatra
+
+Ele estava `disabled_by: user` no dispositivo, com as três entidades
+`disabled_by: device` — desativadas **por causa do pai**. Ao apagar o pai, o
+SmartThings recriou tudo no boot seguinte e as entidades voltaram **ativas**,
+reportando iluminância 92 e brightness 2. A limpeza ressuscitou exatamente o
+que devia sumir.
+
+⚠️ **Apagar um dispositivo reativa os filhos que estavam desativados por ele.**
+A correção foi desativar as **três entidades diretamente** (`disabled_by: user`),
+o que não depende de o dispositivo existir nem de quem é o pai.
+
+É a terceira vez que a mesma lição aparece nesta sessão — depois das cenas do
+banheiro e das duplicatas de nuvem dos ventiladores. Vale como regra do projeto:
+**o que uma integração viva ainda enxerga não se apaga, se desativa.** Apagar do
+registro só funciona para órfão de verdade, sem nada por trás.
