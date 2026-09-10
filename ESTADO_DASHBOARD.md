@@ -2571,3 +2571,23 @@ o que não depende de o dispositivo existir nem de quem é o pai.
 banheiro e das duplicatas de nuvem dos ventiladores. Vale como regra do projeto:
 **o que uma integração viva ainda enxerga não se apaga, se desativa.** Apagar do
 registro só funciona para órfão de verdade, sem nada por trás.
+
+### TV de nuvem oculta da interface (09/09/2026)
+
+As 8 entidades do dispositivo `TV Sala (nuvem)` receberam `hidden_by: user`.
+
+**`hidden_by` não é `disabled_by`.** A entidade continua existindo, com estado, e
+continua respondendo a automações, templates e à API REST — só some das
+listagens automáticas e dos seletores. Cards do Lovelace que a citam
+**explicitamente** seguem renderizando, e é exatamente o caso aqui: o painel usa
+`media_player.sala_de_estar_tv` em 3 lugares (Geral e Sala de Estar).
+
+Não existe `hidden_by` no registro de **dispositivos**, só em entidades — por
+isso a marcação é uma a uma.
+
+Verificado: as ocultas respondem normalmente na API (`on`, `0.0 W`), a TV local
+segue visível com o `remote` intacto, e **na tela** o deck de Mídia da Geral
+continua desenhando "TV Sala de Estar — Ligado · 10%" com o controle de volume.
+
+Resultado para o André: **uma TV na lista de dispositivos**, com a de nuvem
+alimentando o painel por trás.
