@@ -2378,3 +2378,43 @@ ar. Gatilho natural: `media_player.sala_de_estar_ps5` mudando para `on`/`playing
 dois é o ventilador). Depende do console estar ligado para descobrir quais
 estados ele reporta de verdade — em repouso, ligado e jogando — antes de escolher
 o gatilho, senão a ventilação liga quando não deve.
+
+## Primeira automação da casa: ventilação do PS5 (09/09/2026)
+
+`config/automations.yaml` estava literalmente vazio (`[]`) — esta é a primeira.
+
+**O que faz**: liga `switch.smart_socket_with_usb_type_c_3_socket_1` (o
+ventilador externo, confirmado pelo André; o `socket_2` fica de fora) quando
+`media_player.sala_de_estar_ps5` entra em `on`/`playing`, e desliga quando ele
+vai para `standby`/`off`/`idle`/`unavailable`.
+
+**A decisão que não é óbvia**: o desligamento tem `for: 00:02:00`, o ligamento
+não. `unavailable` é um dos estados que dispara o desligar, e a integração do
+PS5 fala por rede — uma oscilação de poucos segundos marcaria o console como
+fora do ar e cortaria a ventilação com ele ainda quente. Já no ligar, atraso
+seria exatamente o que se quer evitar.
+
+**Recarregada sem restart**: `POST /api/services/automation/reload`, depois de
+`POST /api/config/core/check_config` devolver `valid`. Automação em YAML não
+precisa reiniciar o container — diferente de tudo que mexe em `.storage`.
+
+### Teste
+
+Forcei a transição escrevendo o estado do `media_player` pela API
+(`POST /api/states/...`), já que o console estava fixo em `on`:
+
+| | resultado |
+| --- | --- |
+| transição → `on` | ✅ `socket_1` foi de `off` para **`on`**, sem espera |
+| `last_triggered` | ✅ registrado |
+| transição → desligar | ⚠️ **não testado** |
+
+O ramo de desligar não dá para testar com o console ligado: a integração
+repõe o estado real a cada poll, então os 2 minutos do `for:` nunca completam.
+Fica verificado por construção, e será provado na primeira vez que o André puser
+o PS5 em repouso de verdade.
+
+### Ainda em aberto
+
+O `socket_1` continua registrado como **"Socket 1"** no Home Assistant. Já que
+ele é o ventilador, vale um nome legível — mesmo tratamento dado ao "Plafons".

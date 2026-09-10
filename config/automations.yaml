@@ -1,1 +1,46 @@
-[]
+- id: '1757462400000'
+  alias: Ventilação do PS5 acompanha o console
+  description: >-
+    Liga a tomada do ventilador externo quando o PS5 entra em uso e desliga
+    quando ele sai. O socket_1 é o ventilador (confirmado pelo André); o
+    socket_2 fica de fora.
+
+    O desligamento espera 2 minutos porque um dos estados que o dispara é
+    "unavailable", e a integração do PS5 fala por rede: uma oscilação de
+    segundos marcaria o console como fora do ar e cortaria a ventilação com ele
+    ainda quente. Ligar não tem espera — aí o atraso seria justamente o que se
+    quer evitar.
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: media_player.sala_de_estar_ps5
+      to:
+        - 'on'
+        - playing
+      id: em_uso
+    - trigger: state
+      entity_id: media_player.sala_de_estar_ps5
+      to:
+        - standby
+        - 'off'
+        - idle
+        - unavailable
+      for: '00:02:00'
+      id: fora_de_uso
+  conditions: []
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: em_uso
+          sequence:
+            - action: switch.turn_on
+              target:
+                entity_id: switch.smart_socket_with_usb_type_c_3_socket_1
+        - conditions:
+            - condition: trigger
+              id: fora_de_uso
+          sequence:
+            - action: switch.turn_off
+              target:
+                entity_id: switch.smart_socket_with_usb_type_c_3_socket_1
