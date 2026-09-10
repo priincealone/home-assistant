@@ -45,6 +45,13 @@
         "domain": "hacs",
         "is_persistent": false,
         "issue_id": "restart_required_318182014_tags/v1.1.5"
+      },
+      {
+        "created": "2026-09-10T01:29:53.843184+00:00",
+        "dismissed_version": null,
+        "domain": "hacs",
+        "is_persistent": false,
+        "issue_id": "restart_required_854347601_tags/v0.4.7"
       }
     ]
   }

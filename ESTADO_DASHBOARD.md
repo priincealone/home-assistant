@@ -2809,3 +2809,45 @@ palpite meu — e se não for US, a ordem seguinte é **Europe**, depois **India
 Existe também um `OptionsFlowHandler` (`config_flow.py:991`) que expõe
 `CONF_SERVER_COUNTRY`: uma vez criada a entrada, dá para trocar a região por ali,
 sem refazer o fluxo do zero.
+
+### URL interna definida e integração oficial preparada (09/09/2026)
+
+**`internal_url`** saiu de `None` para **`http://192.168.31.22:8123`**
+(`scripts/lovelace/define_internal_url.py`). Sem ela, qualquer fluxo OAuth monta
+um endereço de retorno que não existe. A `external_url` fica `None` de propósito:
+o acesso de fora é pela tailnet e o OAuth acontece na rede local.
+
+**`xiaomi_home` v0.4.7** (a integração oficial da Xiaomi) instalada pelo HACS.
+Descoberta no caminho: ela **já está no catálogo padrão** — a tentativa de
+adicioná-la como repositório personalizado devolveu *"Repository
+'xiaomi/ha_xiaomi_home' exists in the store"*. Não precisa de repositório
+customizado, basta buscar "Xiaomi Home".
+
+O fluxo dela abre com um **aviso de risco que exige aceite** — informações de
+conta e dispositivos passam a ser armazenadas no HA, sem garantia da Xiaomi.
+⚠️ Aceite de termos é do André; a caixa não foi marcada.
+
+### Por que trocamos de integração
+
+| região | login | busca de dispositivos |
+| --- | --- | --- |
+| Singapore | ✅ verificação vencida | ✅ respondeu — **lista vazia** |
+| United States | ✅ verificação vencida | ❌ **`invalid signature`** |
+
+O `invalid signature` tem explicação: o token de sessão sai carimbado com
+`p_idc=Singapore`; consultar a API dos EUA com uma sessão de Singapura quebra a
+assinatura. Ou seja, **US não é a região da conta** — a resposta não é "vazio", é
+"sessão incompatível".
+
+Relógio foi descartado como causa: o container está a **0,4 s** do tempo real
+(hipótese razoável, já que Docker sobre WSL2 num PC que dorme costuma derivar).
+
+Sobra a contradição: Singapura autentica limpo e diz que a conta não tem
+aparelho, o que contradiz o app. A leitura mais provável é que o `xiaomi_miot`
+consulta a **lista plana** da conta (`home/device_list`) nesse passo, enquanto os
+aparelhos vivem dentro de uma **casa** do Mi Home — que se lê por
+`v2/home/home_device_list`. A integração oficial enumera por casa, e é
+exatamente por isso que ela é a próxima tentativa.
+
+O `xiaomi_miot` fica instalado, sem entrada de configuração, como plano B pelo
+caminho de **host/token** (por aparelho, 100% local).

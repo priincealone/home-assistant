@@ -3,7 +3,7 @@
   "minor_version": 1,
   "key": "xiaomi_miot/instances.json",
   "data": {
-    "_updated_time": 1789003007,
+    "_updated_time": 1789003466,
     "lfsmt.plug.ls002": {
       "status": "released",
       "version": 1,
