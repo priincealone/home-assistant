@@ -36,11 +36,11 @@
           sequence:
             - action: switch.turn_on
               target:
-                entity_id: switch.smart_socket_with_usb_type_c_3_socket_1
+                entity_id: switch.ventilacao_ps5
         - conditions:
             - condition: trigger
               id: fora_de_uso
           sequence:
             - action: switch.turn_off
               target:
-                entity_id: switch.smart_socket_with_usb_type_c_3_socket_1
+                entity_id: switch.ventilacao_ps5

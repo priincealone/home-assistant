@@ -2418,3 +2418,51 @@ o PS5 em repouso de verdade.
 
 O `socket_1` continua registrado como **"Socket 1"** no Home Assistant. Já que
 ele é o ventilador, vale um nome legível — mesmo tratamento dado ao "Plafons".
+
+## Tomada do ventilador do PS5 renomeada (09/09/2026)
+
+O painel mostrava **"Ventilação ps5 Socket 1"**. Corrigido em três frentes, por
+`scripts/lovelace/renomeia_ventilador_ps5.py`:
+
+| | de | para |
+| --- | --- | --- |
+| aparelho | `Ventilação ps5` | **`Ventilação PS5`** |
+| entidade | `Socket 1` | **`Ventilação PS5`** |
+| `entity_id` | `switch.smart_socket_with_usb_type_c_3_socket_1` | **`switch.ventilacao_ps5`** |
+| automação | 2 referências | atualizadas junto |
+
+⚠️ **O campo `name` do registro substitui o rótulo inteiro** — não se soma ao
+nome do aparelho, como eu esperava por causa do `has_entity_name: True`. Ao pôr
+`name: "Ventilador"`, a tomada passou a se chamar exatamente igual aos dois
+ventiladores de teto de verdade (`Ventilador Sala`, `Ventilador Quarto`). Segunda
+passada trocou para **"Ventilação PS5"**, que diz o que é sem colidir.
+
+Efeito colateral bom: renomear o **aparelho** arrumou os irmãos de uma vez —
+"Ventilação PS5 Corrente", "…Energia", "…Tensão", "…Socket 2".
+
+Renomear o `entity_id` valeu aqui (diferente das teclas do interruptor) porque
+ele aparece escrito na automação, que agora se lê sozinha. Verificado depois:
+`check_config` = `valid`, automação `on`, zero referências órfãs ao nome antigo.
+
+### Correção sobre o rastreador de rede
+
+O script `ps5_wait.py`, que ficou 15 minutos varrendo a LAN pelo protocolo de
+descoberta do console, terminou com **"nenhum console apareceu"** — enquanto o
+PS5 estava ligado e o Home Assistant falando com ele normalmente. É **falso
+negativo**: o probe UDP 987 disparado do Windows não recebe resposta (provável
+bloqueio de entrada no firewall para a porta efêmera).
+
+Consequência: **esse scanner não serve para concluir que o console está
+desligado.** A conclusão anterior continua válida, mas quem a sustentava era
+outra evidência — o `media_player.sala_de_estar_ps5` estava `unavailable`, e a
+integração conversa direto com `192.168.31.245`. Essa é a fonte confiável.
+
+### Valores para a reserva de DHCP
+
+| | IP | MAC |
+| --- | --- | --- |
+| PS5 | `192.168.31.245` | `bc:33:29:87:ad:40` |
+| PC (Wi-Fi) | `192.168.31.22` | `00:a5:54:5c:ef:d1` |
+
+O MAC do PC bate com o já gravado na integração **Wake on LAN** — confirmação
+cruzada. Ambos vieram da tabela ARP do Windows, não do scanner.
