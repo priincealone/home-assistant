@@ -6,667 +6,13 @@
     "automation.1757462400000": [
       {
         "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d9a85d520a4843b022e4227fc80d629a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:04:38.905567+00:00",
-            "finish": "2026-09-10T02:04:38.906853+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "Home Assistant starting",
-          "trace": {
-            "trigger/2": [
-              {
-                "path": "trigger/2",
-                "timestamp": "2026-09-10T02:04:38.905610+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757462400000",
-                      "last_triggered": "2026-09-10T02:00:00.175089+00:00",
-                      "mode": "single",
-                      "current": 0,
-                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
-                    },
-                    "last_changed": "2026-09-10T02:04:25.731956+00:00",
-                    "last_reported": "2026-09-10T02:04:25.731956+00:00",
-                    "last_updated": "2026-09-10T02:04:25.731956+00:00",
-                    "context": {
-                      "id": "01M24GY8R3XYM8RAQGYER7TS64",
-                      "parent_id": null,
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "partida",
-                    "idx": "2",
-                    "alias": null,
-                    "platform": "homeassistant",
-                    "event": "start",
-                    "description": "Home Assistant starting"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-10T02:04:38.905788+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M24GYNKSZVBMGMQH5WB5PNBT",
-                    "parent_id": null,
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T02:04:38.906231+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T02:04:38.906259+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T02:04:38.906272+00:00",
-                "result": {
-                  "result": false,
-                  "state": "off",
-                  "wanted_state": "playing"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T02:04:38.906310+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T02:04:38.906320+00:00",
-                "result": {
-                  "result": false,
-                  "entities": [
-                    "media_player.sala_de_estar_ps5"
-                  ]
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757462400000",
-            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
-            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
-            "mode": "single",
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "on",
-                  "playing"
-                ],
-                "id": "entrou_em_uso"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "standby",
-                  "off",
-                  "idle",
-                  "unavailable"
-                ],
-                "for": "00:02:00",
-                "id": "saiu_de_uso"
-              },
-              {
-                "trigger": "homeassistant",
-                "event": "start",
-                "id": "partida"
-              },
-              {
-                "trigger": "time_pattern",
-                "minutes": "/5",
-                "id": "reconciliacao"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
-                    "conditions": [
-                      {
-                        "condition": "state",
-                        "entity_id": "media_player.sala_de_estar_ps5",
-                        "state": [
-                          "on",
-                          "playing"
-                        ]
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_on",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
-                    "conditions": [
-                      {
-                        "condition": "template",
-                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_off",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M24GYNKSZVBMGMQH5WB5PNBT",
-            "parent_id": null,
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d9a85d520a4843b022e4227fc80d629a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:04:38.905567+00:00",
-            "finish": "2026-09-10T02:04:38.906853+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "Home Assistant starting"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "6f210782b667c7216eb2c08484837b1e",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:05:00.109388+00:00",
-            "finish": "2026-09-10T02:05:00.110036+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "time pattern",
-          "trace": {
-            "trigger/3": [
-              {
-                "path": "trigger/3",
-                "timestamp": "2026-09-10T02:05:00.109448+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757462400000",
-                      "last_triggered": "2026-09-10T02:04:38.905697+00:00",
-                      "mode": "single",
-                      "current": 0,
-                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
-                    },
-                    "last_changed": "2026-09-10T02:04:25.731956+00:00",
-                    "last_reported": "2026-09-10T02:04:38.906812+00:00",
-                    "last_updated": "2026-09-10T02:04:38.906812+00:00",
-                    "context": {
-                      "id": "01M24GYNKSZVBMGMQH5WB5PNBT",
-                      "parent_id": null,
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "reconciliacao",
-                    "idx": "3",
-                    "alias": null,
-                    "platform": "time_pattern",
-                    "now": "2026-09-09T23:05:00.109197-03:00",
-                    "description": "time pattern"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-10T02:05:00.109685+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M24GZAAD0WGQNVQZCNEBE46K",
-                    "parent_id": null,
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T02:05:00.109736+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T02:05:00.109750+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T02:05:00.109760+00:00",
-                "result": {
-                  "result": false,
-                  "state": "off",
-                  "wanted_state": "playing"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T02:05:00.109787+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T02:05:00.109794+00:00",
-                "result": {
-                  "result": false,
-                  "entities": [
-                    "media_player.sala_de_estar_ps5"
-                  ]
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757462400000",
-            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
-            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
-            "mode": "single",
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "on",
-                  "playing"
-                ],
-                "id": "entrou_em_uso"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "standby",
-                  "off",
-                  "idle",
-                  "unavailable"
-                ],
-                "for": "00:02:00",
-                "id": "saiu_de_uso"
-              },
-              {
-                "trigger": "homeassistant",
-                "event": "start",
-                "id": "partida"
-              },
-              {
-                "trigger": "time_pattern",
-                "minutes": "/5",
-                "id": "reconciliacao"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
-                    "conditions": [
-                      {
-                        "condition": "state",
-                        "entity_id": "media_player.sala_de_estar_ps5",
-                        "state": [
-                          "on",
-                          "playing"
-                        ]
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_on",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
-                    "conditions": [
-                      {
-                        "condition": "template",
-                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_off",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M24GZAAD0WGQNVQZCNEBE46K",
-            "parent_id": null,
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "6f210782b667c7216eb2c08484837b1e",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:05:00.109388+00:00",
-            "finish": "2026-09-10T02:05:00.110036+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "time pattern"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "a1be6b38c54f1e0955fade27f2da4409",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:06:43.386305+00:00",
-            "finish": "2026-09-10T02:06:43.388337+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "Home Assistant starting",
-          "trace": {
-            "trigger/2": [
-              {
-                "path": "trigger/2",
-                "timestamp": "2026-09-10T02:06:43.386349+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757462400000",
-                      "last_triggered": "2026-09-10T02:05:00.109554+00:00",
-                      "mode": "single",
-                      "current": 0,
-                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
-                    },
-                    "last_changed": "2026-09-10T02:06:30.946766+00:00",
-                    "last_reported": "2026-09-10T02:06:30.946766+00:00",
-                    "last_updated": "2026-09-10T02:06:30.946766+00:00",
-                    "context": {
-                      "id": "01M24H23124X1CA91DAM7NPEGY",
-                      "parent_id": null,
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "partida",
-                    "idx": "2",
-                    "alias": null,
-                    "platform": "homeassistant",
-                    "event": "start",
-                    "description": "Home Assistant starting"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-10T02:06:43.386539+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M24H2F5TPE4TGYDFPJQDQCM1",
-                    "parent_id": null,
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T02:06:43.387376+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T02:06:43.387417+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T02:06:43.387430+00:00",
-                "result": {
-                  "result": false,
-                  "state": "off",
-                  "wanted_state": "playing"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T02:06:43.387470+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T02:06:43.387479+00:00",
-                "result": {
-                  "result": false,
-                  "entities": [
-                    "media_player.sala_de_estar_ps5"
-                  ]
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757462400000",
-            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
-            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
-            "mode": "single",
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "on",
-                  "playing"
-                ],
-                "id": "entrou_em_uso"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "standby",
-                  "off",
-                  "idle",
-                  "unavailable"
-                ],
-                "for": "00:02:00",
-                "id": "saiu_de_uso"
-              },
-              {
-                "trigger": "homeassistant",
-                "event": "start",
-                "id": "partida"
-              },
-              {
-                "trigger": "time_pattern",
-                "minutes": "/5",
-                "id": "reconciliacao"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
-                    "conditions": [
-                      {
-                        "condition": "state",
-                        "entity_id": "media_player.sala_de_estar_ps5",
-                        "state": [
-                          "on",
-                          "playing"
-                        ]
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_on",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
-                    "conditions": [
-                      {
-                        "condition": "template",
-                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_off",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M24H2F5TPE4TGYDFPJQDQCM1",
-            "parent_id": null,
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "a1be6b38c54f1e0955fade27f2da4409",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T02:06:43.386305+00:00",
-            "finish": "2026-09-10T02:06:43.388337+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "Home Assistant starting"
-        }
-      },
-      {
-        "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "547ae5cbfef64eae05aac78d2e433dfb",
+          "run_id": "fbf8d9b8fc54423a014fa76c0c27c184",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T02:10:00.078697+00:00",
-            "finish": "2026-09-10T02:10:00.732281+00:00"
+            "start": "2026-09-10T03:30:00.440997+00:00",
+            "finish": "2026-09-10T03:30:01.054925+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -675,23 +21,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T02:10:00.078767+00:00",
+                "timestamp": "2026-09-10T03:30:00.441086+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T02:06:43.386443+00:00",
+                      "last_triggered": "2026-09-10T03:25:00.442261+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T02:06:30.946766+00:00",
-                    "last_reported": "2026-09-10T02:06:43.388250+00:00",
-                    "last_updated": "2026-09-10T02:06:43.388250+00:00",
+                    "last_changed": "2026-09-10T02:16:09.554399+00:00",
+                    "last_reported": "2026-09-10T03:25:01.062251+00:00",
+                    "last_updated": "2026-09-10T03:25:01.062251+00:00",
                     "context": {
-                      "id": "01M24H2F5TPE4TGYDFPJQDQCM1",
+                      "id": "01M24NHT4TZR2KS3GF3PF5MW7T",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -701,7 +47,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-09T23:10:00.078423-03:00",
+                    "now": "2026-09-10T00:30:00.440835-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -710,10 +56,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T02:10:00.079127+00:00",
+                "timestamp": "2026-09-10T03:30:00.441391+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M24H8F8E8TJ817TF9PZZVVJS",
+                    "id": "01M24NTZ3RFMH8EERWN80S9ZAB",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -726,7 +72,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T02:10:00.079233+00:00",
+                "timestamp": "2026-09-10T03:30:00.441607+00:00",
                 "result": {
                   "result": false
                 }
@@ -735,7 +81,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T02:10:00.079262+00:00",
+                "timestamp": "2026-09-10T03:30:00.441637+00:00",
                 "result": {
                   "result": false
                 }
@@ -744,7 +90,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T02:10:00.079294+00:00",
+                "timestamp": "2026-09-10T03:30:00.441649+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -755,7 +101,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T02:10:00.079331+00:00",
+                "timestamp": "2026-09-10T03:30:00.441676+00:00",
                 "result": {
                   "result": true
                 }
@@ -764,7 +110,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T02:10:00.079341+00:00",
+                "timestamp": "2026-09-10T03:30:00.441685+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -776,7 +122,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T02:10:00.079697+00:00",
+                "timestamp": "2026-09-10T03:30:00.441881+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -879,19 +225,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M24H8F8E8TJ817TF9PZZVVJS",
+            "id": "01M24NTZ3RFMH8EERWN80S9ZAB",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "547ae5cbfef64eae05aac78d2e433dfb",
+          "run_id": "fbf8d9b8fc54423a014fa76c0c27c184",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T02:10:00.078697+00:00",
-            "finish": "2026-09-10T02:10:00.732281+00:00"
+            "start": "2026-09-10T03:30:00.440997+00:00",
+            "finish": "2026-09-10T03:30:01.054925+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -901,12 +247,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "ab5cd6fae444c05ee160717cc6604375",
+          "run_id": "f558f5553a6a318a7aad74b0bf00e462",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T02:15:00.079393+00:00",
-            "finish": "2026-09-10T02:15:00.714702+00:00"
+            "start": "2026-09-10T03:35:00.441380+00:00",
+            "finish": "2026-09-10T03:35:01.084198+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -915,23 +261,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T02:15:00.079450+00:00",
+                "timestamp": "2026-09-10T03:35:00.441449+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T02:10:00.078943+00:00",
+                      "last_triggered": "2026-09-10T03:30:00.441216+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T02:06:30.946766+00:00",
-                    "last_reported": "2026-09-10T02:10:00.731703+00:00",
-                    "last_updated": "2026-09-10T02:10:00.731703+00:00",
+                    "last_changed": "2026-09-10T02:16:09.554399+00:00",
+                    "last_reported": "2026-09-10T03:30:01.054256+00:00",
+                    "last_updated": "2026-09-10T03:30:01.054256+00:00",
                     "context": {
-                      "id": "01M24H8F8E8TJ817TF9PZZVVJS",
+                      "id": "01M24NTZ3RFMH8EERWN80S9ZAB",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -941,7 +287,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-09T23:15:00.078865-03:00",
+                    "now": "2026-09-10T00:35:00.441224-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -950,10 +296,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T02:15:00.079868+00:00",
+                "timestamp": "2026-09-10T03:35:00.441650+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M24HHM7FJRVMS7DAWJGDYN5R",
+                    "id": "01M24P442SCPN19VB1R6Z3NW8E",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -966,7 +312,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T02:15:00.079963+00:00",
+                "timestamp": "2026-09-10T03:35:00.441710+00:00",
                 "result": {
                   "result": false
                 }
@@ -975,7 +321,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T02:15:00.079985+00:00",
+                "timestamp": "2026-09-10T03:35:00.441727+00:00",
                 "result": {
                   "result": false
                 }
@@ -984,7 +330,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T02:15:00.079998+00:00",
+                "timestamp": "2026-09-10T03:35:00.441738+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -995,7 +341,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T02:15:00.080031+00:00",
+                "timestamp": "2026-09-10T03:35:00.441764+00:00",
                 "result": {
                   "result": true
                 }
@@ -1004,7 +350,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T02:15:00.080039+00:00",
+                "timestamp": "2026-09-10T03:35:00.441772+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -1016,7 +362,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T02:15:00.080399+00:00",
+                "timestamp": "2026-09-10T03:35:00.441951+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -1119,19 +465,739 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M24HHM7FJRVMS7DAWJGDYN5R",
+            "id": "01M24P442SCPN19VB1R6Z3NW8E",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "ab5cd6fae444c05ee160717cc6604375",
+          "run_id": "f558f5553a6a318a7aad74b0bf00e462",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T02:15:00.079393+00:00",
-            "finish": "2026-09-10T02:15:00.714702+00:00"
+            "start": "2026-09-10T03:35:00.441380+00:00",
+            "finish": "2026-09-10T03:35:01.084198+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern"
+        }
+      },
+      {
+        "extended_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "c5ca553f2585031531bc3968e93aff66",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:40:00.440551+00:00",
+            "finish": "2026-09-10T03:40:01.086351+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern",
+          "trace": {
+            "trigger/3": [
+              {
+                "path": "trigger/3",
+                "timestamp": "2026-09-10T03:40:00.440669+00:00",
+                "changed_variables": {
+                  "this": {
+                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
+                    "state": "on",
+                    "attributes": {
+                      "id": "1757462400000",
+                      "last_triggered": "2026-09-10T03:35:00.441535+00:00",
+                      "mode": "single",
+                      "current": 0,
+                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
+                    },
+                    "last_changed": "2026-09-10T02:16:09.554399+00:00",
+                    "last_reported": "2026-09-10T03:35:01.083727+00:00",
+                    "last_updated": "2026-09-10T03:35:01.083727+00:00",
+                    "context": {
+                      "id": "01M24P442SCPN19VB1R6Z3NW8E",
+                      "parent_id": null,
+                      "user_id": null
+                    }
+                  },
+                  "trigger": {
+                    "id": "reconciliacao",
+                    "idx": "3",
+                    "alias": null,
+                    "platform": "time_pattern",
+                    "now": "2026-09-10T00:40:00.440345-03:00",
+                    "description": "time pattern"
+                  }
+                }
+              }
+            ],
+            "action/0": [
+              {
+                "path": "action/0",
+                "timestamp": "2026-09-10T03:40:00.441071+00:00",
+                "changed_variables": {
+                  "context": {
+                    "id": "01M24PD91RY41GZTXBQ7MG6NW3",
+                    "parent_id": null,
+                    "user_id": null
+                  }
+                },
+                "result": {
+                  "choice": 1
+                }
+              }
+            ],
+            "action/0/choose/0": [
+              {
+                "path": "action/0/choose/0",
+                "timestamp": "2026-09-10T03:40:00.441248+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0": [
+              {
+                "path": "action/0/choose/0/conditions/0",
+                "timestamp": "2026-09-10T03:40:00.441289+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0/entity_id/0": [
+              {
+                "path": "action/0/choose/0/conditions/0/entity_id/0",
+                "timestamp": "2026-09-10T03:40:00.441312+00:00",
+                "result": {
+                  "result": false,
+                  "state": "off",
+                  "wanted_state": "playing"
+                }
+              }
+            ],
+            "action/0/choose/1": [
+              {
+                "path": "action/0/choose/1",
+                "timestamp": "2026-09-10T03:40:00.441373+00:00",
+                "result": {
+                  "result": true
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0",
+                "timestamp": "2026-09-10T03:40:00.441391+00:00",
+                "result": {
+                  "result": true,
+                  "entities": [
+                    "media_player.sala_de_estar_ps5"
+                  ]
+                }
+              }
+            ],
+            "action/0/choose/1/sequence/0": [
+              {
+                "path": "action/0/choose/1/sequence/0",
+                "timestamp": "2026-09-10T03:40:00.441850+00:00",
+                "result": {
+                  "params": {
+                    "domain": "switch",
+                    "service": "turn_off",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": [
+                        "switch.ventilacao_ps5"
+                      ]
+                    }
+                  },
+                  "running_script": false
+                }
+              }
+            ]
+          },
+          "config": {
+            "id": "1757462400000",
+            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
+            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
+            "mode": "single",
+            "triggers": [
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "on",
+                  "playing"
+                ],
+                "id": "entrou_em_uso"
+              },
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "standby",
+                  "off",
+                  "idle",
+                  "unavailable"
+                ],
+                "for": "00:02:00",
+                "id": "saiu_de_uso"
+              },
+              {
+                "trigger": "homeassistant",
+                "event": "start",
+                "id": "partida"
+              },
+              {
+                "trigger": "time_pattern",
+                "minutes": "/5",
+                "id": "reconciliacao"
+              }
+            ],
+            "conditions": [],
+            "actions": [
+              {
+                "choose": [
+                  {
+                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
+                    "conditions": [
+                      {
+                        "condition": "state",
+                        "entity_id": "media_player.sala_de_estar_ps5",
+                        "state": [
+                          "on",
+                          "playing"
+                        ]
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_on",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
+                    "conditions": [
+                      {
+                        "condition": "template",
+                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_off",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "blueprint_inputs": null,
+          "context": {
+            "id": "01M24PD91RY41GZTXBQ7MG6NW3",
+            "parent_id": null,
+            "user_id": null
+          }
+        },
+        "short_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "c5ca553f2585031531bc3968e93aff66",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:40:00.440551+00:00",
+            "finish": "2026-09-10T03:40:01.086351+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern"
+        }
+      },
+      {
+        "extended_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "2f171a2e36d99d6b20aba0cdcf5d5528",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:45:00.440515+00:00",
+            "finish": "2026-09-10T03:45:01.078736+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern",
+          "trace": {
+            "trigger/3": [
+              {
+                "path": "trigger/3",
+                "timestamp": "2026-09-10T03:45:00.440713+00:00",
+                "changed_variables": {
+                  "this": {
+                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
+                    "state": "on",
+                    "attributes": {
+                      "id": "1757462400000",
+                      "last_triggered": "2026-09-10T03:40:00.440848+00:00",
+                      "mode": "single",
+                      "current": 0,
+                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
+                    },
+                    "last_changed": "2026-09-10T02:16:09.554399+00:00",
+                    "last_reported": "2026-09-10T03:40:01.085943+00:00",
+                    "last_updated": "2026-09-10T03:40:01.085943+00:00",
+                    "context": {
+                      "id": "01M24PD91RY41GZTXBQ7MG6NW3",
+                      "parent_id": null,
+                      "user_id": null
+                    }
+                  },
+                  "trigger": {
+                    "id": "reconciliacao",
+                    "idx": "3",
+                    "alias": null,
+                    "platform": "time_pattern",
+                    "now": "2026-09-10T00:45:00.440214-03:00",
+                    "description": "time pattern"
+                  }
+                }
+              }
+            ],
+            "action/0": [
+              {
+                "path": "action/0",
+                "timestamp": "2026-09-10T03:45:00.441134+00:00",
+                "changed_variables": {
+                  "context": {
+                    "id": "01M24PPE0RFEVGW15A2MAGD90Y",
+                    "parent_id": null,
+                    "user_id": null
+                  }
+                },
+                "result": {
+                  "choice": 1
+                }
+              }
+            ],
+            "action/0/choose/0": [
+              {
+                "path": "action/0/choose/0",
+                "timestamp": "2026-09-10T03:45:00.441231+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0": [
+              {
+                "path": "action/0/choose/0/conditions/0",
+                "timestamp": "2026-09-10T03:45:00.441268+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0/entity_id/0": [
+              {
+                "path": "action/0/choose/0/conditions/0/entity_id/0",
+                "timestamp": "2026-09-10T03:45:00.441293+00:00",
+                "result": {
+                  "result": false,
+                  "state": "off",
+                  "wanted_state": "playing"
+                }
+              }
+            ],
+            "action/0/choose/1": [
+              {
+                "path": "action/0/choose/1",
+                "timestamp": "2026-09-10T03:45:00.441358+00:00",
+                "result": {
+                  "result": true
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0",
+                "timestamp": "2026-09-10T03:45:00.441378+00:00",
+                "result": {
+                  "result": true,
+                  "entities": [
+                    "media_player.sala_de_estar_ps5"
+                  ]
+                }
+              }
+            ],
+            "action/0/choose/1/sequence/0": [
+              {
+                "path": "action/0/choose/1/sequence/0",
+                "timestamp": "2026-09-10T03:45:00.441737+00:00",
+                "result": {
+                  "params": {
+                    "domain": "switch",
+                    "service": "turn_off",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": [
+                        "switch.ventilacao_ps5"
+                      ]
+                    }
+                  },
+                  "running_script": false
+                }
+              }
+            ]
+          },
+          "config": {
+            "id": "1757462400000",
+            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
+            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
+            "mode": "single",
+            "triggers": [
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "on",
+                  "playing"
+                ],
+                "id": "entrou_em_uso"
+              },
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "standby",
+                  "off",
+                  "idle",
+                  "unavailable"
+                ],
+                "for": "00:02:00",
+                "id": "saiu_de_uso"
+              },
+              {
+                "trigger": "homeassistant",
+                "event": "start",
+                "id": "partida"
+              },
+              {
+                "trigger": "time_pattern",
+                "minutes": "/5",
+                "id": "reconciliacao"
+              }
+            ],
+            "conditions": [],
+            "actions": [
+              {
+                "choose": [
+                  {
+                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
+                    "conditions": [
+                      {
+                        "condition": "state",
+                        "entity_id": "media_player.sala_de_estar_ps5",
+                        "state": [
+                          "on",
+                          "playing"
+                        ]
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_on",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
+                    "conditions": [
+                      {
+                        "condition": "template",
+                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_off",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "blueprint_inputs": null,
+          "context": {
+            "id": "01M24PPE0RFEVGW15A2MAGD90Y",
+            "parent_id": null,
+            "user_id": null
+          }
+        },
+        "short_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "2f171a2e36d99d6b20aba0cdcf5d5528",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:45:00.440515+00:00",
+            "finish": "2026-09-10T03:45:01.078736+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern"
+        }
+      },
+      {
+        "extended_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "f5cffbbafb40e81f3e44198953f07f36",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:50:00.440518+00:00",
+            "finish": "2026-09-10T03:50:01.046736+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern",
+          "trace": {
+            "trigger/3": [
+              {
+                "path": "trigger/3",
+                "timestamp": "2026-09-10T03:50:00.440574+00:00",
+                "changed_variables": {
+                  "this": {
+                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
+                    "state": "on",
+                    "attributes": {
+                      "id": "1757462400000",
+                      "last_triggered": "2026-09-10T03:45:00.440892+00:00",
+                      "mode": "single",
+                      "current": 0,
+                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
+                    },
+                    "last_changed": "2026-09-10T02:16:09.554399+00:00",
+                    "last_reported": "2026-09-10T03:45:01.078308+00:00",
+                    "last_updated": "2026-09-10T03:45:01.078308+00:00",
+                    "context": {
+                      "id": "01M24PPE0RFEVGW15A2MAGD90Y",
+                      "parent_id": null,
+                      "user_id": null
+                    }
+                  },
+                  "trigger": {
+                    "id": "reconciliacao",
+                    "idx": "3",
+                    "alias": null,
+                    "platform": "time_pattern",
+                    "now": "2026-09-10T00:50:00.440356-03:00",
+                    "description": "time pattern"
+                  }
+                }
+              }
+            ],
+            "action/0": [
+              {
+                "path": "action/0",
+                "timestamp": "2026-09-10T03:50:00.440813+00:00",
+                "changed_variables": {
+                  "context": {
+                    "id": "01M24PZJZRX06EYDPRKG3V4RMT",
+                    "parent_id": null,
+                    "user_id": null
+                  }
+                },
+                "result": {
+                  "choice": 1
+                }
+              }
+            ],
+            "action/0/choose/0": [
+              {
+                "path": "action/0/choose/0",
+                "timestamp": "2026-09-10T03:50:00.440877+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0": [
+              {
+                "path": "action/0/choose/0/conditions/0",
+                "timestamp": "2026-09-10T03:50:00.440896+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0/entity_id/0": [
+              {
+                "path": "action/0/choose/0/conditions/0/entity_id/0",
+                "timestamp": "2026-09-10T03:50:00.440907+00:00",
+                "result": {
+                  "result": false,
+                  "state": "off",
+                  "wanted_state": "playing"
+                }
+              }
+            ],
+            "action/0/choose/1": [
+              {
+                "path": "action/0/choose/1",
+                "timestamp": "2026-09-10T03:50:00.440937+00:00",
+                "result": {
+                  "result": true
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0",
+                "timestamp": "2026-09-10T03:50:00.440945+00:00",
+                "result": {
+                  "result": true,
+                  "entities": [
+                    "media_player.sala_de_estar_ps5"
+                  ]
+                }
+              }
+            ],
+            "action/0/choose/1/sequence/0": [
+              {
+                "path": "action/0/choose/1/sequence/0",
+                "timestamp": "2026-09-10T03:50:00.441361+00:00",
+                "result": {
+                  "params": {
+                    "domain": "switch",
+                    "service": "turn_off",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": [
+                        "switch.ventilacao_ps5"
+                      ]
+                    }
+                  },
+                  "running_script": false
+                }
+              }
+            ]
+          },
+          "config": {
+            "id": "1757462400000",
+            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
+            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
+            "mode": "single",
+            "triggers": [
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "on",
+                  "playing"
+                ],
+                "id": "entrou_em_uso"
+              },
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "standby",
+                  "off",
+                  "idle",
+                  "unavailable"
+                ],
+                "for": "00:02:00",
+                "id": "saiu_de_uso"
+              },
+              {
+                "trigger": "homeassistant",
+                "event": "start",
+                "id": "partida"
+              },
+              {
+                "trigger": "time_pattern",
+                "minutes": "/5",
+                "id": "reconciliacao"
+              }
+            ],
+            "conditions": [],
+            "actions": [
+              {
+                "choose": [
+                  {
+                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
+                    "conditions": [
+                      {
+                        "condition": "state",
+                        "entity_id": "media_player.sala_de_estar_ps5",
+                        "state": [
+                          "on",
+                          "playing"
+                        ]
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_on",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
+                    "conditions": [
+                      {
+                        "condition": "template",
+                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_off",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "blueprint_inputs": null,
+          "context": {
+            "id": "01M24PZJZRX06EYDPRKG3V4RMT",
+            "parent_id": null,
+            "user_id": null
+          }
+        },
+        "short_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "f5cffbbafb40e81f3e44198953f07f36",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-10T03:50:00.440518+00:00",
+            "finish": "2026-09-10T03:50:01.046736+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",

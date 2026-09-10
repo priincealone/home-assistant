@@ -1509,6 +1509,371 @@
                               }
                             }
                           }
+                        },
+                        {
+                          "type": "template",
+                          "entity": "sensor.dreame_us_415783444_mc1808_battery_level_p_2_1",
+                          "icon": "mdi:robot-vacuum",
+                          "icon_color": "{{ 'green' if is_state('vacuum.dreame_us_415783444_mc1808','cleaning') else 'grey' }}",
+                          "content": "{{ states('sensor.dreame_us_415783444_mc1808_battery_level_p_2_1') }}%",
+                          "tap_action": {
+                            "action": "fire-dom-event",
+                            "browser_mod": {
+                              "service": "popup",
+                              "data": {
+                                "title": "Aspirador",
+                                "content": {
+                                  "type": "vertical-stack",
+                                  "cards": [
+                                    {
+                                      "type": "tile",
+                                      "entity": "vacuum.dreame_us_415783444_mc1808",
+                                      "name": "Aspirador",
+                                      "icon": "mdi:robot-vacuum",
+                                      "features": [
+                                        {
+                                          "type": "vacuum-commands",
+                                          "commands": [
+                                            "start_pause",
+                                            "stop",
+                                            "return_home",
+                                            "locate"
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "custom:button-card",
+                                      "name": "Bateria",
+                                      "show_name": true,
+                                      "show_icon": false,
+                                      "show_state": false,
+                                      "tap_action": {
+                                        "action": "none"
+                                      },
+                                      "styles": {
+                                        "card": [
+                                          {
+                                            "background": "transparent",
+                                            "box-shadow": "none",
+                                            "height": "20px",
+                                            "padding": "10px 2px 2px 2px",
+                                            "justify-content": "start",
+                                            "border-radius": "0px"
+                                          }
+                                        ],
+                                        "name": [
+                                          {
+                                            "font-size": "11px",
+                                            "font-weight": "700",
+                                            "color": "rgba(255,255,255,0.4)",
+                                            "text-transform": "uppercase",
+                                            "letter-spacing": "0.06em",
+                                            "justify-self": "start"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "grid",
+                                      "columns": 2,
+                                      "square": false,
+                                      "cards": [
+                                        {
+                                          "type": "tile",
+                                          "entity": "sensor.dreame_us_415783444_mc1808_battery_level_p_2_1",
+                                          "name": "Carga",
+                                          "icon": "mdi:battery-charging"
+                                        },
+                                        {
+                                          "type": "tile",
+                                          "entity": "sensor.dreame_us_415783444_mc1808_charging_state_p_2_2",
+                                          "name": "Estado",
+                                          "icon": "mdi:power-plug"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "custom:button-card",
+                                      "name": "Potência de sucção",
+                                      "show_name": true,
+                                      "show_icon": false,
+                                      "show_state": false,
+                                      "tap_action": {
+                                        "action": "none"
+                                      },
+                                      "styles": {
+                                        "card": [
+                                          {
+                                            "background": "transparent",
+                                            "box-shadow": "none",
+                                            "height": "20px",
+                                            "padding": "10px 2px 2px 2px",
+                                            "justify-content": "start",
+                                            "border-radius": "0px"
+                                          }
+                                        ],
+                                        "name": [
+                                          {
+                                            "font-size": "11px",
+                                            "font-weight": "700",
+                                            "color": "rgba(255,255,255,0.4)",
+                                            "text-transform": "uppercase",
+                                            "letter-spacing": "0.06em",
+                                            "justify-self": "start"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "grid",
+                                      "columns": 4,
+                                      "square": false,
+                                      "cards": [
+                                        {
+                                          "type": "custom:button-card",
+                                          "name": "Silencioso",
+                                          "show_icon": false,
+                                          "show_name": true,
+                                          "entity": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                          "tap_action": {
+                                            "action": "call-service",
+                                            "service": "select.select_option",
+                                            "service_data": {
+                                              "entity_id": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                              "option": "安静"
+                                            }
+                                          },
+                                          "styles": {
+                                            "card": [
+                                              {
+                                                "height": "38px",
+                                                "border-radius": "12px",
+                                                "padding": "0px",
+                                                "background": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"安静\" ? 'rgba(255,159,10,0.22)' : 'rgba(255,255,255,0.06)' ]]]"
+                                              }
+                                            ],
+                                            "name": [
+                                              {
+                                                "font-size": "12.5px",
+                                                "font-weight": "550",
+                                                "color": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"安静\" ? '#FF9F0A' : 'rgba(255,255,255,0.75)' ]]]"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "type": "custom:button-card",
+                                          "name": "Padrão",
+                                          "show_icon": false,
+                                          "show_name": true,
+                                          "entity": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                          "tap_action": {
+                                            "action": "call-service",
+                                            "service": "select.select_option",
+                                            "service_data": {
+                                              "entity_id": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                              "option": "标准"
+                                            }
+                                          },
+                                          "styles": {
+                                            "card": [
+                                              {
+                                                "height": "38px",
+                                                "border-radius": "12px",
+                                                "padding": "0px",
+                                                "background": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"标准\" ? 'rgba(255,159,10,0.22)' : 'rgba(255,255,255,0.06)' ]]]"
+                                              }
+                                            ],
+                                            "name": [
+                                              {
+                                                "font-size": "12.5px",
+                                                "font-weight": "550",
+                                                "color": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"标准\" ? '#FF9F0A' : 'rgba(255,255,255,0.75)' ]]]"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "type": "custom:button-card",
+                                          "name": "Médio",
+                                          "show_icon": false,
+                                          "show_name": true,
+                                          "entity": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                          "tap_action": {
+                                            "action": "call-service",
+                                            "service": "select.select_option",
+                                            "service_data": {
+                                              "entity_id": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                              "option": "中档"
+                                            }
+                                          },
+                                          "styles": {
+                                            "card": [
+                                              {
+                                                "height": "38px",
+                                                "border-radius": "12px",
+                                                "padding": "0px",
+                                                "background": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"中档\" ? 'rgba(255,159,10,0.22)' : 'rgba(255,255,255,0.06)' ]]]"
+                                              }
+                                            ],
+                                            "name": [
+                                              {
+                                                "font-size": "12.5px",
+                                                "font-weight": "550",
+                                                "color": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"中档\" ? '#FF9F0A' : 'rgba(255,255,255,0.75)' ]]]"
+                                              }
+                                            ]
+                                          }
+                                        },
+                                        {
+                                          "type": "custom:button-card",
+                                          "name": "Turbo",
+                                          "show_icon": false,
+                                          "show_name": true,
+                                          "entity": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                          "tap_action": {
+                                            "action": "call-service",
+                                            "service": "select.select_option",
+                                            "service_data": {
+                                              "entity_id": "select.dreame_us_415783444_mc1808_mode_p_18_6",
+                                              "option": "强力"
+                                            }
+                                          },
+                                          "styles": {
+                                            "card": [
+                                              {
+                                                "height": "38px",
+                                                "border-radius": "12px",
+                                                "padding": "0px",
+                                                "background": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"强力\" ? 'rgba(255,159,10,0.22)' : 'rgba(255,255,255,0.06)' ]]]"
+                                              }
+                                            ],
+                                            "name": [
+                                              {
+                                                "font-size": "12.5px",
+                                                "font-weight": "550",
+                                                "color": "[[[ return states['select.dreame_us_415783444_mc1808_mode_p_18_6'].state === \"强力\" ? '#FF9F0A' : 'rgba(255,255,255,0.75)' ]]]"
+                                              }
+                                            ]
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "custom:button-card",
+                                      "name": "Consumíveis",
+                                      "show_name": true,
+                                      "show_icon": false,
+                                      "show_state": false,
+                                      "tap_action": {
+                                        "action": "none"
+                                      },
+                                      "styles": {
+                                        "card": [
+                                          {
+                                            "background": "transparent",
+                                            "box-shadow": "none",
+                                            "height": "20px",
+                                            "padding": "10px 2px 2px 2px",
+                                            "justify-content": "start",
+                                            "border-radius": "0px"
+                                          }
+                                        ],
+                                        "name": [
+                                          {
+                                            "font-size": "11px",
+                                            "font-weight": "700",
+                                            "color": "rgba(255,255,255,0.4)",
+                                            "text-transform": "uppercase",
+                                            "letter-spacing": "0.06em",
+                                            "justify-self": "start"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "entities",
+                                      "cards": [],
+                                      "entities": [
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_filter_life_level_p_27_1",
+                                          "name": "Filtro"
+                                        },
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_brush_life_level_p_26_2",
+                                          "name": "Escova principal"
+                                        },
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_brush_life_level_p_28_2",
+                                          "name": "Escova lateral"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "type": "custom:button-card",
+                                      "name": "Histórico",
+                                      "show_name": true,
+                                      "show_icon": false,
+                                      "show_state": false,
+                                      "tap_action": {
+                                        "action": "none"
+                                      },
+                                      "styles": {
+                                        "card": [
+                                          {
+                                            "background": "transparent",
+                                            "box-shadow": "none",
+                                            "height": "20px",
+                                            "padding": "10px 2px 2px 2px",
+                                            "justify-content": "start",
+                                            "border-radius": "0px"
+                                          }
+                                        ],
+                                        "name": [
+                                          {
+                                            "font-size": "11px",
+                                            "font-weight": "700",
+                                            "color": "rgba(255,255,255,0.4)",
+                                            "text-transform": "uppercase",
+                                            "letter-spacing": "0.06em",
+                                            "justify-self": "start"
+                                          }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "type": "entities",
+                                      "entities": [
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_total_clean_times_p_18_14",
+                                          "name": "Limpezas"
+                                        },
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_total_clean_area_p_18_15",
+                                          "name": "Área acumulada"
+                                        },
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_total_clean_time_p_18_13",
+                                          "name": "Tempo acumulado"
+                                        },
+                                        {
+                                          "entity": "sensor.dreame_us_415783444_mc1808_fault_p_3_1",
+                                          "name": "Falhas"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "initial_style": "normal",
+                                "card_mod": {
+                                  "style": {
+                                    "ha-dialog$": "wa-dialog::part(dialog) {\n  background: rgba(18,23,46,0.55) !important;\n  backdrop-filter: blur(34px) saturate(170%) !important;\n  -webkit-backdrop-filter: blur(34px) saturate(170%) !important;\n  border: 1px solid rgba(255,255,255,0.12) !important;\n  border-radius: 26px !important;\n  box-shadow: 0 24px 60px rgba(0,0,0,0.45) !important;\n}\n"
+                                  }
+                                }
+                              }
+                            }
+                          }
                         }
                       ],
                       "card_mod": {

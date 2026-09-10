@@ -3025,3 +3025,65 @@ seleção de dispositivos se conduz pela interface**, onde as caixas têm nome.
 (`hide_non_standard_entities`), que faz o que fiz à mão nas 50 propriedades cruas
 do aspirador. Se um dia entrar outro aparelho ruidoso, é por ali — mais limpo que
 marcar entidade a entidade.
+
+## Card do aspirador (10/09/2026)
+
+Chip `mdi:robot-vacuum` na Geral mostrando a bateria; toque abre um popup — o
+mesmo padrão do PC. `scripts/lovelace/card_aspirador.py`.
+
+**O que o aparelho de fato oferece**, decodificado de `supported_features: 12824`:
+
+| tem | não tem |
+| --- | --- |
+| START, STOP, RETURN_HOME, LOCATE, STATE | PAUSE, FAN_SPEED, BATTERY, STATUS, MAP |
+
+Por isso o popup **não** usa o `tile` de vacuum com todos os comandos — metade
+não existiria. Bateria e potência moram em entidades separadas, não como
+atributos da entidade `vacuum`.
+
+⚠️ **A potência vem em chinês** (`安静`/`标准`/`中档`/`强力`) e um `select` nativo
+mostraria assim. A solução foram quatro botões com rótulo em português que
+chamam `select.select_option` com o valor original — o aparelho recebe o que
+entende, a tela fala português. O ativo fica em `#FF9F0A`.
+
+Conferido na tela: comandos, bateria, os quatro botões com **Turbo** destacado,
+consumíveis e histórico (307 limpezas, 10.968 de área, 12.552 min).
+
+### Três defeitos de dados que o card expõe
+
+1. **Consumíveis todos em 0%** — filtro e as duas escovas. Ou precisam de troca,
+   ou o aparelho não popula esses campos. Vale conferir no app da Xiaomi.
+2. **`Charging_2`** — enum cru, sem tradução. O mesmo vale para `work_mode: 14`,
+   que ficou de fora do card por não ter significado legível.
+3. **Área acumulada sem unidade** — 10968, provavelmente m².
+
+## Mapa e posição em tempo real: o que existe e o que falta
+
+O sensor `map_view_p_23_1` **não é o mapa salvo**. Decodifiquei: base64url +
+zlib, 127 bytes, contendo
+
+```json
+{"timestamp_ms":1788962174237,"mtid":"65b0d360232f7","cs":0,"mra":0,"tr":""}
+```
+
+mais um cabeçalho binário com coordenadas. É um **quadro ao vivo** — posição do
+robô e um recorte do mapa — em formato proprietário e não documentado. A posição
+em tempo real **está ali**, mas decodificar isso à mão seria frágil.
+
+Para mapa renderizado + posição ao vivo, o HACS oferece dois caminhos:
+
+| | downloads | estrelas |
+| --- | --- | --- |
+| **Dreame Vacuum** (integração, com suporte a mapa) | 44.315 | **2.176** |
+| Xiaomi Cloud Map Extractor (integração) | 59.518 | 1.420 |
+| Lovelace Xiaomi Vacuum Map Card (card) | 65.363 | 1.936 |
+| Dreame Vacuum Map Card (card) | 13.490 | 108 |
+
+⚠️ **Risco principal**: o MC1808 é um modelo antigo (o Xiaomi 1C rebatizado). Não
+verifiquei se a integração Dreame o suporta — os projetos costumam mirar os
+modelos novos. Confirmar antes de instalar.
+
+Sobre a ideia do mapeamento 3D: o mapa do aspirador é uma planta **2D de um
+plano só**, no nível do chão. Serve muito bem como base de contorno e divisão de
+cômodos, mas não traz altura — não substitui o scan LiDAR que já está na lista
+de pendências.
