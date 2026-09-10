@@ -3087,3 +3087,49 @@ Sobre a ideia do mapeamento 3D: o mapa do aspirador é uma planta **2D de um
 plano só**, no nível do chão. Serve muito bem como base de contorno e divisão de
 cômodos, mas não traz altura — não substitui o scan LiDAR que já está na lista
 de pendências.
+
+## Mapa do aspirador: compatibilidade conferida e caminho montado (10/09/2026)
+
+Conferido nos dois projetos antes de instalar qualquer coisa:
+
+| projeto | estrelas | `dreame.vacuum.mc1808` |
+| --- | --- | --- |
+| **Dreame Vacuum** (Tasshack) | 2.176 | ❌ **não suportado** — a lista tem só `p2xxx`/`r2xxx`/`p21xx` |
+| **Xiaomi Cloud Map Extractor** (PiotrMachowski) | 1.420 | ✅ **suportado**: *"dreame.vacuum.mc1808 (Xiaomi Mi Mop/Xiaomi Mijia 1C)"* |
+
+⚠️ A opção mais estrelada era a **errada**. O MC1808 é o Xiaomi 1C rebatizado, e
+os projetos Dreame miram os modelos novos. Instalar por popularidade teria
+custado mais um ciclo perdido.
+
+**Instalado**: `xiaomi_cloud_map_extractor` v2.2.5. Ele cria uma **entidade
+`camera`** com o mapa renderizado, atualizando a cada 5 s, desenhando posição do
+robô, trajeto percorrido, trajeto previsto, base, cômodos, zonas e paredes
+virtuais — que é exatamente o "acompanhamento em tempo real" pedido.
+
+### O IP do aspirador, descoberto sem credencial
+
+O protocolo **miIO** (UDP 54321) responde a um pacote "hello" com o **device id**,
+sem exigir token. Varrendo a LAN de dentro do container:
+
+```
+192.168.31.63   device_id=415783444   <<< o aspirador
+192.168.31.1    device_id=771718035   (o roteador principal, é o gateway)
+```
+
+O `415783444` casa com o `entity_id` `dreame_us_415783444_mc1808` — identificação
+sem ambiguidade. De quebra, confirma que o "Roteador" é mesmo o nó principal.
+
+### Configuração pronta, aguardando três segredos
+
+`config/camera_aspirador.yaml` já tem `host: 192.168.31.63`, `country: us` e a
+lista completa de camadas a desenhar. ⚠️ **Não está ativo**: só entra quando
+`camera: !include camera_aspirador.yaml` for acrescentado ao
+`configuration.yaml`, e isso só depois que existirem no `secrets.yaml`:
+
+```
+aspirador_token:   token do aparelho
+xiaomi_user:       e-mail ou ID da conta Xiaomi
+xiaomi_pass:       senha da conta
+```
+
+Incluir antes disso faria o `!secret` falhar na carga. São credenciais do André.

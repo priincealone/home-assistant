@@ -1,0 +1,59 @@
+# Mapa do aspirador com posição ao vivo.
+#
+# ⚠️ ESTE ARQUIVO AINDA NÃO ESTÁ ATIVO. Ele só entra em uso quando a linha
+#    `camera: !include camera_aspirador.yaml` for acrescentada ao
+#    configuration.yaml — e isso só deve ser feito DEPOIS que os três segredos
+#    abaixo existirem no secrets.yaml. Sem eles, o Home Assistant tentaria
+#    resolver `!secret` e falharia na carga.
+#
+# Modelo: dreame.vacuum.mc1808 (Xiaomi Mi Mop / Mijia 1C).
+# Confirmado na lista de suportados do projeto — diferente da integração
+# "Dreame Vacuum", que cobre só os modelos novos (p2xxx/r2xxx) e NÃO o mc1808.
+#
+# Valores já descobertos e preenchidos:
+#   host    192.168.31.63   (achado pelo protocolo miIO, device_id 415783444,
+#                            que casa com o entity_id dreame_us_415783444)
+#   country us              (o servidor onde a conta tem este aparelho)
+#
+# Falta o André pôr no secrets.yaml:
+#   aspirador_token:  token do aparelho
+#   xiaomi_user:      e-mail ou ID da conta Xiaomi
+#   xiaomi_pass:      senha da conta
+#
+# O token se extrai seguindo o guia da integração xiaomi_miio do Home Assistant.
+# São credenciais dele; não são preenchidas aqui.
+
+- platform: xiaomi_cloud_map_extractor
+  name: "Mapa do Aspirador"
+  host: 192.168.31.63
+  token: !secret aspirador_token
+  username: !secret xiaomi_user
+  password: !secret xiaomi_pass
+  country: us
+  # a cada 5 s é o padrão do projeto; suficiente para acompanhar a varredura
+  scan_interval: 5
+  auto_update: true
+  draw:
+    - charger        # base de carregamento
+    - vacuum_position
+    - path           # por onde já passou
+    - goto_path
+    - predicted_path
+    - no_go_zones
+    - no_mopping_zones
+    - virtual_walls
+    - zones
+    - rooms
+    - room_names
+    - cleaned_area
+  attributes:
+    # necessários para o card de mapa posicionar o robô sobre a imagem
+    - calibration_points
+    - charger
+    - vacuum_position
+    - vacuum_room
+    - vacuum_room_name
+    - rooms
+    - image
+    - is_empty
+    - map_name
