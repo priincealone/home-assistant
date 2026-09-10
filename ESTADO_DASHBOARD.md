@@ -2984,3 +2984,44 @@ integração as recria a cada boot enquanto o aparelho estiver na conta.
 integração: `async_step_homes_select` e `async_step_devices_filter`
 (`config_flow.py:663` e `:756`) permitem desmarcar casas e dispositivos. Excluído
 ali, ele para de ser recriado — e a área some junto.
+
+### Repetidor removido na origem, e a área junto (09/09/2026)
+
+Apagar o dispositivo do registro nunca ia grudar: **a entrada de configuração
+guardava uma lista de dispositivos em cache**, e a integração o recriava a cada
+boot — com `device_id` novo, arrastando de volta a área "Atelier Amelia".
+
+O lugar certo era o **fluxo de opções da própria integração**, marcando
+*"Atualizar lista de dispositivos"*. A tela de seleção já mostrou a verdade:
+
+> Importar dispositivos da casa: **Casa [ 1 dispositivos ]**
+
+Um só — o aspirador. O Repetidor já não estava na conta Xiaomi, como o André
+tinha dito; quem o mantinha vivo era o cache. E a confirmação foi explícita:
+
+> Alterações de Dispositivos: Adicionar **0** dispositivos, Remover **1**
+
+Depois disso a área ficou órfã e a remoção dela **grudou** — 11 → 10 áreas, e
+não voltou no restart seguinte.
+
+⚠️ **Tentei este fluxo primeiro pela API REST e abortei.** Ela devolveu o
+`multi_select` sem as opções legíveis e o passo avançou sozinho para uma
+confirmação que eu não conseguia auditar — confirmar às cegas poderia
+desmarcar casas inteiras. Conferido depois de abortar: nada mudara. **Fluxo com
+seleção de dispositivos se conduz pela interface**, onde as caixas têm nome.
+
+### Estado final da Xiaomi
+
+| dispositivo | área | entidades visíveis |
+| --- | --- | --- |
+| Aspirador | Closet | **14** de 64 |
+| Roteador | Closet | 9 |
+| rd15_minet_4138 | Sala de estar | 9 |
+| Luminária Luca | Quarto Luca | 7 (`unavailable`, desligada) |
+
+10 áreas, 337 entidades, `vacuum.…mc1808` em `idle`.
+
+💡 A integração tem uma opção embutida, **"Ocultar entidades não padrão criadas"**
+(`hide_non_standard_entities`), que faz o que fiz à mão nas 50 propriedades cruas
+do aspirador. Se um dia entrar outro aparelho ruidoso, é por ali — mais limpo que
+marcar entidade a entidade.
