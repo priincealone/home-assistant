@@ -2780,3 +2780,32 @@ não-óbvio, e é o candidato natural para o que derrubou a tentativa anterior.
 
 Se depois disso a conta entrar mas nenhum dispositivo aparecer, aí sim é região:
 trocar Singapore por **United States**.
+
+### Verificação passou, mas a região Singapore está vazia
+
+O log confirma que o login **completou**: a Xiaomi devolveu `passInfo: login-end`,
+`sns-bind-step: bind-finish` e um `serviceToken`, com `p_ur=BR` e
+`p_idc=Singapore`. Ou seja, a verificação em duas etapas foi vencida.
+
+Mas o diálogo parou no passo seguinte, "Filtro de dispositivos da nuvem", com:
+
+> ⚠️ **Sem dispositivos na conta xiaomi**
+
+É a segunda armadilha, exatamente como previsto: **região certa para autenticar,
+errada para os dispositivos**. A conta existe em Singapura, os aparelhos não.
+
+⚠️ Distinção que importa: `login-end` no log **não** significa integração criada.
+Nenhuma entrada foi gravada e `xiaomi_miot` continua fora de `components` — o
+vínculo só existe quando o fluxo chega ao fim.
+
+**Próxima tentativa: United States**, o candidato natural para conta brasileira
+depois de Singapura. Formulário reaberto com essa região.
+
+**O atalho definitivo**, que evita tentativa e erro: o app **Mi Home** informa a
+região da conta em *Perfil → Configurações → Região*. Vale mais que qualquer
+palpite meu — e se não for US, a ordem seguinte é **Europe**, depois **India** e
+**Russia**.
+
+Existe também um `OptionsFlowHandler` (`config_flow.py:991`) que expõe
+`CONF_SERVER_COUNTRY`: uma vez criada a entrada, dá para trocar a região por ali,
+sem refazer o fluxo do zero.
