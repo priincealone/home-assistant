@@ -12,7 +12,7 @@
     - name: "Luzes Cozinha"
       unique_id: luzes_cozinha_count
       state: >
-        {{ ['light.cozinha_copa_varanda_switch_3']
+        {{ ['light.cozinha_copa_varanda_switch_1']
            | map('states') | select('eq', 'on') | list | count }}
 
     - name: "Luzes Copa"
@@ -24,7 +24,7 @@
     - name: "Luzes Lavanderia"
       unique_id: luzes_lavanderia_count
       state: >
-        {{ ['light.cozinha_copa_varanda_switch_1']
+        {{ ['light.cozinha_copa_varanda_switch_3']
            | map('states') | select('eq', 'on') | list | count }}
 
     - name: "Luzes Area Gourmet"
@@ -137,3 +137,55 @@
       state: "{{ now().isoformat() }}"
       device_class: timestamp
       icon: mdi:clock-check-outline
+
+# Contexto de mídia da sala. Medido em 09/09/2026 com TV e PS5 ligados:
+#   - a TV local (SamsungTV) não reporta nem a fonte atual;
+#   - a TV de nuvem (SmartThings) é a única que reporta `source`;
+#   - o PS5 responde `title_name: null` mesmo com jogo aberto — o console não
+#     anuncia o app pelo DDP, então o nome do jogo não existe por aqui.
+# Daí estes dois: um traduz a fonte, o outro cruza fonte + console para dizer o
+# que está acontecendo, que é o mais perto do "conteúdo em uso" possível hoje.
+- sensor:
+    - name: "TV Fonte"
+      unique_id: tv_fonte_legivel
+      icon: mdi:television-guide
+      state: >
+        {% set tv = states('media_player.sala_de_estar_tv') %}
+        {% if tv in ['off', 'unavailable', 'unknown', 'standby'] %}
+          Desligada
+        {% else %}
+          {% set f = state_attr('media_player.sala_de_estar_tv', 'source') %}
+          {{ {'hdmi1': 'HDMI 1', 'hdmi2': 'HDMI 2', 'hdmi3': 'HDMI 3',
+              'hdmi4': 'HDMI 4', 'digital_tv': 'TV aberta'}.get(f, f or 'Ligada') }}
+        {% endif %}
+
+    - name: "Sala Atividade"
+      unique_id: sala_atividade
+      icon: >
+        {% set ps5 = states('media_player.sala_de_estar_ps5') %}
+        {% set tv = states('media_player.sala_de_estar_tv') %}
+        {% if ps5 == 'on' and state_attr('media_player.sala_de_estar_tv', 'source') == 'hdmi1' %}
+          mdi:sony-playstation
+        {% elif tv not in ['off', 'unavailable', 'unknown', 'standby'] %}
+          mdi:television-play
+        {% else %}
+          mdi:sofa-outline
+        {% endif %}
+      state: >
+        {% set ps5 = states('media_player.sala_de_estar_ps5') %}
+        {% set tv = states('media_player.sala_de_estar_tv') %}
+        {% set fonte = state_attr('media_player.sala_de_estar_tv', 'source') %}
+        {% set tv_ligada = tv not in ['off', 'unavailable', 'unknown', 'standby'] %}
+        {% if ps5 == 'on' and tv_ligada and fonte == 'hdmi1' %}
+          Jogando no PS5
+        {% elif ps5 == 'on' %}
+          PS5 ligado
+        {% elif tv_ligada %}
+          {{ states('sensor.tv_fonte') }}
+        {% else %}
+          Sala livre
+        {% endif %}
+      attributes:
+        ps5: "{{ states('media_player.sala_de_estar_ps5') }}"
+        tv: "{{ states('media_player.sala_de_estar_tv') }}"
+        fonte: "{{ state_attr('media_player.sala_de_estar_tv', 'source') }}"

@@ -2641,3 +2641,37 @@ Qualquer sonda DDP futura precisa fazer `bind(('', 987))` na origem.
 2. **Contexto cruzado**: TV em `hdmi1` + PS5 `on` = "jogando no PS5". Sensor de
    template, sem integração nova.
 3. O **título do jogo** só com a integração de presença da PSN.
+
+## Sensores de contexto de mídia + um bug meu corrigido (09/09/2026)
+
+### O bug: os contadores de luz ficaram invertidos
+
+A correção da troca Cozinha/Lavanderia mexeu no registro de entidades e no
+lovelace, mas **não em `template_sensors.yaml`** — que também cita as entidades
+pelo id. Resultado: `sensor.luzes_cozinha` contava `switch_3` (agora a
+Lavanderia) e vice-versa. O card da Cozinha **acionava** o interruptor certo mas
+**mostrava a contagem** do outro cômodo.
+
+⚠️ Não apareceu na verificação da época porque as duas luzes estavam no mesmo
+estado — ambas apagadas então, ambas acesas agora. **Estados iguais escondem
+inversões.** Ao trocar entidades entre si, procurar o id em *todos* os arquivos:
+registro, lovelace **e** os YAML de template/automação.
+
+Corrigido: Cozinha volta a contar `switch_1`; Lavanderia, `switch_3`.
+
+### Os dois sensores
+
+Recarregados com `POST /api/services/template/reload`, sem restart.
+
+| sensor | faz | valor no teste |
+| --- | --- | --- |
+| `sensor.tv_fonte` | traduz o `source` da TV de nuvem: `hdmi1` → "HDMI 1", `digital_tv` → "TV aberta", desligada → "Desligada" | **"HDMI 1"** |
+| `sensor.sala_atividade` | cruza PS5 + TV + fonte | **"Jogando no PS5"**, ícone `mdi:sony-playstation` |
+
+`sala_atividade` degrada em camadas: "Jogando no PS5" (console ligado **e** TV em
+hdmi1) → "PS5 ligado" → o que a TV estiver mostrando → "Sala livre". Carrega
+`ps5`, `tv` e `fonte` como atributos, para depurar sem abrir o template.
+
+É o mais perto de "conteúdo em uso" possível hoje: o nome do jogo não existe
+porque o console não o anuncia, e o título do que passa na TV nenhuma das duas
+integrações expõe.
