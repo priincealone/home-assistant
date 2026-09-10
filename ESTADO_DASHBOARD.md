@@ -2954,3 +2954,33 @@ padrão `<marca>_<servidor>_<id>_`: **cn 25, us 74**, mais nenhum.
    como "Aspirador * clean start-clean", "* audio play-sound". Sobram **14 úteis**:
    a entidade `vacuum` em si, bateria, estado de carga, falha e a vida dos
    consumíveis (escovas, filtro). As 50 restantes são ruído nas listagens.
+
+### Limpeza pós-Xiaomi (09/09/2026)
+
+Três decisões do André: aspirador fica no **Closet**; **Repetidor** e a área
+**Atelier Amelia** são resíduos de outra configuração; as **50 propriedades
+cruas** do aspirador ficam ocultas.
+
+| | resultado |
+| --- | --- |
+| Aspirador | **14 visíveis de 64** — as 50 cruas com `hidden_by: user` |
+| Repetidor | **0 entidades visíveis** (10 desativadas) |
+| Entidades no sistema | 347 → **337** |
+| `vacuum.…mc1808` | `idle`, funcional |
+
+⚠️ **Erro de verificação meu**: conferi o resultado do ocultamento pelo
+`/api/states` e vi as 64 ainda lá, concluindo que falhara. Não falhara —
+`hidden_by` **não remove da API**, só das listagens e dos seletores. Eu já tinha
+registrado isso ao ocultar a TV de nuvem e ainda assim olhei o lugar errado. Para
+conferir ocultamento, olhar o **registro**, nunca o endpoint de estados.
+
+⚠️ **Quarta ocorrência da mesma lição**: apagar o Repetidor não grudou — as 10
+entidades voltaram no boot seguinte com `device_id` novo, e o **dispositivo e a
+área também voltaram** (11 áreas de novo). Desativar as entidades resolveu o que
+importa (nada aparece), mas a linha do dispositivo e a área persistem, porque a
+integração as recria a cada boot enquanto o aparelho estiver na conta.
+
+**O lugar certo para removê-lo de vez** é o próprio fluxo de opções da
+integração: `async_step_homes_select` e `async_step_devices_filter`
+(`config_flow.py:663` e `:756`) permitem desmarcar casas e dispositivos. Excluído
+ali, ele para de ser recriado — e a área some junto.
