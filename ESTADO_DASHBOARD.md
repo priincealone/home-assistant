@@ -2511,3 +2511,27 @@ atropelem a folga de 2 minutos.
 
 O segundo virou testável justamente por causa da mudança: como as condições
 olham estado e não gatilho, `automation.trigger` manual é um teste válido.
+
+### Automação do PS5 provada em uso real (09/09/2026)
+
+Sem nada forçado — o André ligou o console e a cadeia inteira rodou sozinha:
+
+```
+00:23:39   PS5 -> unavailable     (o console aparecendo na rede)
+00:23:44   PS5 -> on
+00:23:45   ventilação -> on       1,17 s depois
+00:25:00   automação dispara de novo (time_pattern), estado confere, nada muda
+```
+
+O disparo das 00:25:00 é a rede de segurança do `time_pattern` batendo no marco
+de 5 minutos: reavaliou o estado, viu que já estava correto e ligou uma tomada
+que já estava ligada — **idempotente**, exatamente como se pretendia. É a prova
+de que o mecanismo de reconciliação roda sem efeito colateral.
+
+Com isso a automação está verificada nas três frentes: ligar, desligar e
+reconciliar depois de reinício.
+
+⚠️ Nota de ferramenta: scripts Python lançados em segundo plano têm a saída
+**bufferizada** — o arquivo de log fica vazio até o processo terminar. Para
+acompanhar em tempo real, consultar a API direto em vez de esperar o log (ou
+lançar com `python -u`).
