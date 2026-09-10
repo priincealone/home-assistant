@@ -2700,3 +2700,46 @@ limpeza do P3.
 Hierarquia na ordem certa — o rótulo recua, o dado vivo avança — e acima do piso
 de 11px fixado na auditoria. Sem transbordo. As três peças originais do deck
 seguem na posição (verificado por asserção no próprio script).
+
+## Conta Xiaomi Home: por que não vinculava, e o caminho B (09/09/2026)
+
+O André relatou que a tentativa anterior de vincular a conta não deu certo. Não
+havia rastro no projeto — nenhuma integração, nenhum repositório no HACS, nada no
+diário. Então o diagnóstico veio do ambiente.
+
+### Os dois suspeitos
+
+**1. As URLs do Home Assistant estão vazias.** `core.config` traz
+`internal_url: None` e `external_url: None`. A integração **Xiaomi Home oficial**
+vincula por **OAuth**: abre a página de login da Xiaomi e precisa que o navegador
+seja devolvido ao HA. Sem URL, ela monta um retorno que não existe — você
+autentica e o fluxo morre no caminho. É o sintoma clássico de "não vincula".
+
+**2. A região padrão é a China.** Conta brasileira costuma ficar no servidor
+**Singapura**. Região errada faz o login **funcionar** e a lista de dispositivos
+vir **vazia** — parece vinculado e não veio nada.
+
+Descartado: bloqueio de rede. O container alcança `api.io.mi.com`, `sg`, `de`,
+`us` e `account.xiaomi.com`.
+
+### Caminho escolhido: Xiaomi Miot Auto
+
+`al-one/hass-xiaomi-miot` v1.1.5, baixado pelo HACS. Escolhido por **contornar**
+o suspeito nº 1 em vez de consertá-lo: o fluxo dela pede usuário e senha **dentro
+do próprio formulário do HA**, sem redirect nenhum. Se o problema era o OAuth,
+ele não existe aqui.
+
+O primeiro passo oferece `account` ou `token` — conta é o que o André quer. O
+formulário de conta pede `username`, `password`, `server_country` (padrão **`cn`**
+— a armadilha) e `conn_mode` (`auto`, que tenta local antes da nuvem).
+
+⚠️ O fluxo que abri pela API foi **abortado** de propósito: fluxo pendente trava
+o próximo do mesmo domínio, armadilha já registrada neste projeto. O formulário
+foi então aberto pela interface.
+
+**Estado**: formulário na tela, região já em **Singapore** e modo em
+**Automatic**. Faltam usuário e senha, que são do André.
+
+Se a conta entrar mas nenhum dispositivo aparecer, o próximo palpite é trocar a
+região para **United States**. Se nem logar, aí vale definir a `internal_url` e
+ir para a integração oficial.
