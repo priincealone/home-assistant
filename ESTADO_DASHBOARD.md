@@ -3484,3 +3484,42 @@ propagou para o rótulo das 9 entidades dele.
 
 💡 Fica a assimetria: o nó do Closet chama-se só "Roteador". Renomeá-lo para
 "Roteador Closet" deixaria o par simétrico — decisão do André.
+
+## Roteador Closet e faxina da tela de Dispositivos
+
+`scripts/lovelace/limpa_tela_dispositivos.py` — um ciclo só para as duas coisas,
+já que ambas mexem nos registros do `.storage`.
+
+O segundo nó da malha, que aparecia sem nome próprio, virou **"Roteador Closet"**
+(o outro já era "Roteador Sala"). E 82 entidades receberam `hidden_by: 'user'`,
+subindo o total de ocultas de 69 para **151 de 383**.
+
+O que saiu da lista, por categoria:
+
+| Categoria | Qtd. |
+| --- | --- |
+| saúde do celular duplicada pelos sensores de webhook | 30 |
+| identificadores técnicos do celular (BSSID, SSID, SIM, versão do app) | 18 |
+| preferência de fábrica dos aparelhos (`power_on_behavior`, LED indicador) | 12 |
+| interfaces de rede virtuais do PC no Glances (loopback, vEthernet WSL, Bluetooth) | 10 |
+| eventos internos dos roteadores (connect / disconnect / inactive) | 6 |
+| LED indicador e config interna dos roteadores | 4 |
+| lista crua de MACs conectados (`connect_device_ids`) | 2 |
+
+**`hidden_by`, nunca `disabled_by`**: as entidades seguem vivas, com estado, e
+continuam servindo automações e a API — apenas somem das listagens e dos
+seletores. Na página do próprio aparelho o Home Assistant ainda as mostra, com
+o ícone de olho cortado; isso é o comportamento normal e é como se confere que
+o ocultamento pegou.
+
+O script monta sozinho a lista de **entidades em uso**, varrendo lovelace,
+automations, template_sensors, scripts, scenes, configuration e camera_aspirador,
+e usa essa lista como **veto**: o que o painel cita não é tocado, mesmo casando
+com um padrão de ruído. Foi esse veto que preservou `bloqueio_para_criancas`,
+`geocoded_location`, `battery_level`, `device_tracker` e os medidores de disco,
+memória e CPU do PC.
+
+Um cuidado que quase passou: os 30 sensores de saúde do `mobile_app` parecem os
+do deck de Saúde, mas não são. O deck usa `sensor.saude_*`, criados pelo webhook
+do Atalho — conferido no lovelace antes de aplicar. **Nome parecido não é prova
+de uso; a conferência é no arquivo.**
