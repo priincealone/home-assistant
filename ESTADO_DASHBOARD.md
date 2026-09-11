@@ -3627,3 +3627,36 @@ Radio Browser e do text-to-speech do próprio Home Assistant.
 Falta ainda `GROUPING` — vem dos provedores `sync_group` / `universal_player`
 do Music Assistant, e só faz sentido quando houver mais de um ponto de som de
 verdade.
+
+## Alexa Media Player: barrado por chave de acesso (passkey)
+
+O fluxo foi montado com o domínio corrigido para **`amazon.com.br`** (vinha
+`amazon.com`, o padrão americano — é o campo que mais derruba esse login no
+Brasil) e `hass_url` em `http://192.168.31.22:8123`. O André preencheu as
+credenciais e a Amazon respondeu **"Houve um problema"**.
+
+O log do Home Assistant não registrou erro nenhum: o problema veio da própria
+Amazon, apenas repassado pelo proxy. A mensagem real estava escondida entre as
+mensagens de template da página:
+
+> "Erro na chave de acesso. Algo deu errado... Desculpe, sua chave de acesso
+> não está funcionando. Faça login com sua senha."
+
+**A conta usa passkey, e passkey não atravessa o proxy do `alexa_media` — por
+definição.** A credencial é vinculada à origem `amazon.com.br`, e o proxy serve
+a página a partir de `192.168.31.22:8123`. O navegador se recusa a usá-la numa
+origem diferente. Não é configuração errada: é o modelo de segurança do
+WebAuthn funcionando como deveria.
+
+Tentei forçar o fallback de senha neutralizando `navigator.credentials` e
+`window.PublicKeyCredential` na aba. **Não resolveu** — a Amazon continua
+devolvendo a tela inicial, e o patch se perde a cada recarga da página. O
+formulário do proxy também carrega um campo oculto `metadata1`, o fingerprint
+que a Amazon usa para detectar automação; é provável que o bloqueio venha dali
+também.
+
+Caminho recomendado: **desativar a chave de acesso na conta Amazon** e usar
+senha com verificação em duas etapas por **app autenticador** — a integração
+tem campo próprio para a chave de 52 caracteres do autenticador, e esse é o
+fluxo que ela suporta de verdade. Vale lembrar que foi a verificação em duas
+etapas que também complicou o vínculo da Xiaomi.
