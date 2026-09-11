@@ -3580,3 +3580,26 @@ travando a aba. Tentar pela API do MA ou depois de uma atualização.
 Anotar também que o **Wi-Fi do PC é DHCP** (`192.168.31.22`). Como esse IP virou
 endereço de serviço do Music Assistant, entra na mesma reserva de DHCP já
 pendente para o PS5.
+
+### A ponte MA → Home Assistant, pela API
+
+A interface do Music Assistant congela o renderer ao abrir o diálogo desse
+provedor, então o caminho passou a ser a API. O cliente e os comandos ficaram
+em `scripts/music_assistant/api_console.js`.
+
+Os nomes dos comandos **não são adivinháveis** — sondei dez variantes plausíveis
+e todas devolveram "Invalid or unsupported command". O que resolveu foi ler
+`controllers/config/flows.py` dentro do container: os fluxos começam em
+`config/providers/setup` mas **avançam em `config/flows/submit`**, um namespace
+diferente, que nenhuma tentativa por analogia acertaria.
+
+A cadeia do som ambiente é `hass` (plugin que conecta ao Home Assistant) e,
+dependente dele, `hass_players` (deixa o MA tocar nos `media_player` do HA).
+O fluxo do `hass` foi até o passo `auth`, que **exige o login do André**: a tela
+`/auth/authorize` do Home Assistant pede credenciais a cada autorização de
+cliente externo, por design — nem a sessão já aberta no navegador a dispensa.
+Trocar a origem da URL de `192.168.31.22:8123` para `localhost:8123`, onde a
+sessão existe, **não contorna** isso; foi testado.
+
+Então o passo está na borda: formulário na tela, tudo o mais pronto. Depois do
+login, `hass_players` entra com uma chamada só.
