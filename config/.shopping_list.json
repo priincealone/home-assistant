@@ -13,5 +13,20 @@
     "name": "pomada cabelo",
     "id": "75dc942487874558adbc11b5f2eff72e",
     "complete": true
+  },
+  {
+    "name": "café",
+    "id": "0f462fb1e57a4d89b9847f266d41b871",
+    "complete": true
+  },
+  {
+    "name": "café nespresso",
+    "id": "b3b4c15132ca4362b739ae39f06de88f",
+    "complete": false
+  },
+  {
+    "name": "bateria",
+    "id": "29e72e857d464b1a9aa35bc8b6df44b5",
+    "complete": false
   }
 ]

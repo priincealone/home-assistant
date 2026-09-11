@@ -3523,3 +3523,60 @@ Um cuidado que quase passou: os 30 sensores de saúde do `mobile_app` parecem os
 do deck de Saúde, mas não são. O deck usa `sensor.saude_*`, criados pelo webhook
 do Atalho — conferido no lovelace antes de aplicar. **Nome parecido não é prova
 de uso; a conferência é no arquivo.**
+
+## Som ambiente, primeira rodada: Music Assistant e ponto de som no navegador
+
+Ponto de partida do levantamento: **a casa não tem nenhum dispositivo de áudio**.
+Os três `media_player` existentes são TV (duas entidades, nuvem e local) e PS5,
+e nenhum deles tem `GROUPING` nem `BROWSE_MEDIA` — ou seja, não havia nem
+biblioteca nem multiroom, e não é configuração faltando, é camada inexistente.
+
+O André definiu o projeto: **caixas embutidas e Echos espalhados**. Os dois
+mundos não sincronizam entre si — Echo não fala AirPlay, Chromecast nem
+Snapcast — então a divisão de papéis foi decidida agora: **embutidas = música**
+(sincronizadas entre si), **Echos = voz e avisos**.
+
+### O que foi ligado
+
+O container `music-assistant` (2.10.2) **já existia**, com Apple Music
+configurado, parado desde 06/09. Subiu de novo, entrou na `casa-net` para o
+Home Assistant alcançá-lo por nome, e ganhou `--restart unless-stopped` — antes
+estava em `no`, isto é, não voltaria depois de um reboot. Para um sistema de som
+fixo isso não serve.
+
+A integração `music_assistant` foi criada e está **`loaded`**. Um detalhe que
+custou uma tentativa: o endereço do servidor **não pode ser `music-assistant:8095`**,
+porque o fluxo de autorização constrói a URL de login a partir dele e o
+**navegador não resolve nomes internos do Docker**. O endereço certo é o IP do
+host na LAN, `http://192.168.31.22:8095`, que serve aos dois lados — e será
+também o endereço que o tablet e as caixas vão precisar para buscar os streams.
+
+O `browser_mod` foi registrado no Chrome do André e criou
+`media_player.browser_mod_d95dfb08_d488353f`, além de `light.*_screen` e os
+sensores de tela. E o TTS, que só existia em inglês, ganhou uma entrada
+`tts.google_translate_pt_com_br`.
+
+### Duas descobertas que decidem o painel fixo
+
+**1. Autoplay.** O player do navegador nasce com
+`audio_interaction_required: true` e fica `unavailable` até alguém **tocar na
+tela**. Cliques sintéticos não contam para a política do Chrome. Num painel
+fixo isso se resolve com Fully Kiosk (o `browser_mod` até expõe
+`binary_sensor.*_browser_fullykiosk`) ou com o Chrome aberto com
+`--autoplay-policy=no-user-gesture-required`. **Navegador comum não é ponto de
+som confiável.**
+
+**2. O Home Assistant fecha o websocket após 5 minutos de inatividade**, o que
+derruba o `browser_mod`. O próprio painel avisa. Para um painel fixo, desligar
+"Automatically close connection" no perfil do usuário é obrigatório.
+
+### Em aberto
+
+O provedor **"Home Assistant MediaPlayers"** dentro do Music Assistant — que é
+a ponte para o MA tocar nos players do HA — **não foi configurado**: a interface
+do MA congela o renderer ao abrir o diálogo desse provedor, duas tentativas,
+travando a aba. Tentar pela API do MA ou depois de uma atualização.
+
+Anotar também que o **Wi-Fi do PC é DHCP** (`192.168.31.22`). Como esse IP virou
+endereço de serviço do Music Assistant, entra na mesma reserva de DHCP já
+pendente para o PS5.
