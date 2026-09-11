@@ -6,13 +6,13 @@
     "automation.1757462400000": [
       {
         "extended_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "266d63c37228c30aa209335f711f819b",
+          "last_step": "action/0/choose/1/conditions/0",
+          "run_id": "582f0020f68090483092b2e5dd2b57d6",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:45:00.246720+00:00",
-            "finish": "2026-09-10T22:45:00.899174+00:00"
+            "start": "2026-09-11T01:20:00.319732+00:00",
+            "finish": "2026-09-11T01:20:00.320954+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -21,24 +21,24 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T22:45:00.246866+00:00",
+                "timestamp": "2026-09-11T01:20:00.319886+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T22:40:00.246448+00:00",
+                      "last_triggered": "2026-09-11T01:17:59.118010+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T17:10:29.284935+00:00",
-                    "last_reported": "2026-09-10T22:40:00.886830+00:00",
-                    "last_updated": "2026-09-10T22:40:00.886830+00:00",
+                    "last_changed": "2026-09-10T23:05:20.489605+00:00",
+                    "last_reported": "2026-09-11T01:17:59.121484+00:00",
+                    "last_updated": "2026-09-11T01:17:59.121484+00:00",
                     "context": {
-                      "id": "01M26QMNQPCR6BN4BY5AMD0DRX",
-                      "parent_id": null,
+                      "id": "01M270NYEDTJ516H6D21MYGF1Q",
+                      "parent_id": "01M270J98PBF8ZY5V6HG6K62E0",
                       "user_id": null
                     }
                   },
@@ -47,7 +47,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-10T19:45:00.246521-03:00",
+                    "now": "2026-09-10T22:20:00.319451-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -56,23 +56,20 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T22:45:00.247253+00:00",
+                "timestamp": "2026-09-11T01:20:00.320307+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M26QXTPPHVHFG6R03GG9B3MM",
+                    "id": "01M270SMSZHDXYQ5JY3T4X3CAX",
                     "parent_id": null,
                     "user_id": null
                   }
-                },
-                "result": {
-                  "choice": 1
                 }
               }
             ],
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T22:45:00.247327+00:00",
+                "timestamp": "2026-09-11T01:20:00.320435+00:00",
                 "result": {
                   "result": false
                 }
@@ -81,7 +78,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T22:45:00.247346+00:00",
+                "timestamp": "2026-09-11T01:20:00.320468+00:00",
                 "result": {
                   "result": false
                 }
@@ -90,7 +87,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T22:45:00.247359+00:00",
+                "timestamp": "2026-09-11T01:20:00.320502+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -101,40 +98,21 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T22:45:00.247404+00:00",
+                "timestamp": "2026-09-11T01:20:00.320559+00:00",
                 "result": {
-                  "result": true
+                  "result": false
                 }
               }
             ],
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T22:45:00.247415+00:00",
+                "timestamp": "2026-09-11T01:20:00.320574+00:00",
                 "result": {
-                  "result": true,
+                  "result": false,
                   "entities": [
                     "media_player.sala_de_estar_ps5"
                   ]
-                }
-              }
-            ],
-            "action/0/choose/1/sequence/0": [
-              {
-                "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T22:45:00.247936+00:00",
-                "result": {
-                  "params": {
-                    "domain": "switch",
-                    "service": "turn_off",
-                    "service_data": {},
-                    "target": {
-                      "entity_id": [
-                        "switch.ventilacao_ps5"
-                      ]
-                    }
-                  },
-                  "running_script": false
                 }
               }
             ]
@@ -225,19 +203,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M26QXTPPHVHFG6R03GG9B3MM",
+            "id": "01M270SMSZHDXYQ5JY3T4X3CAX",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "266d63c37228c30aa209335f711f819b",
+          "last_step": "action/0/choose/1/conditions/0",
+          "run_id": "582f0020f68090483092b2e5dd2b57d6",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:45:00.246720+00:00",
-            "finish": "2026-09-10T22:45:00.899174+00:00"
+            "start": "2026-09-11T01:20:00.319732+00:00",
+            "finish": "2026-09-11T01:20:00.320954+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -247,48 +225,87 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "b983d9a55cf14556c9c2a85216bb1d58",
+          "run_id": "34157cee7d10cd523d9f60ab3939d05d",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:50:00.246430+00:00",
-            "finish": "2026-09-10T22:50:00.963310+00:00"
+            "start": "2026-09-11T01:21:08.250628+00:00",
+            "finish": "2026-09-11T01:21:08.545723+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
-          "trigger": "time pattern",
+          "trigger": "state of media_player.sala_de_estar_ps5",
           "trace": {
-            "trigger/3": [
+            "trigger/1": [
               {
-                "path": "trigger/3",
-                "timestamp": "2026-09-10T22:50:00.246570+00:00",
+                "path": "trigger/1",
+                "timestamp": "2026-09-11T01:21:08.250919+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T22:45:00.247005+00:00",
+                      "last_triggered": "2026-09-11T01:20:00.320051+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T17:10:29.284935+00:00",
-                    "last_reported": "2026-09-10T22:45:00.898663+00:00",
-                    "last_updated": "2026-09-10T22:45:00.898663+00:00",
+                    "last_changed": "2026-09-10T23:05:20.489605+00:00",
+                    "last_reported": "2026-09-11T01:20:00.320870+00:00",
+                    "last_updated": "2026-09-11T01:20:00.320870+00:00",
                     "context": {
-                      "id": "01M26QXTPPHVHFG6R03GG9B3MM",
+                      "id": "01M270SMSZHDXYQ5JY3T4X3CAX",
                       "parent_id": null,
                       "user_id": null
                     }
                   },
                   "trigger": {
-                    "id": "reconciliacao",
-                    "idx": "3",
+                    "id": "saiu_de_uso",
+                    "idx": "1",
                     "alias": null,
-                    "platform": "time_pattern",
-                    "now": "2026-09-10T19:50:00.246222-03:00",
-                    "description": "time pattern"
+                    "platform": "state",
+                    "entity_id": "media_player.sala_de_estar_ps5",
+                    "from_state": {
+                      "entity_id": "media_player.sala_de_estar_ps5",
+                      "state": "unavailable",
+                      "attributes": {
+                        "device_class": "receiver",
+                        "friendly_name": "PS5",
+                        "supported_features": 128
+                      },
+                      "last_changed": "2026-09-11T01:15:59.126803+00:00",
+                      "last_reported": "2026-09-11T01:16:07.124109+00:00",
+                      "last_updated": "2026-09-11T01:15:59.126803+00:00",
+                      "context": {
+                        "id": "01M270J98PBF8ZY5V6HG6K62E0",
+                        "parent_id": null,
+                        "user_id": null
+                      }
+                    },
+                    "to_state": {
+                      "entity_id": "media_player.sala_de_estar_ps5",
+                      "state": "off",
+                      "attributes": {
+                        "device_class": "receiver",
+                        "friendly_name": "PS5",
+                        "supported_features": 128
+                      },
+                      "last_changed": "2026-09-11T01:19:08.247689+00:00",
+                      "last_reported": "2026-09-11T01:19:43.220376+00:00",
+                      "last_updated": "2026-09-11T01:19:08.247689+00:00",
+                      "context": {
+                        "id": "01M270R1YQ4H3XTE33B96XDXDM",
+                        "parent_id": null,
+                        "user_id": null
+                      }
+                    },
+                    "for": {
+                      "__type": "<class 'datetime.timedelta'>",
+                      "total_seconds": 120.0
+                    },
+                    "attribute": null,
+                    "description": "state of media_player.sala_de_estar_ps5"
                   }
                 }
               }
@@ -296,11 +313,11 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T22:50:00.246839+00:00",
+                "timestamp": "2026-09-11T01:21:08.251609+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M26R6ZNP5FHVYXMC9YJ1V92P",
-                    "parent_id": null,
+                    "id": "01M270VQ4TC0T2FFPTH4A7AR4D",
+                    "parent_id": "01M270R1YQ4H3XTE33B96XDXDM",
                     "user_id": null
                   }
                 },
@@ -312,7 +329,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T22:50:00.246903+00:00",
+                "timestamp": "2026-09-11T01:21:08.251841+00:00",
                 "result": {
                   "result": false
                 }
@@ -321,7 +338,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T22:50:00.246921+00:00",
+                "timestamp": "2026-09-11T01:21:08.251900+00:00",
                 "result": {
                   "result": false
                 }
@@ -330,7 +347,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T22:50:00.246932+00:00",
+                "timestamp": "2026-09-11T01:21:08.251927+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -341,7 +358,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T22:50:00.246961+00:00",
+                "timestamp": "2026-09-11T01:21:08.251992+00:00",
                 "result": {
                   "result": true
                 }
@@ -350,7 +367,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T22:50:00.246968+00:00",
+                "timestamp": "2026-09-11T01:21:08.252013+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -362,7 +379,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T22:50:00.247204+00:00",
+                "timestamp": "2026-09-11T01:21:08.252413+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -465,19 +482,259 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M26R6ZNP5FHVYXMC9YJ1V92P",
+            "id": "01M270VQ4TC0T2FFPTH4A7AR4D",
+            "parent_id": "01M270R1YQ4H3XTE33B96XDXDM",
+            "user_id": null
+          }
+        },
+        "short_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "34157cee7d10cd523d9f60ab3939d05d",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-11T01:21:08.250628+00:00",
+            "finish": "2026-09-11T01:21:08.545723+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "state of media_player.sala_de_estar_ps5"
+        }
+      },
+      {
+        "extended_dict": {
+          "last_step": "action/0/choose/1/sequence/0",
+          "run_id": "9159050b984f43cf60d861a8b7c2b22d",
+          "state": "stopped",
+          "script_execution": "finished",
+          "timestamp": {
+            "start": "2026-09-11T01:25:00.319456+00:00",
+            "finish": "2026-09-11T01:25:00.974154+00:00"
+          },
+          "domain": "automation",
+          "item_id": "1757462400000",
+          "trigger": "time pattern",
+          "trace": {
+            "trigger/3": [
+              {
+                "path": "trigger/3",
+                "timestamp": "2026-09-11T01:25:00.319571+00:00",
+                "changed_variables": {
+                  "this": {
+                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
+                    "state": "on",
+                    "attributes": {
+                      "id": "1757462400000",
+                      "last_triggered": "2026-09-11T01:21:08.251124+00:00",
+                      "mode": "single",
+                      "current": 0,
+                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
+                    },
+                    "last_changed": "2026-09-10T23:05:20.489605+00:00",
+                    "last_reported": "2026-09-11T01:21:08.543539+00:00",
+                    "last_updated": "2026-09-11T01:21:08.543539+00:00",
+                    "context": {
+                      "id": "01M270VQ4TC0T2FFPTH4A7AR4D",
+                      "parent_id": "01M270R1YQ4H3XTE33B96XDXDM",
+                      "user_id": null
+                    }
+                  },
+                  "trigger": {
+                    "id": "reconciliacao",
+                    "idx": "3",
+                    "alias": null,
+                    "platform": "time_pattern",
+                    "now": "2026-09-10T22:25:00.319306-03:00",
+                    "description": "time pattern"
+                  }
+                }
+              }
+            ],
+            "action/0": [
+              {
+                "path": "action/0",
+                "timestamp": "2026-09-11T01:25:00.319841+00:00",
+                "changed_variables": {
+                  "context": {
+                    "id": "01M2712SRZYW4H28BB8GHZSRR2",
+                    "parent_id": null,
+                    "user_id": null
+                  }
+                },
+                "result": {
+                  "choice": 1
+                }
+              }
+            ],
+            "action/0/choose/0": [
+              {
+                "path": "action/0/choose/0",
+                "timestamp": "2026-09-11T01:25:00.319907+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0": [
+              {
+                "path": "action/0/choose/0/conditions/0",
+                "timestamp": "2026-09-11T01:25:00.319934+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0/entity_id/0": [
+              {
+                "path": "action/0/choose/0/conditions/0/entity_id/0",
+                "timestamp": "2026-09-11T01:25:00.319947+00:00",
+                "result": {
+                  "result": false,
+                  "state": "off",
+                  "wanted_state": "playing"
+                }
+              }
+            ],
+            "action/0/choose/1": [
+              {
+                "path": "action/0/choose/1",
+                "timestamp": "2026-09-11T01:25:00.319976+00:00",
+                "result": {
+                  "result": true
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0",
+                "timestamp": "2026-09-11T01:25:00.319984+00:00",
+                "result": {
+                  "result": true,
+                  "entities": [
+                    "media_player.sala_de_estar_ps5"
+                  ]
+                }
+              }
+            ],
+            "action/0/choose/1/sequence/0": [
+              {
+                "path": "action/0/choose/1/sequence/0",
+                "timestamp": "2026-09-11T01:25:00.320202+00:00",
+                "result": {
+                  "params": {
+                    "domain": "switch",
+                    "service": "turn_off",
+                    "service_data": {},
+                    "target": {
+                      "entity_id": [
+                        "switch.ventilacao_ps5"
+                      ]
+                    }
+                  },
+                  "running_script": false
+                }
+              }
+            ]
+          },
+          "config": {
+            "id": "1757462400000",
+            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
+            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
+            "mode": "single",
+            "triggers": [
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "on",
+                  "playing"
+                ],
+                "id": "entrou_em_uso"
+              },
+              {
+                "trigger": "state",
+                "entity_id": "media_player.sala_de_estar_ps5",
+                "to": [
+                  "standby",
+                  "off",
+                  "idle",
+                  "unavailable"
+                ],
+                "for": "00:02:00",
+                "id": "saiu_de_uso"
+              },
+              {
+                "trigger": "homeassistant",
+                "event": "start",
+                "id": "partida"
+              },
+              {
+                "trigger": "time_pattern",
+                "minutes": "/5",
+                "id": "reconciliacao"
+              }
+            ],
+            "conditions": [],
+            "actions": [
+              {
+                "choose": [
+                  {
+                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
+                    "conditions": [
+                      {
+                        "condition": "state",
+                        "entity_id": "media_player.sala_de_estar_ps5",
+                        "state": [
+                          "on",
+                          "playing"
+                        ]
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_on",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
+                    "conditions": [
+                      {
+                        "condition": "template",
+                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
+                      }
+                    ],
+                    "sequence": [
+                      {
+                        "action": "switch.turn_off",
+                        "target": {
+                          "entity_id": "switch.ventilacao_ps5"
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          "blueprint_inputs": null,
+          "context": {
+            "id": "01M2712SRZYW4H28BB8GHZSRR2",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "b983d9a55cf14556c9c2a85216bb1d58",
+          "run_id": "9159050b984f43cf60d861a8b7c2b22d",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:50:00.246430+00:00",
-            "finish": "2026-09-10T22:50:00.963310+00:00"
+            "start": "2026-09-11T01:25:00.319456+00:00",
+            "finish": "2026-09-11T01:25:00.974154+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -487,12 +744,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "d0e41ed3e5a1ca12ead583741c8fd639",
+          "run_id": "660536d9905d4ec8dfef0e2e15a3a5ab",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:55:00.247118+00:00",
-            "finish": "2026-09-10T22:55:00.862903+00:00"
+            "start": "2026-09-11T01:30:00.320432+00:00",
+            "finish": "2026-09-11T01:30:00.990892+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -501,23 +758,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T22:55:00.247212+00:00",
+                "timestamp": "2026-09-11T01:30:00.321158+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T22:50:00.246699+00:00",
+                      "last_triggered": "2026-09-11T01:25:00.319679+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T17:10:29.284935+00:00",
-                    "last_reported": "2026-09-10T22:50:00.962837+00:00",
-                    "last_updated": "2026-09-10T22:50:00.962837+00:00",
+                    "last_changed": "2026-09-10T23:05:20.489605+00:00",
+                    "last_reported": "2026-09-11T01:25:00.973565+00:00",
+                    "last_updated": "2026-09-11T01:25:00.973565+00:00",
                     "context": {
-                      "id": "01M26R6ZNP5FHVYXMC9YJ1V92P",
+                      "id": "01M2712SRZYW4H28BB8GHZSRR2",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -527,7 +784,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-10T19:55:00.246916-03:00",
+                    "now": "2026-09-10T22:30:00.320276-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -536,10 +793,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T22:55:00.247468+00:00",
+                "timestamp": "2026-09-11T01:30:00.321552+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M26RG4MQ5SW1HR4JJQA6WXPT",
+                    "id": "01M271BYR0EE78GW4TMHXT8S3J",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -552,7 +809,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T22:55:00.247530+00:00",
+                "timestamp": "2026-09-11T01:30:00.321618+00:00",
                 "result": {
                   "result": false
                 }
@@ -561,7 +818,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T22:55:00.247547+00:00",
+                "timestamp": "2026-09-11T01:30:00.321650+00:00",
                 "result": {
                   "result": false
                 }
@@ -570,7 +827,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T22:55:00.247557+00:00",
+                "timestamp": "2026-09-11T01:30:00.321663+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -581,7 +838,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T22:55:00.247587+00:00",
+                "timestamp": "2026-09-11T01:30:00.321697+00:00",
                 "result": {
                   "result": true
                 }
@@ -590,7 +847,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T22:55:00.247595+00:00",
+                "timestamp": "2026-09-11T01:30:00.321705+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -602,7 +859,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T22:55:00.247838+00:00",
+                "timestamp": "2026-09-11T01:30:00.321962+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -705,19 +962,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M26RG4MQ5SW1HR4JJQA6WXPT",
+            "id": "01M271BYR0EE78GW4TMHXT8S3J",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "d0e41ed3e5a1ca12ead583741c8fd639",
+          "run_id": "660536d9905d4ec8dfef0e2e15a3a5ab",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T22:55:00.247118+00:00",
-            "finish": "2026-09-10T22:55:00.862903+00:00"
+            "start": "2026-09-11T01:30:00.320432+00:00",
+            "finish": "2026-09-11T01:30:00.990892+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -727,12 +984,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "ca701af94f82c0dde7a09474b7cf982e",
+          "run_id": "11953ec244ab80b4795015a7a3590ca1",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T23:00:00.246457+00:00",
-            "finish": "2026-09-10T23:00:00.915589+00:00"
+            "start": "2026-09-11T01:35:00.320153+00:00",
+            "finish": "2026-09-11T01:35:01.023095+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -741,23 +998,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-10T23:00:00.246560+00:00",
+                "timestamp": "2026-09-11T01:35:00.320235+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-10T22:55:00.247320+00:00",
+                      "last_triggered": "2026-09-11T01:30:00.321291+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-10T17:10:29.284935+00:00",
-                    "last_reported": "2026-09-10T22:55:00.862452+00:00",
-                    "last_updated": "2026-09-10T22:55:00.862452+00:00",
+                    "last_changed": "2026-09-10T23:05:20.489605+00:00",
+                    "last_reported": "2026-09-11T01:30:00.990475+00:00",
+                    "last_updated": "2026-09-11T01:30:00.990475+00:00",
                     "context": {
-                      "id": "01M26RG4MQ5SW1HR4JJQA6WXPT",
+                      "id": "01M271BYR0EE78GW4TMHXT8S3J",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -767,7 +1024,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-10T20:00:00.246225-03:00",
+                    "now": "2026-09-10T22:35:00.319959-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -776,10 +1033,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-10T23:00:00.246812+00:00",
+                "timestamp": "2026-09-11T01:35:00.320515+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M26RS9KPBKFXX2JVESFKQRQY",
+                    "id": "01M271N3Q0RQGX8XF3AS5BT2MY",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -792,7 +1049,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T23:00:00.246890+00:00",
+                "timestamp": "2026-09-11T01:35:00.320633+00:00",
                 "result": {
                   "result": false
                 }
@@ -801,7 +1058,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T23:00:00.246911+00:00",
+                "timestamp": "2026-09-11T01:35:00.320658+00:00",
                 "result": {
                   "result": false
                 }
@@ -810,7 +1067,7 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T23:00:00.246924+00:00",
+                "timestamp": "2026-09-11T01:35:00.320672+00:00",
                 "result": {
                   "result": false,
                   "state": "off",
@@ -821,7 +1078,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T23:00:00.246956+00:00",
+                "timestamp": "2026-09-11T01:35:00.320705+00:00",
                 "result": {
                   "result": true
                 }
@@ -830,7 +1087,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T23:00:00.246963+00:00",
+                "timestamp": "2026-09-11T01:35:00.320712+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -842,7 +1099,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T23:00:00.247254+00:00",
+                "timestamp": "2026-09-11T01:35:00.320993+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -945,259 +1202,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M26RS9KPBKFXX2JVESFKQRQY",
+            "id": "01M271N3Q0RQGX8XF3AS5BT2MY",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "ca701af94f82c0dde7a09474b7cf982e",
+          "run_id": "11953ec244ab80b4795015a7a3590ca1",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-10T23:00:00.246457+00:00",
-            "finish": "2026-09-10T23:00:00.915589+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "time pattern"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "da282592554c627d1dd7a0a55e3503de",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T23:05:00.246749+00:00",
-            "finish": "2026-09-10T23:05:00.889230+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757462400000",
-          "trigger": "time pattern",
-          "trace": {
-            "trigger/3": [
-              {
-                "path": "trigger/3",
-                "timestamp": "2026-09-10T23:05:00.246840+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757462400000",
-                      "last_triggered": "2026-09-10T23:00:00.246671+00:00",
-                      "mode": "single",
-                      "current": 0,
-                      "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
-                    },
-                    "last_changed": "2026-09-10T17:10:29.284935+00:00",
-                    "last_reported": "2026-09-10T23:00:00.915091+00:00",
-                    "last_updated": "2026-09-10T23:00:00.915091+00:00",
-                    "context": {
-                      "id": "01M26RS9KPBKFXX2JVESFKQRQY",
-                      "parent_id": null,
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "reconciliacao",
-                    "idx": "3",
-                    "alias": null,
-                    "platform": "time_pattern",
-                    "now": "2026-09-10T20:05:00.246608-03:00",
-                    "description": "time pattern"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-10T23:05:00.247081+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M26S2EJPQ31P4A4H72F1QWBX",
-                    "parent_id": null,
-                    "user_id": null
-                  }
-                },
-                "result": {
-                  "choice": 1
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-10T23:05:00.247143+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-10T23:05:00.247160+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-10T23:05:00.247171+00:00",
-                "result": {
-                  "result": false,
-                  "state": "off",
-                  "wanted_state": "playing"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-10T23:05:00.247198+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-10T23:05:00.247205+00:00",
-                "result": {
-                  "result": true,
-                  "entities": [
-                    "media_player.sala_de_estar_ps5"
-                  ]
-                }
-              }
-            ],
-            "action/0/choose/1/sequence/0": [
-              {
-                "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-10T23:05:00.247456+00:00",
-                "result": {
-                  "params": {
-                    "domain": "switch",
-                    "service": "turn_off",
-                    "service_data": {},
-                    "target": {
-                      "entity_id": [
-                        "switch.ventilacao_ps5"
-                      ]
-                    }
-                  },
-                  "running_script": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757462400000",
-            "alias": "Ventila\u00e7\u00e3o do PS5 acompanha o console",
-            "description": "Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5 entra em uso e desliga quando ele sai.\nDuas decis\u00f5es que n\u00e3o s\u00e3o \u00f3bvias:\n1. O desligar espera 2 minutos. \"unavailable\" \u00e9 um dos estados que o dispara, e a integra\u00e7\u00e3o do PS5 fala por rede \u2014 uma oscila\u00e7\u00e3o de segundos cortaria a ventila\u00e7\u00e3o com o console ainda quente. Ligar n\u00e3o tem espera, a\u00ed o atraso seria justamente o que se quer evitar.\n2. A decis\u00e3o \u00e9 tomada pelo **estado atual** do console, n\u00e3o por qual gatilho disparou. A primeira vers\u00e3o usava `condition: trigger` e ficou surda: o PS5 foi para \"off\" \u00e0s 00:10:16, o container reiniciou \u00e0s 00:12:17 e o temporizador pendente de 2 minutos morreu junto. Ao voltar, o console j\u00e1 estava \"off\" \u2014 sem transi\u00e7\u00e3o nova, nada rearmava, e a ventila\u00e7\u00e3o teria ficado ligada indefinidamente. Com a decis\u00e3o baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a automa\u00e7\u00e3o se reconcilia sozinha em no m\u00e1ximo 5 minutos, aconte\u00e7a o que acontecer.",
-            "mode": "single",
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "on",
-                  "playing"
-                ],
-                "id": "entrou_em_uso"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "media_player.sala_de_estar_ps5",
-                "to": [
-                  "standby",
-                  "off",
-                  "idle",
-                  "unavailable"
-                ],
-                "for": "00:02:00",
-                "id": "saiu_de_uso"
-              },
-              {
-                "trigger": "homeassistant",
-                "event": "start",
-                "id": "partida"
-              },
-              {
-                "trigger": "time_pattern",
-                "minutes": "/5",
-                "id": "reconciliacao"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Console em uso \u2014 ventila\u00e7\u00e3o ligada",
-                    "conditions": [
-                      {
-                        "condition": "state",
-                        "entity_id": "media_player.sala_de_estar_ps5",
-                        "state": [
-                          "on",
-                          "playing"
-                        ]
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_on",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Console fora de uso h\u00e1 mais de 2 minutos \u2014 ventila\u00e7\u00e3o desligada",
-                    "conditions": [
-                      {
-                        "condition": "template",
-                        "value_template": "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{ ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now() - ps5.last_changed).total_seconds() > 120 }}"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "switch.turn_off",
-                        "target": {
-                          "entity_id": "switch.ventilacao_ps5"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M26S2EJPQ31P4A4H72F1QWBX",
-            "parent_id": null,
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "da282592554c627d1dd7a0a55e3503de",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-10T23:05:00.246749+00:00",
-            "finish": "2026-09-10T23:05:00.889230+00:00"
+            "start": "2026-09-11T01:35:00.320153+00:00",
+            "finish": "2026-09-11T01:35:01.023095+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",

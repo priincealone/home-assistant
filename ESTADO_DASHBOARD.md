@@ -3470,3 +3470,17 @@ depois recolocar a dashboard a partir de
 
 Limpar as duas é seguro quando houver conveniência, com
 `docker network rm ma-net` e, para a `casa-net`, desconectar o HA antes.
+
+### Nó mesh da sala ganhou nome (10/09/2026)
+
+`rd15_minet_4138` era o identificador de fábrica — o aparelho nunca tinha sido
+nomeado. Agora é **"Roteador Sala"**. Como de costume, renomear o *dispositivo*
+propagou para o rótulo das 9 entidades dele.
+
+| dispositivo | área |
+| --- | --- |
+| Roteador | Closet |
+| **Roteador Sala** | Sala de estar |
+
+💡 Fica a assimetria: o nó do Closet chama-se só "Roteador". Renomeá-lo para
+"Roteador Closet" deixaria o par simétrico — decisão do André.
