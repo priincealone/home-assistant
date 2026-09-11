@@ -50,3 +50,6 @@ skills-lock.json
 # Tem repositorio git proprio desde 07/09/2026 -- o que acontece la nao entra no
 # historico da casa. Os commits anteriores a essa data continuam neste historico.
 dashboard-app/
+
+# lixo temporario do cliente do Google Drive sincronizando a pasta
+.tmp.driveupload/
