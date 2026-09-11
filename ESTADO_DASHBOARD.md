@@ -3660,3 +3660,32 @@ senha com verificação em duas etapas por **app autenticador** — a integraç�
 tem campo próprio para a chave de 52 caracteres do autenticador, e esse é o
 fluxo que ela suporta de verdade. Vale lembrar que foi a verificação em duas
 etapas que também complicou o vínculo da Xiaomi.
+
+## YouTube Music no Music Assistant
+
+Existe como provedor `ytmusic`, em **estágio beta**, e é **fonte de música**,
+não player — entra ao lado do Apple Music como catálogo, e toca em qualquer
+ponto de som que já exista. Player continua sendo o ponto de som.
+
+Ele precisa de um servidor de PO token (o YouTube bloqueia streaming sem isso),
+e esse servidor **já existia parado aqui**: o container `bgutil-provider`
+(`brainicism/bgutil-ytdlp-pot-provider:1.2.1`), desligado junto com o Music
+Assistant em 06/09. Subiu de novo, entrou na `casa-net` e ganhou
+`--restart unless-stopped`.
+
+⚠️ **O valor padrão do PO token server não serve nesta instalação.** O Music
+Assistant sugere `http://127.0.0.1:4416`, mas dentro do container 127.0.0.1 é o
+*próprio Music Assistant*, não o host — a porta do `bgutil` está publicada em
+`127.0.0.1:4416` **do Windows**, que o container não alcança. Medido:
+
+    http://bgutil-provider:4416/ping -> {"server_uptime":..., "version":"1.2.1"}
+    http://127.0.0.1:4416/ping       -> SEM RESPOSTA
+
+Por isso os dois containers foram postos na `casa-net`: assim se enxergam pelo
+nome. O valor certo é **`http://bgutil-provider:4416`**.
+
+O que falta é do André: `username` e `cookie` (tipo `SECURE_STRING`, o cookie de
+sessão do Google). Como o diálogo de provedor da UI congela o renderer e o
+cookie é dele, o caminho ficou em `scripts/music_assistant/ytmusic_setup.js` —
+ele cola o valor no console e o script fala com a API local; o cookie não passa
+pela conversa.
