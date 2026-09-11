@@ -3603,3 +3603,27 @@ sessão existe, **não contorna** isso; foi testado.
 
 Então o passo está na borda: formulário na tela, tudo o mais pronto. Depois do
 login, `hass_players` entra com uma chamada só.
+
+### A ponte fechou
+
+Depois do login do André na tela de autorização, o restante saiu por API, sem
+tocar na interface travada:
+
+  config/providers/setup {provider_domain:'hass_players'}   -> passo "finish" direto
+  config/providers/save  {instance_id:'hass_players', values:{players:[...]}}
+
+O provedor `hass_players` **não pede formulário** — ele nasce pronto e só
+precisa da lista de entidades. E a lista de candidatos que ele oferece é
+reveladora: **apenas dois**, `media_player.tv_un65du8000gxzd` e o player do
+`browser_mod`. A TV da SmartThings e o PS5 ficam de fora porque não têm
+`play_media` — o Music Assistant só aceita quem sabe receber um stream.
+
+O resultado voltou para o Home Assistant como entidades novas, e a diferença
+aparece na capacidade: `media_player.tv_sala_local` tem **`BROWSE_MEDIA`**, que
+nenhum player da casa tinha. O `browse_media` dele já responde com Artists,
+Albums, Tracks, Playlists, Radio stations, Podcasts e Audiobooks, além do
+Radio Browser e do text-to-speech do próprio Home Assistant.
+
+Falta ainda `GROUPING` — vem dos provedores `sync_group` / `universal_player`
+do Music Assistant, e só faz sentido quando houver mais de um ponto de som de
+verdade.
