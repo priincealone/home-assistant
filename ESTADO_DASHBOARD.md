@@ -3782,3 +3782,55 @@ As quatro luzes da Área Gourmet entram por **âncora YAML** (`&luzes_gourmet` /
 `*luzes_gourmet`), para acender e apagar não poderem divergir com o tempo.
 Conferido depois do carregamento: o Home Assistant expande a âncora e as duas
 ações recebem as mesmas quatro entidades.
+
+## De onde vêm os acendimentos sozinhos
+
+O André notou interruptores acendendo sem ninguém mandar. Dois scripts novos em
+`scripts/diagnostico/` respondem pelo banco do Home Assistant, sem depender de
+sessão no navegador: `quem_acendeu.py` e `rajadas.py`.
+
+**O método.** Cada mudança de estado carrega um `context`, e é nele que está a
+resposta: `context_user_id` preenchido significa que alguém clicou;
+`context_parent_id` significa que foi consequência de outro evento do Home
+Assistant; **os dois vazios significam que o comando não passou pelo Home
+Assistant** — veio do aparelho, do interruptor de parede ou da nuvem do
+fabricante.
+
+Duas armadilhas foram descobertas medindo, e as duas inflavam o número:
+
+  - **reconexão** — um aparelho que estava `unavailable` e volta registra `on`
+    sem que ninguém tenha acendido nada; só conta quem veio de `off`
+  - **partida do Home Assistant** — ao subir, ele repovoa os estados e dezenas
+    de entidades marcam `on` no mesmo segundo
+
+Sem esse filtro, 518 "acendimentos" em 48h. Com ele, **244 reais**.
+
+**As automações do projeto estão inocentes.** Em 48 horas elas aparecem quatro
+vezes: três acendendo `light.painel` (a rotina da porta do quarto) e uma na
+ventilação do PS5. Nada de acendimento em massa.
+
+**A causa é automação na nuvem da Tuya.** O registro guarda as cenas do app
+Smart Life, e os nomes dizem tudo: `scene.banheiro_em_uso`,
+`scene.banheiro_vazio`, `scene.lavanderia_em_uso`, `scene.lavanderia_vazia` e
+`scene.acender_apagar`. O comportamento do `switch.banheiro_switch_1` confirma —
+17 acendimentos marcados "externo", com durações de 1, 3, 4, 10 e 22 minutos, o
+padrão inconfundível de um sensor de presença desligando a luz depois de um
+tempo. Isso é uma automação de presença **que já existia**, rodando fora do
+Home Assistant.
+
+⚠️ **`scene.banheiro_em_uso` e `scene.banheiro_vazio` estão desativadas no Home
+Assistant e a automação continua rodando.** Desativar a entidade aqui só
+esconde o rastro — a rotina vive na conta Tuya. É o mesmo princípio que já
+apareceu quatro vezes neste projeto, agora pelo avesso.
+
+**O conflito a resolver:** a automação de movimento da Lavanderia que criei
+ontem faz o que a cena `lavanderia_em_uso` da Tuya já fazia. As duas vão
+disputar a mesma luz — a da Tuya acende a qualquer hora, a do Home Assistant
+apaga dez minutos depois, e nenhuma sabe da outra. Uma das duas tem que sair, e
+a recomendação é ficar com a do Home Assistant: é visível, versionada e tem a
+condição de sol.
+
+Sem conclusão, de propósito: as quatro luzes da Área Gourmet acendendo em
+rajadas de um a três segundos (11/09 às 17:46, 20:04 e 23:00). Pode ser a cena
+`acender_apagar` ou alguém no interruptor de quatro teclas. Os dados não
+separam os dois casos.
