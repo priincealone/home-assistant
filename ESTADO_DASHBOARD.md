@@ -3754,3 +3754,31 @@ Lição para as próximas: **comando idempotente é suposição, não fato.** Em
 infravermelho e em teclas de controle remoto, "desligar" costuma ser "alternar",
 e a diferença só aparece quando o aparelho já está no estado desejado — o caso
 que a intuição diz ser o inofensivo.
+
+## Luz por movimento na Lavanderia e na Área Gourmet
+
+Duas automações, uma por ambiente, do pôr do sol ao amanhecer:
+
+  - movimento acende — Lavanderia: `light.cozinha_copa_varanda_switch_3`;
+    Área Gourmet: as quatro (Plafons, Pendente, Led, Spots)
+  - dez minutos sem movimento apaga
+
+O André corrigiu o escopo no meio: o desligamento por ausência vale para **os
+dois** ambientes, não só para a Área Gourmet. Sem isso a luz da Lavanderia
+ficaria acesa até o amanhecer.
+
+**O temporizador é o `for: '00:10:00'` do próprio gatilho de ausência**, e não
+um `timer` ou `input_datetime`. Se alguém se mexer durante a contagem, o sensor
+volta a `on`, o Home Assistant descarta o agendamento pendente e a contagem
+recomeça do zero sozinha. Menos peças, mesmo resultado.
+
+⚠️ **A condição de sol guarda só o acender.** Se ela também guardasse o apagar,
+uma luz acesa às 5h50 ficaria acesa indefinidamente: o sol nasceria, a condição
+viraria falsa e o desligamento nunca rodaria. Apagar por ausência é seguro a
+qualquer hora — acender é que só faz sentido no escuro. É o mesmo tipo de
+armadilha da janela de horário que atravessa a meia-noite.
+
+As quatro luzes da Área Gourmet entram por **âncora YAML** (`&luzes_gourmet` /
+`*luzes_gourmet`), para acender e apagar não poderem divergir com o tempo.
+Conferido depois do carregamento: o Home Assistant expande a âncora e as duas
+ações recebem as mesmas quatro entidades.

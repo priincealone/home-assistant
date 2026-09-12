@@ -164,3 +164,102 @@
     - action: light.turn_on
       target:
         entity_id: light.painel
+
+- id: '1757984400000'
+  alias: Movimento na Lavanderia acende a luz à noite
+  description: >-
+    Do pôr do sol ao amanhecer, movimento na Lavanderia acende a luz; dez
+    minutos sem movimento, ela apaga.
+
+    O temporizador é o `for: '00:10:00'` no próprio gatilho de ausência: se
+    alguém se mexer no meio da contagem, o sensor volta a `on` e o Home
+    Assistant descarta o agendamento — a contagem recomeça do zero sozinha, sem
+    precisar de `timer` nem de `input_datetime`.
+
+    ⚠️ A condição de sol está **só no acender**. Se ela também guardasse o
+    apagar, uma luz acesa às 5h50 ficaria acesa para sempre: o sol nasceria, a
+    condição passaria a ser falsa e o desligamento nunca aconteceria. Apagar por
+    ausência é seguro a qualquer hora; acender é que só faz sentido no escuro.
+  mode: queued
+  max: 5
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.sensor_lavanderia_movimento
+      to: 'on'
+      id: chegou
+    - trigger: state
+      entity_id: binary_sensor.sensor_lavanderia_movimento
+      to: 'off'
+      for: '00:10:00'
+      id: vazio
+  conditions: []
+  actions:
+    - choose:
+        - alias: Movimento com o sol abaixo do horizonte — acende
+          conditions:
+            - condition: trigger
+              id: chegou
+            - condition: state
+              entity_id: sun.sun
+              state: below_horizon
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id: light.cozinha_copa_varanda_switch_3
+        - alias: Dez minutos sem ninguém — apaga, a qualquer hora
+          conditions:
+            - condition: trigger
+              id: vazio
+          sequence:
+            - action: light.turn_off
+              target:
+                entity_id: light.cozinha_copa_varanda_switch_3
+
+- id: '1757984400001'
+  alias: Movimento na Área Gourmet acende as luzes à noite
+  description: >-
+    O par da automação da Lavanderia, com as quatro luzes da Área Gourmet —
+    Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do
+    pôr do sol, apaga dez minutos depois que a área esvazia.
+
+    Valem as mesmas duas decisões: o temporizador é o `for` do gatilho, que se
+    reinicia sozinho a cada movimento novo, e a condição de sol guarda apenas o
+    acender, para que o apagar funcione mesmo depois do amanhecer.
+  mode: queued
+  max: 5
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.sensor_area_gourmet_movimento
+      to: 'on'
+      id: chegou
+    - trigger: state
+      entity_id: binary_sensor.sensor_area_gourmet_movimento
+      to: 'off'
+      for: '00:10:00'
+      id: vazio
+  conditions: []
+  actions:
+    - choose:
+        - alias: Movimento com o sol abaixo do horizonte — acende
+          conditions:
+            - condition: trigger
+              id: chegou
+            - condition: state
+              entity_id: sun.sun
+              state: below_horizon
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id: &luzes_gourmet
+                  - light.luzes_externas_switch_1
+                  - light.luzes_externas_switch_2
+                  - light.luzes_externas_switch_3
+                  - light.luzes_externas_switch_4
+        - alias: Dez minutos sem ninguém — apaga, a qualquer hora
+          conditions:
+            - condition: trigger
+              id: vazio
+          sequence:
+            - action: light.turn_off
+              target:
+                entity_id: *luzes_gourmet
