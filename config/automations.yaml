@@ -68,3 +68,73 @@
             - action: switch.turn_off
               target:
                 entity_id: switch.ventilacao_ps5
+
+- id: '1757980800000'
+  alias: Porta do quarto fechada à noite apaga a casa
+  description: >-
+    Depois das 22h, fechar a porta do quarto é o gesto de "fui dormir": apaga
+    todas as luzes e desliga a TV.
+
+    A janela vai das 22h às 6h, e não apenas "depois das 22h". Uma condição de
+    horário só com `after` cobriria das 22h à meia-noite e nada mais — fechar a
+    porta à uma da manhã não faria nada, que é justamente quando mais se quer.
+    Com `after` maior que `before`, o Home Assistant entende o intervalo como
+    atravessando a meia-noite.
+
+    As luzes são resolvidas por template, não por lista fixa, para que uma luz
+    nova entre na rotina sozinha. Três famílias ficam de fora de propósito: as
+    `luz_de_fundo` dos interruptores (são a marcação que se enxerga no escuro,
+    apagá-las é o contrário do que se quer), o `indicator_light` dos roteadores
+    (LED de equipamento de rede, não iluminação) e a tela do painel
+    (`browser_mod`), que é um monitor e não uma lâmpada.
+
+    A TV é desligada pelos dois caminhos, local e nuvem, porque são integrações
+    independentes para o mesmo aparelho e nenhuma das duas é confiável sozinha.
+    Desligar o que já está desligado não custa nada.
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.porta_do_quarto_porta
+      from: 'on'
+      to: 'off'
+  conditions:
+    - condition: time
+      after: '22:00:00'
+      before: '06:00:00'
+  actions:
+    - action: light.turn_off
+      target:
+        entity_id: >-
+          {{ states.light | map(attribute='entity_id')
+             | reject('search', 'luz_de_fundo')
+             | reject('search', 'indicator_light')
+             | reject('search', 'browser_mod')
+             | list }}
+    - action: media_player.turn_off
+      target:
+        entity_id:
+          - media_player.tv_un65du8000gxzd
+          - media_player.sala_de_estar_tv
+
+- id: '1757980800001'
+  alias: Porta do quarto aberta à noite acende o painel
+  description: >-
+    O par da automação anterior: depois das 22h, abrir a porta do quarto acende
+    a luz do painel da TV, que serve de luz de guia para quem sai do quarto no
+    escuro.
+
+    Mesma janela de 22h às 6h, pelo mesmo motivo.
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.porta_do_quarto_porta
+      from: 'off'
+      to: 'on'
+  conditions:
+    - condition: time
+      after: '22:00:00'
+      before: '06:00:00'
+  actions:
+    - action: light.turn_on
+      target:
+        entity_id: light.painel

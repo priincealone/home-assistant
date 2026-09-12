@@ -3689,3 +3689,40 @@ sessão do Google). Como o diálogo de provedor da UI congela o renderer e o
 cookie é dele, o caminho ficou em `scripts/music_assistant/ytmusic_setup.js` —
 ele cola o valor no console e o script fala com a API local; o cookie não passa
 pela conversa.
+
+## Rotina noturna pela porta do quarto
+
+Duas automações novas em `config/automations.yaml`, ambas presas ao
+`binary_sensor.porta_do_quarto_porta` (device_class `door`, `on` = aberta):
+
+  - **fechar depois das 22h** apaga todas as luzes e desliga a TV
+  - **abrir depois das 22h** acende `light.painel`, como luz de guia
+
+Três decisões que não são óbvias:
+
+**A janela é 22h → 6h, não "depois das 22h".** Uma condição de tempo só com
+`after: '22:00:00'` cobre das 22h à meia-noite e para — fechar a porta à uma da
+manhã não faria nada, justamente quando mais se quer. Com `after` maior que
+`before`, o Home Assistant lê o intervalo como atravessando a meia-noite.
+
+**As luzes saem de um template, não de uma lista fixa**, para que uma luz nova
+entre na rotina sozinha. Três famílias ficam de fora de propósito, e cada
+exclusão foi conferida no resultado renderizado:
+
+  - `luz_de_fundo` — a marcação dos interruptores que se enxerga no escuro;
+    apagá-las é o oposto do que a rotina quer
+  - `indicator_light` — os LEDs dos dois roteadores, equipamento de rede
+  - `browser_mod` — a tela do painel, que é monitor e não lâmpada
+
+O template resolve **16 luzes reais**. A primeira versão devolvia 18 e levava
+junto os LEDs dos roteadores; só apareceu porque a lista foi renderizada antes
+de escrever a automação, e não depois.
+
+**A TV é desligada pelos dois caminhos**, `media_player.tv_un65du8000gxzd`
+(local) e `media_player.sala_de_estar_tv` (nuvem). São integrações
+independentes para o mesmo aparelho e nenhuma é confiável sozinha; desligar o
+que já está desligado não custa nada.
+
+⚠️ A **luz do quarto está incluída** no desligamento geral — "todas as luzes"
+ao pé da letra. Se a ideia for fechar a porta e continuar com a luz acesa lá
+dentro, basta somar um `reject('search', 'luz_quarto')` ao template.
