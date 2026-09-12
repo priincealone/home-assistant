@@ -88,9 +88,17 @@
     (LED de equipamento de rede, não iluminação) e a tela do painel
     (`browser_mod`), que é um monitor e não uma lâmpada.
 
-    A TV é desligada pelos dois caminhos, local e nuvem, porque são integrações
-    independentes para o mesmo aparelho e nenhuma das duas é confiável sozinha.
-    Desligar o que já está desligado não custa nada.
+    ⚠️ A TV só recebe o comando **se estiver ligada**, e por **um caminho de
+    cada vez**. A primeira versão mandava `turn_off` nos dois caminhos sempre,
+    argumentando que desligar o que já está desligado não custaria nada. Custa:
+    nesta Samsung o desligar viaja como tecla POWER, que é *alternador*. Com a
+    TV apagada, o comando a acendia — medido no histórico, a porta fechava
+    23:18:52 e a TV ligava 23:18:56. Dois caminhos ainda dobravam a aposta, um
+    desligando e o outro tornando a ligar.
+
+    Por isso o `choose`: o caminho local é o preferido, e o da nuvem só entra
+    quando o local não está respondendo. Se a TV já estiver desligada, nenhum
+    comando é enviado — que é o correto e, aqui, também o seguro.
   mode: single
   triggers:
     - trigger: state
@@ -110,11 +118,29 @@
              | reject('search', 'indicator_light')
              | reject('search', 'browser_mod')
              | list }}
-    - action: media_player.turn_off
-      target:
-        entity_id:
-          - media_player.tv_un65du8000gxzd
-          - media_player.sala_de_estar_tv
+    - choose:
+        - alias: TV respondendo no caminho local e ligada
+          conditions:
+            - condition: template
+              value_template: >-
+                {{ states('media_player.tv_un65du8000gxzd')
+                   not in ['off', 'standby', 'unavailable', 'unknown'] }}
+          sequence:
+            - action: media_player.turn_off
+              target:
+                entity_id: media_player.tv_un65du8000gxzd
+        - alias: Caminho local mudo — tenta pela nuvem, se ela vir a TV ligada
+          conditions:
+            - condition: template
+              value_template: >-
+                {{ states('media_player.tv_un65du8000gxzd')
+                     in ['unavailable', 'unknown']
+                   and states('media_player.sala_de_estar_tv')
+                     not in ['off', 'standby', 'unavailable', 'unknown'] }}
+          sequence:
+            - action: media_player.turn_off
+              target:
+                entity_id: media_player.sala_de_estar_tv
 
 - id: '1757980800001'
   alias: Porta do quarto aberta à noite acende o painel

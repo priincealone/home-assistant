@@ -3726,3 +3726,31 @@ que já está desligado não custa nada.
 ⚠️ A **luz do quarto está incluída** no desligamento geral — "todas as luzes"
 ao pé da letra. Se a ideia for fechar a porta e continuar com a luz acesa lá
 dentro, basta somar um `reject('search', 'luz_quarto')` ao template.
+
+### Correção: o comando de desligar estava ligando a TV
+
+O André observou a TV **ligando** ao fechar a porta. O histórico deixou a causa
+sem dúvida:
+
+    23:11:22  TV desligada (pelo André)
+    23:18:52  porta fecha -> automação envia turn_off
+    23:18:56  TV LIGA
+    23:19:27  porta fecha -> turn_off de novo
+    23:19:32  TV LIGA de novo
+
+O rastro da automação mostrou as ações corretas; o problema era o aparelho.
+**Nesta Samsung o desligar viaja como tecla POWER, que é alternador** — com a
+TV apagada, "desligar" acende. O raciocínio que escrevi na primeira versão,
+"desligar o que já está desligado não custa nada", é falso aqui, e mandar o
+comando pelos dois caminhos ao mesmo tempo dobrava a aposta: um desligava e o
+outro tornava a ligar.
+
+A ação virou um `choose` que **só envia o comando com a TV ligada** e por **um
+caminho de cada vez** — o local preferencialmente, o da nuvem apenas quando o
+local está `unavailable`. Com as duas entidades em `off`, as duas condições dão
+falso e nada é enviado, que foi o estado verificado depois da correção.
+
+Lição para as próximas: **comando idempotente é suposição, não fato.** Em
+infravermelho e em teclas de controle remoto, "desligar" costuma ser "alternar",
+e a diferença só aparece quando o aparelho já está no estado desejado — o caso
+que a intuição diz ser o inofensivo.
