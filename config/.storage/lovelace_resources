@@ -5,68 +5,8 @@
   "data": {
     "items": [
       {
-        "id": "84a1c5c1373d471c982e09ec97be0dc7",
-        "url": "/hacsfiles/lovelace-mushroom/mushroom.js?hacstag=444350375523",
-        "type": "module"
-      },
-      {
-        "id": "c1808c7168e845eba3a65d6b3df16791",
-        "url": "/hacsfiles/Bubble-Card/bubble-card.js?hacstag=680112919330",
-        "type": "module"
-      },
-      {
-        "id": "67476f33a98045de8ca99057604c3176",
-        "url": "/hacsfiles/mini-graph-card/mini-graph-card-bundle.js?hacstag=1512800620130",
-        "type": "module"
-      },
-      {
-        "id": "489b138024564907af2f7618681ddfb3",
-        "url": "/hacsfiles/floor3d-card/floor3d-card.js?hacstag=361776538153",
-        "type": "module"
-      },
-      {
-        "id": "265d9372b6ff4bf6a940189eca7ceea6",
-        "url": "/hacsfiles/lovelace-card-mod/card-mod.js?hacstag=190927524421",
-        "type": "module"
-      },
-      {
-        "id": "632be34b7a1e421c9ff0e0e7138ae5e8",
-        "url": "/hacsfiles/button-card/button-card.js?hacstag=146194325701",
-        "type": "module"
-      },
-      {
-        "id": "4e1f5b0e5567402d8b46236de0378fbe",
-        "url": "/hacsfiles/card-mod-studio/card-mod-studio.js?hacstag=1230813119091",
-        "type": "module"
-      },
-      {
-        "id": "292e801ff25a448cb64536039e7f6b9c",
-        "url": "/hacsfiles/modern-circular-gauge/modern-circular-gauge.js?hacstag=8717303430141",
-        "type": "module"
-      },
-      {
-        "type": "module",
-        "url": "/local/custom-cards/stack-in-card.js",
-        "id": "cb16b626"
-      },
-      {
-        "type": "module",
-        "url": "/local/custom-cards/swipe-card.js",
-        "id": "f6506753"
-      },
-      {
         "id": "d31adf1b98b942b09496b42f0ba43a68",
         "url": "/browser_mod.js?automatically-added&3.2.2",
-        "type": "module"
-      },
-      {
-        "type": "module",
-        "url": "/local/custom-cards/kiosk-mode.js",
-        "id": "92832595"
-      },
-      {
-        "id": "a7d3f1c95b6e4c2ea1f0c8d4e7b93a15",
-        "url": "/local/custom-cards/swipe-navigation.js",
         "type": "module"
       }
     ]

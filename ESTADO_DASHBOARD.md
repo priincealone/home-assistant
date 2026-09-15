@@ -3834,3 +3834,47 @@ Sem conclusão, de propósito: as quatro luzes da Área Gourmet acendendo em
 rajadas de um a três segundos (11/09 às 17:46, 20:04 e 23:00). Pode ser a cena
 `acender_apagar` ou alguém no interruptor de quatro teclas. Os dados não
 separam os dois casos.
+
+## Dashboard "Casa" retirada — o `dashboard-app` vira o painel principal (15/09/2026)
+
+Decisão do André: o painel desenvolvido no Antigravity passa a ser o principal, e
+a dashboard Lovelace "Casa" sai. **Ficou tudo que é da casa** — dispositivos,
+áreas, integrações, as cinco automações e os sensores de template. O ponto de
+partida agora é `CASA.md`; o `CLAUDE.md` foi reescrito para a nova direção.
+
+Antes de apagar, medi o que o `dashboard-app` consome desta pasta, porque três
+coisas pareciam da dashboard e não eram:
+
+  - `config/template_sensors.yaml` — o app usa `sensor.luzes_<comodo>`,
+    `sensor.tv_fonte` e `sensor.saude_*`
+  - `config/.storage/core.config_entries` — `app/api/mass/route.ts` lê dali o
+    token do Music Assistant
+  - `lovelace.minha_casa` — o `tools/gerar_manifesto.py` do app o lia para montar
+    o manifesto de cômodos. **Essa regeneração deixa de funcionar**; o
+    `manifesto-comodos.json` já gerado continua valendo
+
+A retirada no Home Assistant saiu num ciclo parar/editar/subir
+(`scripts/manutencao/retira_dashboard_casa.py`, com `--validar` antes):
+
+  - dashboard `minha_casa` e sua entrada na barra lateral
+  - dez itens do HACS, replicando o desinstalar — marca de instalado, pasta e
+    recurso do frontend: Bubble-Card, button-card, card-mod-studio, floor3d-card,
+    lovelace-card-mod, mushroom, mini-graph-card, modern-circular-gauge, o tema
+    Frosted Glass e o Xiaomi Cloud Map Extractor
+  - quatro `custom-cards` manuais (kiosk-mode, stack-in-card, swipe-card,
+    swipe-navigation), tema `apple_home`, planta 3D e 2D, `camera_aspirador.yaml`
+  - **o painel padrão do usuário apontava para `minha-casa`**; sem trocar, abrir o
+    HA cairia numa página inexistente. Foi para `dashboard-dispositivos`
+
+Verificado depois da partida: partida sem erros novos, só `map` e
+`dashboard-dispositivos` na barra, só o recurso do `browser_mod` no frontend, as
+cinco automações `on` e os sensores que o app consome respondendo.
+
+Fora do HA saíram `scripts/lovelace/` (60 scripts), `scripts/ha.py`, `ui.py`,
+`auditoria_estatica.py`, `planta3d.py`, a pasta `referencias/`, as auditorias e
+os briefings antigos da raiz, a skill de design instalada na pasta, e 46 backups
+da dashboard. **Ficaram os 24 backups dos registros** e os 5 da própria retirada.
+
+Mantidos de propósito: `browser_mod` (ponto de som do Music Assistant) e o HACS,
+que instalou as integrações de dispositivo. Tudo o que foi apagado e estava
+versionado continua recuperável pelo git.

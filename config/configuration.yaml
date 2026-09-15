@@ -10,7 +10,3 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 template: !include template_sensors.yaml
-
-# Mapa do aspirador com posicao ao vivo (Xiaomi Cloud Map Extractor).
-# DESLIGADO: a conta Xiaomi exige verificacao em todo login.
-# camera: !include camera_aspirador.yaml

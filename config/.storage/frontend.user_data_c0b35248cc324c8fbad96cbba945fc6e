@@ -7,14 +7,12 @@
       "theme": "default"
     },
     "core": {
-      "default_panel": "minha-casa",
+      "default_panel": "dashboard-dispositivos",
       "apps_info_dismissed": true
     },
     "sidebar": {
       "panelOrder": [
         "dashboard-dispositivos",
-        "minha-casa",
-        "painel-casa",
         "map",
         "energy",
         "logbook",

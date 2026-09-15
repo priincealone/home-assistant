@@ -1,131 +1,89 @@
 # Casa — Home Assistant
 
-Projeto da casa inteligente do André: instalação self-hosted de Home Assistant
-(Docker Desktop no PC Windows, imagem `ghcr.io/home-assistant/home-assistant:stable`,
-porta 8123, acesso remoto via Tailscale) e a dashboard **"Casa"** — 11 páginas em
-estilo Apple Home / iOS, construída com `button-card` + `card-mod` sobre o tema
-`apple_home`.
+Base de automação residencial do André: Home Assistant self-hosted (Docker
+Desktop no PC Windows, porta 8123, acesso remoto via Tailscale), com as
+integrações, os dispositivos e as automações da casa.
 
 Responder sempre em português do Brasil.
 
-## Mapa do projeto
+## Dois projetos, uma direção
+
+- **Esta pasta** é a base: dispositivos, integrações, áreas, automações e
+  sensores de template. É onde se trabalha aqui.
+- **`dashboard-app/`** é o **painel principal** desde 15/09/2026 — interface
+  própria em Next.js que consome a API do HA, desenvolvida pelo André no
+  Antigravity, com git próprio. **Não editar sem pedido inequívoco.**
+
+A dashboard Lovelace "Casa" foi retirada em 15/09/2026. Não recriar, não propor
+melhorias visuais no Lovelace.
+
+## Mapa
 
 | Caminho | O que é |
 | --- | --- |
-| `ESTADO_DASHBOARD.md` | Diário técnico completo: o que foi construído, por quê, o que falhou e as pendências. Fonte de verdade do histórico. |
-| `config/` | Config real do HA (montada no container). |
-| `config/.storage/lovelace.minha_casa` | **A dashboard** (JSON). É aqui que as mudanças visuais acontecem. |
-| `config/themes/apple_home.yaml` | Tema "Liquid Glass". |
-| `config/custom_components/` | `browser_mod`, `localtuya`, `ps5`, `sonoff`, `alexa_media`, `hacs`. |
-| `backups/` | Cópias do lovelace antes de cada alteração (`lovelace.minha_casa.bak_<tag>`). |
-| `scripts/ha.py` | Utilitário: `load` / `save` / `backup` / `restart` / `views` / `templates` / `get`. |
-| `scripts/lovelace/` | Scripts das alterações já aplicadas — histórico executável e base para os próximos. |
-| `referencias/reference_ios_dashboard.yaml` | Dashboard de referência de design (34,5 mil linhas). |
-| `referencias/` | Pesquisa e templates de exemplo extraídos dessa referência. |
+| `CASA.md` | **Ponto de partida**: infraestrutura, dispositivos por cômodo, automações ativas e propostas, pendências |
+| `ESTADO_DASHBOARD.md` | Diário completo, com o raciocínio de cada decisão (inclui a história da dashboard retirada) |
+| `config/automations.yaml` | As automações — cada uma explica a si mesma na `description` |
+| `config/template_sensors.yaml` | Sensores de luzes por cômodo, TV e saúde. **O `dashboard-app` depende deles** |
+| `config/.storage/` | Registros de dispositivos, entidades e áreas |
+| `scripts/diagnostico/` | Quem acendeu o quê, e por quê |
+| `scripts/music_assistant/` | Cliente da API do Music Assistant e setup do YouTube Music |
+| `scripts/tuya_map.py` | Mapeia aparelhos Tuya na LAN |
+| `backups/` | Cópias dos registros antes de cada edição |
 
-## Como alterar a dashboard (fluxo obrigatório)
+## O que o `dashboard-app` consome desta base
 
-O editor RAW do navegador corrompe blocos grandes de YAML — a dashboard é sempre
-editada pelo arquivo de storage, via script Python:
+Não quebrar sem avisar:
 
-```bash
-python scripts/ha.py views          # descobrir o índice da página
-python scripts/ha.py get views.0    # inspecionar o trecho antes de mexer
-```
+- `sensor.luzes_<comodo>`, `sensor.tv_fonte`, `sensor.saude_*` — de
+  `config/template_sensors.yaml`
+- o token do Music Assistant, lido direto de `config/.storage/core.config_entries`
+- entidades de luz, ventilador, mídia e aspirador pelos `entity_id` atuais —
+  **renomear uma entidade quebra o painel**
 
-Depois, um script novo em `scripts/lovelace/<assunto>.py`:
+## Como alterar
 
-```python
-import sys; sys.path.insert(0, r'C:\HomeAssistant\scripts')
-from ha import load, save, restart
+**Automações e sensores (YAML):** editar o arquivo e recarregar pelo serviço
+(`automation.reload`, `template.reload`) — sem reiniciar.
 
-cfg = load()
-# ... alterações em cfg['data']['config'] ...
-save(cfg, tag='assunto')   # faz backup automático em backups/
-restart()                  # docker restart homeassistant
-```
+**Registros (`core.entity_registry`, `core.device_registry`, `core.area_registry`,
+`core.config`):** o Home Assistant os **reescreve no desligamento**. Script
+versionado, validações antes de parar, `docker stop`, editar, `docker start`.
+Nunca `docker restart`.
 
-**O `docker restart homeassistant` não é opcional**: mudanças no `.storage` não
-entram com recarregamento de YAML. Ao terminar, registrar o que mudou no fim do
-`ESTADO_DASHBOARD.md` e fechar o ciclo com um commit:
+**Ao terminar:** registrar no fim de `ESTADO_DASHBOARD.md`, atualizar `CASA.md` se
+mudou dispositivo, automação ou pendência, e commitar:
 
 ```bash
-git add -A && git commit -m "<o que mudou na dashboard>"
+git add -A && git commit -m "<o que mudou>"
 ```
 
-A pasta é um repositório git local (sem remote). Ficam fora do versionamento o
-banco, logs, caches, HACS e tudo que carrega credencial (`secrets.yaml`, os
-tokens em `.storage/auth*`, `core.config_entries`, `.storage/sonoff/`) — ao
-adicionar arquivo novo com segredo, incluir no `.gitignore` antes do commit.
-
-## Regras de design
-
-- A referência padrão de estilo e estrutura é `referencias/reference_ios_dashboard.yaml`.
-  Todo pedido de mudança visual segue esse modelo por padrão, salvo se o André
-  pedir algo fora do padrão ou der uma referência nova.
-- Replicar uma referência significa **reconstruir a arquitetura da tela**
-  (proporção, densidade, hierarquia, modo de exibição) — não enxertar componentes
-  soltos da referência sobre o que já existe.
-- A referência foi feita para outra casa (câmeras Frigate, saúde, esportes,
-  Spotify, radar de chuva — nada disso existe aqui). Extrair o design genérico e
-  adaptar às entidades reais; quando um trecho depender de integração inexistente,
-  dizer isso cedo em vez de preencher com substituto genérico.
-- Botão de luz ligada usa `#FF9F0A`; apagada, `transparent`. Tomadas e não-luzes
-  mantêm cor própria via `var_color`.
-- Paleta: `#FF9F0A` (laranja/aceso), `#0A84FF` (azul), `#30D158` (verde),
-  `#FF453A` (vermelho/alerta), `#5E5CE6` (roxo). As escalas dos medidores vão
-  verde → laranja → vermelho. Cores de marca (Netflix, Prime, Spotify, Disney)
-  são exceção legítima; fora isso, não introduza tom novo.
-- Templates disponíveis em `button_card_templates` (dentro do próprio storage):
-  `apple_scene`, `entity_card`, `light_row`, `now_playing`, `room_header`,
-  `room_mini`, `sensor_tile`, `shortcut_tile`.
-- Quatro templates **só de estilo**, criados para acabar com o CSS copiado card
-  a card — use-os em vez de repetir `card_mod`: `nu` (transparente, sem moldura),
-  `sem_moldura` (sem borda/sombra/blur e sem arredondamento), `sem_fundo`
-  (transparente mantendo o arredondamento) e `borda_fina` (sem sombra/blur, com
-  a borda de 1px do vidro). Num `button-card` que já usa template, some na lista:
-  `"template": ["room_mini", "nu"]`. ⚠️ Não combine com `shortcut_tile` nem
-  `room_header`: eles trazem `card_mod` próprio, e um sobrescreve o outro.
-- Sete templates sem uso foram para `referencias/templates-arquivados.json`
-  (`device_tile`, `room_tile`, `weather_widget`, `divider`, `heading`,
-  `room_row`, `panel_tile`) — para reativar, é só colar de volta.
+Repositório local sem remote. Fora do versionamento: banco, logs, caches, HACS,
+`dashboard-app/`, e tudo que carrega credencial (`secrets.yaml`, `.storage/auth*`,
+`core.config_entries`, `.storage/sonoff/`, dados do Music Assistant e do anisette).
 
 ## Armadilhas conhecidas
 
-- **Glances**: o patch de timeout dentro do container se perde sempre que ele é
-  recriado do zero (só sobrevive a `docker restart`). Se o card do PC ficar
-  "Indisponível", reaplicar:
+- **Comando de desligar não é idempotente.** Nesta TV Samsung, `turn_off` é a
+  tecla POWER, que alterna — com a TV desligada, liga. Condicionar ao estado.
+- **Nuvem Tuya tem automações próprias** (app Smart Life), que agem sem passar
+  pelo HA. Antes de criar automação de presença, checar se já existe uma lá.
+  Desativar a entidade `scene.*` no HA não para a rotina na nuvem.
+- **Rede do Docker Desktop:** multicast não chega à LAN (sem mDNS, AirPlay,
+  Chromecast, descoberta). Dentro de container, `127.0.0.1` é o próprio container.
+- **Glances:** o patch de timeout some quando o container é recriado do zero:
   ```bash
   docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/g" /usr/local/lib/python3.14/site-packages/glances_api/__init__.py
   ```
-- **Browser Mod (popups)**: o campo do service é `content`, não `card`. Dentro do
-  popup, usar cards nativos (`conditional`, `tile`) ou `button-card` simples —
-  `button-card` com `custom_fields` aninhados não recebe `hass` e abre em branco.
-- **Tema**: nunca aplicar `background: ... !important` genérico em `ha-card` —
-  isso mata os gradientes dos `button-card`.
-- **`min-content`** em `grid-template-rows/columns` zera a linha/coluna do ícone
-  em `button-card`.
-- Sidebar e cabeçalho não aceitam blur (`card-mod-root` não alcança esses
-  elementos) — só `body` e cards.
+- **O Python do Windows às vezes não responde.** Scripts de leitura rodam pelo do
+  container: `docker exec -i homeassistant python - < script.py`.
+- **Estados iguais escondem inversões** — conferir interruptores ligando um de
+  cada vez.
 
 ## Comandos frequentes
 
 ```bash
-docker restart homeassistant
 docker logs --tail 50 homeassistant
-python scripts/ha.py views
-python scripts/ha.py backup <tag>
+docker exec -i homeassistant python - < scripts/diagnostico/quem_acendeu.py
+docker ps --format '{{.Names}} | {{.Status}}'
 ```
-
-## Estado atual e pendências
-
-Ver `ESTADO_DASHBOARD.md` (seção "Pendências"): luz/ventilador do quarto via
-LocalTuya, scan 3D da casa, IP fixo do PS5, login do Alexa Media Player,
-migração para um dispositivo dedicado, foto de fundo real e widgets de
-termostato/calendário (sem entidades ainda).
-
-Em aberto também, do trabalho recente: o **Atalho do Apple Saúde** no iPhone
-(os sensores e o deck já estão prontos, esperando dados reais), a **Larissa**
-como usuária do HA com o app no iPhone dela — o que depende de resolver o
-**acesso remoto** para fora da tailnet — e os **AirTags** no FindMy, parados
-até haver um Mac para exportar as chaves.

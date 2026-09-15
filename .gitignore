@@ -53,3 +53,4 @@ dashboard-app/
 
 # lixo temporario do cliente do Google Drive sincronizando a pasta
 .tmp.driveupload/
+.tmp.drivedownload/
