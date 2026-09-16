@@ -54,3 +54,7 @@ dashboard-app/
 # lixo temporario do cliente do Google Drive sincronizando a pasta
 .tmp.driveupload/
 .tmp.drivedownload/
+
+# Marcadores de pasta criados pelo cliente do Google Drive
+desktop.ini
+**/desktop.ini
