@@ -3899,3 +3899,44 @@ Em continuidade ao processo de consolidação e governança multi-agente:
    - Nuvem Tuya: O André assumiu a desativação manual das rotinas de presença diretamente no aplicativo Smart Life para eliminar os acendimentos fantasmas.
    - Reserva de DHCP: Adiada para definição de rede posterior.
 
+
+## Fim da inversão Cozinha ↔ Lavanderia (15/09/2026)
+
+A auditoria dos artefatos do Antigravity (`artifacts/claude/`) encontrou a
+divergência, mas o documento deles apontava o lado errado. As fontes, medidas:
+
+| Fonte | switch_1 | switch_3 |
+| --- | --- | --- |
+| `light.*` (nome e área no registro) | Cozinha | Lavanderia |
+| `template_sensors.yaml` | `luzes_cozinha` | `luzes_lavanderia` |
+| `automations.yaml` (movimento) | — | Lavanderia |
+| `dashboard-app/lib/rooms.ts` | ~~Lavanderia~~ → Cozinha | ~~Cozinha~~ → Lavanderia |
+| `manifesto-comodos.json` | ~~Lavanderia~~ → Cozinha | ~~Cozinha~~ → Lavanderia |
+| `switch.*` (nome no registro) | ~~Lavanderia~~ → Cozinha | ~~Cozinha~~ → Lavanderia |
+
+⚠️ **Quase inverti para o lado errado.** O arquivo `.cache/estados-snapshot.json`
+do painel dizia `switch_1 = Lavanderia`, contradizendo o registro. Só reverificando
+ao vivo é que a explicação apareceu: o snapshot é de **07/09**, anterior à correção
+de 09/09, que renomeou e reagrupou a camada `light.*` e **deixou a camada
+`switch.*` com os rótulos antigos**. Cache velho mente com a mesma segurança de um
+arquivo atual — a fonte de verdade é o registro, lido na hora.
+
+Corrigido agora, a pedido do André:
+
+  - `dashboard-app/lib/rooms.ts` — as duas entidades trocadas (`tsc --noEmit` passa)
+  - `dashboard-app/manifesto-comodos.json` — idem (JSON validado, 10 cômodos)
+  - `switch.cozinha_copa_varanda_switch_1/_3` — nomes acertados no registro, pelo
+    ciclo parar/editar/subir (`scripts/manutencao/corrige_nomes_switch_cozinha_lavanderia.py`)
+
+O script valida antes de parar o container **e confere a camada `light.*` como
+referência**: se ela não estiver como esperado, ele aborta em vez de propagar um
+erro. Só o campo `name` muda; **`entity_id` não muda**, então nenhum contrato,
+automação ou sensor de template foi afetado. Subida sem erros novos.
+
+Resíduo conhecido: os **títulos das entradas `switch_as_x`** em
+`core.config_entries` ainda carregam os rótulos antigos ("Lavanderia" para a
+tecla 1). São só rótulos da integração, não afetam nada, e o arquivo guarda
+credenciais — fica para quando houver motivo.
+
+As alterações no `dashboard-app` não foram commitadas: aquele repositório é o do
+André, no Antigravity.
