@@ -80,10 +80,21 @@ Repositório local sem remote. Fora do versionamento: banco, logs, caches, HACS,
 - **Estados iguais escondem inversões** — conferir interruptores ligando um de
   cada vez.
 
-## Comandos frequentes
+## Comandos frequentes e validações
 
 ```bash
 docker logs --tail 50 homeassistant
 docker exec -i homeassistant python - < scripts/diagnostico/quem_acendeu.py
 docker ps --format '{{.Names}} | {{.Status}}'
+# Validação de sintaxe antes de recarregar
+docker exec -i homeassistant python -m homeassistant --script check_config -c /config
 ```
+
+## Governança e Alçadas (proprietário André)
+
+- **Documento mestre de governança:** `artifacts/antigravity/multi-agent-governance.md`
+- **Matriz de propriedade de arquivos:** `artifacts/antigravity/file-ownership.md`
+- **Registro de riscos (RSK-01 a RSK-10):** `artifacts/antigravity/risk-register.md`
+- **Nível 1 (Autônomo):** Scripts read-only, recarga de automações já existentes.
+- **Nível 2 (Plano prévio /plan):** Novas automações em YAML, edição de `.storage`, alteração de contratos.
+- **Nível 3 (Exclusivo do André):** Segredos (`secrets.yaml`), tokens, regras na nuvem Tuya e rede.
