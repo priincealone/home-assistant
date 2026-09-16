@@ -1,0 +1,4 @@
+# Especificações de widget do painel.
+# Conteúdo mínimo: o que mostra, de quais entidades, estados possíveis
+# (incluindo indisponível e vazio), e o que acontece ao toque.
+# O contrato de entidades é lib/rooms.ts — ver docs/SYSTEM-MAP.md.

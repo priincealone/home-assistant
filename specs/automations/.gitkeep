@@ -1,0 +1,5 @@
+# Especificações de automação física, escritas ANTES do YAML.
+# Conteúdo mínimo: gatilho, condições, ação, janela de horário,
+# quem é o dono de cada atuador tocado, e o que acontece se o
+# Home Assistant reiniciar no meio.
+# Regras obrigatórias em docs/AUTOMATION-POLICY.md.
