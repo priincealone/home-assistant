@@ -44,9 +44,7 @@ hospedeiro não entrega (ver Fase 4 do roadmap).
 A inversão Cozinha/Lavanderia foi corrigida em `lib/rooms.ts`, `manifesto-comodos.json` e nos nomes
 `switch.*` do HA.
 
-**Onde parou**: inversão encerrada nas seis frentes. As alterações no `dashboard-app` estão no
-diretório de trabalho, **não commitadas** — aquele repositório é o do André, no Antigravity.
-**Próximo passo**: commitar no Antigravity e seguir para B-02 (as 4 entidades inexistentes), que é o
-mesmo arquivo e a mesma classe de problema.
+**Onde parou**: inversão encerrada nas seis frentes; especificação técnica de B-02 formalizada em `specs/features/B-02-correcao-entidades-contrato.md` cobrindo as 4 entidades inexistentes.
+**Próximo passo**: aguardar aprovação do André para iniciar a implementação de B-02 no `dashboard-app` (zero toque em automações físicas).
 **Confirmação pendente**: acender a Cozinha pelo painel e verificar qual lâmpada acende. Toda a
 correção se apoia no registro do HA, não em observação da luz.
