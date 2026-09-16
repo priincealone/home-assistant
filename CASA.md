@@ -59,7 +59,7 @@ usuário e cookie).
 | **Cozinha** | `light.cozinha_copa_varanda_switch_1` |
 | **Copa** | `light.cozinha_copa_varanda_switch_2` |
 | **Lavanderia** | `light.cozinha_copa_varanda_switch_3` · `binary_sensor.sensor_lavanderia_movimento` |
-| **Área Gourmet** | `light.luzes_externas_switch_1` Plafons · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` |
+| **Área Gourmet** | `light.luzes_externas_switch_1` Plafon Área Gourmet · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` |
 | **Circulação** | `light.circulacao_switch_1` Muro · `light.circulacao_switch_2` Corredor |
 | **Banheiro** | `switch.banheiro_switch_1` e `_2` |
 

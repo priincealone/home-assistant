@@ -3878,3 +3878,24 @@ da dashboard. **Ficaram os 24 backups dos registros** e os 5 da própria retirad
 Mantidos de propósito: `browser_mod` (ponto de som do Music Assistant) e o HACS,
 que instalou as integrações de dispositivo. Tudo o que foi apagado e estava
 versionado continua recuperável pelo git.
+
+## Plafon da Área Gourmet renomeado e Dashboard em Tarefa Agendada (15/09/2026)
+
+Em continuidade ao processo de consolidação e governança multi-agente:
+
+1. **Renomeação Canônica do Plafon da Área Gourmet**:
+   - `light.luzes_externas_switch_1` aparecia no painel (`rooms.ts` e `manifesto-comodos.json`) nomeada indevidamente como "Circulação" e no registro do HA como "Plafons" (sem área explícita).
+   - O André definiu o nome canônico: **"Plafon Área Gourmet"**.
+   - Procedimento executado sob o protocolo estrito de segurança (RSK-01): backup do registro gerado em `backups/core.entity_registry.bak_20260915_plafon`, parada do container (`docker stop homeassistant`), alteração cirúrgica no JSON atribuindo `name: "Plafon Área Gourmet"` e `area_id: "area_gourmet"` tanto na entidade de luz quanto no switch correspondente, e reinicialização (`docker start homeassistant`).
+   - O `entity_id` (`light.luzes_externas_switch_1`) foi mantido intacto, garantindo 100% de retrocompatibilidade com as automações (`config/automations.yaml`) e sensores de template (`config/template_sensors.yaml`).
+   - No frontend (`dashboard-app/lib/rooms.ts` e `manifesto-comodos.json`), o identificador interno virou `plafon` e o rótulo visual foi atualizado para "Plafon Área Gourmet".
+
+2. **Dashboard em Execução Contínua via Agendador de Tarefas do Windows**:
+   - Para assegurar que o painel web (porta 3002) permaneça ativo 24/7 no tablet de parede mesmo após reinicializações da máquina host, foi registrada a tarefa `CasaDashboardAutoStart` no Agendador de Tarefas do Windows (`schtasks`), acionada automaticamente no logon do usuário.
+   - Como garantia de redundância silenciosa sem depender de permissões UAC, foi criado também um atalho `.lnk` no diretório de Inicialização do usuário (`Startup`) apontando para `start_dashboard_dev.vbs`.
+   - O script watchdog `iniciar_servidor_background.ps1` opera com Mutex global do sistema (`Local\CasaDashboardMutex`), expurga arquivos `desktop.ini` do compilador e rotaciona os logs defensivamente.
+
+3. **Status das Pendências de Governança**:
+   - Nuvem Tuya: O André assumiu a desativação manual das rotinas de presença diretamente no aplicativo Smart Life para eliminar os acendimentos fantasmas.
+   - Reserva de DHCP: Adiada para definição de rede posterior.
+
