@@ -7,6 +7,29 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 18/09/2026
+
+**Câmeras Intelbras integradas ao Home Assistant, com clipe de movimento na
+nuvem, ponta a ponta** — DVR MHDX 1204-C (`192.168.31.216`), canais 2 e 4
+(visão externa para rua), via integração `generic` (RTSP), depois que o
+ONVIF nativo falhou por o serviço estar indisponível nesse firmware.
+Entidades `camera.rua_canal_2` e `camera.rua_canal_4`, stream principal
+(`subtype=0`, trocado de `subtype=1` depois por pedido de qualidade).
+
+Pipeline completo de clipe por movimento: DVR detecta e manda e-mail →
+filtro do Gmail arquiva sem notificar → integração `imap` do HA dispara
+evento `imap_content` → automação grava 30s de cada câmera
+(`camera.record`) → Tarefa Agendada do Windows roda `rclone` a cada 5 min,
+sobe pra pasta do Drive e apaga o que passou de 7 dias. Conta de serviço do
+Google Cloud **não funciona** para isso (sem cota de armazenamento em Drive
+pessoal) — a solução foi `rclone` autenticado como o próprio André (OAuth).
+Detalhe completo, incluindo os dois incidentes de senha exposta em captura de
+tela (nunca digitada nem usada pelo agente) e a lição sobre editar campos de
+formulário por reescrita total em vez de edição pontual, em
+`ESTADO_DASHBOARD.md` (entradas de 18/09) e `CASA.md` (seção **Câmeras**).
+
+---
+
 ## 15/09/2026
 
 **Estrutura de governança criada** — `docs/` (produto, arquitetura, mapa, política de automação,

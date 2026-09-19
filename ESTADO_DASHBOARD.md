@@ -3940,3 +3940,162 @@ credenciais — fica para quando houver motivo.
 
 As alterações no `dashboard-app` não foram commitadas: aquele repositório é o do
 André, no Antigravity.
+
+## Câmeras Intelbras integradas via RTSP genérico (18/09/2026)
+
+André instalou um sistema de câmeras Intelbras (analógicas VHD 3230, ligadas a
+um DVR MHDX 1204-C Dual Audio, `192.168.31.216`, monitorado antes só pelo app
+Guardian). Pedido: trazer para o Home Assistant.
+
+**Descoberta de rede**: varredura de portas (leitura, alçada 1) a partir do
+próprio container `homeassistant` (que enxerga a LAN via *bridge* NAT, unicast
+passa) encontrou 80, 443, 554 e 37777 abertos em `192.168.31.216` — 37777 é a
+porta proprietária Dahua, forte indício de que o DVR é OEM Dahua, confirmado
+depois pela tela de login ("MHDX 1204-C").
+
+**Tentativa 1 — ONVIF, falhou**: a integração nativa ONVIF do HA pediu
+descoberta automática (WS-Discovery, multicast) — não atravessa a rede desta
+instalação (ver `CASA.md`, §Rede). Preenchendo manualmente, a conexão para
+`192.168.31.216:80` falhou (`Connect call failed`). Diagnóstico: `curl` na
+porta 80 pega a interface web normalmente (200), mas um POST em
+`/onvif/device_service` fecha a conexão sem responder (`Empty reply from
+server`) — ONVIF está desabilitado ou não exposto nesse firmware, e não achei
+o toggle em Rede nem em Porta no menu web.
+
+**Tentativa 2 — Câmera genérica (RTSP), funcionou**: a própria tela
+Configurações → Rede → Porta do DVR mostra o formato:
+`rtsp://<usuário>:<senha>@<IP>:<porta>/cam/realmonitor?channel=<N>&subtype=<0|1>`.
+Confirmados 2 canais ativos (dos 4 possíveis): **canal 2** e **canal 4**, ambos
+câmeras externas voltadas pra rua. Criadas duas integrações `generic`:
+`camera.rua_canal_2` e `camera.rua_canal_4`, `subtype=1` (stream extra, leve —
+aparece "Sem HD" sobreposto na imagem) para não sobrecarregar com visualização
+contínua no painel.
+
+**Como a senha foi tratada**: o campo "Stream source URL" foi preenchido com
+`{{ username }}` e `{{ password }}` como variáveis de template do HA — nunca
+a senha real. André preencheu os campos separados "Usuário" e "Senha" da tela
+de configuração ele mesmo, e clicou em Enviar; o agente nunca viu nem digitou
+a credencial, só a infraestrutura da URL.
+
+**Pendente, dito explicitamente ao André**: só vídeo ao vivo foi configurado.
+Detecção de movimento/pessoa e gravação — que ele também pediu — ainda não
+existem; ver `CASA.md` §Pendências para as perguntas em aberto (detecção pelo
+próprio DVR vs. processamento no HA; gravar no HA duplicaria o que o DVR já
+grava localmente). Nada tocado em `dashboard-app/` nesta sessão — as câmeras
+não aparecem no painel ainda, isso é mudança de contrato (`lib/rooms.ts`) e
+fica para quando o André pedir.
+
+## Clipe de movimento das câmeras — gravação local funcionando (18/09/2026)
+
+Continuação da integração das câmeras Intelbras (ver entrada anterior do
+mesmo dia). André pediu clipe de 30s por movimento, sem notificação, subindo
+pra nuvem com nome por data/hora e limpeza semanal.
+
+**Descoberta que custou a maior parte do tempo**: a integração `generic`
+(Câmera genérica) do HA aceita `{{ username }}` / `{{ password }}` como
+template Jinja na URL do stream, e a **pré-visualização da tela de
+configuração renderiza esses valores corretamente** — o que faz parecer que
+funciona. Mas na operação real (gravação, live view), o HA renderiza o mesmo
+template **sem essas variáveis no contexto**, e os logs mostravam
+`Template variable warning: 'username' is undefined`. A URL efetiva virava
+`rtsp://:@IP:554/...`, sem credencial, e a câmera simplesmente não gravava
+nada — sem erro visível na interface do trace da automação (o serviço
+`camera.record` "executa" e retorna normalmente mesmo quando a conexão RTSP
+por trás falha).
+
+Rastreei isso comparando o resultado do trace da automação (que mostrava os
+parâmetros corretos sendo passados) com os logs brutos do container, onde o
+aviso de template aparecia. A correção foi reconfigurar as duas integrações
+"Câmera genérica" com a senha real embutida na própria URL
+(`rtsp://usuario:senha@IP:...`), digitada pelo André diretamente no campo —
+os campos separados "Usuário"/"Senha" do formulário só valem para autenticar
+imagem estática via HTTP, não o stream RTSP.
+
+**Efeito colateral de segurança**: o campo de URL, ao reabrir "Opções" da
+integração já salva, mostra a senha em texto claro (sem máscara, diferente do
+campo "Senha" que tem olho pra ocultar). Isso apareceu em capturas de tela
+desta sessão duas vezes por engano. Recomendei ao André trocar a senha do DVR
+depois — o agente nunca digitou nem armazenou o valor, só o viu de relance
+numa captura que ele mesmo preencheu.
+
+**Confirmado funcionando**: evento `imap_content` (dos e-mails de alarme do
+DVR, filtrados pro marcador "DVR" no Gmail, nunca chegando à caixa de
+notificação do André) dispara a automação
+`config/automations.yaml` ("Movimento nas câmeras da rua grava clipe de
+30s"), que grava 30s de **ambas** as câmeras a cada alarme (o assunto do
+e-mail não diferencia canal) via `camera.record`. Testado disparando o evento
+manualmente (Ferramentas de Desenvolvedor → Eventos, sem precisar de
+movimento real na câmera) — os dois arquivos saíram com ~1,5 MB, tamanho
+condizente com 30s de vídeo real.
+
+**Gotcha à parte**: o diretório `config/www/clipes_movimento/` fica num mount
+Docker sobre WSL2/Windows, e o `ls` de dentro do container levou alguns
+minutos pra mostrar arquivos recém-criados pelo ffmpeg — um atraso de
+sincronização do sistema de arquivos, não falha de gravação. Não confiar em
+"arquivo não apareceu ainda" como sinal definitivo de erro nesse ponto;
+esperar e reconferir antes de descartar a hipótese de que funcionou.
+
+**Pendente**: a etapa de nuvem (Google Drive) foi propositalmente adiada — o
+André pediu pra fechar a integração com o HA primeiro e tratar o Google Cloud
+depois, numa sessão futura. Falta: conta de serviço, pasta compartilhada,
+script de upload e rotina de expurgo de clipes com mais de 7 dias.
+
+## Upload dos clipes para o Google Drive — pipeline completo (18/09/2026)
+
+Continuação direta da entrada anterior (gravação local funcionando). Faltava
+só a nuvem — o André pediu para deixar isso para depois na sessão anterior,
+retomamos agora.
+
+**Conta de serviço não serve para Drive pessoal.** Criei projeto `casa-cameras`
+no Google Cloud, habilitei a Drive API, criei a conta de serviço
+`clipes-cameras-upload@casa-cameras-509101.iam.gserviceaccount.com`, baixei a
+chave (`config/google_drive_service_account.json`, já no `.gitignore`) e
+compartilhei a pasta do Drive com ela como Editor. O upload falhou com
+`storageQuotaExceeded` — **contas de serviço não têm cota de armazenamento em
+Drive pessoal**, só em Google Workspace com "shared drives" (nenhuma opção
+disponível numa conta Gmail comum). Descobri isso rodando o script
+manualmente e lendo o erro real da API, não só confiando na ausência de
+arquivo na pasta.
+
+**rclone resolveu.** Autenticação OAuth como o próprio André (não uma conta
+de serviço) tem cota normal. Instalei via `winget install Rclone.Rclone`,
+autorizei uma vez (`rclone config create gdrive_cameras drive scope=drive` —
+abriu o navegador, o André autorizou), e criei
+`scripts/camera_upload/sincronizar_clipes_drive.ps1`, chamado por uma Tarefa
+Agendada do Windows a cada 5 minutos. `rclone move ... --min-age 30s` sobe os
+clipes prontos (a margem de 30s evita pegar arquivo que o ffmpeg ainda esteja
+escrevendo) e `rclone delete ... --min-age 7d` faz a limpeza semanal pedida
+pelo André — sem precisar escrever lógica de retenção própria.
+
+**Dois incidentes de exposição de senha nesta sessão** (ambos no campo de URL
+da integração "Câmera genérica" do HA, que mostra a senha em texto claro ao
+reabrir "Opções" — diferente do campo "Senha" que tem olho pra ocultar):
+1. Ao editar a URL do canal 4 pela primeira vez, o campo "Senha" reabriu já
+   sem máscara (motivo não identificado — pode ter sido estado herdado do
+   navegador).
+2. Ao tentar uma edição cirúrgica (só trocar o `1` final por `0`, sem
+   reescrever a URL toda) para trocar `subtype`, precisei conferir o
+   resultado e a senha apareceu de novo.
+
+Depois desse segundo incidente, percebi que a edição cirúrgica também **saiu
+errada** — o cursor não foi para onde eu esperava (a tela mostrou
+`192.168.310.216` em vez de `192.168.31.216`, sinal de que o `0` foi inserido
+no meio do IP, não no lugar do `subtype`). Corrigi refazendo a URL inteira do
+zero com um marcador de texto (`COLOQUE_A_SENHA_AQUI`) para o André substituir
+— o mesmo método que já tinha funcionado de forma confiável antes. **Lição
+prática**: nesse formulário específico, não vale a pena tentar edição pontual
+(clicar em um ponto específico do meio de uma URL longa e confiar que o
+cursor caiu no lugar certo) — selecionar tudo e reescrever com placeholder é
+mais lento mas muito mais confiável, e evita ficar reabrindo a tela (e
+reexpondo a senha) para conferir se a edição pontual funcionou.
+
+**Qualidade de imagem**: a pedido do André, troquei `subtype=1` (stream
+extra) por `subtype=0` (stream principal) nas duas câmeras, ao vivo e nos
+clipes — mais nitidez, mais banda, aceitável pro uso de casa. Descoberta
+lateral: o "Sem HD" que aparecia sobreposto na imagem não é indicador de
+qualidade de vídeo, é aviso do próprio DVR de que **não há disco rígido
+instalado** — não muda trocando o `subtype`.
+
+Tudo em `CASA.md`, seção **Câmeras**, com o comando exato do rclone e o aviso
+de que o client_id compartilhado do rclone será desativado em 2026 (ação
+futura: criar um próprio).

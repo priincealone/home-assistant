@@ -263,3 +263,43 @@
             - action: light.turn_off
               target:
                 entity_id: *luzes_gourmet
+
+- id: '1758230400000'
+  alias: Movimento nas câmeras da rua grava clipe de 30s
+  description: >-
+    O DVR Intelbras (canais 2 e 4, câmeras externas) detecta movimento e manda
+    e-mail de alarme para an.diogo98@gmail.com (filtro do Gmail arquiva e
+    aplica o marcador "DVR", sem notificar o André — o e-mail é só o sinal
+    para esta automação, ver specs/features/clipes-movimento-nuvem.md).
+
+    O assunto do e-mail é igual para os dois canais ("ALERTA DVR"), sem dizer
+    qual câmera disparou — por isso a automação grava as DUAS câmeras a cada
+    alarme, em vez de tentar identificar o canal pelo e-mail. O nome do
+    arquivo (câmera + data + hora) já identifica cada clipe.
+
+    O upload para o Google Drive NÃO é feito por esta automação — uma conta
+    de serviço do Google Cloud não tem cota de armazenamento em Drive pessoal
+    (só funciona em Google Workspace com "shared drives"). A sincronização é
+    feita por uma Tarefa Agendada do Windows que roda `rclone` fora do
+    container, direto na pasta montada (ver
+    scripts/camera_upload/sincronizar_clipes_drive.ps1 e CASA.md).
+  mode: queued
+  max: 10
+  triggers:
+    - trigger: event
+      event_type: imap_content
+  conditions: []
+  actions:
+    - repeat:
+        for_each:
+          - camera.rua_canal_2
+          - camera.rua_canal_4
+        sequence:
+          - action: camera.record
+            target:
+              entity_id: '{{ repeat.item }}'
+            data:
+              filename: >-
+                /config/www/clipes_movimento/{{ repeat.item.split('.')[1] }}_{{
+                now().strftime('%Y-%m-%d_%H-%M-%S') }}.mp4
+              duration: 30

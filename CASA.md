@@ -42,7 +42,7 @@ docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/
 `samsungtv` · `ps5` · `music_assistant` · `browser_mod` · `findmy` · `glances` ·
 `mobile_app` (iPhone e iPad do André) · `met` · `sun` · `ping` · `wake_on_lan` ·
 `radio_browser` · `google_translate` (TTS em inglês e em português) · `hacs` ·
-`backup`.
+`backup` · `generic` (câmeras do DVR Intelbras, ver seção **Câmeras**).
 
 Instaladas mas **sem configuração concluída**: `alexa_media` (barrada pela chave de
 acesso da conta Amazon) e o provedor YouTube Music no Music Assistant (faltam
@@ -67,6 +67,93 @@ usuário e cookie).
 `cozinha_copa_varanda`; a tecla 3 é a Lavanderia. Cozinha e Lavanderia já
 estiveram trocadas, e **estados iguais escondem inversões** — confira ligando uma
 de cada vez.
+
+## Câmeras
+
+DVR **Intelbras MHDX 1204-C Dual Audio** (`192.168.31.216`), 4 canais, dos quais 2
+ativos — canais 2 e 4, ambos com visão externa para a rua. Câmeras físicas:
+Intelbras VHD 3230 (analógicas, ligadas por coaxial ao DVR; não têm IP próprio).
+
+Integrado via **Câmera genérica** (`generic`), não ONVIF — o DVR aceita conexão
+na porta ONVIF padrão (80) mas fecha `/onvif/device_service` sem responder,
+então o ONVIF está desabilitado ou indisponível nesse firmware. RTSP direto
+funcionou de primeira, no formato que o próprio DVR expõe em
+Configurações → Rede → Porta:
+
+```
+rtsp://<usuário>:<senha>@192.168.31.216:554/cam/realmonitor?channel=<N>&subtype=0
+```
+
+`subtype=0` é o stream principal (alta qualidade) — trocado de `subtype=1`
+(stream extra, menor) em 18/09/2026 a pedido do André, que achou a imagem
+ruim demais tanto ao vivo quanto nos clipes gravados. "Sem HD" sobreposto na
+imagem é aviso do próprio DVR de **disco não instalado**, não indicador de
+qualidade de stream — não muda com o `subtype`.
+
+Entidades: `camera.rua_canal_2` e `camera.rua_canal_4`.
+
+⚠️ **A URL de stream precisa da senha embutida de verdade — `{{ username }}` /
+`{{ password }}` como template não funciona.** Esses dois placeholders só são
+resolvidos na pré-visualização da própria tela de configuração (por isso
+pareciam funcionar); na operação real (gravação, visualização ao vivo), o
+Home Assistant renderiza o template sem essas variáveis no contexto, e a URL
+vira `rtsp://:@IP:554/...` — falha silenciosa que gerou horas de diagnóstico.
+A correção é digitar a credencial real na própria URL (`rtsp://usuario:senha@IP:...`),
+não usar os campos separados "Usuário"/"Senha" do formulário (esses só valem
+para autenticação HTTP de imagem estática, não para o stream RTSP). **Efeito
+colateral**: o campo de URL, ao reabrir "Opções" da integração, mostra a senha
+em texto claro, sem máscara — evite tirar captura de tela dessa tela.
+
+### Clipe de movimento → e-mail → gravação (18/09/2026)
+
+Pipeline funcionando ponta a ponta (ver `specs/features/clipes-movimento-nuvem.md`):
+
+1. DVR detecta movimento nos canais 2 e 4 → manda e-mail (SMTP Gmail,
+   `an.diogo98@gmail.com`) com foto anexada
+2. Filtro do Gmail arquiva e aplica o marcador "DVR" — não notifica o André
+3. Integração `imap` do HA lê esse marcador, dispara o evento `imap_content`
+   a cada e-mail novo
+4. Automação **"Movimento nas câmeras da rua grava clipe de 30s"**
+   (`config/automations.yaml`) grava 30s de cada câmera via `camera.record`,
+   salvando em `config/www/clipes_movimento/<câmera>_<data>_<hora>.mp4`
+
+Testado disparando o evento `imap_content` manualmente (Ferramentas de
+Desenvolvedor → Eventos) — os dois clipes gravaram com tamanho e conteúdo
+válidos. Como o assunto do e-mail é igual para os dois canais, a automação
+grava as **duas** câmeras a cada alarme, em vez de tentar identificar qual
+disparou.
+
+### Upload para o Google Drive (18/09/2026)
+
+**Conta de serviço do Google Cloud não funciona para isso** — contas de
+serviço não têm cota de armazenamento em Drive pessoal (só em Google
+Workspace, com "shared drives"). Tentei primeiro por esse caminho
+(`config/google_drive_service_account.json`, projeto `casa-cameras` no Google
+Cloud) e o upload falhava com `storageQuotaExceeded`.
+
+**O que funciona**: `rclone`, autenticado como a própria conta do André
+(OAuth, autorização feita uma vez no navegador — não uma conta de serviço).
+Remoto `gdrive_cameras` configurado em `%APPDATA%\rclone\rclone.conf`. A
+sincronização roda **fora do container**, numa Tarefa Agendada do Windows
+("CameraClipesDriveSync", a cada 5 minutos, script em
+`scripts/camera_upload/sincronizar_clipes_drive.ps1`):
+
+```
+rclone move config/www/clipes_movimento gdrive_cameras:"Câmeras - Clipes de Movimento" --include "*.mp4" --min-age 30s
+rclone delete gdrive_cameras:"Câmeras - Clipes de Movimento" --min-age 7d
+```
+
+`--min-age 30s` evita pegar um clipe que o ffmpeg ainda esteja gravando;
+`rclone delete --min-age 7d` é a limpeza semanal pedida pelo André — sem
+precisar de lógica própria de retenção. Testado ponta a ponta: evento →
+gravação → sincronização → arquivo aparece na pasta certa do Drive → clipe
+local apagado.
+
+⚠️ **Aviso do próprio rclone**: o `client_id` compartilhado que ele usa por
+padrão "está sendo desativado, deve parar de funcionar durante 2026" —
+quando isso quebrar, criar um client_id próprio
+(https://rclone.org/drive/#making-your-own-client-id) e rodar
+`rclone config reconnect gdrive_cameras:`.
 
 ### Sensores que o painel consome
 
@@ -158,6 +245,11 @@ de claridade (mede a sala, não o cômodo do movimento).
 - **Termostato e calendário** — sem `climate.*` nem `calendar.*`.
 - **Migração para dispositivo dedicado** — o HA cai quando o PC dorme, e a rede do
   Docker Desktop é o teto do som ambiente.
+- **Client ID compartilhado do rclone será desativado em 2026.** O upload dos
+  clipes de movimento (ver seção **Câmeras**) usa o client_id padrão do
+  rclone, que o próprio rclone avisa que vai parar de funcionar durante 2026.
+  Quando quebrar: criar um client_id próprio no Google Cloud e rodar `rclone
+  config reconnect gdrive_cameras:`.
 
 ## Ferramentas
 

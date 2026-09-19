@@ -11,6 +11,10 @@ config/.storage/auth
 config/.storage/auth_provider.homeassistant
 config/.storage/http.auth
 config/.cloud/
+config/google_drive_service_account.json
+
+# Clipes de movimento das câmeras, buffer temporário local antes do upload
+config/www/clipes_movimento/
 
 # Caches e dependências
 config/deps/
