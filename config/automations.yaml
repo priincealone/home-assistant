@@ -303,3 +303,71 @@
                 /config/www/clipes_movimento/{{ repeat.item.split('.')[1] }}_{{
                 now().strftime('%Y-%m-%d_%H-%M-%S') }}.mp4
               duration: 30
+
+- id: '1758240000000'
+  alias: Muro e Painel acesos do pôr do sol à meia-noite
+  description: >-
+    Todo dia, no pôr do sol, acende o Muro (light.circulacao_switch_1) e o
+    Painel da TV (light.painel); à meia-noite apaga os dois.
+    Especificação: specs/automations/luzes-muro-painel-noite.md.
+
+    "Ou quando forem apagadas manualmente" não precisa de lógica: o acender é
+    de borda, dispara uma única vez no evento de pôr do sol e nunca reacende.
+    Por isso também não há reconciliação na partida para o acender — se o
+    Home Assistant voltar às 21h, reacender desfaria um apagar manual.
+
+    O apagar tem reconciliação estreita: se o HA estiver fora na virada da
+    meia-noite e voltar até 00:30, apaga o que ficou aceso. Depois disso não
+    mexe, porque o Painel pode ter sido aceso de propósito pela automação da
+    porta do quarto, que é dona dele entre 22h e 6h e tem precedência.
+
+    Donos dos atuadores: as duas automações da porta do quarto também tocam
+    estas luzes (a de fechar apaga ambas, a de abrir acende o Painel). Não há
+    conflito — nenhuma desfaz a outra dentro da mesma janela.
+  mode: single
+  triggers:
+    - trigger: sun
+      event: sunset
+      id: acender
+    - trigger: time
+      at: '00:00:00'
+      id: apagar
+    - trigger: homeassistant
+      event: start
+      id: partida
+  conditions: []
+  actions:
+    - choose:
+        - alias: Pôr do sol — acende Muro e Painel
+          conditions:
+            - condition: trigger
+              id: acender
+          sequence:
+            - action: light.turn_on
+              target:
+                entity_id:
+                  - light.circulacao_switch_1
+                  - light.painel
+        - alias: Meia-noite (ou partida até 00:30) — apaga o que estiver aceso
+          conditions:
+            - condition: or
+              conditions:
+                - condition: trigger
+                  id: apagar
+                - condition: and
+                  conditions:
+                    - condition: trigger
+                      id: partida
+                    - condition: time
+                      after: '00:00:00'
+                      before: '00:30:00'
+            - condition: template
+              value_template: >-
+                {{ is_state('light.circulacao_switch_1', 'on')
+                   or is_state('light.painel', 'on') }}
+          sequence:
+            - action: light.turn_off
+              target:
+                entity_id: >-
+                  {{ ['light.circulacao_switch_1', 'light.painel']
+                     | select('is_state', 'on') | list }}

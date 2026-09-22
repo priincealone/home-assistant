@@ -4099,3 +4099,674 @@ instalado** — não muda trocando o `subtype`.
 Tudo em `CASA.md`, seção **Câmeras**, com o comando exato do rclone e o aviso
 de que o client_id compartilhado do rclone será desativado em 2026 (ação
 futura: criar um próprio).
+
+## Câmera na TV da sala via DLNA — integração de pé, teste bloqueado (18/09/2026)
+
+André pediu um sistema para reproduzir as câmeras da rua na TV da sala, com chamada por Alexa ou pelo
+HA. Escrevi a spec primeiro (`specs/features/reproducao-cameras-tv.md`, regra do `CLAUDE.md` §16) e
+levantei o estado real antes de propor arquitetura: só 2 câmeras (`camera.rua_canal_2/4`, RTSP
+genérico, sem ONVIF), TV Samsung só com `samsungtv` (controle remoto, sem cast) e `smartthings`, nenhum
+`cast`/`androidtv` configurado, rede sem multicast (`docs/ARCHITECTURE.md`), Alexa sem integração
+nenhuma hoje (`alexa_media` removido do disco, sem entrada em `core.config_entries`).
+
+**Descoberta que destravou sem comprar nada**: `curl http://192.168.31.250:9197/dmr` (HTTP unicast
+direto, sem SSDP) devolveu a descrição UPnP completa da TV — ela é um DLNA MediaRenderer de verdade,
+com `AVTransport`, e se declara `WebURIPlayable`. A integração `dlna_dmr` do HA aceita configuração
+manual por URL de descrição, contornando a ausência de multicast que bloquearia a descoberta
+automática. André descartou comprar Fire TV Stick nesta rodada; a rota DLNA supre isso.
+
+Adicionei a integração pelo navegador interno (já autenticado como André): dispositivo "TV Sala
+(DLNA)", área Sala de estar, entidade `media_player.sala_de_estar_tv_sala_dlna`. Conectividade
+confirmada (estado "Ocioso" ao vivo).
+
+**Correção de rota**: a ideia inicial da spec era usar o `go2rtc` interno do HA pra servir o stream —
+errado. Esse `go2rtc` é privado por design (só socket Unix, usuário/senha gerados, "gerenciado pelo
+Home Assistant, não editar manualmente"). Corrigi para o mecanismo nativo de media source
+(`media-source://camera/camera.rua_canal_2`), o mesmo que já resolve pra Chromecast no HA — não precisa
+reconfigurar nada de stream à parte.
+
+**Teste bloqueado**: `media_player.play_media` com essa URI devolveu erro DLNA 716 (Resource not
+found). Não é a integração nova — é a `stream_source` RTSP das câmeras, que está com a credencial
+duplicada/malformada (dois `@`), provavelmente sobra de uma edição de hoje mesmo (ver entrada anterior
+"Upload dos clipes para o Google Drive", que já registra dois incidentes de exposição de senha no
+mesmo formulário). Registrado em `planning/BLOCKED.md` como K-13.
+
+⚠️ **Incidente de exposição de senha, meu**: pra checar só a *estrutura* da URL (sem querer ver a
+senha), escrevi um regex de mascaramento com um bug, e um fragmento da senha do DVR vazou sem máscara
+no terminal desta sessão. Não repeti o valor, apaguei os scripts temporários na hora, mas recomendei ao
+André trocar essa senha. Lição prática pra próxima vez que precisar inspecionar uma URL com credencial:
+checar só booleanos (tem `{{`? tem dois `@`? tamanho da string) nunca imprimir a string mascarada
+inteira — mascaramento por regex é fácil de errar.
+
+Alexa fica fora do escopo desta entrega (Nabu Casa seria a única rota viável sem reviver o
+`alexa_media`, e o André não quis assinatura agora) — documentado na spec pra quando ele decidir.
+
+**Próximo passo**: André corrigir a credencial RTSP (K-13) → reexecutar o teste de `play_media` →
+se funcionar, criar `config/scripts.yaml` com o script `mostrar_camera_rua` e fechar a entrega
+(P-04 em `planning/IN_PROGRESS.md`).
+
+## Câmera na TV — credencial corrigida, mas a TV não aceita HLS (19/09/2026)
+
+Retomada direto da entrada anterior. André corrigiu a credencial RTSP (K-13 fechado, removido de
+`planning/BLOCKED.md`).
+
+**Ligar a TV de madrugada**: para reexecutar o teste às 00h13, mandei `media_player.turn_on` na TV
+(Wake-on-LAN via `samsungtv`) — não confirmou ligar (a API da Samsung mostrou `PowerState: standby`,
+tela seguiu apagada; WoL por Wi-Fi costuma falhar). Parei e perguntei ao André antes de insistir, já
+que era tarde e a TV fica na sala. Ele ligou manualmente.
+
+**Teste reexecutado com sucesso parcial**: com a credencial corrigida, o HLS da câmera passou a gerar
+normalmente — confirmei pelo navegador de mídia do HA (segmentos `.m4s` em 200 OK, ao vivo) e também
+pela URL da LAN (`192.168.31.22:8123`, a mesma que a TV alcançaria — não é problema de rede).
+`media_player.play_media` continua devolvendo **erro DLNA 716** mesmo assim.
+
+**Causa raiz real, não a credencial**: consultei `GetProtocolInfo` direto na TV via SOAP
+(`ConnectionManager1`) — pedido simples, sem mexer em nada, só pra saber quais formatos ela aceita
+receber por `AVTransport`. A lista só tem `video/mp4` progressivo e `audio/mp4`. **Sem HLS, sem
+RTSP.** A câmera do HA só sabe entregar como HLS (`media-source://camera/...`) ou RTSP puro — nenhum
+dos dois formatos que a TV aceita. Não é bug de configuração, é incompatibilidade de protocolo, e só
+apareceu porque perguntei à própria TV o que ela suporta, em vez de ficar tentando formatos por
+tentativa e erro.
+
+Atualizei a spec (`specs/features/reproducao-cameras-tv.md`) e `planning/IN_PROGRESS.md` (P-04) com o
+achado e as duas rotas possíveis (go2rtc próprio numa porta real, ou `ffmpeg` via `shell_command`,
+ambos remuxando RTSP → MP4 fragmentado). As duas são infraestrutura nova, não só configuração —
+precisa de decisão do André antes de eu implementar (alçada 2).
+
+Devolvi a TV ao estado de antes do teste (desligada) ao final.
+
+## go2rtc dedicado no ar, TV ainda recusa o arquivo — mais um incidente de senha (19/09/2026, mesma madrugada)
+
+André escolheu a rota do `go2rtc` próprio (em vez de `ffmpeg`/`shell_command`) — é a ferramenta feita
+pra isso, e evita reinventar gerenciamento de processo. Subi o container `go2rtc-cameras`
+(`alexxit/go2rtc`, rede `casa-net`, portas `1984`/`8554`), config em `go2rtc-cameras/go2rtc.yaml`.
+
+**O `docker run` foi bloqueado pelo classificador de auto mode do Claude Code** (categoria "Expose
+Local Services") — confirmar no chat não destrava, é uma permissão real. Passei o comando pro André
+rodar no terminal dele. Primeira tentativa falhou porque dei o comando em sintaxe bash (`\` de
+continuação de linha), e o terminal dele é PowerShell — corrigi pra uma linha só e funcionou.
+
+**Terceiro incidente de exposição de senha da noite**, e o mais sério dos três: usei `head -c 100` no
+JSON de `/api/streams` do `go2rtc` achando que cortar a saída seria suficiente, mas o corte caiu no
+meio da própria URL com a senha, que apareceu de novo no terminal. Depois desse eu parei de vez de
+consultar esse endpoint — qualquer verificação daqui pra frente usa só `/api/stream.mp4` (que não
+inclui a URL de origem na resposta, só o stream em si). Reforcei ao André a recomendação de trocar a
+senha do DVR — agora com mais convicção, já que continuei arriscando o mesmo tipo de erro mesmo depois
+de saber do risco.
+
+**Achado técnico bom**: descobri que o stream principal das câmeras (`subtype=0`) é **H.265**
+(codec `hvc1`, via `Content-Type` do `go2rtc`) — fora da lista de formatos que a TV aceita (só AVC/
+H.264, confirmado via `GetProtocolInfo`). O `subtype=1` é H.264 (`avc1.640029`), compatível.
+Reconfigurei só o `go2rtc-cameras` (instância separada, não mexe na config da câmera que o André já
+ajustou) para usar `subtype=1`.
+
+**Mesmo com codec certo, a TV recusou.** Mensagem na tela: "este formato de arquivo não é suportado"
+— diferente de antes (ficava em silêncio, sem reagir), então o `SetAVTransportURI`/`Play` está
+chegando e sendo processado, só que o conteúdo em si é rejeitado. Testei um MP4 estático comum
+(`https://www.w3schools.com/html/mov_bbb.mp4`) pra isolar se o problema é geral (qualquer MP4) ou
+específico do jeito que o `go2rtc` entrega (stream fragmentado, ao vivo, sem duração fixa) — deu um
+erro **diferente** ("ocorreu um erro inesperado"), mas usei uma URL `https://` sem perceber que isso
+mistura outra variável (o `go2rtc` serve `http://` puro), então o teste não isolou nada de conclusivo.
+
+Pedir pro André checar a tela física a cada tentativa é lento e cansa ele à toa. **Próximo passo**:
+ativar log de depuração (`dlna_dmr`/`async_upnp_client`) no HA pra ver o XML exato que sai no
+`SetAVTransportURI`, e testar um MP4 estático **http://** (não https) antes de mexer em qualquer
+metadado DLNA. Tudo detalhado em `planning/IN_PROGRESS.md` P-04.
+
+## Causa raiz encontrada com log de depuração — precisa de transcodificação (19/09/2026, mesma madrugada)
+
+Ativei o log de debug do `dlna_dmr`/`async_upnp_client` (`logger:` em `configuration.yaml`, removido
+depois de usar). Isso trocou "pedir pro André olhar a TV a cada tentativa" por "ler o XML exato que
+saiu do HA" — bem mais rápido pra iterar.
+
+**Três camadas de problema, resolvidas em sequência:**
+
+1. O `async_upnp_client` usa o `Content-Type` cru da resposta HTTP como mime-type do `protocolInfo`
+   do DLNA. O `go2rtc` manda `video/mp4; codecs="avc1.640029"` — bom pra `<video>` do navegador, ruim
+   pro DLNA, que não reconhece esse formato. Resultado: erro 716 na hora. Corrigido com um proxy
+   `nginx` (`go2rtc-tv-proxy`, porta 1985) que reescreve o cabeçalho pra `video/mp4` puro.
+2. O perfil `DLNA.ORG_PN` só é preenchido se o servidor mandar um cabeçalho `ContentFeatures.dlna.org`
+   — o HA não infere isso sozinho. Adicionei esse cabeçalho no mesmo proxy, com um perfil que a TV já
+   declarou aceitar. A TV passou a aceitar a negociação (antes recusava na hora, agora ia até tentar
+   abrir o vídeo).
+3. **Causa raiz final**: `ffprobe` direto no stream (via `docker exec go2rtc-cameras ffprobe ...`,
+   sem precisar da URL com credencial) mostrou `profile=High`, `352x240`. A resolução é baixíssima,
+   não é o problema — mas **nenhum perfil "High" aparece na lista que a TV aceita** (só Main/Baseline).
+   Eu estava *declarando* Main Profile no cabeçalho enquanto o vídeo real chegava em High — por isso a
+   TV aceitava a negociação mas falhava ~8s depois, ao decodificar de verdade.
+
+**Conclusão**: a solução definitiva precisa transcodificar High → Main/Baseline via `ffmpeg` (o
+`go2rtc` tem módulo embutido pra isso), o que gasta CPU real, diferente do remux que fiz até aqui
+(praticamente grátis). Alternativa: reconsiderar o Fire TV Stick, que rodaria um app de verdade sem
+essas restrições de perfil. Deixei os dois caminhos documentados em `planning/IN_PROGRESS.md` P-04
+pro André decidir com calma — já são muitas rodadas de teste pedindo pra ele checar a TV essa
+madrugada.
+
+Desliguei o log de debug de novo (gera ruído demais pra deixar ligado) e reiniciei o HA.
+
+## Vídeo ao vivo no card de câmera (19/09/2026)
+
+André reclamou que na tela **Dispositivos** o card das câmeras (`camera.rua_canal_2`/`_4`) só mostra
+imagem depois de clicar para abrir. Fui olhar na tela certa em vez de supor: essa dashboard
+(`dashboard-dispositivos`, sidebar "Dispositivos") é gerada pela estratégia `original-states` do
+Lovelace — confirmado lendo `config/.storage/lovelace.dashboard_dispositivos`, que só tem
+`{"strategy": {"type": "original-states"}}`, nenhum card manual. Estratégia não permite configurar
+`camera_view` por card; o "Editar dashboard" dela só deixa escolher quais áreas aparecem.
+
+Tentei primeiro uma saída que não mexesse em nenhum dashboard: se o DVR aceitasse snapshot HTTP puro
+(`/cgi-bin/snapshot.cgi?channel=N`, comum em DVRs Dahua/Intelbras), o card usaria isso em vez de pedir
+ao `ffmpeg` pra extrair um frame do RTSP a cada render — mais rápido e resolveria em qualquer tela.
+Escrevi um script Python que roda **dentro do container** (`docker exec -i homeassistant python -`),
+lê `core.config_entries` só para extrair usuário/senha da integração já configurada, testa o endpoint
+com `requests.auth.HTTPDigestAuth` (a autenticação é Digest, não Basic — `urllib` puro falha direto
+com "does not support Digest") e imprime só o resultado HTTP, nunca a senha (troquei o valor por `***`
+antes de qualquer print, e todo o teste ficou dentro do `docker exec`, sem passar pela conversa). A
+autenticação passou (deixou de dar 401), mas o DVR recusou com `{"ErrorCode": 268632081, ...}` —
+permissão insuficiente para essa API específica nessa conta. Isso é configuração de conta no próprio
+DVR (nível 3, só o André mexe), então esse caminho parou aqui.
+
+Perguntei ao André se topava converter a dashboard "Dispositivos" pra manual (`take control`) —
+custo real: ela para de ganhar automaticamente os dispositivos novos que aparecerem depois. Ele
+preferiu não. Solução: usei o **"Painel de controle"** (`lovelace.painel_de_controle`), que já é uma
+dashboard `sections` manual (sem estratégia, editar não desliga nada automático) — criei uma seção
+"Câmeras" com dois cards **Entidade de imagem** (`picture-entity`), um por câmera, e mudei "Vista da
+câmera" de "Auto" pra "Ao vivo" em cada um. Confirmado visualmente no navegador: as duas câmeras
+aparecem tocando o stream ao vivo direto no card, sem precisar clicar. Documentado em `CASA.md`
+§Câmeras.
+
+**Armadilha nova**: ao clicar por engano no "⋮" da caixa de diálogo "Editar dashboard" durante a
+investigação, cliquei sem querer em "Excluir" (documentado aqui porque quase apaguei a dashboard
+"Dispositivos" sem querer) — abriu confirmação "Excluir Dispositivos? Este dashboard será excluído
+permanentemente.", cancelei a tempo. Lição: nessas caixas de diálogo do Lovelace, "Excluir" e
+"Cancelar" ficam vizinhos horizontalmente com pouco espaço — vale conferir a posição exata (ou usar
+`read_page`/zoom) antes de clicar, em vez de mirar de memória.
+
+---
+
+## 19/09/2026 (madrugada) — Muro e Painel no pôr do sol; Painel Novo descartado
+
+### Automação "Muro e Painel acesos do pôr do sol à meia-noite"
+
+Pedido: "após o pôr do sol todos os dias as luzes muro e painel irão se acender, serão apagadas às
+00h ou quando forem apagadas manualmente". Spec em `specs/automations/luzes-muro-painel-noite.md`.
+
+- Atuadores: `light.circulacao_switch_1` (Muro, conforme `lib/rooms.ts`) e `light.painel`.
+- **"Ou apagadas manualmente" não tem código**: o acender é o evento `sunset`, dispara uma vez.
+  Sem reconciliação na partida para o acender — reacender desfaria um apagar manual.
+- Apagar às 00:00 manda comando só para quem estiver aceso. Partida do HA entre 00:00 e 00:30 também
+  apaga (cobre reinício na virada); depois disso não mexe, porque o Painel pode ter sido aceso pela
+  automação da porta do quarto (dona dele de 22h às 6h).
+- Existem **duas** entidades `switch` com o nome "Muro Switch 1" (`switch.circulacao_switch_1` e
+  `switch.entrada_switch_1`), mudando de estado juntas. A automação usa só a camada `light.*`.
+- `check_config` exit 0; container reiniciado (YAML); `automation.muro_e_painel_acesos_do_por_do_sol_a_meia_noite`
+  carregou `on`; luzes não foram tocadas (partida às 01:19, fora da janela). **Não testado ao vivo**:
+  o primeiro disparo real é o próximo pôr do sol.
+
+### Painel Novo descartado
+
+Pedido do André: descartar a dashboard "Painel Novo" criada no HA em 18–19/09. Removido:
+
+- bloco `lovelace:` do `configuration.yaml` (dashboard YAML `painel-novo`)
+- `config/dashboards/painel-novo.yaml` (56 cards `custom:bubble-card`)
+- Bubble-Card e Mushroom desinstalados do HACS (marca de instalado, pasta, recurso de frontend) —
+  reinstalados só para ele; o "Painel de controle" não usa card custom (o script aborta se usar)
+- `painel-novo` da lista de painéis ocultos do usuário
+
+Script: `scripts/manutencao/retira_painel_novo.py` (validar → `docker stop` → aplicar → `docker start`).
+Backup em `backups/painel-novo-2026-09-19/`. Verificado após a partida: zero recursos `/hacsfiles/`,
+os dois repositórios sem marca de instalado, `www/community` vazia, `hiddenPanels` vazio, HA
+respondendo 200.
+
+---
+
+## Análise completa do sistema de câmeras para o dashboard-app (19/09/2026)
+
+André pediu um levantamento de toda a estrutura de câmeras — integrações possíveis, geração de
+imagem, captura de movimento, automações — para virar documento de planejamento do dashboard-app.
+Antes de escrever qualquer coisa nova, fui ler o que já existe no `dashboard-app` (só leitura, nada
+editado lá) e a surpresa foi que a spec de 18/09 (`clipes-movimento-nuvem.md`) que dizia "mostrar
+câmeras no dashboard-app é fora de escopo" **está desatualizada**: já existe um hub de vigilância
+completo (`SurveillanceHubModal.tsx`) com vídeo ao vivo via HLS (WebSocket `camera/stream` do HA,
+proxiado em `app/api/camera/[id]/hls`), snapshot com fallback SVG elegante, gravação manual e modo
+dual/single — bem mais avançado do que eu esperava. Bom lembrete de tratar specs antigas como
+fotografia de um momento, não como verdade permanente.
+
+A lacuna real, encontrada só depois de mapear os dois lados (HA e dashboard-app), não é "ter câmera
+no painel" — é que **o movimento das câmeras da rua não existe como estado dentro do Home Assistant**,
+só como e-mail. Os sensores de movimento internos (Lavanderia, Gourmet, Banheiro, Closet) são
+`binary_sensor` de verdade e por isso aparecem no `HeaderAlertPill` e no modo noturno; as câmeras da
+rua não têm equivalente, então não há como o painel mostrar "movimento agora" nelas mesmo que
+quisesse. Documentei essa lacuna e o Frigate (NVR com detecção de objeto/pessoa) como a peça que a
+resolveria, sem recomendar implementar sem o André decidir — é mudança de arquitetura, não ajuste
+pequeno.
+
+Documento completo: `specs/features/cameras-analise-completa-roadmap-dashboard.md` — inventário do
+hardware/integração atual, tabela comparando todas as integrações possíveis (ONVIF descartado,
+`generic` atual, `go2rtc` já rodando ocioso pro caso da TV e reaproveitável pra snapshot mais rápido,
+Frigate, Double Take/CompreFace, `deepstack`/`image_processing` legado e por que não), comparação de
+geração de imagem, lista de automações novas possíveis por categoria, contrato de API sugerido (não
+implementado) e riscos encontrados de passagem — entre eles, `go2rtc-cameras/go2rtc.yaml` guarda a
+senha do DVR em texto puro (já no `.gitignore`, mas vale o André saber que o arquivo existe assim em
+disco).
+
+**Ficou**: o "Painel de controle" (`lovelace.painel_de_controle`), com os cards de câmera ao vivo.
+
+---
+
+## Remoção completa da integração TV ↔ câmeras (19/09/2026)
+
+Logo depois da análise acima, André decidiu: "deixaremos de lado a integração entre tv e câmeras,
+remova qualquer resquício para não termos erro ou confusão". Não era pausar de novo — já estava
+pausada (K-14 em `planning/BLOCKED.md`) — era desmontar de verdade.
+
+O que foi removido:
+1. Integração `dlna_dmr` (entidade `media_player.sala_de_estar_tv_sala_dlna`) — excluída pela própria
+   UI do HA (Configurações → Dispositivos e serviços), não editando `.storage` na mão, exatamente pra
+   não correr risco de deixar resíduo em `core.entity_registry`/`core.device_registry` que o HA
+   reescreve sozinho. Confirmado depois: zero resultado buscando "DLNA" em Configurações → Entidades.
+2. Containers `go2rtc-cameras` e `go2rtc-tv-proxy` — parados e removidos (`docker stop` + `docker rm`).
+3. Imagens Docker `alexxit/go2rtc` e `nginx:alpine` — removidas também, depois de confirmar
+   (`docker ps -a`) que nenhum outro container usava nenhuma das duas.
+4. Pasta `go2rtc-cameras/` apagada do disco inteira — ela guardava a senha do DVR em texto puro no
+   `go2rtc.yaml` (já estava fora do git, mas existir em disco assim já era o tipo de resquício que o
+   André pediu pra tirar).
+5. Regra correspondente no `.gitignore` removida (não fazia mais sentido apontar pra um arquivo que
+   não existe mais).
+
+O que foi só **documentado como encerrado**, não apagado, porque não é resquício técnico (não roda,
+não pode dar erro) e tem valor de registro:
+- `specs/features/reproducao-cameras-tv.md` — ganhou um aviso no topo ("DESCARTADO E REMOVIDO") em
+  vez de ser apagado. O diagnóstico ali (H.264 High Profile da câmera vs. Main/Baseline que a TV
+  decodifica via DLNA) foi trabalho de investigação real; apagar o arquivo jogaria isso fora à toa.
+- `planning/BLOCKED.md` K-14 virou uma linha de fechamento apontando pra `DONE.md`, em vez de
+  continuar como item aberto.
+- `CASA.md` §Câmeras: a subseção antiga ("pausado por decisão") virou "descartado e removido", com o
+  resumo do que foi tirado.
+
+**O que fica de fora deliberadamente**: `dashboard-app/app/api/camera/cast/route.ts` já retorna
+`410 Gone` (foi desativado por lá antes mesmo desta limpeza) — não editei porque `dashboard-app` só
+recebe mudança com pedido inequívoco do André especificamente sobre esse repositório (`CLAUDE.md`
+§6), e essa rota já não faz nada de qualquer forma. Avisei o André que esse arquivo continua existindo
+como stub morto, caso ele (ou o Antigravity) queira apagar de vez.
+
+---
+
+## Alarme falso de perda de dados + migração pra D: + remoção do anisette (20/09/2026)
+
+André perguntou por que as imagens de câmera estavam indisponíveis. Ao investigar, `C:\HomeAssistant`
+apareceu quase vazio (só a pasta `anisette`) tanto pelo Windows quanto por dentro do container
+(`docker exec homeassistant ls /config` só mostrava `desktop.ini` e `www`) — cheguei a alertar o André
+como possível perda de dados grave, pedindo pra ele não reiniciar nada e checar o Google Drive.
+
+**Era alarme falso, com duas causas reais por trás:**
+
+1. **O projeto inteiro tinha sido movido para `D:\HomeAssistant`** (o André confirmou depois) — o
+   `C:\HomeAssistant` que eu estava lendo era só o que sobrou do disco antigo.
+2. **Meus próprios comandos de diagnóstico estavam mentindo pra mim.** O Git Bash (MSYS) reescreve
+   automaticamente qualquer argumento que pareça um caminho absoluto Unix — `docker exec homeassistant
+   ls /config` virava, por baixo dos panos, algo como `ls C:/Program Files/Git/config`. Já tinha
+   esbarrado nisso uma vez com o `check_config` (registrado antes neste mesmo arquivo) e não generalizei
+   a lição: o problema não é só com `-v` de volume, é com **qualquer argumento de path absoluto passado
+   pro `docker exec`/`docker run`**, mesmo indireto (o destino de um `-v`, o argumento de um `ls`
+   dentro do container). A confirmação técnica: `docker inspect homeassistant` já mostrava o mount
+   correto em `D:/HomeAssistant/config` desde o início, e um `MSYS_NO_PATHCONV=1 docker exec
+   homeassistant ls -la /config` mostrou o config completo, intacto, com `.storage` e tudo — nunca
+   sumiu nada.
+
+Reiniciei o `homeassistant` mesmo assim (seguro, YAML/mount, não `.storage` sendo editado na hora) só
+pra ter uma leitura limpa, e confirmei nos logs: subiu normal, todas as integrações carregaram.
+**Lição pra próxima vez que algo parecer catastrófico**: refazer o mesmo diagnóstico com
+`MSYS_NO_PATHCONV=1` antes de alarmar o André — o Git Bash neste ambiente mente sobre paths absolutos
+com muito mais frequência do que eu estava assumindo.
+
+**A causa real da pergunta original (câmeras indisponíveis) se confirmou separada e continua**: o DVR
+(`192.168.31.216`) está 100% inacessível pela rede (ping e RTSP dão timeout; o roteador responde
+normal) — é físico/de rede, não do lado do HA. Avisei o André pra checar o aparelho.
+
+**Container `anisette` removido a pedido do André** ("não será mais usado no projeto"): parei e
+removi o container, a imagem (`dadoum/anisette-v3-server`, sem mais nada usando) e as duas pastas de
+dados (`D:\HomeAssistant\anisette` — a real — e o resquício vazio em `C:\HomeAssistant\anisette`).
+Documentado em `CASA.md`, `docs/ARCHITECTURE.md`, `docs/SECURITY.md` e `planning/BLOCKED.md` (K-04).
+**Efeito colateral que o André precisa saber**: a integração `findmy` (AirTags) continua configurada
+no HA, mas dependia do anisette pra autenticar com a Apple — sem o servidor, ela para de funcionar.
+Não removi a integração junto porque ele só pediu o container; deixei registrado em `CASA.md` e
+`planning/BLOCKED.md` K-04 como decisão pendente (recriar o anisette se quiser retomar os AirTags, ou
+remover a integração `findmy` também).
+
+---
+
+## DVR trocou de IP — câmeras de volta ao ar (20/09/2026)
+
+Depois da falsa alarme de perda de dados, a pergunta original (câmeras indisponíveis) continuava sem
+resposta — os logs mostravam `Error opening stream (Operation timed out, rtsp://...@192.168.31.216...)`
+e o DVR não respondia nem a ping nem a HTTP. O André então disse que via as duas câmeras normalmente
+pelo app Guardian — ou seja, o DVR estava online (confirma que o problema era de rede local, não do
+aparelho), e o Guardian usa a nuvem do fabricante pra isso, não a rede da casa.
+
+**Diagnóstico**: a ARP table do host não tinha mais entrada pra `.216`, e nenhum dos IPs vizinhos
+conhecidos respondia nas portas do DVR. Rodei uma varredura da subnet inteira (`192.168.31.1`–`254`)
+procurando a porta 554 (RTSP) de dentro do container — `192.168.31.217` respondeu. Confirmei que era
+o mesmo DVR batendo na porta HTTP dele (respondeu 200, igual ao comportamento já conhecido). Conclusão:
+o DVR pegou um IP novo por DHCP — `.216` → `.217` —, a rede em si nunca caiu.
+
+**Correção**: reconfigurei as duas integrações `generic` (Rua - Canal 2 e Rua - Canal 4) pela UI,
+trocando o IP na URL RTSP. Segui a lição já registrada antes: selecionar tudo e reescrever a URL
+inteira com um placeholder (`COLOQUE_A_SENHA_AQUI`) no lugar da senha, pedindo pro André digitar só a
+senha real — nunca eu vejo ou digito o valor. Confirmei cada uma pela pré-visualização de stream antes
+de salvar (as duas carregaram vídeo ao vivo normalmente) e depois pelos logs (`docker logs`), sem mais
+nenhum `Operation timed out` depois da troca.
+
+**Registrado para não repetir**: `planning/BLOCKED.md` K-06 (reserva de DHCP) passou a incluir o IP do
+DVR junto com o do PC e do PS5 — é a segunda vez que um IP sem reserva quebra alguma coisa aqui.
+`CASA.md` §Câmeras atualizado com o IP novo.
+
+---
+
+## 22/09/2026 — C-01 e C-02 da curadoria visual
+
+Curadoria completa em `artifacts/audit/curadoria-visual-tablet.md`. Aplicadas as duas correções que
+eram reprovação objetiva, não preferência de gosto.
+
+### C-01 · Legibilidade do tema claro
+
+Onze elementos ficavam abaixo de 4,5:1 porque os cartões do tema claro ganharam fundo branco e o
+texto continuou com a cor do tema escuro. Os piores davam **1,1:1** — branco sobre branco
+(`digital_tv`, `Portão (C2)`). Entre os reprovados estavam os alertas de **segurança** e de
+**bateria**.
+
+Bloco novo no fim de `globals.css` com as cores escuras equivalentes, mantendo a semântica
+(vermelho continua alerta, verde continua saudável).
+
+⚠️ **A armadilha desta correção**: o rótulo de condição do tempo (`Chuva`) não obedecia a regra
+nenhuma — `WeatherWidget.tsx` aplicava `style={{ color: condi.cor }}` **inline**, e estilo inline
+vence qualquer seletor sem `!important`. Em vez de escalar para `!important`, a cor passou a viajar
+como variável (`--cond-cor`) e o tema claro a escurece com `color-mix(in srgb, … 50%, #0f172a)` —
+o que resolve as 11 condições do mapa sem enumerar nenhuma. **Foi a única alteração em TSX.**
+
+**Medido depois**: 13 elementos verificados, todos entre **4,72:1 e 16,78:1**. Zero reprovações. O
+tema escuro não mudou (`.weather-cond-label` continua `rgb(96,165,250)`).
+
+### C-02 · Alvo de toque dos canais da câmera
+
+Mediam **27×17px** e **28×17px** — o pior alvo do painel. A pílula visível foi para 36×32px (fonte
+de 9,5 para 11px) e a área de toque real chega a 44×44px por `::after` transparente.
+
+O espaçamento do seletor subiu de 3 para 8px **de propósito**: com 44px de área e centros a 39px, as
+duas áreas se sobreporiam e um toque na emenda acertaria o canal vizinho. Com 8px, os centros ficam
+a 44px — medido ao vivo, `x = 888` e `x = 932`. Encostam sem invadir.
+
+### Verificação
+
+- `npx tsc --noEmit` → saída 0
+- Medição ao vivo a 1280×800, nos dois temas
+- Zero vazamento horizontal, zero rolagem vertical — o layout não regrediu
+- A faixa de widgets continua cabendo: o widget de câmera passou de 210 para 240px de largura sem
+  empurrar nada
+
+**Não commitado**: `dashboard-app/` tem git próprio e é do André.
+
+## 22/09/2026 — C-03 e C-04, com o painel definido como **de parede**
+
+O André respondeu a pergunta que a curadoria deixou aberta: **o tablet é fixo na parede**. Isso vira
+o critério de todas as decisões visuais daqui em diante — a régua é a distância de 1,5 a 2,5 m, não
+os 40 cm que as normas de contraste e tamanho pressupõem.
+
+### C-03 · Botões de abrir widget e liga/desliga da TV
+
+Os sete botões mediam 34×34px. **Correção da medição anterior**: a *área de toque* já era de 44×44 —
+existia um `::after` com `inset: -5px` desde antes, e minha medição inicial só olhou a caixa do
+elemento. O que estava errado era o **desenho**: numa parede se mira no que se vê.
+
+Agora o círculo visível tem 44px, o ícone passou de 14 para 18px e o `::after` foi para `inset: 0` —
+com o botão já no tamanho certo, aquela borda invisível de 10px só serviria para roubar o toque do
+elemento vizinho.
+
+**Efeito colateral honesto**: os 10px a mais por botão saíram da coluna de texto, e `digital_tv`
+passou a truncar também a 1280×800 (antes só a 1024). É o C-09 da curadoria — a faixa tenta caber
+sete widgets numa linha — e continua aberto.
+
+**Restam abaixo de 44px**: as quatro ações do cabeçalho (tema, galeria, kiosk, descanso) com 38px e
+43×31px, e as pílulas de canal da câmera, que têm 36×32 visíveis com 44 de toque por decisão do C-02.
+
+### C-04 · O foco não entra por um atuador
+
+Ao abrir o detalhe de um cômodo, o foco caía em **"Acender todos"** — abrir e apertar Espaço acendia
+a luz. A causa era o `useFocusTrap` focar `focusables[0]`, o primeiro em ordem de DOM.
+
+O hook passou a procurar `[data-foco-inicial]` antes de cair no primeiro focável, e quem monta o
+modal declara onde o foco entra. `ModalCloseButton` ganhou a prop `focoInicial`.
+
+Aplicado em dois modais: `RoomPopup` e **`MediaHubModal`**, que tinha o mesmo defeito com um agravante
+— o primeiro focável dele é o liga/desliga da TV, e nesta Samsung o comando **alterna**.
+
+Também endurecido o retorno do foco: só restaura se o elemento ainda estiver na página
+(`document.contains`), senão o foco ia parar no `<body>`.
+
+**Verificado ao vivo**: cômodo → foco entra em "Fechar detalhes de Cozinha", Esc fecha e o foco volta
+para o card de origem. Central de Mídia → foco entra em "Fechar central de mídia", Esc devolve para
+"Abrir Central de Mídia". `npx tsc --noEmit` saiu 0. Zero vazamento e zero rolagem a 1280×800.
+
+**Não commitado**: `dashboard-app/` tem git próprio e é do André.
+
+### C-03b e C-03c · Cabeçalho e o estouro que isso revelou (22/09)
+
+**As quatro ações do cabeçalho** (tema, galeria, kiosk, descanso) foram para 44×44px visíveis, com
+ícone de 18px. Mesmo caso dos botões de widget: a área de toque já era 44 por `::after`; o desenho
+é que era menor. O cabeçalho não quebrou em duas linhas — os quatro botões continuam alinhados em
+`y = 22` a 1024×768.
+
+**O estouro do widget de câmera.** Depois disso, o "C4" apareceu cortado a 1024×768. Medido:
+
+| Parte do cartão de 190px | Largura |
+| :--- | :--- |
+| Miniatura da câmera | 62px |
+| Botão de abrir | 44px |
+| Espaçamentos e padding | ~46px |
+| **Sobra para texto e canais** | **38px** |
+
+Não é regressão do C-02 nem do C-03 — com 38px, o título já aparecia pela metade **antes** de
+qualquer mudança minha. Os botões maiores só tornaram o defeito visível, porque o `overflow: hidden`
+passou a cortar um controle em vez de uma letra.
+
+A correção coerente com painel de parede é **dar espaço, não encolher o alvo de novo**: entre 768 e
+1400px, o widget de câmera ocupa **duas colunas** da faixa. A 1024 ele passou de 190 para **387px**,
+e a coluna de texto de 38 para **235px**.
+
+**Ganho colateral**: o truncamento caiu de 6 para 3 elementos a 1024×768 — `Portão (C2)` e
+`Monitoramento HD` deixaram de ser cortados. Sobram `Volume 9% • Sala`, `Compras` e
+`3 itens a comprar`, todos do C-09.
+
+**Verificado**: 1024×768, 1280×800 e 768×1024 — zero vazamento horizontal, zero elementos estourando
+o cartão da câmera, e o único alvo abaixo de 44px visível é a pílula de canal (36×32 com 44 de toque,
+decisão do C-02). Paisagem continua sem rolagem. Em retrato a rolagem foi de 713 para 734px, efeito
+esperado dos botões maiores — a inversão de hierarquia do retrato é o C-10, ainda aberto.
+`npx tsc --noEmit` saiu 0.
+
+### C-05 · Botão mestre do cômodo (22/09)
+
+"Acender todos" / "Apagar todos" tinha 32px de altura. Agora tem **44×122px**, medido ao vivo no
+detalhe da Sala de Estar.
+
+⚠️ **Ressalva importante da medição**: sob `@media (pointer: coarse)` esse botão **já recebia**
+`--touch-wall: 48px`. Ou seja, no tablet da parede o alvo já estava certo — os 32px que medi vinham
+do navegador com mouse, onde a media query não casa. O piso agora vale também com ponteiro fino,
+para o controle que acende o cômodo inteiro não mudar de tamanho conforme quem opera.
+
+**Pelo mesmo motivo, três controles do modal continuam pequenos com mouse e corretos no tablet**:
+`.subcard-dim-badge` ("Ajustar", 30px), `.fan-toggle-btn` ("Desligado", 35px) e `.fan-direction-btn`
+("Modo: Exaustor", 31px). Os três estão na lista do bloco `pointer: coarse`, então na parede medem
+48px. Ficam como estão até haver decisão — subir a base deles é uma linha, igual ao C-05.
+
+**Verificado**: foco entra em "Fechar detalhes de Sala de Estar", Esc fecha, `npx tsc --noEmit` em 0.
+
+### C-06 · Hover só onde existe mouse (22/09)
+
+O painel tinha **157 ocorrências de `:hover`** e uma única media query de ponteiro grosso
+neutralizando cinco seletores. No tablet, o navegador aplica o estado de hover no toque e **o mantém
+depois que o dedo sai** — o cartão fica parecendo aceso sem estar.
+
+Corrigir caso a caso seria repetir o erro. A correção na raiz é declarar que hover só vale onde há
+um dispositivo capaz de pairar: **toda regra `:hover` passou a viver dentro de
+`@media (hover: hover)`**. `@media` aninhado em `@media` é CSS válido.
+
+Feito por script, não à mão: `scripts/manutencao/hover_so_com_mouse.py`, com modo `--validar`. Ele
+percorre a folha contando chaves, pula `@keyframes` (cujo conteúdo não são seletores) e pula regras
+já dentro de blocos `pointer: coarse` / `hover: none`, que existem justamente para desfazer hover no
+toque. **121 regras envolvidas**, `:hover` de 157 para 157 (nenhuma perdida), chaves balanceadas.
+
+#### Verificação, nos dois mundos
+
+| Situação | Resultado |
+| :--- | :--- |
+| Folha carregada no navegador | 200 OK, **144 regras de hover** dentro de `@media (hover: hover)` |
+| Restantes fora | **5** — todas neutralizadores dentro de `pointer: coarse`, `hover: none` ou `prefers-reduced-motion`. Agora redundantes, mas inofensivas |
+| **Com mouse** (`hover: hover` casa) | Hover **continua funcionando**: cartão da Cozinha vai de `rgba(255,255,255,0.09)` para `0.12`, borda de `0.16` para `0.3`, `translateY(-3px)` |
+| **Com toque** (375×812, 5 pontos de toque, `hover: none`) | As **144 regras ficam inertes**; sobram só os 5 neutralizadores |
+
+Layout intacto a 1280×800: zero vazamento, zero rolagem, 10 cartões. `npx tsc --noEmit` em 0.
+Backup em `backups/globals.css.2026-09-22-antes-c06`.
+
+### C-07 · Anel de foco dimensionado para a parede (22/09)
+
+⚠️ **A premissa do item estava errada, e a medição corrigiu.** A curadoria dizia "4 regras de
+`focus-visible` para 47 controles". Na verdade existe uma regra global `:focus-visible` com
+`!important`, que vence as dez declarações de `outline: none` espalhadas pelo arquivo. Varri a tela
+com **50 Tabs**, gravando o estilo computado a cada `focusin`: **49 elementos focados, nenhum sem
+anel**.
+
+**Armadilha de medição que quase virou conclusão errada**: lendo o estilo *dentro* do evento
+`focusin`, 17 controles apareciam com um anel de 3px na cor do próprio texto e sem afastamento — o
+anel padrão do navegador, antes do recálculo de estilo. Com 60ms de espera, some. Não era defeito do
+painel; era eu medindo cedo demais. (Terceira vez nesta série que medir no instante errado inventa
+um problema.)
+
+**O que era defeito de verdade**: 2px de anel com 2px de afastamento é fino a 1,5–2,5 m. Agora são
+**3px com 3px de afastamento**, mais um halo escuro por `box-shadow` — sem ele, o anel ciano encosta
+num cartão aceso em âmbar com **1,28:1** e desaparece. `box-shadow` não ocupa espaço no layout.
+
+| Verificação | Resultado |
+| :--- | :--- |
+| Anel × fundo escuro | **8,83:1** |
+| Anel claro × cartão branco | **5,58:1** |
+| Corte nas bordas da grade | Nenhum — a folga até o `overflow: hidden` do `.dashboard` é de 12px, e o anel com halo ocupa 12px. Confirmado na tela: o cartão da ponta mostra o anel nos quatro lados |
+| Tema claro | Anel `#0369a1` visível; em cartão aceso a sombra própria do cartão vence o halo, mas o anel continua legível |
+
+`npx tsc --noEmit` em 0.
+
+### Travamento relatado no card (22/09) — era hover de mouse, e o print explica
+
+O André mandou uma captura com um card "travado, como se estivesse selecionado", feita **simulando
+um tablet**, e descreveu como "uma passada invisível de mouse sobre o card".
+
+**É exatamente isso, e a medição confirma nos dois lados:**
+
+| Ambiente | O que acontece ao passar sobre o card |
+| :--- | :--- |
+| Mouse (`hover: hover`) | Fundo de `rgba(255,255,255,0.09)` para **`0.12`**, borda de `0.16` para **`0.30`**, `translateY(-3px)` |
+| Toque (`hover: none`, 375×812) | Fundo continua `0.09`, `transform: none`, **zero cards em `:hover`** |
+
+O visual "selecionado" do print é o estado de hover legítimo. Ele **gruda** porque, num tablet
+simulado por redimensionamento de janela, o ponteiro continua sendo um mouse: quando ele sai da
+janela sem passar por outro elemento, o navegador mantém o último `:hover` até o próximo movimento.
+
+**Num tablet de verdade isso não acontece mais desde o C-06**, aplicado hoje mais cedo — a prova é a
+segunda linha da tabela.
+
+#### Reforço aplicado: a guarda agora exige ponteiro preciso
+
+Restava um caso real: aparelhos híbridos (tablet Windows, Android com mouse ou caneta pareada)
+relatam `hover: hover` mesmo quando são operados com o dedo. Nesses, o C-06 sozinho não protegeria.
+
+Os 121 blocos passaram de `@media (hover: hover)` para
+**`@media (hover: hover) and (pointer: fine)`** — hover só onde há um ponteiro preciso, não só onde
+existe a capacidade de pairar.
+
+| Verificação | Resultado |
+| :--- | :--- |
+| Mouse a 851×633 | Guarda casa; hover funciona igual (fundo `0.12`, `translateY(-3px)`) |
+| Toque a 375×812 | Guarda **não** casa (`hover: none`, `pointer: coarse`, `any-hover: false`); zero cards em hover |
+
+`npx tsc --noEmit` em 0. Backup em `backups/globals.css.2026-09-22-antes-guarda-ponteiro`.
+
+**Como conferir no aparelho**: abrir o painel no tablet e tocar num card. Se ele voltar ao normal
+assim que o dedo sai, está resolvido. Se continuar aceso, o aparelho está relatando ponteiro fino —
+nesse caso me diga o modelo, porque aí a guarda tem de ser por evento de toque, não por media query.
+
+### O card continuou aceso no iPad — media query não resolve esse caso (22/09)
+
+André testou num **iPad Pro 10.9"** e o card seguiu aceso depois do toque, mesmo com a guarda
+`(hover: hover) and (pointer: fine)` aplicada.
+
+**Causa**: o Safari do iPad roda em **modo desktop por padrão** e se apresenta como um Mac. Ele
+responde `hover: hover` e `pointer: fine` **mesmo sendo operado com o dedo**. A guarda casa, o hover
+é aplicado no toque, e como não existe "sair com o dedo", o estado fica.
+
+Nenhuma media query resolve isso: o aparelho mente na pergunta. O que não mente é
+`navigator.maxTouchPoints` e o `pointerType` do evento.
+
+#### Correção em duas camadas
+
+1. **`app/layout.tsx`** — o script de arranque marca `<html data-toque>` quando
+   `navigator.maxTouchPoints > 0`. Um `pointerdown`/`pointermove` de `pointerType: 'mouse'` remove a
+   marca (tablet com mouse ou trackpad volta a ter hover); `touch` e `pen` devolvem a marca.
+   Usei `pointermove` e **não** `mousemove` de propósito: no iOS o `mousemove` é sintetizado a partir
+   do toque e diria "mouse" para um dedo.
+2. **`globals.css`** — os 121 blocos de hover passaram a exigir também a ausência da marca:
+   `html:not([data-toque]) <seletor>:hover`. Feito por script
+   (`scripts/manutencao/guarda_hover_por_toque.py`, com `--validar`).
+
+⚠️ **Armadilha achada pelo script**: um dos blocos continha **outro bloco igual** dentro (aninhamento
+que o C-06 produziu num ponto do arquivo). Prefixar ali teria escrito
+`html:not([data-toque]) @media …` e corrompido a folha. O script detecta prelude que começa com `@`,
+pula, e prefixa o de dentro na volta seguinte — 121 seletores prefixados em 122 blocos.
+
+#### Prova, com o ponteiro parado sobre o mesmo card
+
+| Estado | Fundo | Transform |
+| :--- | :--- | :--- |
+| **A** — mouse, sem marca de toque | `rgba(255,255,255,0.12)` | `translateY(-3px)` |
+| **B** — `data-toque` presente (simula o iPad; a media query **continua** dizendo `hover: hover` e `pointer: fine`) | **`0.09`** | **`none`** |
+| **C** — marca removida | `0.12` | `translateY(-3px)` |
+
+Em **B** o elemento ainda casa `:hover` — o navegador continua achando que há um ponteiro em cima.
+O que mudou é que o estilo deixou de valer. É exatamente o caso do iPad.
+
+`npx tsc --noEmit` em 0. Backups: `globals.css.2026-09-22-antes-guarda-toque` e
+`...-antes-guarda-ponteiro`.
+
+**Confirmado pelo André no iPad Pro 10.9" em 22/09**: o card não fica mais aceso depois do toque.
+Fecha o ciclo aberto pelo C-06 — a guarda por media query não bastava, e a marca `data-toque` no
+`<html>` resolveu no aparelho real.
+
+### Zoom acidental bloqueado (22/09)
+
+Diagnóstico em `artifacts/audit/travamento-zoom-mobile.md`. A correção ficou em **três camadas**,
+porque nenhuma delas cobre sozinha os dois navegadores:
+
+| Camada | Onde | Cobre |
+| :--- | :--- | :--- |
+| `maximumScale: 1` + `userScalable: false` | `app/layout.tsx` (`export const viewport`) | Chrome/Android |
+| `html, body { touch-action: manipulation }` | `globals.css` | Duplo toque para ampliar, nos dois |
+| `preventDefault` em `gesturestart` / `gesturechange` / `gestureend` | script de arranque em `layout.tsx` | **Pinça no Safari do iOS/iPadOS, que ignora `user-scalable=no`** |
+
+⚠️ **Por que `manipulation` e não `pan-y`.** `pan-y` mataria a pinça de uma vez, mas `touch-action`
+se combina **por interseção com os ancestrais**: um filho não recupera o eixo que o pai proibiu.
+Existem três barras que rolam na horizontal — ações rápidas no celular, abas do papel de parede e
+abas da central de mídia — e todas parariam de rolar. `manipulation` preserva os dois eixos e
+elimina só o duplo toque.
+
+**Verificado**
+
+| Item | Resultado |
+| :--- | :--- |
+| Meta gerada | `width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover` |
+| `touch-action` em `html` e `body` | `manipulation` |
+| Barras horizontais | seguem em `auto` — rolagem lateral preservada |
+| `gesturestart` | evento despachado volta com `defaultPrevented: true` |
+| Rolagem vertical a 375×812 | 400px, normal |
+| Toque em card | abre o detalhe; `Esc` fecha |
+
+**Não verificável aqui**: a pinça de verdade, que exige dois dedos num aparelho. O teste é no iPad,
+depois de recarregar — o script de arranque só roda no carregamento.
+
+`npx tsc --noEmit` em 0.

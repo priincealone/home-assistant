@@ -7,12 +7,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "1baaf68971a5be9f4ce83a0e6a329d25",
+          "run_id": "763d49e143544febe15e6629823739cb",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:35:00.057308+00:00",
-            "finish": "2026-09-17T14:35:00.710862+00:00"
+            "start": "2026-09-19T04:35:00.134493+00:00",
+            "finish": "2026-09-19T04:35:00.760467+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -21,23 +21,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-17T14:35:00.057472+00:00",
+                "timestamp": "2026-09-19T04:35:00.134546+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-17T14:30:00.057306+00:00",
+                      "last_triggered": "2026-09-19T04:30:00.133844+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096138+00:00",
-                    "last_reported": "2026-09-17T14:30:00.285799+00:00",
-                    "last_updated": "2026-09-17T14:30:00.285799+00:00",
+                    "last_changed": "2026-09-19T04:19:28.799340+00:00",
+                    "last_reported": "2026-09-19T04:30:00.753989+00:00",
+                    "last_updated": "2026-09-19T04:30:00.753989+00:00",
                     "context": {
-                      "id": "01M2QWCFKS4ARYJGM2XPC1SV7Q",
+                      "id": "01M2VYV9E5HG4XBDVED5TYXCSE",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -47,7 +47,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-17T11:35:00.057129-03:00",
+                    "now": "2026-09-19T01:35:00.133959-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -56,10 +56,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-17T14:35:00.057790+00:00",
+                "timestamp": "2026-09-19T04:35:00.134842+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M2QWNMJS1CZM9Q9B5H1TSBDK",
+                    "id": "01M2VZ4ED6W2QHRPQCH2VVJRGM",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -72,7 +72,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:35:00.057854+00:00",
+                "timestamp": "2026-09-19T04:35:00.134922+00:00",
                 "result": {
                   "result": false
                 }
@@ -81,7 +81,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:35:00.057876+00:00",
+                "timestamp": "2026-09-19T04:35:00.134945+00:00",
                 "result": {
                   "result": false
                 }
@@ -90,10 +90,10 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-17T14:35:00.057888+00:00",
+                "timestamp": "2026-09-19T04:35:00.134958+00:00",
                 "result": {
                   "result": false,
-                  "state": "unavailable",
+                  "state": "off",
                   "wanted_state": "playing"
                 }
               }
@@ -101,7 +101,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:35:00.057919+00:00",
+                "timestamp": "2026-09-19T04:35:00.134991+00:00",
                 "result": {
                   "result": true
                 }
@@ -110,7 +110,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:35:00.057928+00:00",
+                "timestamp": "2026-09-19T04:35:00.134999+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -122,7 +122,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:35:00.058184+00:00",
+                "timestamp": "2026-09-19T04:35:00.135302+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -225,19 +225,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QWNMJS1CZM9Q9B5H1TSBDK",
+            "id": "01M2VZ4ED6W2QHRPQCH2VVJRGM",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "1baaf68971a5be9f4ce83a0e6a329d25",
+          "run_id": "763d49e143544febe15e6629823739cb",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:35:00.057308+00:00",
-            "finish": "2026-09-17T14:35:00.710862+00:00"
+            "start": "2026-09-19T04:35:00.134493+00:00",
+            "finish": "2026-09-19T04:35:00.760467+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -247,12 +247,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "98279440cc02957bf42b5e3a26befcb2",
+          "run_id": "c1c7f063301c55866d27c8b2fadcbceb",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:40:00.056974+00:00",
-            "finish": "2026-09-17T14:40:00.706723+00:00"
+            "start": "2026-09-19T04:40:00.133306+00:00",
+            "finish": "2026-09-19T04:40:00.785444+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -261,23 +261,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-17T14:40:00.057182+00:00",
+                "timestamp": "2026-09-19T04:40:00.135034+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-17T14:35:00.057588+00:00",
+                      "last_triggered": "2026-09-19T04:35:00.134686+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096138+00:00",
-                    "last_reported": "2026-09-17T14:35:00.710251+00:00",
-                    "last_updated": "2026-09-17T14:35:00.710251+00:00",
+                    "last_changed": "2026-09-19T04:19:28.799340+00:00",
+                    "last_reported": "2026-09-19T04:35:00.760073+00:00",
+                    "last_updated": "2026-09-19T04:35:00.760073+00:00",
                     "context": {
-                      "id": "01M2QWNMJS1CZM9Q9B5H1TSBDK",
+                      "id": "01M2VZ4ED6W2QHRPQCH2VVJRGM",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -287,7 +287,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-17T11:40:00.056840-03:00",
+                    "now": "2026-09-19T01:40:00.132970-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -296,10 +296,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-17T14:40:00.057444+00:00",
+                "timestamp": "2026-09-19T04:40:00.135312+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M2QWYSHRV1WF659W66SFTAEP",
+                    "id": "01M2VZDKC5AS52J46DZ30YFMGH",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -312,7 +312,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:40:00.057489+00:00",
+                "timestamp": "2026-09-19T04:40:00.135374+00:00",
                 "result": {
                   "result": false
                 }
@@ -321,7 +321,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:40:00.057505+00:00",
+                "timestamp": "2026-09-19T04:40:00.135404+00:00",
                 "result": {
                   "result": false
                 }
@@ -330,10 +330,10 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-17T14:40:00.057515+00:00",
+                "timestamp": "2026-09-19T04:40:00.135419+00:00",
                 "result": {
                   "result": false,
-                  "state": "unavailable",
+                  "state": "off",
                   "wanted_state": "playing"
                 }
               }
@@ -341,7 +341,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:40:00.057544+00:00",
+                "timestamp": "2026-09-19T04:40:00.135449+00:00",
                 "result": {
                   "result": true
                 }
@@ -350,7 +350,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:40:00.057551+00:00",
+                "timestamp": "2026-09-19T04:40:00.135458+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -362,7 +362,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:40:00.057777+00:00",
+                "timestamp": "2026-09-19T04:40:00.135761+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -465,19 +465,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QWYSHRV1WF659W66SFTAEP",
+            "id": "01M2VZDKC5AS52J46DZ30YFMGH",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "98279440cc02957bf42b5e3a26befcb2",
+          "run_id": "c1c7f063301c55866d27c8b2fadcbceb",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:40:00.056974+00:00",
-            "finish": "2026-09-17T14:40:00.706723+00:00"
+            "start": "2026-09-19T04:40:00.133306+00:00",
+            "finish": "2026-09-19T04:40:00.785444+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -487,12 +487,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "51723a02472c418b043c73059cd4ccaa",
+          "run_id": "5c245f0617944dafd6babc710167096e",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:45:00.057152+00:00",
-            "finish": "2026-09-17T14:45:00.724546+00:00"
+            "start": "2026-09-19T04:45:00.132652+00:00",
+            "finish": "2026-09-19T04:45:00.763813+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -501,23 +501,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-17T14:45:00.057357+00:00",
+                "timestamp": "2026-09-19T04:45:00.132715+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-17T14:40:00.057282+00:00",
+                      "last_triggered": "2026-09-19T04:40:00.135159+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096138+00:00",
-                    "last_reported": "2026-09-17T14:40:00.706323+00:00",
-                    "last_updated": "2026-09-17T14:40:00.706323+00:00",
+                    "last_changed": "2026-09-19T04:19:28.799340+00:00",
+                    "last_reported": "2026-09-19T04:40:00.784953+00:00",
+                    "last_updated": "2026-09-19T04:40:00.784953+00:00",
                     "context": {
-                      "id": "01M2QWYSHRV1WF659W66SFTAEP",
+                      "id": "01M2VZDKC5AS52J46DZ30YFMGH",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -527,7 +527,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-17T11:45:00.057025-03:00",
+                    "now": "2026-09-19T01:45:00.132498-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -536,10 +536,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-17T14:45:00.057575+00:00",
+                "timestamp": "2026-09-19T04:45:00.133007+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M2QX7YGS1KNRE2TDA9B22QRA",
+                    "id": "01M2VZPRB4M4HQJ2EF899D5ZJW",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -552,7 +552,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:45:00.057615+00:00",
+                "timestamp": "2026-09-19T04:45:00.133072+00:00",
                 "result": {
                   "result": false
                 }
@@ -561,7 +561,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:45:00.057630+00:00",
+                "timestamp": "2026-09-19T04:45:00.133090+00:00",
                 "result": {
                   "result": false
                 }
@@ -570,10 +570,10 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-17T14:45:00.057640+00:00",
+                "timestamp": "2026-09-19T04:45:00.133102+00:00",
                 "result": {
                   "result": false,
-                  "state": "unavailable",
+                  "state": "off",
                   "wanted_state": "playing"
                 }
               }
@@ -581,7 +581,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:45:00.057667+00:00",
+                "timestamp": "2026-09-19T04:45:00.133135+00:00",
                 "result": {
                   "result": true
                 }
@@ -590,7 +590,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:45:00.057675+00:00",
+                "timestamp": "2026-09-19T04:45:00.133143+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -602,7 +602,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:45:00.057929+00:00",
+                "timestamp": "2026-09-19T04:45:00.133480+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -705,19 +705,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QX7YGS1KNRE2TDA9B22QRA",
+            "id": "01M2VZPRB4M4HQJ2EF899D5ZJW",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "51723a02472c418b043c73059cd4ccaa",
+          "run_id": "5c245f0617944dafd6babc710167096e",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:45:00.057152+00:00",
-            "finish": "2026-09-17T14:45:00.724546+00:00"
+            "start": "2026-09-19T04:45:00.132652+00:00",
+            "finish": "2026-09-19T04:45:00.763813+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -727,12 +727,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "adced0218620dd09e8bf9b8687b61aa7",
+          "run_id": "ca1da64104c2eb41f97d9a9134f301c4",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:50:00.056781+00:00",
-            "finish": "2026-09-17T14:50:00.709769+00:00"
+            "start": "2026-09-19T04:50:00.134179+00:00",
+            "finish": "2026-09-19T04:50:00.769769+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -741,23 +741,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-17T14:50:00.056904+00:00",
+                "timestamp": "2026-09-19T04:50:00.136326+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-17T14:45:00.057460+00:00",
+                      "last_triggered": "2026-09-19T04:45:00.132834+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096138+00:00",
-                    "last_reported": "2026-09-17T14:45:00.722379+00:00",
-                    "last_updated": "2026-09-17T14:45:00.722379+00:00",
+                    "last_changed": "2026-09-19T04:19:28.799340+00:00",
+                    "last_reported": "2026-09-19T04:45:00.761921+00:00",
+                    "last_updated": "2026-09-19T04:45:00.761921+00:00",
                     "context": {
-                      "id": "01M2QX7YGS1KNRE2TDA9B22QRA",
+                      "id": "01M2VZPRB4M4HQJ2EF899D5ZJW",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -767,7 +767,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-17T11:50:00.056645-03:00",
+                    "now": "2026-09-19T01:50:00.133801-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -776,10 +776,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-17T14:50:00.057182+00:00",
+                "timestamp": "2026-09-19T04:50:00.138824+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M2QXH3FR3NGV2RRD2CW2HRDJ",
+                    "id": "01M2VZZXA6AXAMCBM9FD62QX03",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -792,7 +792,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:50:00.057253+00:00",
+                "timestamp": "2026-09-19T04:50:00.139881+00:00",
                 "result": {
                   "result": false
                 }
@@ -801,7 +801,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:50:00.057273+00:00",
+                "timestamp": "2026-09-19T04:50:00.139925+00:00",
                 "result": {
                   "result": false
                 }
@@ -810,10 +810,10 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-17T14:50:00.057284+00:00",
+                "timestamp": "2026-09-19T04:50:00.139962+00:00",
                 "result": {
                   "result": false,
-                  "state": "unavailable",
+                  "state": "off",
                   "wanted_state": "playing"
                 }
               }
@@ -821,7 +821,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:50:00.057313+00:00",
+                "timestamp": "2026-09-19T04:50:00.140051+00:00",
                 "result": {
                   "result": true
                 }
@@ -830,7 +830,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:50:00.057322+00:00",
+                "timestamp": "2026-09-19T04:50:00.140064+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -842,7 +842,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:50:00.057580+00:00",
+                "timestamp": "2026-09-19T04:50:00.142083+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -945,19 +945,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QXH3FR3NGV2RRD2CW2HRDJ",
+            "id": "01M2VZZXA6AXAMCBM9FD62QX03",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "adced0218620dd09e8bf9b8687b61aa7",
+          "run_id": "ca1da64104c2eb41f97d9a9134f301c4",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:50:00.056781+00:00",
-            "finish": "2026-09-17T14:50:00.709769+00:00"
+            "start": "2026-09-19T04:50:00.134179+00:00",
+            "finish": "2026-09-19T04:50:00.769769+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -967,12 +967,12 @@
       {
         "extended_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "5f511f89d89dfa91b37d26ae7c653891",
+          "run_id": "db93f1c7befc9c8dfa6316513fbca3dd",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:55:00.056542+00:00",
-            "finish": "2026-09-17T14:55:00.899020+00:00"
+            "start": "2026-09-19T04:55:00.134697+00:00",
+            "finish": "2026-09-19T04:55:00.790479+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -981,23 +981,23 @@
             "trigger/3": [
               {
                 "path": "trigger/3",
-                "timestamp": "2026-09-17T14:55:00.056614+00:00",
+                "timestamp": "2026-09-19T04:55:00.136540+00:00",
                 "changed_variables": {
                   "this": {
                     "entity_id": "automation.ventilacao_do_ps5_acompanha_o_console",
                     "state": "on",
                     "attributes": {
                       "id": "1757462400000",
-                      "last_triggered": "2026-09-17T14:50:00.057038+00:00",
+                      "last_triggered": "2026-09-19T04:50:00.137548+00:00",
                       "mode": "single",
                       "current": 0,
                       "friendly_name": "Ventila\u00e7\u00e3o do PS5 acompanha o console"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096138+00:00",
-                    "last_reported": "2026-09-17T14:50:00.709312+00:00",
-                    "last_updated": "2026-09-17T14:50:00.709312+00:00",
+                    "last_changed": "2026-09-19T04:19:28.799340+00:00",
+                    "last_reported": "2026-09-19T04:50:00.769014+00:00",
+                    "last_updated": "2026-09-19T04:50:00.769014+00:00",
                     "context": {
-                      "id": "01M2QXH3FR3NGV2RRD2CW2HRDJ",
+                      "id": "01M2VZZXA6AXAMCBM9FD62QX03",
                       "parent_id": null,
                       "user_id": null
                     }
@@ -1007,7 +1007,7 @@
                     "idx": "3",
                     "alias": null,
                     "platform": "time_pattern",
-                    "now": "2026-09-17T11:55:00.056377-03:00",
+                    "now": "2026-09-19T01:55:00.132653-03:00",
                     "description": "time pattern"
                   }
                 }
@@ -1016,10 +1016,10 @@
             "action/0": [
               {
                 "path": "action/0",
-                "timestamp": "2026-09-17T14:55:00.057569+00:00",
+                "timestamp": "2026-09-19T04:55:00.137395+00:00",
                 "changed_variables": {
                   "context": {
-                    "id": "01M2QXT8ER52SV7E94FWH4D8PJ",
+                    "id": "01M2W092968JFMAGFDBH7ZYRBC",
                     "parent_id": null,
                     "user_id": null
                   }
@@ -1032,7 +1032,7 @@
             "action/0/choose/0": [
               {
                 "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:55:00.057648+00:00",
+                "timestamp": "2026-09-19T04:55:00.137596+00:00",
                 "result": {
                   "result": false
                 }
@@ -1041,7 +1041,7 @@
             "action/0/choose/0/conditions/0": [
               {
                 "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:55:00.057667+00:00",
+                "timestamp": "2026-09-19T04:55:00.137634+00:00",
                 "result": {
                   "result": false
                 }
@@ -1050,10 +1050,10 @@
             "action/0/choose/0/conditions/0/entity_id/0": [
               {
                 "path": "action/0/choose/0/conditions/0/entity_id/0",
-                "timestamp": "2026-09-17T14:55:00.057679+00:00",
+                "timestamp": "2026-09-19T04:55:00.137669+00:00",
                 "result": {
                   "result": false,
-                  "state": "unavailable",
+                  "state": "off",
                   "wanted_state": "playing"
                 }
               }
@@ -1061,7 +1061,7 @@
             "action/0/choose/1": [
               {
                 "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:55:00.057751+00:00",
+                "timestamp": "2026-09-19T04:55:00.137759+00:00",
                 "result": {
                   "result": true
                 }
@@ -1070,7 +1070,7 @@
             "action/0/choose/1/conditions/0": [
               {
                 "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:55:00.057764+00:00",
+                "timestamp": "2026-09-19T04:55:00.137779+00:00",
                 "result": {
                   "result": true,
                   "entities": [
@@ -1082,7 +1082,7 @@
             "action/0/choose/1/sequence/0": [
               {
                 "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:55:00.058080+00:00",
+                "timestamp": "2026-09-19T04:55:00.138545+00:00",
                 "result": {
                   "params": {
                     "domain": "switch",
@@ -1185,19 +1185,19 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QXT8ER52SV7E94FWH4D8PJ",
+            "id": "01M2W092968JFMAGFDBH7ZYRBC",
             "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
           "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "5f511f89d89dfa91b37d26ae7c653891",
+          "run_id": "db93f1c7befc9c8dfa6316513fbca3dd",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:55:00.056542+00:00",
-            "finish": "2026-09-17T14:55:00.899020+00:00"
+            "start": "2026-09-19T04:55:00.134697+00:00",
+            "finish": "2026-09-19T04:55:00.790479+00:00"
           },
           "domain": "automation",
           "item_id": "1757462400000",
@@ -1205,106 +1205,148 @@
         }
       }
     ],
-    "automation.1757980800001": [
+    "automation.1758240000000": [
       {
         "extended_dict": {
-          "last_step": "condition/0",
-          "run_id": "9e2070d28362fb51fe17811b2a07f673",
+          "last_step": "action/0/choose/1/conditions/0/conditions/1/conditions/1",
+          "run_id": "db85a9afe06ad70fc86271d1d7fb080e",
           "state": "stopped",
-          "script_execution": "failed_conditions",
+          "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T11:03:01.379763+00:00",
-            "finish": "2026-09-17T11:03:01.380247+00:00"
+            "start": "2026-09-19T04:19:44.462312+00:00",
+            "finish": "2026-09-19T04:19:44.462708+00:00"
           },
           "domain": "automation",
-          "item_id": "1757980800001",
-          "trigger": "state of binary_sensor.porta_do_quarto_porta",
+          "item_id": "1758240000000",
+          "trigger": "Home Assistant starting",
           "trace": {
-            "trigger/0": [
+            "trigger/2": [
               {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T11:03:01.379805+00:00",
+                "path": "trigger/2",
+                "timestamp": "2026-09-19T04:19:44.462359+00:00",
                 "changed_variables": {
                   "this": {
-                    "entity_id": "automation.porta_do_quarto_aberta_a_noite_acende_o_painel",
+                    "entity_id": "automation.muro_e_painel_acesos_do_por_do_sol_a_meia_noite",
                     "state": "on",
                     "attributes": {
-                      "id": "1757980800001",
-                      "last_triggered": "2026-09-15T07:13:16.066536+00:00",
+                      "id": "1758240000000",
+                      "last_triggered": null,
                       "mode": "single",
                       "current": 0,
-                      "friendly_name": "Porta do quarto aberta \u00e0 noite acende o painel"
+                      "friendly_name": "Muro e Painel acesos do p\u00f4r do sol \u00e0 meia-noite"
                     },
-                    "last_changed": "2026-09-17T10:52:38.096810+00:00",
-                    "last_reported": "2026-09-17T10:52:38.096810+00:00",
-                    "last_updated": "2026-09-17T10:52:38.096810+00:00",
+                    "last_changed": "2026-09-19T04:19:28.801075+00:00",
+                    "last_reported": "2026-09-19T04:19:28.801075+00:00",
+                    "last_updated": "2026-09-19T04:19:28.801075+00:00",
                     "context": {
-                      "id": "01M2QFYFAGEWMH5BCS9K6TA6E2",
+                      "id": "01M2VY80X1KQCVD2FKMRZP87KB",
                       "parent_id": null,
                       "user_id": null
                     }
                   },
                   "trigger": {
-                    "id": "0",
-                    "idx": "0",
+                    "id": "partida",
+                    "idx": "2",
                     "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.porta_do_quarto_porta",
-                    "from_state": {
-                      "entity_id": "binary_sensor.porta_do_quarto_porta",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "door",
-                        "friendly_name": "Porta do quarto  Porta"
-                      },
-                      "last_changed": "2026-09-17T10:52:45.949127+00:00",
-                      "last_reported": "2026-09-17T10:52:45.949127+00:00",
-                      "last_updated": "2026-09-17T10:52:45.949127+00:00",
-                      "context": {
-                        "id": "01M2QFYPZX0XQS1J2TE1E35C1T",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.porta_do_quarto_porta",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "door",
-                        "friendly_name": "Porta do quarto  Porta"
-                      },
-                      "last_changed": "2026-09-17T11:03:01.378890+00:00",
-                      "last_reported": "2026-09-17T11:03:01.378890+00:00",
-                      "last_updated": "2026-09-17T11:03:01.378890+00:00",
-                      "context": {
-                        "id": "01M2QGHG02QFEWW8WC6FJTN058",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.porta_do_quarto_porta"
+                    "platform": "homeassistant",
+                    "event": "start",
+                    "description": "Home Assistant starting"
                   }
                 }
               }
             ],
-            "condition/0": [
+            "action/0": [
               {
-                "path": "condition/0",
-                "timestamp": "2026-09-17T11:03:01.380170+00:00",
+                "path": "action/0",
+                "timestamp": "2026-09-19T04:19:44.462446+00:00",
+                "changed_variables": {
+                  "context": {
+                    "id": "01M2VY8G6EB3EZN5J6BMG6460H",
+                    "parent_id": null,
+                    "user_id": null
+                  }
+                }
+              }
+            ],
+            "action/0/choose/0": [
+              {
+                "path": "action/0/choose/0",
+                "timestamp": "2026-09-19T04:19:44.462575+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/0/conditions/0": [
+              {
+                "path": "action/0/choose/0/conditions/0",
+                "timestamp": "2026-09-19T04:19:44.462589+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/1": [
+              {
+                "path": "action/0/choose/1",
+                "timestamp": "2026-09-19T04:19:44.462607+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0",
+                "timestamp": "2026-09-19T04:19:44.462615+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0/conditions/0",
+                "timestamp": "2026-09-19T04:19:44.462623+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0/conditions/1": [
+              {
+                "path": "action/0/choose/1/conditions/0/conditions/1",
+                "timestamp": "2026-09-19T04:19:44.462633+00:00",
+                "result": {
+                  "result": false
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0/conditions/1/conditions/0": [
+              {
+                "path": "action/0/choose/1/conditions/0/conditions/1/conditions/0",
+                "timestamp": "2026-09-19T04:19:44.462639+00:00",
+                "result": {
+                  "result": true
+                }
+              }
+            ],
+            "action/0/choose/1/conditions/0/conditions/1/conditions/1": [
+              {
+                "path": "action/0/choose/1/conditions/0/conditions/1/conditions/1",
+                "timestamp": "2026-09-19T04:19:44.462647+00:00",
                 "result": {
                   "after": {
                     "__type": "<class 'datetime.time'>",
-                    "isoformat": "22:00:00"
+                    "isoformat": "00:00:00"
                   },
                   "now_time": {
                     "__type": "<class 'datetime.time'>",
-                    "isoformat": "08:03:01.380217"
+                    "isoformat": "01:19:44.462660"
                   },
                   "before": {
                     "__type": "<class 'datetime.time'>",
-                    "isoformat": "06:00:00"
+                    "isoformat": "00:30:00"
                   },
                   "result": false
                 }
@@ -1312,235 +1354,25 @@
             ]
           },
           "config": {
-            "id": "1757980800001",
-            "alias": "Porta do quarto aberta \u00e0 noite acende o painel",
-            "description": "O par da automa\u00e7\u00e3o anterior: depois das 22h, abrir a porta do quarto acende a luz do painel da TV, que serve de luz de guia para quem sai do quarto no escuro.\nMesma janela de 22h \u00e0s 6h, pelo mesmo motivo.",
+            "id": "1758240000000",
+            "alias": "Muro e Painel acesos do p\u00f4r do sol \u00e0 meia-noite",
+            "description": "Todo dia, no p\u00f4r do sol, acende o Muro (light.circulacao_switch_1) e o Painel da TV (light.painel); \u00e0 meia-noite apaga os dois. Especifica\u00e7\u00e3o: specs/automations/luzes-muro-painel-noite.md.\n\"Ou quando forem apagadas manualmente\" n\u00e3o precisa de l\u00f3gica: o acender \u00e9 de borda, dispara uma \u00fanica vez no evento de p\u00f4r do sol e nunca reacende. Por isso tamb\u00e9m n\u00e3o h\u00e1 reconcilia\u00e7\u00e3o na partida para o acender \u2014 se o Home Assistant voltar \u00e0s 21h, reacender desfaria um apagar manual.\nO apagar tem reconcilia\u00e7\u00e3o estreita: se o HA estiver fora na virada da meia-noite e voltar at\u00e9 00:30, apaga o que ficou aceso. Depois disso n\u00e3o mexe, porque o Painel pode ter sido aceso de prop\u00f3sito pela automa\u00e7\u00e3o da porta do quarto, que \u00e9 dona dele entre 22h e 6h e tem preced\u00eancia.\nDonos dos atuadores: as duas automa\u00e7\u00f5es da porta do quarto tamb\u00e9m tocam estas luzes (a de fechar apaga ambas, a de abrir acende o Painel). N\u00e3o h\u00e1 conflito \u2014 nenhuma desfaz a outra dentro da mesma janela.",
             "mode": "single",
             "triggers": [
               {
-                "trigger": "state",
-                "entity_id": "binary_sensor.porta_do_quarto_porta",
-                "from": "off",
-                "to": "on"
-              }
-            ],
-            "conditions": [
-              {
-                "condition": "time",
-                "after": "22:00:00",
-                "before": "06:00:00"
-              }
-            ],
-            "actions": [
-              {
-                "action": "light.turn_on",
-                "target": {
-                  "entity_id": "light.painel"
-                }
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QGHG0384Z0D0H1EKM0TP8R",
-            "parent_id": "01M2QGHG02QFEWW8WC6FJTN058",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "condition/0",
-          "run_id": "9e2070d28362fb51fe17811b2a07f673",
-          "state": "stopped",
-          "script_execution": "failed_conditions",
-          "timestamp": {
-            "start": "2026-09-17T11:03:01.379763+00:00",
-            "finish": "2026-09-17T11:03:01.380247+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757980800001",
-          "trigger": "state of binary_sensor.porta_do_quarto_porta"
-        }
-      }
-    ],
-    "automation.1757984400000": [
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "7727fcf875ebe7eb935a14ec3be317db",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:29:16.717061+00:00",
-            "finish": "2026-09-17T14:29:17.388273+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento",
-          "trace": {
-            "trigger/1": [
-              {
-                "path": "trigger/1",
-                "timestamp": "2026-09-17T14:29:16.717173+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_lavanderia_acende_a_luz_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400000",
-                      "last_triggered": "2026-09-17T14:19:06.776617+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na Lavanderia acende a luz \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.096965+00:00",
-                    "last_reported": "2026-09-17T14:19:06.777155+00:00",
-                    "last_updated": "2026-09-17T14:19:06.777155+00:00",
-                    "context": {
-                      "id": "01M2QVRHMRP5T54ZTG62X97A8J",
-                      "parent_id": "01M2QVRHMR971HV73ER3K1ZPWK",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "vazio",
-                    "idx": "1",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:19:06.776253+00:00",
-                      "last_reported": "2026-09-17T14:19:06.776253+00:00",
-                      "last_updated": "2026-09-17T14:19:06.776253+00:00",
-                      "context": {
-                        "id": "01M2QVRHMR971HV73ER3K1ZPWK",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:19:16.752756+00:00",
-                      "last_reported": "2026-09-17T14:19:16.752756+00:00",
-                      "last_updated": "2026-09-17T14:19:16.752756+00:00",
-                      "context": {
-                        "id": "01M2QVRVCGSRK1Z6JTP4CBDKFY",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": {
-                      "__type": "<class 'datetime.timedelta'>",
-                      "total_seconds": 600.0
-                    },
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_lavanderia_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:29:16.717470+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QWB59DVMAXM0M24015TPHR",
-                    "parent_id": "01M2QVRVCGSRK1Z6JTP4CBDKFY",
-                    "user_id": null
-                  }
-                },
-                "result": {
-                  "choice": 1
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:29:16.717527+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:29:16.717546+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:29:16.717591+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:29:16.717601+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/1/sequence/0": [
-              {
-                "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:29:16.719254+00:00",
-                "result": {
-                  "params": {
-                    "domain": "light",
-                    "service": "turn_off",
-                    "service_data": {},
-                    "target": {
-                      "entity_id": [
-                        "light.cozinha_copa_varanda_switch_3"
-                      ]
-                    }
-                  },
-                  "running_script": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400000",
-            "alias": "Movimento na Lavanderia acende a luz \u00e0 noite",
-            "description": "Do p\u00f4r do sol ao amanhecer, movimento na Lavanderia acende a luz; dez minutos sem movimento, ela apaga.\nO temporizador \u00e9 o `for: '00:10:00'` no pr\u00f3prio gatilho de aus\u00eancia: se algu\u00e9m se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta o agendamento \u2014 a contagem recome\u00e7a do zero sozinha, sem precisar de `timer` nem de `input_datetime`.\n\u26a0\ufe0f A condi\u00e7\u00e3o de sol est\u00e1 **s\u00f3 no acender**. Se ela tamb\u00e9m guardasse o apagar, uma luz acesa \u00e0s 5h50 ficaria acesa para sempre: o sol nasceria, a condi\u00e7\u00e3o passaria a ser falsa e o desligamento nunca aconteceria. Apagar por aus\u00eancia \u00e9 seguro a qualquer hora; acender \u00e9 que s\u00f3 faz sentido no escuro.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "on",
-                "id": "chegou"
+                "trigger": "sun",
+                "event": "sunset",
+                "id": "acender"
               },
               {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
+                "trigger": "time",
+                "at": "00:00:00",
+                "id": "apagar"
+              },
+              {
+                "trigger": "homeassistant",
+                "event": "start",
+                "id": "partida"
               }
             ],
             "conditions": [],
@@ -1548,40 +1380,61 @@
               {
                 "choose": [
                   {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
+                    "alias": "P\u00f4r do sol \u2014 acende Muro e Painel",
                     "conditions": [
                       {
                         "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
+                        "id": "acender"
                       }
                     ],
                     "sequence": [
                       {
                         "action": "light.turn_on",
                         "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
+                          "entity_id": [
+                            "light.circulacao_switch_1",
+                            "light.painel"
+                          ]
                         }
                       }
                     ]
                   },
                   {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
+                    "alias": "Meia-noite (ou partida at\u00e9 00:30) \u2014 apaga o que estiver aceso",
                     "conditions": [
                       {
-                        "condition": "trigger",
-                        "id": "vazio"
+                        "condition": "or",
+                        "conditions": [
+                          {
+                            "condition": "trigger",
+                            "id": "apagar"
+                          },
+                          {
+                            "condition": "and",
+                            "conditions": [
+                              {
+                                "condition": "trigger",
+                                "id": "partida"
+                              },
+                              {
+                                "condition": "time",
+                                "after": "00:00:00",
+                                "before": "00:30:00"
+                              }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "condition": "template",
+                        "value_template": "{{ is_state('light.circulacao_switch_1', 'on')\n   or is_state('light.painel', 'on') }}"
                       }
                     ],
                     "sequence": [
                       {
                         "action": "light.turn_off",
                         "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
+                          "entity_id": "{{ ['light.circulacao_switch_1', 'light.painel']\n   | select('is_state', 'on') | list }}"
                         }
                       }
                     ]
@@ -1592,2270 +1445,23 @@
           },
           "blueprint_inputs": null,
           "context": {
-            "id": "01M2QWB59DVMAXM0M24015TPHR",
-            "parent_id": "01M2QVRVCGSRK1Z6JTP4CBDKFY",
+            "id": "01M2VY8G6EB3EZN5J6BMG6460H",
+            "parent_id": null,
             "user_id": null
           }
         },
         "short_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "7727fcf875ebe7eb935a14ec3be317db",
+          "last_step": "action/0/choose/1/conditions/0/conditions/1/conditions/1",
+          "run_id": "db85a9afe06ad70fc86271d1d7fb080e",
           "state": "stopped",
           "script_execution": "finished",
           "timestamp": {
-            "start": "2026-09-17T14:29:16.717061+00:00",
-            "finish": "2026-09-17T14:29:17.388273+00:00"
+            "start": "2026-09-19T04:19:44.462312+00:00",
+            "finish": "2026-09-19T04:19:44.462708+00:00"
           },
           "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "f95142ba1fb339d586eb25d6afb07d22",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:38:59.965793+00:00",
-            "finish": "2026-09-17T14:38:59.966318+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:38:59.965905+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_lavanderia_acende_a_luz_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400000",
-                      "last_triggered": "2026-09-17T14:29:16.717307+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na Lavanderia acende a luz \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.096965+00:00",
-                    "last_reported": "2026-09-17T14:29:17.387781+00:00",
-                    "last_updated": "2026-09-17T14:29:17.387781+00:00",
-                    "context": {
-                      "id": "01M2QWB59DVMAXM0M24015TPHR",
-                      "parent_id": "01M2QVRVCGSRK1Z6JTP4CBDKFY",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:19:16.752756+00:00",
-                      "last_reported": "2026-09-17T14:19:16.752756+00:00",
-                      "last_updated": "2026-09-17T14:19:16.752756+00:00",
-                      "context": {
-                        "id": "01M2QVRVCGSRK1Z6JTP4CBDKFY",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:38:59.965563+00:00",
-                      "last_reported": "2026-09-17T14:38:59.965563+00:00",
-                      "last_updated": "2026-09-17T14:38:59.965563+00:00",
-                      "context": {
-                        "id": "01M2QWWYVXKRWPBWRQBF9S7E5P",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_lavanderia_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:38:59.966081+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QWWYVXMMDXRERNYHBZSC6R",
-                    "parent_id": "01M2QWWYVXKRWPBWRQBF9S7E5P",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:38:59.966140+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:38:59.966159+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:38:59.966188+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:38:59.966219+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:38:59.966250+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:38:59.966259+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400000",
-            "alias": "Movimento na Lavanderia acende a luz \u00e0 noite",
-            "description": "Do p\u00f4r do sol ao amanhecer, movimento na Lavanderia acende a luz; dez minutos sem movimento, ela apaga.\nO temporizador \u00e9 o `for: '00:10:00'` no pr\u00f3prio gatilho de aus\u00eancia: se algu\u00e9m se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta o agendamento \u2014 a contagem recome\u00e7a do zero sozinha, sem precisar de `timer` nem de `input_datetime`.\n\u26a0\ufe0f A condi\u00e7\u00e3o de sol est\u00e1 **s\u00f3 no acender**. Se ela tamb\u00e9m guardasse o apagar, uma luz acesa \u00e0s 5h50 ficaria acesa para sempre: o sol nasceria, a condi\u00e7\u00e3o passaria a ser falsa e o desligamento nunca aconteceria. Apagar por aus\u00eancia \u00e9 seguro a qualquer hora; acender \u00e9 que s\u00f3 faz sentido no escuro.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QWWYVXMMDXRERNYHBZSC6R",
-            "parent_id": "01M2QWWYVXKRWPBWRQBF9S7E5P",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "f95142ba1fb339d586eb25d6afb07d22",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:38:59.965793+00:00",
-            "finish": "2026-09-17T14:38:59.966318+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "cc5d208440c0dce94aaeabd97b6506ef",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:41:31.001871+00:00",
-            "finish": "2026-09-17T14:41:31.002293+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:41:31.001929+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_lavanderia_acende_a_luz_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400000",
-                      "last_triggered": "2026-09-17T14:38:59.965977+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na Lavanderia acende a luz \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.096965+00:00",
-                    "last_reported": "2026-09-17T14:38:59.966294+00:00",
-                    "last_updated": "2026-09-17T14:38:59.966294+00:00",
-                    "context": {
-                      "id": "01M2QWWYVXMMDXRERNYHBZSC6R",
-                      "parent_id": "01M2QWWYVXKRWPBWRQBF9S7E5P",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:39:08.502503+00:00",
-                      "last_reported": "2026-09-17T14:39:08.502503+00:00",
-                      "last_updated": "2026-09-17T14:39:08.502503+00:00",
-                      "context": {
-                        "id": "01M2QWX76PEDZEHC5GA5ZPGF9N",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:41:31.001681+00:00",
-                      "last_reported": "2026-09-17T14:41:31.001681+00:00",
-                      "last_updated": "2026-09-17T14:41:31.001681+00:00",
-                      "context": {
-                        "id": "01M2QX1JBSBWZ3SFFXWS4108ED",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_lavanderia_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:41:31.002054+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QX1JBSE664AF7ZNSVYKF1Z",
-                    "parent_id": "01M2QX1JBSBWZ3SFFXWS4108ED",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:41:31.002100+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:41:31.002115+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:41:31.002130+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:41:31.002185+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:41:31.002219+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:41:31.002228+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400000",
-            "alias": "Movimento na Lavanderia acende a luz \u00e0 noite",
-            "description": "Do p\u00f4r do sol ao amanhecer, movimento na Lavanderia acende a luz; dez minutos sem movimento, ela apaga.\nO temporizador \u00e9 o `for: '00:10:00'` no pr\u00f3prio gatilho de aus\u00eancia: se algu\u00e9m se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta o agendamento \u2014 a contagem recome\u00e7a do zero sozinha, sem precisar de `timer` nem de `input_datetime`.\n\u26a0\ufe0f A condi\u00e7\u00e3o de sol est\u00e1 **s\u00f3 no acender**. Se ela tamb\u00e9m guardasse o apagar, uma luz acesa \u00e0s 5h50 ficaria acesa para sempre: o sol nasceria, a condi\u00e7\u00e3o passaria a ser falsa e o desligamento nunca aconteceria. Apagar por aus\u00eancia \u00e9 seguro a qualquer hora; acender \u00e9 que s\u00f3 faz sentido no escuro.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QX1JBSE664AF7ZNSVYKF1Z",
-            "parent_id": "01M2QX1JBSBWZ3SFFXWS4108ED",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "cc5d208440c0dce94aaeabd97b6506ef",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:41:31.001871+00:00",
-            "finish": "2026-09-17T14:41:31.002293+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "84545a946841fd1e8ea80518e83cd407",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:44:34.183675+00:00",
-            "finish": "2026-09-17T14:44:34.186093+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:44:34.183797+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_lavanderia_acende_a_luz_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400000",
-                      "last_triggered": "2026-09-17T14:41:31.001980+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na Lavanderia acende a luz \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.096965+00:00",
-                    "last_reported": "2026-09-17T14:41:31.002265+00:00",
-                    "last_updated": "2026-09-17T14:41:31.002265+00:00",
-                    "context": {
-                      "id": "01M2QX1JBSE664AF7ZNSVYKF1Z",
-                      "parent_id": "01M2QX1JBSBWZ3SFFXWS4108ED",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:41:42.587351+00:00",
-                      "last_reported": "2026-09-17T14:41:42.587351+00:00",
-                      "last_updated": "2026-09-17T14:41:42.587351+00:00",
-                      "context": {
-                        "id": "01M2QX1XNVMFS7W32EXNAMVC4X",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:44:34.183465+00:00",
-                      "last_reported": "2026-09-17T14:44:34.183465+00:00",
-                      "last_updated": "2026-09-17T14:44:34.183465+00:00",
-                      "context": {
-                        "id": "01M2QX7587N508EN7XPBZNRHTJ",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_lavanderia_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:44:34.185841+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QX7587H6X9PNJVXMTDEDVZ",
-                    "parent_id": "01M2QX7587N508EN7XPBZNRHTJ",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:44:34.185904+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:44:34.185923+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:44:34.185942+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:44:34.185981+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:44:34.186016+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:44:34.186025+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400000",
-            "alias": "Movimento na Lavanderia acende a luz \u00e0 noite",
-            "description": "Do p\u00f4r do sol ao amanhecer, movimento na Lavanderia acende a luz; dez minutos sem movimento, ela apaga.\nO temporizador \u00e9 o `for: '00:10:00'` no pr\u00f3prio gatilho de aus\u00eancia: se algu\u00e9m se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta o agendamento \u2014 a contagem recome\u00e7a do zero sozinha, sem precisar de `timer` nem de `input_datetime`.\n\u26a0\ufe0f A condi\u00e7\u00e3o de sol est\u00e1 **s\u00f3 no acender**. Se ela tamb\u00e9m guardasse o apagar, uma luz acesa \u00e0s 5h50 ficaria acesa para sempre: o sol nasceria, a condi\u00e7\u00e3o passaria a ser falsa e o desligamento nunca aconteceria. Apagar por aus\u00eancia \u00e9 seguro a qualquer hora; acender \u00e9 que s\u00f3 faz sentido no escuro.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QX7587H6X9PNJVXMTDEDVZ",
-            "parent_id": "01M2QX7587N508EN7XPBZNRHTJ",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "84545a946841fd1e8ea80518e83cd407",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:44:34.183675+00:00",
-            "finish": "2026-09-17T14:44:34.186093+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "ce470897d762b5d0b832dce28296cb1c",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:50:17.347776+00:00",
-            "finish": "2026-09-17T14:50:17.348189+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:50:17.347835+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_lavanderia_acende_a_luz_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400000",
-                      "last_triggered": "2026-09-17T14:44:34.185723+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na Lavanderia acende a luz \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.096965+00:00",
-                    "last_reported": "2026-09-17T14:44:34.186063+00:00",
-                    "last_updated": "2026-09-17T14:44:34.186063+00:00",
-                    "context": {
-                      "id": "01M2QX7587H6X9PNJVXMTDEDVZ",
-                      "parent_id": "01M2QX7587N508EN7XPBZNRHTJ",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:44:44.174411+00:00",
-                      "last_reported": "2026-09-17T14:44:44.174411+00:00",
-                      "last_updated": "2026-09-17T14:44:44.174411+00:00",
-                      "context": {
-                        "id": "01M2QX7F0EWDRD6V4F5XEVKREG",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor lavanderia  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:50:17.347585+00:00",
-                      "last_reported": "2026-09-17T14:50:17.347585+00:00",
-                      "last_updated": "2026-09-17T14:50:17.347585+00:00",
-                      "context": {
-                        "id": "01M2QXHMC3R53YM5ZFP830NB1T",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_lavanderia_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:50:17.347954+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QXHMC363JB1JNCZ4BXVNKJ",
-                    "parent_id": "01M2QXHMC3R53YM5ZFP830NB1T",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:50:17.347999+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:50:17.348016+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:50:17.348055+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:50:17.348080+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:50:17.348115+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:50:17.348125+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400000",
-            "alias": "Movimento na Lavanderia acende a luz \u00e0 noite",
-            "description": "Do p\u00f4r do sol ao amanhecer, movimento na Lavanderia acende a luz; dez minutos sem movimento, ela apaga.\nO temporizador \u00e9 o `for: '00:10:00'` no pr\u00f3prio gatilho de aus\u00eancia: se algu\u00e9m se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta o agendamento \u2014 a contagem recome\u00e7a do zero sozinha, sem precisar de `timer` nem de `input_datetime`.\n\u26a0\ufe0f A condi\u00e7\u00e3o de sol est\u00e1 **s\u00f3 no acender**. Se ela tamb\u00e9m guardasse o apagar, uma luz acesa \u00e0s 5h50 ficaria acesa para sempre: o sol nasceria, a condi\u00e7\u00e3o passaria a ser falsa e o desligamento nunca aconteceria. Apagar por aus\u00eancia \u00e9 seguro a qualquer hora; acender \u00e9 que s\u00f3 faz sentido no escuro.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_lavanderia_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": "light.cozinha_copa_varanda_switch_3"
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QXHMC363JB1JNCZ4BXVNKJ",
-            "parent_id": "01M2QXHMC3R53YM5ZFP830NB1T",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "ce470897d762b5d0b832dce28296cb1c",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:50:17.347776+00:00",
-            "finish": "2026-09-17T14:50:17.348189+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400000",
-          "trigger": "state of binary_sensor.sensor_lavanderia_movimento"
-        }
-      }
-    ],
-    "automation.1757984400001": [
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "001f5b8a181d048d7cd5cc7944916f5a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:10:12.828844+00:00",
-            "finish": "2026-09-17T14:10:12.834160+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:10:12.833863+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_area_gourmet_acende_as_luzes_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400001",
-                      "last_triggered": "2026-09-17T14:06:08.098385+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.097109+00:00",
-                    "last_reported": "2026-09-17T14:06:08.100078+00:00",
-                    "last_updated": "2026-09-17T14:06:08.100078+00:00",
-                    "context": {
-                      "id": "01M2QV0S6XFTS4ZQ5HG3HDXYVK",
-                      "parent_id": "01M2QV0S6W3DR4Z16D18HXH23C",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:08:18.620268+00:00",
-                      "last_reported": "2026-09-17T14:08:18.620268+00:00",
-                      "last_updated": "2026-09-17T14:08:18.620268+00:00",
-                      "context": {
-                        "id": "01M2QV4RNW71XTEKTAK6785FSR",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:10:12.828738+00:00",
-                      "last_reported": "2026-09-17T14:10:12.828738+00:00",
-                      "last_updated": "2026-09-17T14:10:12.828738+00:00",
-                      "context": {
-                        "id": "01M2QV886W3AV45H449ZXCJRNX",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_area_gourmet_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:10:12.833987+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QV886WXKCZ1AA498NBTF7F",
-                    "parent_id": "01M2QV886W3AV45H449ZXCJRNX",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:10:12.834039+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:10:12.834055+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:10:12.834070+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:10:12.834078+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:10:12.834101+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:10:12.834108+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400001",
-            "alias": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite",
-            "description": "O par da automa\u00e7\u00e3o da Lavanderia, com as quatro luzes da \u00c1rea Gourmet \u2014 Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do p\u00f4r do sol, apaga dez minutos depois que a \u00e1rea esvazia.\nValem as mesmas duas decis\u00f5es: o temporizador \u00e9 o `for` do gatilho, que se reinicia sozinho a cada movimento novo, e a condi\u00e7\u00e3o de sol guarda apenas o acender, para que o apagar funcione mesmo depois do amanhecer.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QV886WXKCZ1AA498NBTF7F",
-            "parent_id": "01M2QV886W3AV45H449ZXCJRNX",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "001f5b8a181d048d7cd5cc7944916f5a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:10:12.828844+00:00",
-            "finish": "2026-09-17T14:10:12.834160+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d3a9112d864b80a2a0f82c50cc437023",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:14:09.836347+00:00",
-            "finish": "2026-09-17T14:14:09.837658+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:14:09.837293+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_area_gourmet_acende_as_luzes_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400001",
-                      "last_triggered": "2026-09-17T14:10:12.833916+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.097109+00:00",
-                    "last_reported": "2026-09-17T14:10:12.834138+00:00",
-                    "last_updated": "2026-09-17T14:10:12.834138+00:00",
-                    "context": {
-                      "id": "01M2QV886WXKCZ1AA498NBTF7F",
-                      "parent_id": "01M2QV886W3AV45H449ZXCJRNX",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:12:43.453334+00:00",
-                      "last_reported": "2026-09-17T14:12:43.453334+00:00",
-                      "last_updated": "2026-09-17T14:12:43.453334+00:00",
-                      "context": {
-                        "id": "01M2QVCV9XQZGB86D5WYE34N8D",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:14:09.836186+00:00",
-                      "last_reported": "2026-09-17T14:14:09.836186+00:00",
-                      "last_updated": "2026-09-17T14:14:09.836186+00:00",
-                      "context": {
-                        "id": "01M2QVFFNCFTZX1SX9AQ3YEPYK",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_area_gourmet_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:14:09.837449+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QVFFNCR8GT1QCC2WZG2QV6",
-                    "parent_id": "01M2QVFFNCFTZX1SX9AQ3YEPYK",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:14:09.837493+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:14:09.837507+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:14:09.837551+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:14:09.837564+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:14:09.837590+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:14:09.837597+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400001",
-            "alias": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite",
-            "description": "O par da automa\u00e7\u00e3o da Lavanderia, com as quatro luzes da \u00c1rea Gourmet \u2014 Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do p\u00f4r do sol, apaga dez minutos depois que a \u00e1rea esvazia.\nValem as mesmas duas decis\u00f5es: o temporizador \u00e9 o `for` do gatilho, que se reinicia sozinho a cada movimento novo, e a condi\u00e7\u00e3o de sol guarda apenas o acender, para que o apagar funcione mesmo depois do amanhecer.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QVFFNCR8GT1QCC2WZG2QV6",
-            "parent_id": "01M2QVFFNCFTZX1SX9AQ3YEPYK",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d3a9112d864b80a2a0f82c50cc437023",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:14:09.836347+00:00",
-            "finish": "2026-09-17T14:14:09.837658+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "2f731a5dfcc1acdd20cc9e3f7d8f120d",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:19:10.190183+00:00",
-            "finish": "2026-09-17T14:19:10.193196+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:19:10.192900+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_area_gourmet_acende_as_luzes_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400001",
-                      "last_triggered": "2026-09-17T14:14:09.837360+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.097109+00:00",
-                    "last_reported": "2026-09-17T14:14:09.837632+00:00",
-                    "last_updated": "2026-09-17T14:14:09.837632+00:00",
-                    "context": {
-                      "id": "01M2QVFFNCR8GT1QCC2WZG2QV6",
-                      "parent_id": "01M2QVFFNCFTZX1SX9AQ3YEPYK",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:18:13.912176+00:00",
-                      "last_reported": "2026-09-17T14:18:13.912176+00:00",
-                      "last_updated": "2026-09-17T14:18:13.912176+00:00",
-                      "context": {
-                        "id": "01M2QVPY0RTSVVMG71H8BF22DQ",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:19:10.190071+00:00",
-                      "last_reported": "2026-09-17T14:19:10.190071+00:00",
-                      "last_updated": "2026-09-17T14:19:10.190071+00:00",
-                      "context": {
-                        "id": "01M2QVRMZE985RAM9WFS9HPN7P",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_area_gourmet_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:19:10.193020+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QVRMZEYH7EYB06XHRZRKKJ",
-                    "parent_id": "01M2QVRMZE985RAM9WFS9HPN7P",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:19:10.193057+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:19:10.193071+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:19:10.193086+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:19:10.193108+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:19:10.193136+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:19:10.193145+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400001",
-            "alias": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite",
-            "description": "O par da automa\u00e7\u00e3o da Lavanderia, com as quatro luzes da \u00c1rea Gourmet \u2014 Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do p\u00f4r do sol, apaga dez minutos depois que a \u00e1rea esvazia.\nValem as mesmas duas decis\u00f5es: o temporizador \u00e9 o `for` do gatilho, que se reinicia sozinho a cada movimento novo, e a condi\u00e7\u00e3o de sol guarda apenas o acender, para que o apagar funcione mesmo depois do amanhecer.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QVRMZEYH7EYB06XHRZRKKJ",
-            "parent_id": "01M2QVRMZE985RAM9WFS9HPN7P",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "2f731a5dfcc1acdd20cc9e3f7d8f120d",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:19:10.190183+00:00",
-            "finish": "2026-09-17T14:19:10.193196+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "c80f1c911863ec8b1e0cc2cb92ac327a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:31:52.803626+00:00",
-            "finish": "2026-09-17T14:31:53.621142+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento",
-          "trace": {
-            "trigger/1": [
-              {
-                "path": "trigger/1",
-                "timestamp": "2026-09-17T14:31:52.805353+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_area_gourmet_acende_as_luzes_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400001",
-                      "last_triggered": "2026-09-17T14:19:10.192953+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.097109+00:00",
-                    "last_reported": "2026-09-17T14:19:10.193174+00:00",
-                    "last_updated": "2026-09-17T14:19:10.193174+00:00",
-                    "context": {
-                      "id": "01M2QVRMZEYH7EYB06XHRZRKKJ",
-                      "parent_id": "01M2QVRMZE985RAM9WFS9HPN7P",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "vazio",
-                    "idx": "1",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:19:10.190071+00:00",
-                      "last_reported": "2026-09-17T14:19:10.190071+00:00",
-                      "last_updated": "2026-09-17T14:19:10.190071+00:00",
-                      "context": {
-                        "id": "01M2QVRMZE985RAM9WFS9HPN7P",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:21:52.840682+00:00",
-                      "last_reported": "2026-09-17T14:21:52.840682+00:00",
-                      "last_updated": "2026-09-17T14:21:52.840682+00:00",
-                      "context": {
-                        "id": "01M2QVXKT8SDKCXKKRA5RSYDXM",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": {
-                      "__type": "<class 'datetime.timedelta'>",
-                      "total_seconds": 600.0
-                    },
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_area_gourmet_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:31:52.805646+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QWFXQ33VBGBKQKXWTDJFAK",
-                    "parent_id": "01M2QVXKT8SDKCXKKRA5RSYDXM",
-                    "user_id": null
-                  }
-                },
-                "result": {
-                  "choice": 1
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:31:52.805713+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:31:52.805735+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:31:52.805762+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:31:52.805770+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/1/sequence/0": [
-              {
-                "path": "action/0/choose/1/sequence/0",
-                "timestamp": "2026-09-17T14:31:52.806150+00:00",
-                "result": {
-                  "params": {
-                    "domain": "light",
-                    "service": "turn_off",
-                    "service_data": {},
-                    "target": {
-                      "entity_id": [
-                        "light.luzes_externas_switch_1",
-                        "light.luzes_externas_switch_2",
-                        "light.luzes_externas_switch_3",
-                        "light.luzes_externas_switch_4"
-                      ]
-                    }
-                  },
-                  "running_script": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400001",
-            "alias": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite",
-            "description": "O par da automa\u00e7\u00e3o da Lavanderia, com as quatro luzes da \u00c1rea Gourmet \u2014 Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do p\u00f4r do sol, apaga dez minutos depois que a \u00e1rea esvazia.\nValem as mesmas duas decis\u00f5es: o temporizador \u00e9 o `for` do gatilho, que se reinicia sozinho a cada movimento novo, e a condi\u00e7\u00e3o de sol guarda apenas o acender, para que o apagar funcione mesmo depois do amanhecer.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QWFXQ33VBGBKQKXWTDJFAK",
-            "parent_id": "01M2QVXKT8SDKCXKKRA5RSYDXM",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/sequence/0",
-          "run_id": "c80f1c911863ec8b1e0cc2cb92ac327a",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:31:52.803626+00:00",
-            "finish": "2026-09-17T14:31:53.621142+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento"
-        }
-      },
-      {
-        "extended_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d3aaccd19f56b00fd14368bc14165474",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:39:02.273140+00:00",
-            "finish": "2026-09-17T14:39:02.273676+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento",
-          "trace": {
-            "trigger/0": [
-              {
-                "path": "trigger/0",
-                "timestamp": "2026-09-17T14:39:02.273295+00:00",
-                "changed_variables": {
-                  "this": {
-                    "entity_id": "automation.movimento_na_area_gourmet_acende_as_luzes_a_noite",
-                    "state": "on",
-                    "attributes": {
-                      "id": "1757984400001",
-                      "last_triggered": "2026-09-17T14:31:52.805466+00:00",
-                      "mode": "queued",
-                      "current": 0,
-                      "max": 5,
-                      "friendly_name": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite"
-                    },
-                    "last_changed": "2026-09-17T10:52:38.097109+00:00",
-                    "last_reported": "2026-09-17T14:31:53.620469+00:00",
-                    "last_updated": "2026-09-17T14:31:53.620469+00:00",
-                    "context": {
-                      "id": "01M2QWFXQ33VBGBKQKXWTDJFAK",
-                      "parent_id": "01M2QVXKT8SDKCXKKRA5RSYDXM",
-                      "user_id": null
-                    }
-                  },
-                  "trigger": {
-                    "id": "chegou",
-                    "idx": "0",
-                    "alias": null,
-                    "platform": "state",
-                    "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                    "from_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "off",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:21:52.840682+00:00",
-                      "last_reported": "2026-09-17T14:21:52.840682+00:00",
-                      "last_updated": "2026-09-17T14:21:52.840682+00:00",
-                      "context": {
-                        "id": "01M2QVXKT8SDKCXKKRA5RSYDXM",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "to_state": {
-                      "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                      "state": "on",
-                      "attributes": {
-                        "device_class": "motion",
-                        "friendly_name": "Sensor \u00e1rea gourmet  Movimento"
-                      },
-                      "last_changed": "2026-09-17T14:39:02.273010+00:00",
-                      "last_reported": "2026-09-17T14:39:02.273010+00:00",
-                      "last_updated": "2026-09-17T14:39:02.273010+00:00",
-                      "context": {
-                        "id": "01M2QWX141GZK581ABC4FTCNYS",
-                        "parent_id": null,
-                        "user_id": null
-                      }
-                    },
-                    "for": null,
-                    "attribute": null,
-                    "description": "state of binary_sensor.sensor_area_gourmet_movimento"
-                  }
-                }
-              }
-            ],
-            "action/0": [
-              {
-                "path": "action/0",
-                "timestamp": "2026-09-17T14:39:02.273452+00:00",
-                "changed_variables": {
-                  "context": {
-                    "id": "01M2QWX1411X6F6ZY327BR2TME",
-                    "parent_id": "01M2QWX141GZK581ABC4FTCNYS",
-                    "user_id": null
-                  }
-                }
-              }
-            ],
-            "action/0/choose/0": [
-              {
-                "path": "action/0/choose/0",
-                "timestamp": "2026-09-17T14:39:02.273501+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/0": [
-              {
-                "path": "action/0/choose/0/conditions/0",
-                "timestamp": "2026-09-17T14:39:02.273517+00:00",
-                "result": {
-                  "result": true
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1": [
-              {
-                "path": "action/0/choose/0/conditions/1",
-                "timestamp": "2026-09-17T14:39:02.273532+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/0/conditions/1/entity_id/0": [
-              {
-                "path": "action/0/choose/0/conditions/1/entity_id/0",
-                "timestamp": "2026-09-17T14:39:02.273572+00:00",
-                "result": {
-                  "result": false,
-                  "state": "above_horizon",
-                  "wanted_state": "below_horizon"
-                }
-              }
-            ],
-            "action/0/choose/1": [
-              {
-                "path": "action/0/choose/1",
-                "timestamp": "2026-09-17T14:39:02.273606+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ],
-            "action/0/choose/1/conditions/0": [
-              {
-                "path": "action/0/choose/1/conditions/0",
-                "timestamp": "2026-09-17T14:39:02.273615+00:00",
-                "result": {
-                  "result": false
-                }
-              }
-            ]
-          },
-          "config": {
-            "id": "1757984400001",
-            "alias": "Movimento na \u00c1rea Gourmet acende as luzes \u00e0 noite",
-            "description": "O par da automa\u00e7\u00e3o da Lavanderia, com as quatro luzes da \u00c1rea Gourmet \u2014 Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do p\u00f4r do sol, apaga dez minutos depois que a \u00e1rea esvazia.\nValem as mesmas duas decis\u00f5es: o temporizador \u00e9 o `for` do gatilho, que se reinicia sozinho a cada movimento novo, e a condi\u00e7\u00e3o de sol guarda apenas o acender, para que o apagar funcione mesmo depois do amanhecer.",
-            "mode": "queued",
-            "max": 5,
-            "triggers": [
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "on",
-                "id": "chegou"
-              },
-              {
-                "trigger": "state",
-                "entity_id": "binary_sensor.sensor_area_gourmet_movimento",
-                "to": "off",
-                "for": "00:10:00",
-                "id": "vazio"
-              }
-            ],
-            "conditions": [],
-            "actions": [
-              {
-                "choose": [
-                  {
-                    "alias": "Movimento com o sol abaixo do horizonte \u2014 acende",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "chegou"
-                      },
-                      {
-                        "condition": "state",
-                        "entity_id": "sun.sun",
-                        "state": "below_horizon"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_on",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "alias": "Dez minutos sem ningu\u00e9m \u2014 apaga, a qualquer hora",
-                    "conditions": [
-                      {
-                        "condition": "trigger",
-                        "id": "vazio"
-                      }
-                    ],
-                    "sequence": [
-                      {
-                        "action": "light.turn_off",
-                        "target": {
-                          "entity_id": [
-                            "light.luzes_externas_switch_1",
-                            "light.luzes_externas_switch_2",
-                            "light.luzes_externas_switch_3",
-                            "light.luzes_externas_switch_4"
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          "blueprint_inputs": null,
-          "context": {
-            "id": "01M2QWX1411X6F6ZY327BR2TME",
-            "parent_id": "01M2QWX141GZK581ABC4FTCNYS",
-            "user_id": null
-          }
-        },
-        "short_dict": {
-          "last_step": "action/0/choose/1/conditions/0",
-          "run_id": "d3aaccd19f56b00fd14368bc14165474",
-          "state": "stopped",
-          "script_execution": "finished",
-          "timestamp": {
-            "start": "2026-09-17T14:39:02.273140+00:00",
-            "finish": "2026-09-17T14:39:02.273676+00:00"
-          },
-          "domain": "automation",
-          "item_id": "1757984400001",
-          "trigger": "state of binary_sensor.sensor_area_gourmet_movimento"
+          "item_id": "1758240000000",
+          "trigger": "Home Assistant starting"
         }
       }
     ]

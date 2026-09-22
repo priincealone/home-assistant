@@ -18,7 +18,6 @@ dispositivo na tailnet.
 | **Painel Next.js** | 3002 | ❌ **Nenhuma** | Ver A-01 |
 | Music Assistant | 8095 | ✅ Token | Também 8097 para streams |
 | bgutil-provider | 4416 | — | Publicado só em `127.0.0.1` |
-| anisette | 6969 | — | Serviço local para a integração FindMy |
 | Glances | 61208 | ❓ | ❓ **DESCONHECIDO** se exige credencial |
 
 ## Achados abertos

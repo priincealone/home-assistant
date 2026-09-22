@@ -59,6 +59,13 @@
         "domain": "hacs",
         "is_persistent": false,
         "issue_id": "restart_required_299753146_tags/v2.2.5"
+      },
+      {
+        "created": "2026-09-19T03:12:50.210916+00:00",
+        "dismissed_version": null,
+        "domain": "samsungtv",
+        "is_persistent": false,
+        "issue_id": "deprecated_implicit_wake_on_lan_c8:a6:ef:1c:ec:28"
       }
     ]
   }

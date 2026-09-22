@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.painel_de_controle",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "type": "sections",
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "person.andre",
+                  "show_entity_picture": true
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "light.luz_sala",
+                  "vertical": false,
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/home/areas-sala_de_estar"
+                  },
+                  "features": [
+                    {
+                      "type": "toggle"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Nova seção"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Câmeras",
+                  "heading_style": "title"
+                },
+                {
+                  "show_state": true,
+                  "show_name": true,
+                  "camera_view": "live",
+                  "fit_mode": "cover",
+                  "type": "picture-entity",
+                  "entity": "camera.rua_canal_2",
+                  "camera_image": "camera.rua_canal_2"
+                },
+                {
+                  "show_state": true,
+                  "show_name": true,
+                  "camera_view": "live",
+                  "fit_mode": "cover",
+                  "type": "picture-entity",
+                  "entity": "camera.rua_canal_4",
+                  "camera_image": "camera.rua_canal_4"
+                }
+              ]
+            }
+          ],
+          "header": {
+            "layout": "responsive",
+            "badges_position": "top",
+            "badges_wrap": "wrap"
+          },
+          "badges": [
+            {
+              "type": "shortcut",
+              "tap_action": {
+                "action": "navigate",
+                "navigation_path": "/lovelace"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

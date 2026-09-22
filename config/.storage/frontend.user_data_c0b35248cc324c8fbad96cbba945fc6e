@@ -8,11 +8,13 @@
     },
     "core": {
       "default_panel": "dashboard-dispositivos",
-      "apps_info_dismissed": true
+      "apps_info_dismissed": true,
+      "showEntityIdPicker": false
     },
     "sidebar": {
       "panelOrder": [
         "dashboard-dispositivos",
+        "painel-de-controle",
         "map",
         "energy",
         "logbook",
@@ -20,7 +22,9 @@
         "browser-mod",
         "hacs",
         "media-browser",
-        "todo"
+        "todo",
+        "light",
+        "maintenance"
       ],
       "hiddenPanels": []
     }

@@ -31,7 +31,6 @@ rotas em `app/api/*` são o único ponto de contato. Verificado: nenhuma rota de
 | `homeassistant` | container | 8123 | Núcleo da automação; `config/` montado do disco |
 | `music-assistant` | container | 8095 | Biblioteca e fila de áudio |
 | `bgutil-provider` | container | 4416 | Provedor de token do YouTube (só para o Music Assistant) |
-| `anisette` | container | 6969 | Autenticação Apple para a integração FindMy |
 | Painel Next.js | processo do Windows | 3002 | Interface, sob watchdog PowerShell |
 | Glances | serviço do Windows | 61208 | Telemetria do PC, lida pelo HA |
 
@@ -92,7 +91,7 @@ iPhone (Atalhos) → HA POST /api/webhook/<webhook_saude> → sensor.saude_*
 | `config/.storage/core.*_registry` | Dispositivos, entidades e áreas. **Reescritos pelo HA no desligamento** |
 | `config/home-assistant_v2.db` | Histórico e eventos. SQLite em modo WAL, ~70 MB |
 | `config/*.yaml` | Automações, sensores derivados, configuração |
-| `music-assistant/data`, `anisette/data` | Dados dos respectivos containers |
+| `music-assistant/data` | Dados do container |
 
 ## Integrações ativas (22, verificadas em `core.config_entries`)
 

@@ -16,7 +16,6 @@ o raciocínio de cada decisão.
 | Home Assistant 2026.9 | container `homeassistant`, Docker Desktop (WSL2), porta 8123, config em `config/` |
 | Music Assistant 2.10.2 | container `music-assistant`, porta 8095, dados em `music-assistant/data` |
 | Servidor de PO token (YouTube) | container `bgutil-provider`, alcançado como `http://bgutil-provider:4416` |
-| Servidor anisette (FindMy) | container `anisette`, porta 6969, dados em `anisette/data` |
 | Painel | `dashboard-app/`, porta 3002, git próprio |
 | Acesso remoto | Tailscale |
 | IP do PC na LAN | `192.168.31.22` (DHCP — **precisa de reserva**) |
@@ -70,7 +69,8 @@ de cada vez.
 
 ## Câmeras
 
-DVR **Intelbras MHDX 1204-C Dual Audio** (`192.168.31.216`), 4 canais, dos quais 2
+DVR **Intelbras MHDX 1204-C Dual Audio** (`192.168.31.217` — mudou de `.216` em 20/09/2026,
+provável renovação de DHCP; ver `ESTADO_DASHBOARD.md`), 4 canais, dos quais 2
 ativos — canais 2 e 4, ambos com visão externa para a rua. Câmeras físicas:
 Intelbras VHD 3230 (analógicas, ligadas por coaxial ao DVR; não têm IP próprio).
 
@@ -81,7 +81,7 @@ funcionou de primeira, no formato que o próprio DVR expõe em
 Configurações → Rede → Porta:
 
 ```
-rtsp://<usuário>:<senha>@192.168.31.216:554/cam/realmonitor?channel=<N>&subtype=0
+rtsp://<usuário>:<senha>@192.168.31.217:554/cam/realmonitor?channel=<N>&subtype=0
 ```
 
 `subtype=0` é o stream principal (alta qualidade) — trocado de `subtype=1`
@@ -155,6 +155,45 @@ quando isso quebrar, criar um client_id próprio
 (https://rclone.org/drive/#making-your-own-client-id) e rodar
 `rclone config reconnect gdrive_cameras:`.
 
+### Card com vídeo ao vivo no "Painel de controle" (19/09/2026)
+
+Na tela **Dispositivos** (dashboard `dashboard-dispositivos`, estratégia
+`original-states`), o card de câmera só mostra imagem depois de clicar —
+essa dashboard é gerada automaticamente e não permite configurar `camera_view`
+por card. Tentei primeiro evitar Lovelace: testar se o DVR aceita snapshot
+HTTP puro (`/cgi-bin/snapshot.cgi?channel=N`), o que resolveria em qualquer
+tela sem editar nenhum dashboard. A autenticação Digest funcionou (testado
+por script rodando dentro do container, sem a senha passar pela conversa),
+mas o DVR recusou com `ErrorCode 268632081` (permissão insuficiente para essa
+API) — ajuste de conta no próprio DVR, fora de alçada do agente.
+
+Como o André não quis converter a dashboard "Dispositivos" para manual (perde
+a atualização automática quando um dispositivo novo é adicionado), a solução
+ficou no **"Painel de controle"** (`lovelace.painel_de_controle`, já é uma
+dashboard manual/`sections`, sem estratégia — editar aqui não desativa nada
+automático). Adicionei uma seção "Câmeras" com dois cards **Entidade de
+imagem** (`picture-entity`), um por câmera, com `camera_view: live` — assim a
+imagem já aparece tocando ao vivo, sem precisar abrir o card.
+
+### Reprodução na TV da sala — descartado e removido (19/09/2026)
+
+Tentativa de mostrar as câmeras da rua na TV Samsung via DLNA. Chegou a funcionar
+parcialmente (negociação DLNA aceita), mas travava ao decodificar de fato — a
+câmera manda H.264 **High Profile** e a TV só decodifica **Main/Baseline** por
+esse caminho. Resolver exigiria transcodificar (CPU real) ou trocar de hardware
+(Fire TV Stick). André decidiu não seguir e **remover tudo**, não só pausar:
+
+- Integração `dlna_dmr` excluída pela UI do HA (era a entidade
+  `media_player.sala_de_estar_tv_sala_dlna`).
+- Containers `go2rtc-cameras` e `go2rtc-tv-proxy` parados e removidos, junto com
+  as imagens Docker (`alexxit/go2rtc`, `nginx:alpine`) que só existiam para isso.
+- Pasta `go2rtc-cameras/` apagada do disco (guardava a senha do DVR em texto
+  puro — mais um motivo pra não deixar resquício).
+- `specs/features/reproducao-cameras-tv.md` mantida só como registro histórico
+  do diagnóstico (perfil H.264 incompatível), marcada como descartada no topo.
+
+Nada físico foi tocado (é a TV e os containers, não um atuador de risco).
+
 ### Sensores que o painel consome
 
 Criados em `config/template_sensors.yaml` — **o `dashboard-app` depende deles**:
@@ -195,6 +234,12 @@ Dez minutos sem movimento, apaga.
 
 **5. Movimento na Área Gourmet acende as luzes à noite.** As quatro luzes, mesma
 regra.
+
+**6. Muro e Painel acesos do pôr do sol à meia-noite** (19/09). Acende
+`light.circulacao_switch_1` e `light.painel` no evento de pôr do sol; apaga às
+00h. O acender é de borda — dispara uma vez e não reacende, então o que for
+apagado à mão fica apagado. Se o HA voltar de um reinício entre 00:00 e 00:30,
+apaga o que ficou aceso. Spec: `specs/automations/luzes-muro-painel-noite.md`.
 
 Nas automações 4 e 5, o temporizador é o `for: '00:10:00'` do próprio gatilho
 (reinicia sozinho a cada movimento) e a condição de sol guarda **só o acender** —
@@ -240,7 +285,11 @@ de claridade (mede a sala, não o cômodo do movimento).
   de resolver a rede multicast.
 - **Atalho do Apple Saúde** no iPhone — os sensores funcionam, os valores ainda
   são do teste.
-- **AirTags** — anisette e integração prontos; o arquivo de chaves só sai de um Mac.
+- **AirTags** — integração `findmy` (conta `an.diogo98@gmail.com`) segue configurada, mas o
+  servidor anisette que gerava a autenticação Apple foi **removido em 20/09/2026** a pedido do
+  André ("não será mais usado no projeto"). A integração deve parar de renovar autenticação sem
+  ele. Fica pendente decidir: recriar o anisette se quiser retomar os AirTags, ou remover também a
+  integração `findmy` já que a dependência dela não existe mais.
 - **Larissa no HA** — depende de acesso remoto fora da tailnet.
 - **Termostato e calendário** — sem `climate.*` nem `calendar.*`.
 - **Migração para dispositivo dedicado** — o HA cai quando o PC dorme, e a rede do

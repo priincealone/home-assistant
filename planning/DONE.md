@@ -7,6 +7,30 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 19/09/2026
+
+**Vídeo ao vivo direto no card, no HA** — os cards de câmera do dashboard-app já mostravam ao vivo
+(feature já existente, descoberta só nesta data). O que faltava era só dentro do próprio Home
+Assistant: adicionado no "Painel de controle" (`lovelace.painel_de_controle`, dashboard manual, sem
+mexer na dashboard "Dispositivos" que é auto-gerada). Ver `CASA.md` §Câmeras.
+
+**Análise completa do sistema de câmeras para o dashboard-app** — levantamento de integrações
+possíveis (ONVIF, `generic`, `go2rtc`, Frigate, Double Take/CompreFace), geração de imagem, captura de
+movimento e automações possíveis. Achado principal: o movimento das câmeras da rua não existe como
+estado no HA, só como e-mail — por isso o painel não tem como mostrar "movimento agora" nelas.
+Documento: `specs/features/cameras-analise-completa-roadmap-dashboard.md`.
+
+**Reprodução das câmeras na TV da sala — descartada e removida** — chegou a funcionar quase por
+completo via DLNA (`dlna_dmr` + `go2rtc-cameras` + proxy `go2rtc-tv-proxy`), mas travava ao decodificar
+de fato: a câmera manda H.264 High Profile, a TV só decodifica Main/Baseline por esse caminho.
+Resolver exigiria transcodificar (CPU real) ou trocar de hardware. André decidiu não seguir e remover
+tudo: integração `dlna_dmr` excluída pela UI, containers e imagens Docker removidos, pasta
+`go2rtc-cameras/` apagada do disco (guardava a senha do DVR em texto puro). Diagnóstico técnico
+preservado em `specs/features/reproducao-cameras-tv.md` (marcado como descartado no topo). Ver
+`CASA.md` §Câmeras e `ESTADO_DASHBOARD.md`.
+
+---
+
 ## 18/09/2026
 
 **Câmeras Intelbras integradas ao Home Assistant, com clipe de movimento na

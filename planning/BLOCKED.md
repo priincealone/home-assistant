@@ -30,8 +30,10 @@ neutralizar o WebAuthn na aba: não contorna.
 interface do MA, que congela nesse diálogo. O servidor de PO token já está de pé e no endereço certo.
 
 ### K-04 · Chaves dos AirTags (FindMy)
-**Destrava**: rodar `python3 -m findmy decrypt` **num Mac** e trazer o arquivo de chaves.
-**Pronto**: servidor anisette no ar, integração instalada, fluxo aberto no campo certo.
+**Destrava**: rodar `python3 -m findmy decrypt` **num Mac** e trazer o arquivo de chaves — **e**
+recriar o servidor anisette, removido em 20/09/2026 a pedido do André (container, imagem e pasta
+de dados apagados; não será mais usado no projeto). A integração `findmy` continua configurada no
+HA, mas sem o anisette não tem como autenticar. Sem ele, este item não destrava mais só com o Mac.
 
 ### K-05 · Atalho do Apple Saúde
 **Destrava**: montar o atalho no iPhone com automação diária apontando para o webhook.
@@ -42,9 +44,13 @@ interface do MA, que congela nesse diálogo. O servidor de PO token já está de
 ## Bloqueados no André — rede e equipamento
 
 ### K-06 · Reserva de DHCP
-**Destrava**: reservar no roteador o IP do PC (`192.168.31.22`) e o do PS5.
+**Destrava**: reservar no roteador o IP do PC (`192.168.31.22`), o do PS5 e o do **DVR das câmeras**
+(`192.168.31.217` — já mudou uma vez, de `.216` para `.217`, em 20/09/2026, derrubando as duas
+câmeras até a URL RTSP ser corrigida).
 **Impacto de não fazer**: o IP do PC está escrito fixo em `app/api/mass/route.ts` e é o destino do
-webhook de saúde. Se mudar, o painel perde o Music Assistant e a telemetria para de chegar.
+webhook de saúde. Se mudar, o painel perde o Music Assistant e a telemetria para de chegar. O IP do
+DVR está fixo na URL RTSP das duas integrações `generic` — se mudar de novo, as câmeras voltam a
+ficar indisponíveis até alguém perceber e corrigir manualmente.
 
 ### K-07 · Som ambiente — equipamento
 **Destrava**: comprar as caixas embutidas e o amplificador; definir onde ficam os Echos.
@@ -65,6 +71,9 @@ projeto sincronizada pelo Google Drive.
 **Destrava**: o termostato existe fisicamente e está offline; o calendário nunca foi integrado.
 ❓ **DESCONHECIDO**: modelo do termostato e se é integrável ao HA.
 
+**K-13 (URL RTSP malformada) resolvido pelo André em 19/09/2026** — ver `ESTADO_DASHBOARD.md`
+(entradas de 19/09). HLS confirmado gerando normalmente depois da correção.
+
 ---
 
 ## Bloqueados por decisão, não por falta de acesso
@@ -80,3 +89,10 @@ senha a cada toque), não uma tarefa de código esperando ser escrita.
 existe no repositório e nunca foi usado.
 ⚠️ Containerizar **quebra** a leitura de `C:\HomeAssistant\config\.storage\core.config_entries` feita
 por `app/api/mass/route.ts`, e exige rever `HA_URL`.
+
+**K-14 (reprodução das câmeras da rua na TV) encerrado, não só destravado** — André decidiu em
+19/09/2026 descartar a abordagem em vez de resolver o transcode, e pediu para remover toda a
+infraestrutura (não deixar pausada). Ver `planning/DONE.md` e `CASA.md` §Câmeras para o que foi
+removido, e `specs/features/reproducao-cameras-tv.md` para o diagnóstico técnico (mantido como
+registro histórico, marcado como descartado). Alexa/Nabu Casa continua fora de escopo, sem relação
+com esse encerramento.
