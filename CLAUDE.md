@@ -41,7 +41,7 @@ docker exec -i homeassistant python - --validar < script.py
 Para editar `.storage` com o HA parado, use a própria imagem do HA:
 
 ```bash
-docker run --rm -i -v C:/HomeAssistant/config:/config \
+docker run --rm -i -v D:/HomeAssistant/config:/config \
   --entrypoint python ghcr.io/home-assistant/home-assistant:stable - < script.py
 ```
 

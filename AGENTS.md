@@ -1,8 +1,8 @@
 # Diretrizes Gerais de Governança para Agentes (AGENTS.md)
 
 Este repositório abriga o sistema de automação residencial do André, estruturado em **dois projetos integrados com repositórios Git independentes**:
-1. **Base do Home Assistant (`c:\HomeAssistant`)**: Containers Docker, configurações YAML, automações físicas, sensores sintéticos e scripts Python.
-2. **Painel Visual (`c:\HomeAssistant\dashboard-app`)**: Aplicação web moderna em Next.js 16 + React 19 + Tailwind CSS v4, com git próprio, servindo como painel principal da casa na porta 3002.
+1. **Base do Home Assistant (`d:\HomeAssistant`)**: Containers Docker, configurações YAML, automações físicas, sensores sintéticos e scripts Python.
+2. **Painel Visual (`d:\HomeAssistant\dashboard-app`)**: Aplicação web moderna em Next.js 16 + React 19 + Tailwind CSS v4, com git próprio, servindo como painel principal da casa na porta 3002.
 
 ---
 
@@ -10,7 +10,7 @@ Este repositório abriga o sistema de automação residencial do André, estrutu
 
 - **Claude Code**: Opera na base de automações, infraestrutura de containers, scripts forenses em Python e manutenções do sistema operacional. **Não deve editar componentes visuais ou CSS em `dashboard-app/`**.
 - **Antigravity**: Opera na experiência de usuário (UX), interface em Next.js, sistema de design Liquid Glass, performance de renderização e acessibilidade. **Não deve alterar configurações físicas em `config/` (`automations.yaml`, `configuration.yaml`, `.storage/`) sem planejamento prévio aprovado**.
-- **Contrato Canônico Compartilhado**: O mapeamento entre a casa real e a interface é governado por [`dashboard-app/lib/rooms.ts`](file:///c:/HomeAssistant/dashboard-app/lib/rooms.ts) e [`dashboard-app/manifesto-comodos.json`](file:///c:/HomeAssistant/dashboard-app/manifesto-comodos.json). Renomear uma entidade física ou alterar seu `entity_id` sem sincronização quebra o painel.
+- **Contrato Canônico Compartilhado**: O mapeamento entre a casa real e a interface é governado por [`dashboard-app/lib/rooms.ts`](file:///d:/HomeAssistant/dashboard-app/lib/rooms.ts) e [`dashboard-app/manifesto-comodos.json`](file:///d:/HomeAssistant/dashboard-app/manifesto-comodos.json). Renomear uma entidade física ou alterar seu `entity_id` sem sincronização quebra o painel.
 
 ---
 
@@ -18,7 +18,7 @@ Este repositório abriga o sistema de automação residencial do André, estrutu
 
 1. **Protocolo RSK-01 para Edição de Registros (.storage)**:
    O Home Assistant Core sobrescreve os arquivos em `config/.storage/` durante o desligamento. É terminantemente proibido editar `core.entity_registry`, `core.device_registry` ou `core.area_registry` com o container em execução. Procedimento obrigatório:
-   - Gerar cópia de segurança em `c:\HomeAssistant\backups\`;
+   - Gerar cópia de segurança em `d:\HomeAssistant\backups\`;
    - Parar o serviço: `docker stop homeassistant`;
    - Aplicar a alteração no arquivo JSON com validação estrita de sintaxe;
    - Iniciar o serviço: `docker start homeassistant`;
@@ -42,9 +42,9 @@ Antes de concluir qualquer tarefa:
 
 ## 4. Documentação de Referência Obrigatória
 
-- **Governança Multi-Agente Completa**: [`artifacts/antigravity/multi-agent-governance.md`](file:///c:/HomeAssistant/artifacts/antigravity/multi-agent-governance.md)
-- **Infraestrutura e Dispositivos**: [`CASA.md`](file:///c:/HomeAssistant/CASA.md)
-- **Instruções do Claude Code**: [`CLAUDE.md`](file:///c:/HomeAssistant/CLAUDE.md)
-- **Diário de Decisões e Histórico**: [`ESTADO_DASHBOARD.md`](file:///c:/HomeAssistant/ESTADO_DASHBOARD.md)
-- **Matriz de Riscos Técnicos**: [`artifacts/antigravity/risk-register.md`](file:///c:/HomeAssistant/artifacts/antigravity/risk-register.md)
-- **Matriz de Propriedade de Arquivos**: [`artifacts/antigravity/file-ownership.md`](file:///c:/HomeAssistant/artifacts/antigravity/file-ownership.md)
+- **Governança Multi-Agente Completa**: [`artifacts/antigravity/multi-agent-governance.md`](file:///d:/HomeAssistant/artifacts/antigravity/multi-agent-governance.md)
+- **Infraestrutura e Dispositivos**: [`CASA.md`](file:///d:/HomeAssistant/CASA.md)
+- **Instruções do Claude Code**: [`CLAUDE.md`](file:///d:/HomeAssistant/CLAUDE.md)
+- **Diário de Decisões e Histórico**: [`ESTADO_DASHBOARD.md`](file:///d:/HomeAssistant/ESTADO_DASHBOARD.md)
+- **Matriz de Riscos Técnicos**: [`artifacts/antigravity/risk-register.md`](file:///d:/HomeAssistant/artifacts/antigravity/risk-register.md)
+- **Matriz de Propriedade de Arquivos**: [`artifacts/antigravity/file-ownership.md`](file:///d:/HomeAssistant/artifacts/antigravity/file-ownership.md)
