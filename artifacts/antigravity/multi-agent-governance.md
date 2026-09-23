@@ -47,6 +47,8 @@ O ecossistema residencial opera sob um modelo híbrido local-nuvem com divisão 
 - **Banco de Dados**: SQLite 3 com WAL ativo (`config/home-assistant_v2.db`).
 - **Telemetria de Host**: Glances Web Server (:61208) no Windows 11.
 - **Supervisão 24/7**: Watchdog PowerShell (`iniciar_servidor_background.ps1`) via Tarefa Agendada no Windows (`CasaDashboardAutoStart`).
+- **Integração Nativa no HA**: Bridge WebComponent (`config/www/casa-panel.js`) e Painel Custom (`panel_custom` em `/casa`) com resolução dinâmica de host (`window.location.hostname` para localhost, LAN ou Tailscale) e dashboard Lovelace integrado (`dashboards/casa.yaml`).
+- **Sincronização Imediata em Tempo Real (0ms)**: O servidor de desenvolvimento no Windows (`D:\HomeAssistant\dashboard-app`) mantém Fast Refresh (HMR) ativo; alterações aprovadas em código são exibidas instantaneamente no Home Assistant sem necessidade de compilação de imagem Docker ou reinício de serviços.
 
 ---
 

@@ -4770,3 +4770,79 @@ elimina só o duplo toque.
 depois de recarregar — o script de arranque só roda no carregamento.
 
 `npx tsc --noEmit` em 0.
+
+### Verificação após o Antigravity commitar em paralelo (22/09, fim da noite)
+
+Entre o commit `9931779` (minhas correções) e a verificação, apareceram no `dashboard-app` três
+commits que **não são meus**: `8349fce` (scripts), `c0fbe7b` (central de vigilância, papéis de
+parede, AeroGlyphs) e `ebaaf8c` (a skill `vercel-react-best-practices`, que eu ia versionar e ele
+versionou antes).
+
+`git diff 9931779..HEAD` nos quatro arquivos que eu toquei — `globals.css`, `layout.tsx`,
+`useFocusTrap.ts`, `RoomPopup.tsx` — **volta vazio**. Nada foi sobrescrito.
+
+Remedido ao vivo a 1280×800 e a 375×812:
+
+| Correção | Estado |
+| :--- | :--- |
+| C-01 tema claro | 7 elementos entre **4,72 e 16,78:1**; zero reprovações |
+| C-02 / C-03 alvos | Só as duas pílulas de canal abaixo de 44px visíveis (com 44 de toque, por decisão) |
+| C-03c câmera em 2 colunas | 487px a 1280 |
+| C-04 foco do modal | Entra em "Fechar detalhes de Cozinha"; ao fechar, volta para o card |
+| C-05 botão mestre | **44px** |
+| C-06 hover | **144 regras** dentro da guarda; as 5 de fora são os neutralizadores. Nenhuma regra nova escapou |
+| C-06 iPad | `data-toque` presente no toque; zero cards em hover; fundo `0.09`, sem transform |
+| C-07 anel | 3px ciano, afastamento 3px, halo presente |
+| Zoom | `user-scalable=no` na meta, `touch-action: manipulation`, `gesturestart` cancelado |
+| Layout | Zero vazamento, zero rolagem em paisagem |
+
+⚠️ **Dois sustos que eram artefato de medição, não regressão** — e é a quarta vez nesta série:
+
+1. O botão mestre mediu **42px**. O `height` computado dizia 44: a diferença era a **animação de
+   entrada do modal**, que escala a caixa. Com 1,5 s de espera, 44px.
+2. O `Esc` "não fechou" o modal em 900 ms. Com tecla real e uma janela maior, fechou.
+
+A lição repetida: **medir enquanto a interface anima inventa defeito**. Esperar o estado assentar é
+parte do teste, não zelo excessivo.
+
+**Risco operacional registrado**: dois agentes escrevem no `dashboard-app`. Desta vez não houve
+colisão porque os arquivos foram disjuntos, mas o modo de falha aqui não é conflito de merge — é
+sobrescrita silenciosa. Antes de commitar ali, conferir `git log` primeiro.
+
+## 22/09/2026 — P0 do vidro e hold no `Dormir`
+
+Depois da auditoria dupla (`artifacts/audit/auditoria-visual-funcional-22-09.md`), o André
+respondeu as perguntas de produto: o verbo dominante do card de cômodo é **acender**; a faixa de
+telemetria entrega "apenas a sensação de painel completo"; e o `Dormir` sem proteção foi
+classificado como **descuido, a corrigir**.
+
+**P0 — `backdrop-filter` estava desligado em produção.** Medido na tela: 38 declarações servidas
+só como `-webkit-backdrop-filter`, `CSS.supports('-webkit-backdrop-filter', …) === false` no
+Chrome, e **zero elementos borrados**. A causa não era o navegador: o lightningcss (embutido no
+`@tailwindcss/postcss`) trata o par prefixada/sem-prefixo como a mesma propriedade e mantém só a
+última do fonte — que era a prefixada, escrita à mão em 32 pontos.
+
+A correção é contraintuitiva: **apagar as 32 linhas `-webkit-backdrop-filter` escritas à mão** e
+deixar só a sem prefixo. O lightningcss então gera as duas formas a partir dos seus alvos
+(Safari 16.4+), e o CSS servido passou a ter 38 prefixadas **e** 39 sem prefixo — o Safari do
+iPad continua atendido. Verificado ao vivo: **de 0 para 30 elementos borrados**.
+
+Armadilha para o futuro: escrever o prefixo à mão **quebra** o resultado neste pipeline. O
+prefixo é trabalho do build.
+
+Custo medido: nenhum nesta máquina — 75 fps, p95 13,6 ms, 0 long tasks, igual a antes.
+**Não medido no iPad**, que tem GPU muito menor; 30 camadas de blur podem ter outro preço lá.
+
+**`Dormir` agora exige hold de 800 ms**, a mesma régua do `Apagar (n)` do cabeçalho, reaproveitando
+`.hold-progress-bar`. As cenas aditivas (Chegar, Cinema, Gamer) continuam em toque simples, porque
+desfazê-las é trivial. Verificado no navegador **com `fetch` de escrita bloqueado por um stub de
+teste** — a casa não foi acionada em momento nenhum:
+
+- toque curto (150 ms) → `is-hinting`, "Segure p/ apagar tudo", **zero requisições de escrita**;
+- hold de 950 ms → `is-active`, e o `POST /api/scene` saiu (capturado e bloqueado pelo stub).
+
+`npx tsc --noEmit` passa.
+
+**Pendente e bloqueado por decisão**: `npm ci` para reparar o `node_modules` danificado pelo Drive
+e destravar `npx next build`. Ele derruba o servidor da porta 3002 — e havia conexão ativa de outro
+aparelho no momento da auditoria. Precisa de uma janela combinada com o André.

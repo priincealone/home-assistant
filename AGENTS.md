@@ -2,7 +2,7 @@
 
 Este repositório abriga o sistema de automação residencial do André, estruturado em **dois projetos integrados com repositórios Git independentes**:
 1. **Base do Home Assistant (`d:\HomeAssistant`)**: Containers Docker, configurações YAML, automações físicas, sensores sintéticos e scripts Python.
-2. **Painel Visual (`d:\HomeAssistant\dashboard-app`)**: Aplicação web moderna em Next.js 16 + React 19 + Tailwind CSS v4, com git próprio, servindo como painel principal da casa na porta 3002.
+2. **Painel Visual (`d:\HomeAssistant\dashboard-app`)**: Aplicação web moderna em Next.js 16 + React 19 + Tailwind CSS v4, com git próprio, servindo como painel principal da casa na porta 3002 e integrado nativamente ao Home Assistant via WebComponent (`config/www/casa-panel.js`, `/casa` e `dashboards/casa.yaml`).
 
 ---
 

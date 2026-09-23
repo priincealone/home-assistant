@@ -5,6 +5,29 @@ default_config:
 # Load frontend themes from the themes folder
 frontend:
   themes: !include_dir_merge_named themes
+  extra_module_url:
+    - /local/casa-panel.js
+
+# Painel Nativo do Dashboard Next.js
+panel_custom:
+  - name: casa-panel
+    sidebar_title: "Casa Inteligente"
+    sidebar_icon: "mdi:home-variant"
+    url_path: "casa"
+    module_url: "/local/casa-panel.js"
+    trust_external_script: true
+    require_admin: false
+    handle_safe_area: true
+
+# Dashboard Lovelace Integrado (permite definir como Dashboard Padrão no perfil)
+lovelace:
+  dashboards:
+    casa-dashboard:
+      mode: yaml
+      title: "Casa Inteligente"
+      icon: "mdi:home-variant"
+      show_in_sidebar: false
+      filename: dashboards/casa.yaml
 
 automation: !include automations.yaml
 script: !include scripts.yaml
