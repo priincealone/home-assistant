@@ -83,6 +83,10 @@ projeto sincronizada pelo Google Drive.
 por firewall e confiar só na tailnet.
 **Por que está aqui**: é decisão de produto e de conveniência (o tablet de parede não deveria pedir
 senha a cada toque), não uma tarefa de código esperando ser escrita.
+⚠️ **Achado de 23/09/2026 que pesa nessa decisão**: `middleware.ts` isenta `/api/camera*` do PIN — o vídeo ao
+vivo das duas câmeras e o `POST /api/camera/record` (grava 30 s por chamada) respondem sem autenticação para
+quem alcança a porta 3002. Além disso `lib/auth.ts` cai num PIN padrão de 4 dígitos quando `DASHBOARD_PIN` não
+está definido. Não alterei nada (decisão do André).
 
 ### K-12 · Como sair do servidor de desenvolvimento
 **Destrava**: escolher entre container na `casa-net`, serviço do Windows, ou o `ha-addon/` que já
@@ -96,3 +100,19 @@ infraestrutura (não deixar pausada). Ver `planning/DONE.md` e `CASA.md` §Câme
 removido, e `specs/features/reproducao-cameras-tv.md` para o diagnóstico técnico (mantido como
 registro histórico, marcado como descartado). Alexa/Nabu Casa continua fora de escopo, sem relação
 com esse encerramento.
+
+### K-15 · go2rtc embutido do HA: `frame.jpeg` dá 500 nas duas câmeras (imagens estáticas e WebRTC)
+**Sintoma**: `/api/camera_proxy` e o card de miniatura do HA falham (~86 tracebacks/h no log:
+`Go2RtcClientError`, `500` em `/api/frame.jpeg`); no boot aparece `Error registering WebRTC provider ...
+Stream source is not supported by go2rtc`. O vídeo ao vivo **não** é afetado (HLS pelo componente `stream`).
+**Já isolado (23/09/2026)**: o `frame.jpeg` responde `exit status 183` = o `ffmpeg` que o go2rtc executa sai
+com `AVERROR_INVALIDDATA`. DVR, rede e decodificador estão bons: `ffmpeg` direto no DVR gera JPEG em ~1 s
+(HEVC Main 960x1080@30, keyframe a cada 2 s, sem áudio). A causa exata dentro do go2rtc **não** foi
+isolada — o teste A/B H.264×HEVC ficou inconclusivo (o RTSP interno rejeita caminho não definido), então
+**não** se pode culpar o HEVC.
+**Destrava**: decisão do André (mexe na config do HA, nível 2). Caminhos a avaliar: log de debug do go2rtc
+para ver o comando exato que falha; mudar o stream principal do DVR para H.264 (só ele mexe no DVR);
+ou aceitar, já que o painel não usa esse caminho.
+**Impacto de não fazer**: log do HA poluído e miniaturas estáticas do próprio HA quebradas. O
+`dashboard-app` não depende disso: as rotas `/api/camera/[id]/snapshot` e `/stream` (que dependem) não
+são chamadas por nenhum componente.

@@ -194,6 +194,14 @@ esse caminho. Resolver exigiria transcodificar (CPU real) ou trocar de hardware
 
 Nada físico foi tocado (é a TV e os containers, não um atuador de risco).
 
+### Vídeo ao vivo no painel (dashboard-app) — 23/09/2026
+
+`CameraLivePlayer` (HLS via `hls.js` 1.5.17, dependência local) ← proxy `app/api/camera/[id]/hls/[...file]` ←
+HA (`camera/stream` por WebSocket, componente `stream`/PyAV — **não** depende do go2rtc). Modos: `live` (LL-HLS,
+modal) e `glance` (miniatura). Detalhes e medições em `ESTADO_DASHBOARD.md` (23/09). Fora disso, `snapshot` e
+`stream` do painel são código morto e o go2rtc embutido do HA falha em `frame.jpeg` (K-15 em `planning/BLOCKED.md`).
+As rotas `/api/camera*` do painel são públicas (sem PIN) — ver K-11.
+
 ### Sensores que o painel consome
 
 Criados em `config/template_sensors.yaml` — **o `dashboard-app` depende deles**:

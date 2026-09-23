@@ -4846,3 +4846,67 @@ teste** — a casa não foi acionada em momento nenhum:
 **Pendente e bloqueado por decisão**: `npm ci` para reparar o `node_modules` danificado pelo Drive
 e destravar `npx next build`. Ele derruba o servidor da porta 3002 — e havia conexão ativa de outro
 aparelho no momento da auditoria. Precisa de uma janela combinada com o André.
+
+---
+
+## Estabilidade da imagem nos cards de câmera do painel (23/09/2026)
+
+Pedido do André: verificar e melhorar a instabilidade da geração de imagem nos cards de câmera do
+`dashboard-app` (pedido inequívoco, então editei o painel; git do painel estava limpo, **nada commitado**).
+
+**O que os cards realmente usam**: só o `CameraLivePlayer` (HLS ao vivo via `hls.js`) — no widget da página
+(`CameraGlanceWidget`), no modal `SurveillanceHubModal` (1 ou 2 players) e no `CameraLiveCard` do `RoomPopup`.
+As rotas `/api/camera/[id]/snapshot` e `/stream` **não são chamadas por nenhum componente** (código morto).
+
+**Medido antes de mexer**:
+- `snapshot`: 16/16 respostas caíram no SVG "standby", ~2 s cada. Causa no HA, não no painel: o `go2rtc`
+  embutido responde 500 (`exit status 183`, `AVERROR_INVALIDDATA` do `ffmpeg` dele) em `/api/frame.jpeg`, ~86
+  tracebacks/h. O `ffmpeg` direto no DVR tira JPEG em 1 s (HEVC Main 960x1080@30, keyframe a cada 2 s, sem
+  áudio), então DVR/rede/decodificador estão bons. Causa exata no go2rtc **não isolada** e o HEVC **não** foi
+  provado culpado (teste A/B inconclusivo). Virou K-15 em `planning/BLOCKED.md`.
+- HLS em regime estável (proxy): 0 erros em 4,5 min com 3 players, inclusive na virada do token de 180 s.
+  A instabilidade estava nas **transições** e no cliente.
+- Cliente real (Chromium): o `hls.js` mandava `playlist.m3u8?_HLS_msn=…&_HLS_part=…` (reload bloqueante do
+  LL-HLS) e o proxy respondia em ~67 ms **sem bloquear**, porque descartava a query string.
+
+**Problemas encontrados e corrigidos** (7 arquivos):
+1. `app/api/camera/[id]/hls/[...file]/route.ts` — repassa a query do LL-HLS ao HA (reload bloqueante agora
+   segura ~1 s, uma parte); cache `immutable` de 1 h em `segment/N.m4s`/`init.mp4` (URLs que se repetem quando o
+   stream reinicia) trocado por `no-store` (playlist/init) e `private, max-age=10` (partes); só invalida o token
+   que realmente falhou; retry só em 404/5xx; teto de 20 s no upstream (`504`).
+2. `lib/cameraStream.ts` — pedidos simultâneos de `camera/stream` dividem uma única chamada (antes: corrida com
+   tokens diferentes); WebSocket que cai falha os pedidos na hora (antes: 5 s de espera); singleton em `globalThis`
+   em qualquer ambiente (chave `haStreamManagerV2`; o HMR do dev mantinha a instância velha).
+3. `app/components/CameraLivePlayer.tsx` — reescrito: estados `conectando/reproduzindo/travado/erro` (o spinner
+   antigo nunca voltava depois de um travamento); watchdog de vídeo congelado (6 s) que tenta `stopLoad/startLoad`
+   e depois reinicia o player; backoff exponencial (1→15 s) em vez de `startLoad()` imediato em loop; aviso claro
+   "não decodifica HEVC" em vez de girar para sempre; para de baixar com a aba oculta e salta ao ao vivo ao voltar;
+   props `modo="live"|"glance"` e `pausado`; cai sozinho de LL-HLS para modo estável após 3 travadas em 60 s; o
+   `hls.js` 1.5.17 (mesma versão) agora é dependência local (`npm i --save-exact`), não mais CDN em tempo de execução.
+   Antes o modo LL não dava latência menor (`liveSyncDurationCount: 2` = 12 s de alvo) e só dobrava as requisições.
+4. `CameraGlanceWidget.tsx` — `modo="glance"` e `pausado={modalAberto}` (o card atrás do modal não baixa mais
+   o mesmo stream); `globals.css` — pílula "Reconectando…" (escondida na miniatura).
+
+**Resultado medido no navegador real (painel visível, 23/09)**:
+- Card miniatura (`glance`): 40,1 s de vídeo em 40,1 s (1,000×), 29,9 fps, 0,35 req/s (antes ~2 req/s/player).
+- Modal com 2 players LL-HLS: 1,000× e 30 fps cada, 2,9 req/s no total, sem estado de reconexão, `/api/state`
+  com mediana de 70 ms e 0 falhas durante o vídeo, 0 erros no console.
+- Rede das câmeras cortada por ~16 s: congelamento detectado em ~4 s, pílula "Reconectando…", recuperação
+  automática ao voltar a rede (1,000×). Card atrás do modal pausa e, ao fechar, salta ao vivo em ~1 s.
+  Navegador sem HEVC (simulado): mensagem clara e 0 requisições depois.
+- Ficou: 5–9% de quadros descartados pelo navegador (decode/composição), independente da configuração, com
+  velocidade de reprodução 1,000×. Aba oculta→visível não foi testável nesse painel.
+`tsc --noEmit` passa. `next build` **não** foi rodado (node_modules do painel danificado pelo Drive; `npm ci`
+pendente — o `package-lock.json` já inclui o `hls.js`).
+
+**Armadilhas (para não repetir)**:
+- Erro meu, pego só por medir no navegador: `liveMaxLatencyDuration` **exige** `liveSyncDuration` no `hls.js`;
+  sem ele o construtor lança, a exceção era engolida e o modal ficou "conectando" com **zero** requisições.
+  Agora falhas de inicialização vão para `console.error`.
+- Painel Browser **oculto** (`document.hidden`) congela a decodificação: a 1ª medição parecia "slideshow"
+  (currentTime parado, latência crescendo) e era só o pane escondido. Medir vídeo só com o pane visível.
+- O `hls.js` em LL reescreve `video.playbackRate`; forçar `playbackRate=0` não congela nada. Para simular falha,
+  derrubar as requisições (`XMLHttpRequest`) das rotas de câmera.
+- O HMR não reinicia os efeitos do player: recarregar a página depois de editar.
+- `/api/camera*` é **pública** (isenta do PIN no `middleware.ts`), inclusive o `POST /api/camera/record`.
+  Registrado em K-11; não alterei.
