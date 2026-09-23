@@ -14,6 +14,7 @@
     "sidebar": {
       "panelOrder": [
         "dashboard-dispositivos",
+        "casa",
         "painel-de-controle",
         "map",
         "energy",
