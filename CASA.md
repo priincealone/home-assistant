@@ -238,7 +238,9 @@ por um caminho de cada vez — local, e a nuvem só se o local não responder.
 porta acende `light.painel` como luz de guia.
 
 **4. Movimento na Lavanderia acende a luz à noite.** Do pôr do sol ao amanhecer.
-Dez minutos sem movimento, apaga.
+Apaga só com **dez minutos sem movimento na Lavanderia e na Área Gourmet** (desde
+23/09/2026); os dois sensores têm gatilho, então a luz apaga quando o último dos
+dois esvazia.
 
 **5. Movimento na Área Gourmet acende as luzes à noite.** As quatro luzes, mesma
 regra.

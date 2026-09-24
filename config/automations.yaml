@@ -176,6 +176,17 @@
     Assistant descarta o agendamento — a contagem recomeça do zero sozinha, sem
     precisar de `timer` nem de `input_datetime`.
 
+    A luz só apaga com **ausência nos dois lados**: Lavanderia e Área Gourmet
+    sem movimento há dez minutos. Quem está na Área Gourmet fica a poucos passos
+    da Lavanderia e pode estar de passagem por ela, então a ausência de
+    movimento só num dos sensores não basta. Como qualquer um dos dois pode ser
+    o último a esvaziar, **os dois têm gatilho de ausência**: se a Lavanderia
+    completa os dez minutos com a Área Gourmet ainda ocupada, a condição falha e
+    a luz fica; quando a Área Gourmet esvaziar por dez minutos, o segundo
+    gatilho reavalia e apaga. Sem ele, a luz ficaria acesa até alguém voltar à
+    Lavanderia. As duas condições exigem `off` **contínuo** (`for`), o que
+    também exclui `unavailable`: na dúvida a luz fica acesa.
+
     ⚠️ A condição de sol está **só no acender**. Se ela também guardasse o
     apagar, uma luz acesa às 5h50 ficaria acesa para sempre: o sol nasceria, a
     condição passaria a ser falsa e o desligamento nunca aconteceria. Apagar por
@@ -189,6 +200,11 @@
       id: chegou
     - trigger: state
       entity_id: binary_sensor.sensor_lavanderia_movimento
+      to: 'off'
+      for: '00:10:00'
+      id: vazio
+    - trigger: state
+      entity_id: binary_sensor.sensor_area_gourmet_movimento
       to: 'off'
       for: '00:10:00'
       id: vazio
@@ -206,10 +222,18 @@
             - action: light.turn_on
               target:
                 entity_id: light.cozinha_copa_varanda_switch_3
-        - alias: Dez minutos sem ninguém — apaga, a qualquer hora
+        - alias: Dez minutos sem ninguém na Lavanderia nem na Área Gourmet — apaga, a qualquer hora
           conditions:
             - condition: trigger
               id: vazio
+            - condition: state
+              entity_id: binary_sensor.sensor_lavanderia_movimento
+              state: 'off'
+              for: '00:10:00'
+            - condition: state
+              entity_id: binary_sensor.sensor_area_gourmet_movimento
+              state: 'off'
+              for: '00:10:00'
           sequence:
             - action: light.turn_off
               target:
