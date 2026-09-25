@@ -100,7 +100,7 @@ O modelo físico do imóvel divide-se em 10 cômodos oficiais (`core.area_regist
 | **Área Gourmet** | `light.luzes_externas_switch_1` (Plafon Área Gourmet), `_2` (Pendente), `_3` (Led), `_4` (Spots), `binary_sensor.sensor_area_gourmet_movimento` | Tuya Cloud, switch_as_x | 4 circuitos independentes de luz e sensor de movimento |
 | **Circulação** | `light.circulacao_switch_1` (Muro), `light.circulacao_switch_2` (Corredor), aliases: `switch.entrada_switch_1/2` | Tuya Cloud, switch_as_x | Iluminação de circulação com interruptores paralelos |
 | **Quarto Luca** | `light.quarto_luca_switch_1`, `switch.tomada_inteligente_socket_1/2`, `sensor.tomada_inteligente_energia` | Tuya Cloud, switch_as_x | Iluminação, tomadas controladas e telemetria de Watts |
-| **Closet** | `light.closet_switch_1`, `light.led_escritorio_sonoff_1001dff472`, `light.yeelink_cn_581528686_bslamp2_s_2_light`, `switch.computador_socket_1/2`, `sensor.computador_energia`, `vacuum.dreame_us_415783444_mc1808` | Tuya, Sonoff LAN, Xiaomi Home (China/US), switch_as_x | Iluminação principal, fita LED, luminária de cabeceira, tomadas PC e aspirador |
+| **Closet** | `light.closet_switch_1`, `light.led_escritorio_sonoff_1001dff472`, `switch.computador_socket_1/2`, `sensor.computador_energia`, `vacuum.dreame_us_415783444_mc1808` | Tuya, Sonoff LAN, Xiaomi Home (China/US), switch_as_x | Iluminação principal, fita LED, tomadas PC e aspirador |
 | **Quarto** | `light.luz_quarto`, `fan.ventilador_quarto`, `binary_sensor.porta_do_quarto_porta` | LocalTuya, Tuya Cloud | Luz/ventilador de teto e sensor magnético de porta |
 | **Banheiro** | `switch.banheiro_switch_1`, `switch.banheiro_switch_2`, `binary_sensor.sensor_banheiro_movimento` | Tuya Cloud | Interruptor de luz, tomada e sensor de movimento |
 

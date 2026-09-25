@@ -5250,7 +5250,7 @@ como **exceção** ao §6 do CLAUDE.md, autorizada pelo André.
 tamanhos; "ligado" sem regra; 27 emoji; `lucide-react` instalado e nunca importado; o "AeroGlyphs" só existia na
 `/icons-preview`. Ícones ambíguos: Circulação (seta ao lado do chevron do card), Área Gourmet (guarda-sol), raio com dois
 sentidos, movimento parecido com Wi-Fi.
-**Feito** (`dashboard-app`, commits `7e7ce45`, `781248d`, `d938129`, `ee44606`):
+**Feito** (`dashboard-app`, commits `7e7ce45`, `781248d`, `d938129`, `ee44606`, `90cc6fe`):
 - `app/components/icons/`: `<Icon name state size>` sobre `@phosphor-icons/react@2.1.10`; `registry.ts` é o único
   importador; `peso.ts` (estado + tamanho → peso), `dominio.ts` (cômodo, clima, bateria), `clima.ts` (fonte única das
   condições, cores como tokens `--wx-*` com variante clara); glifo próprio `AspiradorRobo` na grade 256.
@@ -5266,7 +5266,32 @@ Nenhum dispositivo acionado — popup aberto só pelo botão de detalhe, Central
   Drive). Repostos do pacote oficial. Se voltar, reinstalar o Next.
 - O Phosphor desenha por **preenchimento**: CSS de `stroke`/`stroke-width` ou `circle[stroke=...]` não tem mais efeito.
 - A 1ª versão do `offline` passava despercebida em cinza (só opacidade) — ganhou selo `WifiSlash` a partir de 20 px.
-- `git add app` puxa junto edições de outra frente (`globals.css`, `page.tsx`, `HealthPill.tsx`); foram deixadas fora dos
-  commits e continuam pendentes no working tree.
+- `git add app` puxa junto edições de outra frente (`globals.css`, `page.tsx`, `HealthPill.tsx`). Durante a migração
+  foram deixadas fora dos commits; depois o André pediu para commitar a árvore e entraram em `fe700d0` (HealthPill no
+  lugar do StatusRail, `grupo` em `lib/alertas.ts`, miniatura da câmera). O chevron solto do `HealthPill` foi trocado
+  por `<Icon>` em `90cc6fe`; a rotação de 180° ao expandir a linha foi conferida no painel (`transform` de `none` para
+  `matrix(-1,0,0,-1)`).
+- `<svg>` restantes no painel: só os 2 gráficos do `EnergyWidget` e os 12 logotipos de `TvAppLogos` (de propósito).
+- `globals.css` ainda tem regras mortas do estilo antigo (`.weather-compact-icon-wrap circle[stroke="#fbbf24"]`, linhas
+  1653 e 10815; seletores `.room-icon-svg` com `stroke`). Inofensivas; limpar numa passada própria.
+- `xiaomi_home/miot_config/*.dict` guarda `access_token` e **não** deve ser commitado; ficou de fora do commit de
+  docs (`1a5003b`) e continua modificado no working tree.
 - Bundle +53 kB gz (391 → 444), num pedaço compartilhado.
 **Não verificado**: tablet/iPad reais, Safari, standby noturno em uso.
+
+## 25/09/2026 — Yeelight fora do Closet
+
+A luminária Yeelink (`light.yeelink_cn_581528686_bslamp2_s_2_light`, dispositivo "Luminária Luca") estava
+listada no cômodo **Closet** em `dashboard-app/lib/rooms.ts`, que é o contrato canônico e também a
+lista de permissão das rotas `toggle` e `control`. O André disse que ela não fica nesse ambiente.
+O registro do HA nunca a pôs lá: o dispositivo está na área `quarto_luca`, e `CASA.md` e
+`docs/SYSTEM-MAP.md` já a descreviam no Quarto Luca. A divergência era só do painel.
+
+Removida a entrada `yeelight_bedside` do Closet. O Closet passa a ter 2 pontos de luz (Luz Closet e LED
+Escritório), o que bate com o sensor `sensor.luzes_closet`, que já contava só esses dois. Conferido na
+tela: badge 0/2 e o modal do Closet sem menção à Yeelight. A linha correspondente em
+`artifacts/antigravity/current-architecture.md` foi corrigida. `npx tsc --noEmit` passa.
+
+⚠️ **Efeito colateral**: como `rooms.ts` é a lista de permissão das rotas de escrita, **a luminária deixou
+de ser controlável pelo painel**. Ela não aparece em nenhum cômodo (o Quarto Luca segue com 1 ponto,
+`light.quarto_luca_switch_1`). No HA continua funcionando.
