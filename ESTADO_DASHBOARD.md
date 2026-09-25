@@ -5202,3 +5202,20 @@ baterias só com ícone — não são defeito.
   "Indisponível" da luz do Quarto Luca.
 - O polling de 5s (`/api/state`, `/api/mass`, `/api/todo`, HLS da câmera) roda também na página do cômodo.
 - `globals.css` tem ~13,5 mil linhas, 200 `!important`, 140 overrides do tema claro; `config/_ddp_tmp.py` é resíduo.
+
+## 24/09 — Travamento ao abrir/fechar o popup do cômodo
+
+**Sintoma**: leve engasgo toda vez que um card era aberto ou fechado.
+**Causa** (medida no navegador): abrir/fechar passava por `executarComTransicao` (View Transition). O callback só
+enfileirava `setSelectedRoomId`, então o navegador fotografava o "estado novo" antes de o React desenhar — na abertura
+o popup ainda não estava no DOM; no fechamento ainda estava. Somava-se a animação CSS própria do popup: ao fechar,
+`modal-pop-out` (200 ms) e, aos 180 ms, uma segunda saída pela View Transition (~290 ms) — ~470 ms sem aceitar toque.
+O cross-fade de `::view-transition-*(root)` sobrescreve o `plus-lighter` do Chrome, o que escurece a página no meio.
+**Correção**: `app/page.tsx` — `onOpen`/`onClose` do popup chamam `setSelectedRoomId` direto; ficam só as animações
+CSS que já existiam. `executarComTransicao` continua nas navegações de página (ex.: botão de tela cheia do popup).
+**Verificado**: `tsc --noEmit` = 0. Três abrir/fechar no navegador: zero View Transitions disparadas, popup no DOM em
+~15 ms, removido em ~195 ms (fim da animação CSS), página já clicável logo depois, maior intervalo entre quadros 24 ms.
+Nenhum dispositivo acionado (só o botão de detalhe).
+**Armadilhas**: a 1ª abertura após recarregar leva ~320 ms porque `RoomPopup` é `dynamic()` e baixa o chunk no
+primeiro clique — custo único, não corrigido. As regras `view-transition-name` do popup e o CSS de root ficaram
+(inofensivos sem transição no popup). Não medido no tablet (29 elementos com `backdrop-filter` pesam mais lá).
