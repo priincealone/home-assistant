@@ -5099,3 +5099,20 @@ mostravam "Desligada" / "Sala livre" com a TV local `on`.
   `sensor.tv_sala_estado`, então o visual só muda no próximo polling (≤5 s). **Não testado na casa**
   (comando físico): falta o André confirmar que `turn_on` local liga a TV apagada (depende de WoL).
 - Não vi a tela renderizada; verificação foi pela API. PS5 `unavailable` é outro assunto.
+
+## 24/09/2026 — Dados reais da TV (estado, entrada, canal, volume)
+
+Spec: `specs/features/tv-estado-real-smartthings.md`. Opção A (via integração do HA), aprovada.
+
+- `sensor.tv_sala_estado` ganhou atributos vindos do SmartThings: `volume_level`, `is_volume_muted`,
+  `canal_nome`, `canal_numero`, `app_id`, `leitura_nuvem`. Nulos quando a nuvem não responde.
+- Painel (`MediaHubModal.tsx`, `TvRemoteWidget.tsx`): removidos os valores inventados — volume padrão
+  15 %, entrada "TV Aberta", canal "Samsung TV Plus" (e o mapeamento de qualquer `com.samsung*` para
+  "Samsung TV Plus"). Sem leitura aparece "—" / "Sem leitura" / "Volume sem leitura". A entrada legível
+  vem de `sensor.tv_fonte`.
+- Medido: `sensor.sala_de_estar_tv_nome_do_canal_de_tv` traz `com.samsung.tv.aria-video` (id de app, não
+  nome de canal) e `..._canal_de_tv` vem vazio; por isso `canal_nome` fica nulo e o id vai em `app_id`.
+  O nome real do canal pode só aparecer em TV aberta — **não verificado**.
+- `tsc --noEmit` passa; `/api/state` entrega os atributos. **Não olhei a tela renderizada.**
+- Limite: só existe o que a integração expõe. Mais campos exigiriam a API direta (opção B: token do
+  André em `.env.local` + rota nova).
