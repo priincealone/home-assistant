@@ -5,6 +5,7 @@
 - **Data**: 16/09/2026
 - **Status**: Proposta — aguardando aprovação do André
 - **Classificação**: Médio risco — toca atuador já governado por automação existente
+- **Nota (24/09/2026)**: o "desligar" que esta spec descarta em §1.2 e §4 passa a ser tratado em `ps5-desligar-remote-play.md` (PS5-02), por decisão do André
 
 ---
 
