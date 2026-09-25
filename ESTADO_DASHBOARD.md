@@ -5116,3 +5116,19 @@ Spec: `specs/features/tv-estado-real-smartthings.md`. Opção A (via integraçã
 - `tsc --noEmit` passa; `/api/state` entrega os atributos. **Não olhei a tela renderizada.**
 - Limite: só existe o que a integração expõe. Mais campos exigiriam a API direta (opção B: token do
   André em `.env.local` + rota nova).
+
+## 24/09/2026 — "TV aberta" com a TV no Apple TV: leitura direta do SmartThings (opção B)
+
+**Achado**: `media_player.sala_de_estar_tv` ficou com `source=digital_tv` sem mudar desde 01:02:02
+(restabelecimento da integração), mesmo com a TV em outra entrada; `update_entity` não alterou. O painel
+repetia fielmente um dado que parece velho. Sem a API do SmartThings não dá para saber quem está errado.
+
+**Feito**: rota `dashboard-app/app/api/tv/estado/route.ts` (GET, somente leitura). Lê
+`/v1/devices/{id}/status` com `SMARTTHINGS_TOKEN` (`.env.local`, escopo `devices:read`) e devolve ligada,
+volume, mudo, entrada, canal e capacidades `samsungvd.*`/`custom.*`, cada uma com o carimbo de tempo.
+`?comparar=1` inclui o que o HA mostra. Sem `SMARTTHINGS_DEVICE_ID`, procura a TV; se houver mais de
+uma candidata, devolve a lista (409). `tsc --noEmit` passa.
+
+**Não verificado**: a rota nunca rodou com token real (o token é do André, CLAUDE.md §10) e o painel
+respondeu `Não autenticado` à chamada sem sessão. Nenhum componente usa a rota ainda — primeiro
+confrontar os dados, depois decidir a integração.
