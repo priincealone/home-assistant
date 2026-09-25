@@ -75,7 +75,8 @@ entidades (L-01) e coerência cômodo × área (L-02) antes de qualquer outra co
 ```bash
 cd dashboard-app
 npx tsc --noEmit     # ✅ funciona (verificado em 15/09, saída 0)
-npm run build        # TODO: não executado nesta sessão; validade não confirmada
+npm run build        # ✅ passa (verificado em 25/09). Se falhar com "Module not found" em next/dist/compiled,
+                     #    faltam arquivos em node_modules/next (Google Drive): reinstalar o Next
 npm run lint         # ❌ NÃO FUNCIONA
 ```
 
