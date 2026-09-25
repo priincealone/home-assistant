@@ -5166,3 +5166,39 @@ retângulo (e o recorte do scroll); o sink move o mesmo iframe para cima desse e
 esconderijo sem recarregar, então a música **não corta** e não há segundo cliente disputando o player web.
 `tsc --noEmit` = 0. **Não verificado no navegador** (exige sessão e toca música real): conferir alinhamento
 com scroll do modal e toque dentro do iframe.
+
+## 24/09 — Legibilidade no modo escuro e correções visuais V-1 a V-9 (painel)
+
+**Pedido**: texto dos cards de ajuste de luz pouco visível no tema escuro com luz acesa; depois, teste visual
+completo (1280×800, 1024×768, 375×812; escuro e claro) e correção dos defeitos achados.
+
+**Causas medidas e mudanças** (tudo em `dashboard-app/app/globals.css`, commits `624ef89` e `e631252` do repositório
+do painel):
+- Modal de ajuste de luz: subtextos de 10–11px a 70% de opacidade → 11–12px a ~88%; tema claro mantém os tokens.
+- Botão "Ajustar" nos cards acesos (tile e popup do cômodo): texto marrom-escuro sobre card escuro sumia →
+  âmbar de destaque (popup: botão sólido; tile: borda e ícone âmbar).
+- Barra de widgets: em 1024px paisagem eram 5 colunas de ~160px e cortavam "Aspirador", "Compras", "4 tomadas
+  ativas" → grade de 12 colunas entre 641 e 1199px; TV e CFTV em linha inteira abaixo de 640px. O selo "tudo
+  comprado" some (o de pendências fica). Umidade/vento do clima não quebram no meio.
+- Página do cômodo: título "ILUMINAÇÃO" colava na dica em 375px → cabeçalho passa a quebrar linha.
+- `text-transform: capitalize` em `.room-name` gerava "Sala De Estar" → removido.
+- `/bg-light.jpg` nunca existiu em `public/` (404 a cada carga) → degradê; removida a exceção morta em `middleware.ts`.
+- Tema claro sobre wallpaper escuro: títulos de seção sumiam (o wallpaper não muda com o tema) → pastilha de vidro.
+
+**Verificado**: `tsc --noEmit` = 0 (na rodada de CSS do modal); medição no navegador em 1280/1024/375 nos dois temas
+(sem overflow horizontal, sem texto cortado nos widgets, zero alvos de toque < 44px, zero textos < 4,5:1 no escuro,
+nenhum 404 numa carga nova). Nenhum dispositivo foi acionado.
+**Não verificado**: painel escuro comparado contra versão anterior fora dos widgets/cabeçalhos; popup real do cômodo
+com luz acesa (os estados ativos foram simulados no DOM porque as luzes estavam apagadas).
+**Decisão mantida**: kiosk e standby ficam escondidos no celular por desenho (`display: none`), assim como a pílula de
+baterias só com ícone — não são defeito.
+
+**Achados fora do escopo, NÃO corrigidos (aguardam decisão do André — alçada 2/3)**:
+- **Autenticação não valida**: `middleware.ts` só confere se o cookie `casa_auth_session` existe; qualquer valor passa
+  (`/api/todo` devolveu 200 com `x`). PIN cai em `1234` porque `DASHBOARD_PIN` não está no `.env.local`; sem limite de
+  tentativas; sessão de 1 ano. `/api/state` e `/api/camera/*` são públicas. O item B-01 do backlog ("não há middleware")
+  está desatualizado: o middleware existe, mas não protege.
+- Entidades inexistentes nos logs do HA (`light.quarto_luca_switch_1`, `light.yeelink_…bslamp2_s_2`) — batem com o
+  "Indisponível" da luz do Quarto Luca.
+- O polling de 5s (`/api/state`, `/api/mass`, `/api/todo`, HLS da câmera) roda também na página do cômodo.
+- `globals.css` tem ~13,5 mil linhas, 200 `!important`, 140 overrides do tema claro; `config/_ddp_tmp.py` é resíduo.
