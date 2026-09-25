@@ -7,12 +7,12 @@
   {
     "name": "secador",
     "id": "21b2d4bb41d4436fb5f1f4e611daa2a9",
-    "complete": false
+    "complete": true
   },
   {
     "name": "pomada cabelo",
     "id": "75dc942487874558adbc11b5f2eff72e",
-    "complete": false
+    "complete": true
   },
   {
     "name": "café",
@@ -22,7 +22,7 @@
   {
     "name": "café nespresso",
     "id": "b3b4c15132ca4362b739ae39f06de88f",
-    "complete": false
+    "complete": true
   },
   {
     "name": "bateria",

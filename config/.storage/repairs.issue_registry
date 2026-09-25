@@ -66,13 +66,6 @@
         "domain": "samsungtv",
         "is_persistent": false,
         "issue_id": "deprecated_implicit_wake_on_lan_c8:a6:ef:1c:ec:28"
-      },
-      {
-        "created": "2026-09-24T14:46:49.164880+00:00",
-        "dismissed_version": null,
-        "domain": "homeassistant",
-        "is_persistent": false,
-        "issue_id": "config_entry_reauth_smartthings_01M1MTX3A0CA59X3BC9ZYXVWF5"
       }
     ]
   }
