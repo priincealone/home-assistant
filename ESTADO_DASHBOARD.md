@@ -4910,3 +4910,119 @@ pendente — o `package-lock.json` já inclui o `hls.js`).
 - O HMR não reinicia os efeitos do player: recarregar a página depois de editar.
 - `/api/camera*` é **pública** (isenta do PIN no `middleware.ts`), inclusive o `POST /api/camera/record`.
   Registrado em K-11; não alterei.
+
+## 24/09/2026 — Card de cômodo: o verbo dominante passa a ser acender
+
+Aplicação do item 3 da escala de parede, a pedido do André. Ele havia decidido em 22/09 que o
+verbo dominante do card é **acender**. Antes, o toggle era o ícone de 66×66 dentro de um card de
+238×212 (13% da área) e os outros 87% abriam o modal; a 2 m da parede, 20 px separavam "olhar" de
+"mudar o estado físico da casa".
+
+**Como ficou** (`RoomCard.tsx` + bloco novo no fim de `globals.css`):
+
+- `.room-card-toggle`: um `<button>` real, `position: absolute; inset: 0`, cobre o card inteiro e
+  liga/desliga. `aria-pressed` reflete o estado.
+- `.room-card-detail`: botão próprio de **48×48** (`--touch-wall`) no canto inferior direito, abre
+  o modal. Substitui a setinha decorativa de 18 px (`room-card-expand-cue`, que saiu do JSX).
+- A raiz do card deixou de ser `div[role=button]` e virou `role="group"`. Isso elimina o
+  `<button>` aninhado dentro de outro controle, que confundia leitores de tela.
+- O ícone do cômodo virou ilustração (`aria-hidden`); o toque é da camada.
+- Cômodo **sem ponto de luz** não tem o que alternar: a camada abre o detalhe e o botão de canto
+  some. Cômodo `vazio` não tem nenhum dos dois.
+- Dica do cabeçalho: "Toque no ícone…" → "Toque no cômodo para acender/apagar" (`page.tsx`).
+
+**Preservado de propósito**: a lógica de arraste (8 px) e a janela de 450 ms que engole o clique
+sintético do Safari, movidas do botão do ícone para a camada. Foi o que resolveu o "card travado"
+no iPad, então não foi reescrita.
+
+**Verificado no navegador, com `fetch` de escrita bloqueado por stub — a casa não foi acionada**:
+clique no centro → 1 `POST /api/toggle`, sem modal; clique no canto → modal abre, 0 escritas; toque
+sintético + clique sintético → exatamente 1 escrita; toque com arraste de 40 px → 0 escritas; foco
+entra no modal e **volta ao botão de detalhe** ao fechar; nenhum `button` aninhado nos 10 cards; sem
+sobreposição de nome, pontos de estado ou topo com o botão de detalhe em 1280×800, 1024×768 e
+768×1024. `npx tsc --noEmit` passa.
+
+**Não verificado**: o gesto real no iPad (só toque sintético); o anel de foco da camada por
+teclado, que usa `outline-offset: -6px` para não ser cortado pelo `overflow: hidden`.
+
+**Armadilha**: as regras `:hover` do `.room-icon-wrapper` (e o `:active`) já não disparam, porque
+quem recebe o ponteiro é a camada. O feedback de pressão foi refeito com `:has(.room-card-toggle:active)`.
+As regras antigas do `room-card-expand-cue` continuam na folha, mortas.
+
+## Câmeras "carregando": DVR trocou de IP de novo, agora com IP fixo (24/09/2026)
+
+**Sintoma**: cards de câmera do painel presos em "Conectando…". **Causa**: o DVR voltou de `.217` para
+`.216` (DHCP), mas as duas integrações `generic` ainda apontavam para `.217`; o log do HA mostrava
+`Error opening stream (Operation timed out …@192.168.31.217…)` e o painel devolvia 504 após 20 s. O código
+do painel não tinha defeito.
+
+**Correção (feita pelo André)**: URL RTSP das duas câmeras voltou para `.216` e o IP foi **fixado no
+próprio DVR** (Rede → TCP/IP, sem DHCP). Verificado: ping 3/3, RTSP aberto, playlist HLS 200 em <1 s nos
+dois canais, segmentos `.m4s` de 124 e 143 KB entregues pelo painel, zero erros de stream no log em 3 min.
+
+**Não verificado**: o card renderizado no navegador; estabilidade ao longo do tempo. **Pendente (K-06)**:
+reservar/excluir o `.216` da faixa DHCP no roteador, senão outro aparelho pode receber esse IP.
+**Armadilha**: o `arp` do PC mostrou o mesmo MAC em `.155` e `.216` (proxy ARP do mesh) — não use esse MAC
+para a reserva; leia no menu do DVR ou na lista do roteador.
+
+## 24/09/2026 — Contraste e colisão dos widgets estreitos (itens 1 e 2 da lista de melhorias)
+
+Só CSS, em `dashboard-app/app/globals.css`. Medição no navegador, antes e depois, com varredura de
+todos os nós de texto visíveis nos dois temas.
+
+**Contraste.** Antes: 10 reprovações abaixo de 4,5:1. Depois: **0 nos dois temas** (pior caso 4,54 no
+escuro, 4,77 no claro, sobre 75 nós de texto). As causas eram poucas:
+
+- `--text-dim` no escuro passou de alfa 0,50 para **0,70**. Com 0,50 o texto secundário reprovava em
+  superfícies de vidro (chip 3,99 · badge 4,22 · botão de canal 4,37 · card aceso 3,63); a 0,70 o
+  pior caso é 5,48. O token tem 127 consumidores, então a mudança é global de propósito.
+- `.section-meta` perdeu o `opacity: 0.72`, que empilhava sobre o alfa do próprio `--text-dim`
+  (3,13:1 no escuro, 3,34:1 no claro).
+- Tema claro: o âmbar `#b45309` dava 4,34 (badge de pendências) e 4,45 (pílula "Moderado", 9px);
+  ambos passaram para `#92400e`.
+
+⚠️ **Correção da auditoria de 22/09**: o `.clock-colon` **não** reprova. Os 1,56 e 1,82 que registrei
+foram medidos no meio da animação `clock-pulse` (que leva a opacidade a 0,25). Estático, dá 10,14 no
+escuro e 4,77 no claro. Foi artefato de medir durante animação, a quinta ocorrência desse erro. Não
+mexi no relógio.
+
+**Colisão dos widgets da faixa de telemetria.** Confirmada também a **1180×820**, o iPad Pro 10.9" em
+paisagem (não só a 1024×768 da auditoria): com 5 colunas, cada widget tem 220 px (190 a 1024) e neles
+cabiam ícone + texto + um ou dois botões de 44 px. O texto perdia a disputa: coluna de 42 px, pílulas
+"Ideal" e "Moderado", "STANDBY" e "Central de Mídia" ficavam sob os botões.
+
+A regra é por **largura do próprio widget** (`container-type: inline-size` em
+`.daily-widget-compact`, container `painel-widget`), não da tela. Abaixo de 260 px saem o
+ornamento e o secundário (pílula de conforto do clima, ícones de mídia e compras, sub-texto da mídia)
+e a pílula de energia desce para baixo dos watts. Abaixo de 205 px saem também os ícones de clima e
+energia e o selo STANDBY. As colunas de texto passam a recortar na própria caixa. **Trade-off
+consciente**: o texto vence o ornamento; no iPad, a 220 px, o ícone de mídia e o de compras somem.
+
+Resultado: 0 colisões visíveis a 1180×820, 1024×768, 1280×800 e 768×1024; nada vaza; a página
+continua sem rolagem em paisagem (820/820, 768/768, 800/800); alturas dos widgets inalteradas ou
+menores. Retrato (768×1024) não mudou: 1756 px de altura, a mesma dobra.
+
+**Ficou de fora**: `.camera-channel-btn` mede 36×32 (abaixo de 44); em `1024×768` "Central de Mídia"
+aparece como "Central d…" (recortado, sem sobrepor); "3 itens a comprar" é cortado com reticências.
+**Não verificado no iPad real.**
+
+**Armadilha**: `container-type: inline-size` cria contenção de layout no widget. Como ele já era
+`position: relative` e item de grid com largura definida, nada mudou; conferido com e sem a regra no
+retrato.
+
+## Carregamento dos cards de câmera: keep-alive no servidor e quadro em cache (24/09/2026)
+
+**Medido**: com o stream quente, master/playlist/init/segmento respondem em ~40–150 ms pelo painel; o custo
+está no stream **frio** — o HA encerra o stream 30 s após o último pedido (`OUTPUT_IDLE_TIMEOUT`) e reabrir
+o RTSP leva vários segundos.
+
+**Feito** (`dashboard-app`, ainda sem commit): (1) `lib/cameraStream.ts` — keep-alive: com uso do painel nos
+últimos 30 min, um GET de playlist a cada 15 s por câmera mantém o stream aberto (singleton subiu para
+`haStreamManagerV3`); (2) `CameraLivePlayer.tsx` — último quadro salvo em `localStorage`
+(`cam-poster:<canal>`, ~21 KB) e exibido como poster no próximo carregamento; `startFragPrefetch`; playlist
+pedida em paralelo ao download do chunk do hls.js.
+
+**Verificado**: `tsc --noEmit` ok; poster gravado (21 KB) a partir do vídeo real; segmentos 306→322 em 95 s
+sem pedidos externos (stream não esfriou). **Não medido**: tempo até o 1º quadro no navegador — o painel do
+Browser fica oculto e o vídeo é pausado. **Custo**: DVR e HA mantêm 2 streams abertos enquanto houver uso
+nos últimos 30 min.

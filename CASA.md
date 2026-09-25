@@ -69,8 +69,10 @@ de cada vez.
 
 ## Câmeras
 
-DVR **Intelbras MHDX 1204-C Dual Audio** (`192.168.31.217` — mudou de `.216` em 20/09/2026,
-provável renovação de DHCP; ver `ESTADO_DASHBOARD.md`), 4 canais, dos quais 2
+DVR **Intelbras MHDX 1204-C Dual Audio** (`192.168.31.216`, **IP fixo configurado no próprio
+DVR** em 24/09/2026 — antes era DHCP e mudou `.216`→`.217` em 20/09 e `.217`→`.216` em 24/09,
+derrubando as câmeras; ver `ESTADO_DASHBOARD.md` e K-06). Sem reserva no roteador, o `.216`
+segue livre na faixa de DHCP: se outro aparelho o receber, haverá conflito. 4 canais, dos quais 2
 ativos — canais 2 e 4, ambos com visão externa para a rua. Câmeras físicas:
 Intelbras VHD 3230 (analógicas, ligadas por coaxial ao DVR; não têm IP próprio).
 
@@ -81,7 +83,7 @@ funcionou de primeira, no formato que o próprio DVR expõe em
 Configurações → Rede → Porta:
 
 ```
-rtsp://<usuário>:<senha>@192.168.31.217:554/cam/realmonitor?channel=<N>&subtype=0
+rtsp://<usuário>:<senha>@192.168.31.216:554/cam/realmonitor?channel=<N>&subtype=0
 ```
 
 `subtype=0` é o stream principal (alta qualidade) — trocado de `subtype=1`

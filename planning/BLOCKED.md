@@ -45,8 +45,12 @@ HA, mas sem o anisette não tem como autenticar. Sem ele, este item não destrav
 
 ### K-06 · Reserva de DHCP
 **Destrava**: reservar no roteador o IP do PC (`192.168.31.22`), o do PS5 e o do **DVR das câmeras**
-(`192.168.31.217` — já mudou uma vez, de `.216` para `.217`, em 20/09/2026, derrubando as duas
-câmeras até a URL RTSP ser corrigida).
+(`192.168.31.216`). O DVR já mudou duas vezes (`.216`→`.217` em 20/09/2026 e `.217`→`.216` em
+24/09/2026), derrubando as duas câmeras até a URL RTSP ser corrigida.
+**Mitigação parcial (24/09/2026)**: André fixou o IP `.216` no próprio DVR (Rede → TCP/IP, sem DHCP);
+HLS das duas câmeras voltou a gerar. Falta a reserva/exclusão da faixa DHCP no roteador, senão outro
+aparelho pode receber o `.216` e gerar conflito. O MAC do DVR deve ser lido no menu do DVR ou na lista
+do roteador — o `arp` do PC mostrou o mesmo MAC em `.155` e `.216` (proxy ARP do mesh), não serve.
 **Impacto de não fazer**: o IP do PC está escrito fixo em `app/api/mass/route.ts` e é o destino do
 webhook de saúde. Se mudar, o painel perde o Music Assistant e a telemetria para de chegar. O IP do
 DVR está fixo na URL RTSP das duas integrações `generic` — se mudar de novo, as câmeras voltam a
