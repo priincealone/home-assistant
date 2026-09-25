@@ -5142,3 +5142,20 @@ o HA **não** está atrasado; a própria nuvem tem um retrato velho e não refle
 `/api/tv/estado` não foi exercitada (exige PIN), a comparação foi por script com a mesma consulta.
 Conclusão: a entrada/canal atuais **não são obtíveis de forma confiável pela nuvem**. Caminhos: rotular o
 dado com a idade (carimbo), ou fonte própria do Apple TV (integração `apple_tv`, pareamento do André).
+
+## 24/09 — Central de Mídia: player do Music Assistant não respondia
+
+**Causa (medida)**: o MA só tinha um player, o `browser_mod_…` órfão (`hass_players`, `available=false`). O player web
+(`sendspin`) só existe enquanto o navegador do MA está aberto — por isso tocar pelo iframe "Explorar biblioteca"
+funcionava. A rota `/api/mass` caía em `players[0]` (o órfão) e o MA recusava (`Player … is not available`, visto no
+log); o painel engolia o erro, então o clique "não fazia nada".
+
+**Mudança**: `app/api/mass/route.ts` só escolhe player **disponível** (`escolherPlayer`), devolve `playerPronto` e
+`playerAlvo`, e responde 409 `sem_player` quando não há. `MediaHubModal.tsx`: selo mostra o player real (antes era
+fixo "Áudio do Painel Ativo"), aviso com botão "Conectar player", erros do MA aparecem na tela, e a playlist clicada
+sem player fica pendente, abre o navegador do MA e toca sozinha quando o player conecta (25 s de limite).
+
+**Verificado**: `tsc --noEmit` = 0; sondagem direta do MA confirmou o único player indisponível.
+**Não verificado**: fluxo ponta a ponta no navegador (rota exige sessão do painel; toca música real).
+**Armadilha aberta**: o sink oculto (`MusicAssistantAudioSink`, no layout) e o iframe visível são a mesma origem
+:8095 — dois clientes do MA com o mesmo player web podem brigar. Não alterado.
