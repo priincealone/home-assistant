@@ -5092,6 +5092,10 @@ mostravam "Desligada" / "Sala livre" com a TV local `on`.
 **Armadilhas / não resolvido**:
 - A TV local não expõe `source` nem canal: com a nuvem fora, fonte fica "Ligada" e "Jogando no PS5"
   não dispara. Só a reautenticação do SmartThings (ação do André) devolve isso.
-- O botão de ligar/desligar do painel ainda chama `media_player.sala_de_estar_tv` (nuvem) — com a nuvem
-  fora, o comando falha. Não alterado (turn_off da TV alterna; exige decisão própria).
+- O botão de ligar/desligar do painel agora chama `media_player.tv_un65du8000gxzd` (local) via
+  `page.tsx`. A salvaguarda de `lib/ha.ts` continua valendo: `turn_off` só sai se a local não estiver
+  off/standby/unavailable/unknown. Efeitos: (1) com a local `unavailable` e a nuvem `on`, desligar pelo
+  painel vira no-op silencioso; (2) o efeito otimista incide na entidade local, e o widget lê
+  `sensor.tv_sala_estado`, então o visual só muda no próximo polling (≤5 s). **Não testado na casa**
+  (comando físico): falta o André confirmar que `turn_on` local liga a TV apagada (depende de WoL).
 - Não vi a tela renderizada; verificação foi pela API. PS5 `unavailable` é outro assunto.
