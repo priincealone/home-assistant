@@ -5159,3 +5159,10 @@ sem player fica pendente, abre o navegador do MA e toca sozinha quando o player 
 **Não verificado**: fluxo ponta a ponta no navegador (rota exige sessão do painel; toca música real).
 **Armadilha aberta**: o sink oculto (`MusicAssistantAudioSink`, no layout) e o iframe visível são a mesma origem
 :8095 — dois clientes do MA com o mesmo player web podem brigar. Não alterado.
+
+**24/09 — conflito sink × iframe resolvido**: agora existe **um só** iframe do MA (`MusicAssistantAudioSink`, no
+layout). Ao abrir "Explorar biblioteca", o modal reserva um espaço vazio e emite o evento `mass-explorer` com o
+retângulo (e o recorte do scroll); o sink move o mesmo iframe para cima desse espaço. Fechar devolve-o ao
+esconderijo sem recarregar, então a música **não corta** e não há segundo cliente disputando o player web.
+`tsc --noEmit` = 0. **Não verificado no navegador** (exige sessão e toca música real): conferir alinhamento
+com scroll do modal e toque dentro do iframe.
