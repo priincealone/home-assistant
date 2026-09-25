@@ -5132,3 +5132,13 @@ uma candidata, devolve a lista (409). `tsc --noEmit` passa.
 **Não verificado**: a rota nunca rodou com token real (o token é do André, CLAUDE.md §10) e o painel
 respondeu `Não autenticado` à chamada sem sessão. Nenhum componente usa a rota ainda — primeiro
 confrontar os dados, depois decidir a integração.
+
+**Comparação HA × SmartThings (24/09 ~22:22, TV no Apple TV)**: a API do SmartThings devolve exatamente o que
+o HA mostra — `samsungvd.mediaInputSource.inputSource = dtv` (TV aberta), `tvChannelName =
+com.samsung.tv.aria-video`, volume 15 — com carimbo único de 01:00:06Z, 22 min antes da leitura. Ou seja:
+o HA **não** está atrasado; a própria nuvem tem um retrato velho e não reflete a troca de entrada.
+`ligada` tem carimbo 00:10:24Z (bate com quando a TV foi ligada). O mapa de entradas da TV só lista `dtv` e
+`HDMI1` ("PlayStation 5"): o Apple TV não aparece como entrada. Token de leitura funciona; rota
+`/api/tv/estado` não foi exercitada (exige PIN), a comparação foi por script com a mesma consulta.
+Conclusão: a entrada/canal atuais **não são obtíveis de forma confiável pela nuvem**. Caminhos: rotular o
+dado com a idade (carimbo), ou fonte própria do Apple TV (integração `apple_tv`, pareamento do André).
