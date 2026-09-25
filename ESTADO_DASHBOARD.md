@@ -5219,3 +5219,54 @@ Nenhum dispositivo acionado (só o botão de detalhe).
 **Armadilhas**: a 1ª abertura após recarregar leva ~320 ms porque `RoomPopup` é `dynamic()` e baixa o chunk no
 primeiro clique — custo único, não corrigido. As regras `view-transition-name` do popup e o CSS de root ficaram
 (inofensivos sem transição no popup). Não medido no tablet (29 elementos com `backdrop-filter` pesam mais lá).
+
+## Miniatura da câmera em sangria total no cartão CFTV (25/09/2026)
+
+**Pedido**: aumentar ao máximo, dentro do cartão, a miniatura da câmera para ver a imagem sem abrir o modal.
+**Feito** (`dashboard-app/app/globals.css`, bloco após `.camera-glance-sub`): a miniatura deixou de ser uma
+janela de 62×44 no padding e passou a ocupar a **altura inteira do cartão, colada à borda esquerda**
+(`align-self: stretch`, sem borda/raio, `aspect-ratio` 16:9, 2:1 quando o cartão tem ≥380px de conteúdo,
+teto de `40cqw`). O cartão mantém a altura da fileira. Em cartão <380px somem o subtítulo e a seta (o cartão
+inteiro continua clicável); em painel >1400px a câmera passa a ocupar 2 colunas (uma coluna de ~300px não
+comportava imagem + título + canais). Reaproveita o container `painel-widget` que já existia em
+`.daily-widget-compact` — nomear outro container na mesma classe não funciona (o `container-name` de
+baixo vence).
+**Medido** (Browser pane, título sem corte em todos): 1024 → 124×62; 1280 → 159×79; 1600 → 163×81;
+1920 → 167×83; 768 e 390 com título inteiro (antes: 62×44). **Não verificado**: tema claro e o gesto no iPad.
+
+**Correção (25/09/2026) — miniatura sumia no iPad**: a largura vinha só de `aspect-ratio` sobre altura
+esticada (`align-self: stretch`), e o filho (`.camera-live-player-wrap`) é absoluto, sem conteúdo em fluxo. O
+Chrome deriva a largura; o WebKit não (suspeita — não reproduzida no Safari). Trocado por largura
+explícita `clamp(96px, 34cqw, 168px)` com fallback `112px`. Medido no Chrome: 1024 → 132×62, 820 → 127×65,
+1366 → 168×83, 390 → 122×62, título sem corte. **Não verificado no Safari/iPad real.** Armadilha: filho
+`position: absolute` + `aspect-ratio` no pai flex = largura 0 no WebKit.
+
+## Ícones do painel unificados sobre Phosphor (25/09/2026)
+
+**Pedido**: analisar todos os ícones, propor um pacote coerente com o projeto e aplicar. Auditoria em
+`artifacts/claude/auditoria-icones.md`; especificação em `specs/features/icones-phosphor.md`. Execução pelo Claude Code
+como **exceção** ao §6 do CLAUDE.md, autorizada pelo André.
+**Diagnóstico** (medido): 5 linguagens de ícone; 12 valores de `strokeWidth` (traço renderizado de 1,04 a 2,55 px); 15
+tamanhos; "ligado" sem regra; 27 emoji; `lucide-react` instalado e nunca importado; o "AeroGlyphs" só existia na
+`/icons-preview`. Ícones ambíguos: Circulação (seta ao lado do chevron do card), Área Gourmet (guarda-sol), raio com dois
+sentidos, movimento parecido com Wi-Fi.
+**Feito** (`dashboard-app`, commits `7e7ce45`, `781248d`, `d938129`, `ee44606`):
+- `app/components/icons/`: `<Icon name state size>` sobre `@phosphor-icons/react@2.1.10`; `registry.ts` é o único
+  importador; `peso.ts` (estado + tamanho → peso), `dominio.ts` (cômodo, clima, bateria), `clima.ts` (fonte única das
+  condições, cores como tokens `--wx-*` com variante clara); glifo próprio `AspiradorRobo` na grade 256.
+- Migrados: cômodos, dispositivos, popup, alertas, energia, câmeras, clima (15 condições + desconhecido), modo noturno,
+  cabeçalho, cenas, avisos, TV, login, galeria, aspirador, lista de compras, Central de Mídia (38 SVGs).
+- Removidos: `icons.tsx` (20 SVGs), 15 glifos AeroGlyphs, `lucide-react`.
+- `DeviceTile` agora escolhe o ícone pelo que o dispositivo é (temperatura, umidade, bateria e a ventilação do PS5
+  saíam todos como sensor de presença).
+**Verificado**: `tsc` = 0; `npm run build` passa; painel real nos temas escuro e claro; escala de cinza na prévia.
+Nenhum dispositivo acionado — popup aberto só pelo botão de detalhe, Central de Mídia só pela seta.
+**Armadilhas**:
+- **O build falhava antes de qualquer mudança**: 9 arquivos ausentes em `node_modules/next` (provável efeito do Google
+  Drive). Repostos do pacote oficial. Se voltar, reinstalar o Next.
+- O Phosphor desenha por **preenchimento**: CSS de `stroke`/`stroke-width` ou `circle[stroke=...]` não tem mais efeito.
+- A 1ª versão do `offline` passava despercebida em cinza (só opacidade) — ganhou selo `WifiSlash` a partir de 20 px.
+- `git add app` puxa junto edições de outra frente (`globals.css`, `page.tsx`, `HealthPill.tsx`); foram deixadas fora dos
+  commits e continuam pendentes no working tree.
+- Bundle +53 kB gz (391 → 444), num pedaço compartilhado.
+**Não verificado**: tablet/iPad reais, Safari, standby noturno em uso.
