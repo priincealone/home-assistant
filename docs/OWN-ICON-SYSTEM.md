@@ -1,5 +1,7 @@
 # Sistema Autoral de Ícones — "AeroGlyphs Home"
 
+> ⚠️ **SUBSTITUÍDO em 25/09/2026** por `specs/features/icones-phosphor.md` e pela seção "Ícones" do `dashboard-app/DESIGN.md`. Os desenhos autorais aqui descritos foram removidos do código.
+
 **Documento**: `docs/OWN-ICON-SYSTEM.md`  
 **Autor**: Direção de Design de Produto & Human Interface Engineering  
 **Versão**: 1.0 (Autoral & Proprietário)  

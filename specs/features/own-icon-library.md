@@ -1,5 +1,9 @@
 # Especificação Técnica de Funcionalidade: Biblioteca de Ícones Autorais (AeroGlyphs)
 
+> ⚠️ **SUBSTITUÍDA em 25/09/2026** por [`icones-phosphor.md`](icones-phosphor.md). A fachada `<Icon>` e o
+> contrato de acessibilidade descritos aqui continuam valendo. Os desenhos próprios e a regra "sem pacote
+> externo" foram revogados: 14 glifos não cobriam as ~90 necessidades e não tinham par contorno/preenchido.
+
 **Documento**: `specs/features/own-icon-library.md`  
 **Autor**: Direção de Design de Produto & Engenharia Frontend  
 **Data**: 17 de Setembro de 2026  

@@ -7,6 +7,18 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 25/09/2026
+
+**Ícones do painel unificados sobre Phosphor (B-17)** — cinco linguagens de ícone viraram uma: fachada
+`<Icon name state size>` sobre `@phosphor-icons/react` (versão fixa), com regra única de peso por estado
+(contorno em repouso, preenchido ligado, duotone no cômodo, esmaecido + selo de sem-conexão no offline).
+~130 SVGs soltos, 27 emoji, cores fixas no clima e o `icons.tsx` legado saíram; `lucide-react` (nunca usado)
+foi removido. Glifo próprio só para o aspirador robô. Áreas restantes com `<svg>`: gráficos de energia,
+`TvAppLogos` (marcas) e o `HealthPill` de outra frente. Especificação: `specs/features/icones-phosphor.md`;
+auditoria: `artifacts/claude/auditoria-icones.md`. Detalhe em `ESTADO_DASHBOARD.md`.
+
+---
+
 ## 19/09/2026
 
 **Vídeo ao vivo direto no card, no HA** — os cards de câmera do dashboard-app já mostravam ao vivo
