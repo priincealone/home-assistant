@@ -1,0 +1,80 @@
+# Cenas rápidas do painel. Especificação: specs/automations/cenas-como-scripts-no-ha.md
+# Ação manual: sem delay, sem estado pendente. A ventilação do PS5 tem dono
+# (automação "Ventilação do PS5 acompanha o console") e não é tocada aqui.
+
+cena_cinema:
+  alias: "Cena: Cinema"
+  description: >-
+    Sala escura e Painel a 20%. Ação manual do painel; substitui a lógica que
+    ficava em dashboard-app/app/api/scene/route.ts.
+  icon: mdi:movie-open
+  mode: single
+  sequence:
+    - action: light.turn_off
+      target:
+        entity_id: light.luz_sala
+    - action: light.turn_on
+      target:
+        entity_id: light.painel
+      data:
+        brightness: 51
+
+cena_chegar:
+  alias: "Cena: Chegar"
+  description: >-
+    Luzes de acolhimento: circulação, sala e Painel a ~70%. Manual; a chegada
+    automática não existe (decisão do André em 24/09, item 6 pulado).
+  icon: mdi:home-import-outline
+  mode: single
+  sequence:
+    - action: light.turn_on
+      target:
+        entity_id:
+          - light.circulacao_switch_1
+          - light.circulacao_switch_2
+          - light.luz_sala
+    - action: light.turn_on
+      target:
+        entity_id: light.painel
+      data:
+        brightness: 180
+
+cena_dormir:
+  alias: "Cena: Dormir"
+  description: >-
+    Apaga as luzes da casa (as mesmas 11 da cena "boa_noite" do painel). O
+    painel exige segurar o botão por 800 ms antes de chamar.
+  icon: mdi:weather-night
+  mode: single
+  sequence:
+    - action: light.turn_off
+      target:
+        entity_id:
+          - light.luz_sala
+          - light.painel
+          - light.cozinha_copa_varanda_switch_1
+          - light.cozinha_copa_varanda_switch_2
+          - light.cozinha_copa_varanda_switch_3
+          - light.luzes_externas_switch_1
+          - light.luzes_externas_switch_2
+          - light.luzes_externas_switch_3
+          - light.luzes_externas_switch_4
+          - light.circulacao_switch_1
+          - light.circulacao_switch_2
+
+cena_gamer:
+  alias: "Cena: Gamer"
+  description: >-
+    Sala apagada e Painel a 30%. Não liga a ventilação do PS5: quem decide é a
+    automação dela (resolve B-04, atuador com um só dono).
+  icon: mdi:controller
+  mode: single
+  sequence:
+    - action: light.turn_off
+      target:
+        entity_id: light.luz_sala
+    - action: light.turn_on
+      target:
+        entity_id: light.painel
+      data:
+        brightness: 76
