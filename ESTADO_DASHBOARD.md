@@ -5026,3 +5026,72 @@ pedida em paralelo ao download do chunk do hls.js.
 sem pedidos externos (stream não esfriou). **Não medido**: tempo até o 1º quadro no navegador — o painel do
 Browser fica oculto e o vídeo é pausado. **Custo**: DVR e HA mantêm 2 streams abertos enquanto houver uso
 nos últimos 30 min.
+
+## 24/09/2026 — Ícones de volta, leitura contínua de texto longo e C2/C4 em 44×44
+
+Pedido do André, sobre a correção dos widgets estreitos do mesmo dia.
+
+**1. Os ícones voltam.** A primeira versão escondia os ícones de clima, energia, mídia e compras
+abaixo de 260/205 px para dar largura ao texto. Revertido. Continuam saindo em largura estreita só as
+pílulas, que são chip e não texto que rola: "Ideal" do clima e o selo STANDBY da mídia. O nome e o
+número de pendências ficam.
+
+**2. Leitura contínua.** `SmartTruncateText` ganhou `continuo` (padrão `true`): o texto que não cabe rola
+sozinho, em vai-e-vem com pausa de 22% nas duas pontas, ~30 px/s no trecho de rolagem, ciclo de 5 a
+24 s. O marquee antigo só rodava com mouse em cima ou por 4,5 s depois de um toque, e o painel da
+parede não tem hover. **É global**: vale para todo uso do componente (mídia, lista de compras,
+`DeviceTile`), não só para a faixa de telemetria. `continuo={false}` volta ao comportamento antigo.
+As linhas que eram `<span>` simples e viraram `SmartTruncateText`: condição do clima, "Compras" e o
+status, sub-texto da mídia e o hint de energia. `prefers-reduced-motion` continua zerando a animação.
+
+Dois defeitos **antigos** do componente apareceram e foram corrigidos, porque a animação contínua os
+tornou visíveis:
+
+- O `ResizeObserver` ficava preso ao nó removido quando o componente trocava de ramo (overflow ↔
+  não-overflow), então uma medida feita cedo demais valia para sempre e o texto rolava para fora de
+  uma janela em que cabia. Agora o efeito refaz o observador quando `isOverflowing` muda.
+- Elemento `display: inline` tem `clientWidth` 0, e 0 era lido como "não cabe". Medida zero agora é
+  ignorada até a caixa existir. O hint de energia (`display: inline` por herança) virou `inline-block`.
+
+**3. C2 e C4: 44×44.** Eram 36×32 desenhados, com a área de toque de 44×44 vinda de um `::after`
+invisível (C-02). Passam ao padrão do C-03: o desenho corresponde ao alcance e o `::after` sai. Como
+44 px não cabem sob o texto num widget de 83–96 px, o seletor saiu do cabeçalho e foi para a coluna de
+ações, ao lado do botão de abrir; espaçamento de 8 px entre os dois. Ganharam `aria-pressed`.
+
+**Verificado** a 1180×820, 1024×768, 1280×800 e 768×1024: 0 colisões visíveis, 0 botões abaixo de
+44×44, nada vaza do widget, sem rolagem em paisagem, e a medida de cada janela coerente com o estado
+(rola só quem não cabe), sem laço de re-render (0 mutações em 3 s). `tsc --noEmit` passa. Retrato:
+1737 px de altura (era 1756).
+
+**Não verificado — leia isto**: o painel do navegador estava **oculto** (`visibilityState: hidden`, a
+linha do tempo das animações parada em 0), então **não vi a rolagem acontecer em tempo real**. Verifiquei
+o caminho por dentro: pausei cada animação e percorri `currentTime` — 0–22% parado em 0, 50% na
+metade da distância, 78–100% parado no fim, com a distância certa de cada texto. Falta olhar no iPad.
+
+**Custo aceito**: com o ícone de volta, a janela de leitura de "Central de Mídia" e do sub-texto tem
+**42 px** a 220 px de largura de widget (46 px em compras). Cabem ~5 caracteres por vez; o ciclo de
+5 s mostra o texto inteiro, mas quem passa a 2 m não lê a frase de relance. Se incomodar, as saídas
+são tirar o botão de ligar da mídia (o de abrir já leva ao controle) ou dar mais largura ao widget.
+
+## 24/09/2026 — Painel não reconhecia a TV ligada
+
+**Causa**: a integração SmartThings (nuvem) perdeu a autenticação (`400 Bad Request` em
+`account-link.nabucasa.com/refresh_token/smartthings`, 11:47) e `media_player.sala_de_estar_tv` ficou
+`unavailable`. O painel e os sensores `TV Fonte` / `Sala Atividade` liam só essa entidade, então
+mostravam "Desligada" / "Sala livre" com a TV local `on`.
+
+**Feito**:
+- Novo `sensor.tv_sala_estado` (`config/template_sensors.yaml`): `on` se qualquer caminho (nuvem ou
+  local) estiver `on`; `off` só se um caminho confirmar off/standby; senão `unavailable`. Atributo
+  `origem` diz quem respondeu.
+- `TV Fonte` e `Sala Atividade` passam a usar esse sensor. Sem leitura: "Indisponível" e "Sem leitura da
+  TV" (antes "Desligada" / "Sala livre").
+- Painel: `page.tsx` passa `sensor.tv_sala_estado` como `estadoTv`; sensor incluído em `lib/rooms.ts` e
+  `app/api/state/route.ts`. `tsc --noEmit` passa; `/api/state` entrega `on`.
+
+**Armadilhas / não resolvido**:
+- A TV local não expõe `source` nem canal: com a nuvem fora, fonte fica "Ligada" e "Jogando no PS5"
+  não dispara. Só a reautenticação do SmartThings (ação do André) devolve isso.
+- O botão de ligar/desligar do painel ainda chama `media_player.sala_de_estar_tv` (nuvem) — com a nuvem
+  fora, o comando falha. Não alterado (turn_off da TV alterna; exige decisão própria).
+- Não vi a tela renderizada; verificação foi pela API. PS5 `unavailable` é outro assunto.

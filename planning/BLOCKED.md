@@ -120,3 +120,8 @@ ou aceitar, já que o painel não usa esse caminho.
 **Impacto de não fazer**: log do HA poluído e miniaturas estáticas do próprio HA quebradas. O
 `dashboard-app` não depende disso: as rotas `/api/camera/[id]/snapshot` e `/stream` (que dependem) não
 são chamadas por nenhum componente.
+
+## SmartThings sem autenticação (24/09/2026)
+**Bloqueio**: `media_player.sala_de_estar_tv` `unavailable`; fonte, canal e energia da TV dependem dela.
+**Destrava**: André reautentica em Configurações → Dispositivos e serviços → SmartThings.
+**Mitigado**: `sensor.tv_sala_estado` mantém ligada/desligada pelo caminho local.

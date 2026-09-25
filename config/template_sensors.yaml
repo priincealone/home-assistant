@@ -146,46 +146,78 @@
 # Daí estes dois: um traduz a fonte, o outro cruza fonte + console para dizer o
 # que está acontecendo, que é o mais perto do "conteúdo em uso" possível hoje.
 - sensor:
+    # Estado consolidado da TV da sala. A nuvem (SmartThings) cai com frequência
+    # (24/09/2026: falha de autenticação, `unavailable` por horas) enquanto a TV
+    # local (SamsungTV) segue respondendo. Regra: qualquer caminho `on` vence; senão
+    # `off` só se um caminho confirmar off/standby; senão `unavailable` — sem
+    # leitura nunca é apresentado como desligada. Os atributos de fonte só existem
+    # quando a nuvem responde.
+    - name: "TV Sala Estado"
+      unique_id: tv_sala_estado
+      icon: mdi:television
+      state: >
+        {% set n = states('media_player.sala_de_estar_tv') %}
+        {% set l = states('media_player.tv_un65du8000gxzd') %}
+        {% if n == 'on' or l == 'on' %}
+          on
+        {% elif n in ['off', 'standby'] or l in ['off', 'standby'] %}
+          off
+        {% else %}
+          unavailable
+        {% endif %}
+      attributes:
+        origem: >
+          {% set n = states('media_player.sala_de_estar_tv') %}
+          {% set l = states('media_player.tv_un65du8000gxzd') %}
+          {% if n in ['on', 'off', 'standby'] and l in ['on', 'off', 'standby'] %}nuvem+local
+          {% elif n in ['on', 'off', 'standby'] %}nuvem
+          {% elif l in ['on', 'off', 'standby'] %}local
+          {% else %}nenhuma{% endif %}
+        source: "{{ state_attr('media_player.sala_de_estar_tv', 'source') }}"
+
     - name: "TV Fonte"
       unique_id: tv_fonte_legivel
       icon: mdi:television-guide
       state: >
-        {% set tv = states('media_player.sala_de_estar_tv') %}
-        {% if tv in ['off', 'unavailable', 'unknown', 'standby'] %}
-          Desligada
-        {% else %}
+        {% set tv = states('sensor.tv_sala_estado') %}
+        {% if tv == 'on' %}
           {% set f = state_attr('media_player.sala_de_estar_tv', 'source') %}
           {{ {'hdmi1': 'HDMI 1', 'hdmi2': 'HDMI 2', 'hdmi3': 'HDMI 3',
               'hdmi4': 'HDMI 4', 'digital_tv': 'TV aberta'}.get(f, f or 'Ligada') }}
+        {% elif tv == 'off' %}
+          Desligada
+        {% else %}
+          Indisponível
         {% endif %}
 
     - name: "Sala Atividade"
       unique_id: sala_atividade
       icon: >
         {% set ps5 = states('media_player.sala_de_estar_ps5') %}
-        {% set tv = states('media_player.sala_de_estar_tv') %}
+        {% set tv = states('sensor.tv_sala_estado') %}
         {% if ps5 == 'on' and state_attr('media_player.sala_de_estar_tv', 'source') == 'hdmi1' %}
           mdi:sony-playstation
-        {% elif tv not in ['off', 'unavailable', 'unknown', 'standby'] %}
+        {% elif tv == 'on' %}
           mdi:television-play
         {% else %}
           mdi:sofa-outline
         {% endif %}
       state: >
         {% set ps5 = states('media_player.sala_de_estar_ps5') %}
-        {% set tv = states('media_player.sala_de_estar_tv') %}
+        {% set tv = states('sensor.tv_sala_estado') %}
         {% set fonte = state_attr('media_player.sala_de_estar_tv', 'source') %}
-        {% set tv_ligada = tv not in ['off', 'unavailable', 'unknown', 'standby'] %}
-        {% if ps5 == 'on' and tv_ligada and fonte == 'hdmi1' %}
+        {% if ps5 == 'on' and tv == 'on' and fonte == 'hdmi1' %}
           Jogando no PS5
         {% elif ps5 == 'on' %}
           PS5 ligado
-        {% elif tv_ligada %}
+        {% elif tv == 'on' %}
           {{ states('sensor.tv_fonte') }}
+        {% elif tv == 'unavailable' %}
+          Sem leitura da TV
         {% else %}
           Sala livre
         {% endif %}
       attributes:
         ps5: "{{ states('media_player.sala_de_estar_ps5') }}"
-        tv: "{{ states('media_player.sala_de_estar_tv') }}"
+        tv: "{{ states('sensor.tv_sala_estado') }}"
         fonte: "{{ state_attr('media_player.sala_de_estar_tv', 'source') }}"
