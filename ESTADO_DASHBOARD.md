@@ -5409,3 +5409,319 @@ pelo que o projeto de fato oferece.
 - **Pendências**: habilitar o RSSI do Sonoff pela interface; coletar uma semana e definir limiar de sinal;
   confirmar suposição do nó da Sala; reserva de DHCP (K-06).
 - **Não provado**: envio real das notificações e disparo dos `for:`.
+
+## 25/09/2026 — O relógio vira a informação mais visível da tela
+
+Pedido do André: analisar o card de horário para um painel fixo e fazê-lo ser a informação mais legível
+de longe. Só CSS, em `dashboard-app/app/globals.css`, no fim do arquivo; `Clock.tsx` não mudou.
+
+**Análise (medida a 1180×820, iPad Pro 10,9", 132 px CSS por polegada):**
+
+- Fonte do relógio **26 px** (`--font-clock: clamp(1.45rem, 2.2vw, 1.85rem)`), 3,6 mm de altura de
+  algarismo: **6,2′ de arco a 2 m e 4,1′ a 3 m**, contra os 16′ que a leitura de parede pede.
+- Era o 3º/4º maior texto da tela, atrás do título "Casa" (28 px) e da temperatura (28 px). A data
+  media 11 px.
+- O cabeçalho era uma linha de três blocos (marca 464 px, relógio 89 px, ações 415 px) que só deixava
+  ~92 px livres: um relógio grande **não cabia** ao lado dos outros dois.
+
+**O que foi feito:**
+
+- Cabeçalho em paisagem (≥ 900 px) passa a **duas colunas**: relógio à esquerda ocupando a altura toda;
+  à direita a marca (título + alertas) sobre as ações. Via `grid-template-areas`, sem mexer no JSX.
+- Fonte do relógio `clamp(72px, 13.5vh, 128px)` — acompanha a **altura** da tela, que é o que o
+  cabeçalho disputa com a grade de cômodos. A 1180×820: **110,7 px**, algarismo de **15,3 mm**:
+  **26′ a 2 m, 17,6′ a 3 m, 13,2′ a 4 m**. Data de 11 para ~25 px.
+- Retrato (≥ 641 px): o relógio sobe para o topo do cabeçalho, `clamp(84px, 15vw, 132px)`
+  (115 px a 768 de largura: 18′ a 3 m).
+- Celular (< 641 px) mantém o arranjo próprio.
+
+**Verificado** a 1180×820, 1024×768, 1280×800 e 768×1024: o relógio é o maior texto da tela nos quatro
+(110/104/108/115 px contra 28 px do segundo); sem sobreposição entre marca, relógio e ações; nada fora
+do cabeçalho; sem rolagem em paisagem (820/820, 768/768, 800/800).
+
+**Custo, dito com todas as letras:** o cabeçalho passou de 68 para **159 px** (1180×820). A grade de
+cômodos perdeu 90 px: 478 → 388 px, e os cards de ~212 para **178 px** (1024×768: 162 px). Ainda acima
+do mínimo do card (155 px), mas é o preço direto de o relógio ser o dobro da altura da marca.
+
+**Não mexido de propósito:** o dois-pontos continua piscando (`clock-pulse`, opacidade a 0,25) e
+amarelo (`--on-accent`); `AmbientNightMode` (standby depois de `Dormir`) já tem relógio próprio grande e
+não foi tocado. **Não verificado no iPad real**: a distância de leitura é calculada, não testada com
+alguém a 3 m da parede.
+
+**Ajuste do mesmo dia — dois-pontos do relógio.** O André pediu branco e, em seguida, pediu de volta
+o amarelo. Ficou como estava: `color: var(--on-accent)` e halo âmbar (`rgb(251,191,36)`, conferido).
+Nada do ajuste permaneceu no CSS.
+
+## 25/09/2026 — Raio de refração em ciclo (e não mais infinito)
+
+Pedido do André: analisar o raio de refração infinito e refiná-lo de acordo com o projeto. Só CSS
+(`dashboard-app/app/globals.css`); nenhum componente mudou.
+
+**O que a análise apontou**, cruzando com `DESIGN.md` e `PRODUCT.md`:
+
+1. `@property --ray-angle` anima uma propriedade personalizada, que roda na **thread principal**: a
+   cada quadro refaz-se a pintura do anel do cabeçalho e de cada card aceso (até 11), 24 h por dia.
+   O `DESIGN.md:255` manda animar só `transform` e `opacity` "para 60 fps em tablets de parede de baixa
+   potência". Trocar por `transform` exigiria uma camada de mais de 2000 px de lado para girar um cônico:
+   descartado. O que se pode é pintar **menos**.
+2. O feixe era **âmbar mesmo com a casa apagada**. Aqui âmbar significa "luz acesa"; um anel âmbar
+   girando num cabeçalho sem luz nenhuma afirmava o contrário do estado.
+3. `PRODUCT.md` pede relógio e dados "sem poluição visual", e o relógio agora é o maior texto da tela.
+   Um destaque em órbita permanente disputa o olhar com ele.
+4. No standby OLED o painel escurece por cima, mas os anéis seguiam sendo repintados por baixo.
+
+**O que foi feito**: keyframe novo `sweep-ambient-ray` no lugar de `rotate-ambient-ray` (removido).
+A passada ocupa **12% do ciclo**, com aceleração suave nas pontas, e os 88% restantes ficam parados
+(0° e 360° são a mesma posição: sem salto). Ciclos: cabeçalho **60 s** com a casa apagada e **36 s**
+com luz acesa (era 14 s e 9 s girando sem parar); cards **44 s** (era 11 s), 24 s com hover de mouse.
+Cor: **branco neutro** com a casa apagada, **âmbar só com luz acesa**; no tema claro, grafite
+translúcido no lugar do branco (que some sobre vidro claro). Standby: `body.has-ambient-standby`
+pausa os dois anéis. `prefers-reduced-motion` continua igual (parado, opacidade 0,35).
+
+**Verificado**: ângulo por fase do ciclo (0% → 0°, 3% → 43°, 6% → 180°, 12% → 360°, 50% e 99% → 360°);
+ciclos e cores nos quatro estados (acesa 36 s âmbar, apagada 60 s branco, claro/apagada grafite,
+cards 44 s); pausa em standby e retomada ao sair (`paused` → `running`).
+
+**Não medido — importa**: o ganho de CPU. Nesta máquina o painel roda a **75 fps com ou sem os anéis**
+(pausei os dois e comparei, 4 s cada): é limitado pelo v-sync. A diferença só aparece num tablet fraco,
+que não tenho aqui. O ganho de pintura é consequência do desenho (88% do ciclo sem mudança de valor),
+não uma medida. Também **não vi a passada a olho em tempo real**, só o percurso do ângulo.
+
+**Não mexido, mas mesma família**: sob standby ainda rodam por baixo o pulso do dois-pontos, o ponto de
+sincronização, o AO VIVO da câmera, o "respirar" da lâmpada e o giro do ventilador. E
+`.tv-compact-refraction` tem seu próprio efeito.
+
+## 25/09/2026 — Clima no cartão do relógio; card de clima removido da faixa
+
+Pedido do André: informações de tempo no card do cabeçalho, de forma harmônica, e depois a remoção do
+card de clima. Perguntei se "tempo" era clima ou horário do sol; a resposta foi **só clima**, seguida da
+remoção do card. Só o painel mudou.
+
+**Componente novo `HeaderWeather.tsx`**: ícone + temperatura + condição numa pílula de vidro de 44 px, do
+mesmo desenho das pílulas de alerta do cabeçalho. `Clock.tsx` ganhou `comClima` e `clima`; só o
+cabeçalho principal os passa (a página do cômodo continua sem clima). A linha sob o relógio agora é
+data + pílula; a temperatura tem quase o tamanho da data (27,9 px contra 24,6), para lerem-se como par.
+
+**O que o card fazia além de mostrar e foi preservado**: tocar abre a previsão de 5 dias
+(`WeatherForecastModal`). Verificado: abre, o foco entra, Esc fecha e o foco volta à pílula. O modal
+segue mostrando umidade (81%), vento (14 km/h) e a faixa de conforto ("Ideal"). **Perdido da tela
+principal**: umidade, vento e a pílula "Ideal", que estavam visíveis no card; agora só no modal.
+
+**Estado sem leitura** (novo, o widget antigo mostrava "nublado" por padrão): com `unavailable`, `unknown`
+ou sem entidade, a pílula diz "Sem dados do clima" e "--°" (CLAUDE.md §12). Não testado ao vivo, pois não
+derrubei a entidade; a lógica é uma condição.
+
+**`WeatherWidget.tsx` apagado** (não tinha outro uso). Ficam ~30 regras `.weather-*` mortas no
+`globals.css`, deixadas de propósito num arquivo de 14 mil linhas.
+
+**A faixa de telemetria refeita para 5 widgets.** Outro agente já tinha feito uma grade de 12 colunas
+para 6 widgets (V-1 e "Item 1"). Sem o clima, a 1ª linha ficava com 2 widgets e a câmera, de 5 colunas,
+caía para uma 3ª linha: a barra foi de 2 para 3 linhas e os cards de cômodo encolheram para 142 px
+(mínimo 155). Agora, de 900 px para cima, é **3 + 2**: energia, mídia e câmera com 4 colunas; aspirador
+e compras com 6. Entre 641 e 899, dois por linha e compras na linha inteira. No celular, energia ocupa a
+linha inteira (onde ficava o clima).
+
+**Efeito bom que não era o objetivo**: com 372 px por widget (antes 220), nenhum texto rola mais e as
+regras de widget estreito (ícone escondido, selo STANDBY escondido) deixaram de disparar nesses tamanhos.
+
+**Verificado** a 1180×820, 1024×768, 1280×800, 768×1024 e 390×844: sem sobreposição no cabeçalho, sem
+colisão botão × texto nos widgets, sem rolagem em paisagem (820/820, 768/768, 800/800), sem rolagem
+horizontal no celular, pílula com 44 px de altura, contraste do clima ≥ 7,2:1 nos dois temas.
+Custo: cabeçalho de 159 para **174 px** (a linha do clima tem 44 px, a da data tinha 29); a barra
+encolheu de 153 para 137; cards de cômodo 178 px a 1180×820 e 159 px a 1024×768.
+
+**Defeito achado e corrigido no caminho**: sem `white-space: nowrap`, a condição quebrava em duas linhas
+em vez de "não caber", e o marquee só rola o que transborda; a pílula chegou a 61 px a 768 de largura.
+
+**Não verificado**: no iPad real; o estado "sem dados".
+
+## 25/09/2026 — Fora: botão de tela cheia e tema claro. O painel é só noturno
+
+Pedido do André: o card de tela cheia não se faz mais necessário e o projeto mantém apenas a opção
+noturna padrão.
+
+**Removido**
+
+- `HeaderQuickActions.tsx`: o botão de **tela cheia / modo kiosk** (com o estado `kioskAtivo`, o
+  ouvinte de `fullscreenchange` e a função `alternarKiosk`) e o **seletor de tema**. Sobram no
+  cabeçalho: Apagar (n), a pílula de conexão, o plano de fundo e o standby.
+- `app/context/ThemeContext.tsx` (apagado) e o `ThemeProvider` do `layout.tsx`. Só o botão usava
+  `useTheme`.
+- `layout.tsx`: o script de arranque não lê mais preferência nem o modo do sistema; fixa
+  `data-theme="dark"`, `data-theme-preference="dark"` e `.theme-dark` e apaga a chave antiga
+  `dashboard_theme` do `localStorage`. O `themeColor` deixou de ter variante clara (`#0b1121`) e o
+  viewport ganhou `colorScheme: "dark"`, para rolagem e controles nativos serem escuros.
+- `PRODUCT.md` e `DESIGN.md`: o requisito de "tema claro durante o dia" e a variante clara do
+  `--wx-*` foram retirados.
+
+**Verificado**: com a preferência antiga `light` gravada no `localStorage` **e** o sistema emulado em
+modo claro, o painel abre escuro (`data-theme=dark`, fundo `rgb(13,17,23)`, texto `rgb(241,245,249)`),
+a chave antiga some, `meta color-scheme=dark`, e o cabeçalho tem 4 botões (nenhum de tema ou kiosk).
+`npx tsc --noEmit` passa; sem rolagem (820/820). A coluna de ações do cabeçalho encolheu de 415 para 311 px.
+
+**Ficou de propósito**: ~290 regras `[data-theme="light"]` / `.theme-light` no `globals.css` e as
+regras de `.quick-action-btn--theme` e `--kiosk`, todas mortas; os ícones `theme-*` e `fullscreen*`
+do registro; o `/icons-preview`, página de desenvolvimento com seletor próprio; e o botão de tela
+cheia do `RoomPopup` (`popup-header-fullscreen-btn`), que é outro, do modal do cômodo. Limpar o CSS
+morto é opcional.
+
+⚠️ **O botão de kiosk também pedia o *wake lock*** da tela. Sem ele, o painel só o pede durante o
+standby (`AmbientNightMode`). Quem mantém o tablet aceso passa a ser o aparelho: Acesso Guiado no iPad,
+bloqueio automático desligado, ou app de quiosque. Além disso, `navigator.wakeLock` só existe em contexto
+seguro (HTTPS ou localhost): acessando por `http://` na rede local ele nunca esteve disponível, então
+**é possível que o botão nunca tenha segurado a tela no seu iPad** — não verificado.
+
+## 25/09/2026 — Cabeçalho reorganizado: estado da casa, cápsulas de alertas e de ferramentas
+
+Pedido do André: reorganizar os cards soltos do cabeçalho e o texto "Casa / 1 luz acesa", de forma
+agradável. Análise a 1180×820 e mudança em `globals.css`, `HeaderQuickActions.tsx` e `page.tsx`.
+
+**O que a análise achou**
+
+- **Sete controles soltos do mesmo peso**: três pílulas de alerta, "Ao vivo", plano de fundo, standby e
+  "Apagar". Quatro deles verdes ("tudo certo"): ruído, porque o olho não separa o que informa do que
+  está tudo bem.
+- **Duas linhas de larguras diferentes** (381 e 311 px) alinhadas só pela direita: borda esquerda
+  irregular, num bloco espremido ao lado do relógio de 110 px.
+- **O dado útil do bloco tinha 12 px e opacidade reduzida** ("1 luz acesa"), menor que o rótulo "Casa"
+  (28 px), que não informa nada.
+
+**O que foi feito** (de tablet, 641 px, para cima)
+
+1. **"CASA" vira rótulo** (13 px, caixa alta, espaçado) e o **estado vira a linha principal** (24,6 px a
+   1180×820): âmbar com ícone de lâmpada quando há luz acesa (âmbar é "luz acesa" em todo o painel),
+   branco neutro em "Tudo apagado" e nas mensagens de aviso.
+2. **Duas cápsulas de vidro** no lugar de seis cartões: alertas (Seguro, Baterias, Tudo em ordem) e
+   ferramentas (conexão, plano de fundo, standby). Dentro da cápsula o "tudo certo" é discreto (sem fundo
+   e sem borda verdes); quando algo alerta, o segmento **mantém o fundo vermelho ou âmbar e se destaca**.
+   Conferido simulando as classes de alerta no DOM (só visual, nada acionado).
+3. **"Apagar (n)" fica fora das cápsulas**: é a única ação destrutiva do grupo.
+4. **As duas linhas têm a mesma largura** (371 px). Em paisagem: colunas relógio | estado da casa | controles,
+   com um filete separando o estado do relógio e as duas linhas de controles agrupadas no meio da altura.
+   Feito com `display: contents` em `.dashboard-header-brand` e `grid-template-areas`, sem reordenar o JSX.
+   Em retrato: relógio, depois o estado à esquerda com a cápsula de alertas à direita, depois "Apagar" à
+   esquerda com a cápsula de ferramentas à direita.
+
+**JSX**: `HeaderQuickActions.tsx` embrulha conexão, plano de fundo e standby em `.quick-actions-tools`;
+`page.tsx` põe o ícone de lâmpada e a classe `is-lit` no subtítulo. Celular (< 641 px) fica como era; o
+ícone some ali.
+
+**Verificado**: a 1180×820 sem sobreposição, nada fora do cabeçalho, mesma altura de antes (174 px),
+cards de cômodo em 178 px, sem rolagem. Alvos de 44 px em todos os segmentos. Retrato (768×1024) e celular
+(390×844) conferidos.
+
+**Custo a 1024×768**: a coluna do relógio fica com 345 px e a linha data + clima (416 px) **quebra em duas**:
+a pílula de clima desce para baixo da data. O cabeçalho vai de 167 para 201 px e os cards de cômodo chegam
+a exatamente 155 px, o mínimo. Fica bem, mas sem folga.
+
+**Não verificado**: no iPad real; os estados reais de alerta (só simulados); o texto longo de erro
+("Sem conexão com Home Assistant") na linha principal, que quebra em duas linhas de até 260 px.
+
+**Revisão do mesmo dia — cápsulas desfeitas, alinhamento mantido.** O André pediu para remover as duas
+cápsulas de vidro e voltar aos cartões soltos, preservando o alinhamento, e para tirar o destaque do texto
+"luz acesa", com o ícone, deixando só como texto secundário.
+
+- **Cartões soltos de volta**: cada pílula de alerta (Seguro, Baterias, Tudo em ordem) e cada ferramenta
+  (Ao vivo, plano de fundo, standby) com o seu próprio vidro e a sua cor (verde, cinza, ciano); o "Apagar"
+  continua vermelho. O agrupamento em `.quick-actions-tools` ficou só como contêiner de layout, sem borda nem
+  fundo. As sobreposições que deixavam os segmentos calmos transparentes foram apagadas.
+- **Alinhamento preservado**: colunas relógio | Casa | controles com o filete, e as duas linhas com a mesma
+  largura (381 px a 1180×820 e a 1024×768): as pílulas de alerta se distribuem pela linha e "Apagar" e as
+  ferramentas vão uma para cada ponta. Bordas esquerda e direita coincidem (754 e 1135 a 1180×820).
+- **"Casa" e o estado**: voltam ao par original. Título de 28 px e, abaixo, "1 luz acesa" em 12 px, cor
+  `--text-dim`, peso 500, **sem âmbar, sem ícone e sem classe `is-lit`**. O rótulo em caixa alta que fiz
+  para "CASA" também saiu: com o estado voltando a ser secundário, o título precisa ser o primário.
+- **JSX**: `page.tsx` voltou a `<p className="dashboard-subtitle">{subtitulo()}</p>` e perdeu o import de
+  `Icon`, que não tinha outro uso.
+
+**Efeito colateral bom**: a coluna "Casa" ficou com 92 px (era 184), e a linha data + clima **deixou de
+quebrar a 1024×768**: o cabeçalho volta de 201 para 167 px e os cards de cômodo, de 155 para 159 px.
+
+**Verificado** a 1180×820, 1024×768 e 768×1024: sem sobreposição, nada fora do cabeçalho, sem rolagem em
+paisagem (820/820 e 768/768), `npx tsc --noEmit` passa. Cabeçalho de 174 px e cards de 178 px a 1180×820.
+
+## 25/09/2026 — Refino visual: contraste, cor com significado, menos brilho, indicadores e contador padronizados
+
+Lista de ajustes visuais colada pelo André, mais o pedido de trocar "Apagar" por "Apagar tudo". Regra de cor
+que passa a valer em todo o painel: **verde = normal, azul = informativo, âmbar = atenção, vermelho =
+alerta**, além do âmbar da **luz acesa** (ícone e borda do cômodo), que é a cor da própria coisa. Medido a
+1180×820 antes e depois, com varredura de todos os elementos da área superior e dos cards.
+
+**1. Contraste do texto secundário.** `--text-dim` de 0,70 para **0,82**. Nos cartões superiores o secundário
+media 7,5–8,7:1 em 9–12 px; agora o pior caso é 7,49 e só sobraram dois abaixo de 7, que foram clareados:
+o canal C2/C4 ativo (5,05) e o selo "Moderado" (6,74). O texto do "Apagar tudo" passou de 5,2 para mais de 7.
+
+**2. Borda colorida só em estado ativo ou alerta.** Ficaram com borda colorida: o botão "Apagar tudo"
+(vermelho), o canal de câmera ativo, o cômodo aceso (âmbar) e seu ícone, e o chip de ventilador ligado.
+Saíram as bordas verdes das pílulas em estado normal (Seguro, Baterias, Tudo em ordem, Ao vivo, "tudo
+comprado"), a ciano do standby, a roxa do cenário Gamer, as âmbar do consumo e das compras, e a âmbar do
+cabeçalho por haver luz acesa. A cor ficou no texto e no ponto.
+
+**3. Menos sombra e brilho permanentes.** Cabeçalho, cenas, widgets e cômodos passam a uma sombra só
+(`0 4px 14px` + filete de luz de 8%). Saíram: o halo âmbar do cabeçalho e do cômodo aceso, o brilho e a
+"respiração" do ícone do filamento, o halo do ícone e do ponto de estado, a sombra âmbar do nome, o brilho
+dos pontos verdes de "normal" e o brilho do dois-pontos. Sobrou de brilho colorido, na área medida, só o
+pulso do "AO VIVO" da câmera. O ponto de estado tinha a animação de ignição congelada no último quadro
+(`fill-mode: forwards`), que é o que o deixava brilhando para sempre.
+
+**4. Âmbar para atenção.** Consumo: econômico verde, **moderado azul**, **elevado âmbar** (era: moderado
+âmbar, elevado laranja/vermelho); vale para o selo, o ícone, a barra e o gráfico. Compras pendentes:
+azul. Chips de mídia, ventilador do PS5 e presença: azul (eram índigo, roxo e âmbar). Bateria baixa
+continua âmbar.
+
+⚠️ **Dois âmbares que mantive e você pode querer rever**: o **dois-pontos do relógio**, que você pediu de
+volta ao amarelo hoje mais cedo, e a **luz acesa** do cômodo. Pela regra nova nenhum dos dois é "atenção".
+Não mexi por serem decisões suas anteriores.
+
+**5. Azul informativo, verde normal.** Ver 2 e 4. O botão de standby fica com ícone azul.
+
+**6 e 7. Indicadores no canto superior direito, ação no inferior direito.** Nos cômodos, chips de estado,
+contador e temperatura vão para uma linha alinhada à direita no topo; o botão de detalhe já ficava embaixo,
+à direita. Medido nos 10 cards: indicadores a 15 px da borda direita e 17 do topo, detalhe a 9 e 9,
+idêntico em todos, sem sobreposição com ícone ou nome, a 1180×820, 1024×768, 768×1024 e 390×844. O máximo
+de chips visíveis passou de 3 para 2 (o resto vira "+n"). **Não feito nos widgets da faixa de
+telemetria**: o botão de ação deles já fica à direita, mas seus indicadores (Moderado, Standby, Pronto)
+continuam dentro do bloco de texto; movê-los pede refazer o marcado de cada widget.
+
+**8 e 9. Um só contador, e dizendo o que conta.** O contador de luzes é agora **sempre "acesas/total" com o
+ícone de lâmpada**, num único estilo (verificado: 1 estilo distinto nos 10 cômodos; havia uma variante âmbar
+para aceso). A temperatura usa o mesmo selo. O cômodo sem ponto de luz deixou de mostrar aqui o número de
+dispositivos, que misturava outra contagem sob o mesmo formato; não mostra contador. Cada selo tem
+`aria-label` ("1 de 2 luzes acesas") e a seção ganhou a legenda **"Contador: luzes acesas / total"**.
+
+**10. "Apagar tudo".** O botão é "Apagar tudo (n)"; a dica é "Segure p/ apagar tudo" e o estado "Apagando tudo...".
+A linha de controles do cabeçalho comporta (148 px); no celular mede 148×48.
+
+**Não verificado**: no iPad real; o pulso do AO VIVO (mantido); o estado de alerta real das pílulas.
+
+## 25/09/2026 — Cenas separadas do resumo da casa
+
+Pedido do André: criar uma separação formal entre os cards de cenas e os demais abaixo, porque a impressão era
+a de que todos eram cenas.
+
+**Causa**: eram três seções sem fronteira. As cenas são **ações** (um toque muda a casa); a faixa de
+energia, mídia, câmera, aspirador e compras é **informação**; e os cômodos são a terceira. Só as cenas e os
+cômodos tinham título. A faixa do meio não tinha, então lia-se como continuação das cenas, com o mesmo vidro,
+o mesmo raio e o mesmo tamanho.
+
+**Feito** (`page.tsx` e `globals.css`)
+
+- A faixa do meio virou a seção **"Resumo da casa"** (`.telemetry-section`), com título do mesmo desenho do
+  de "Ambientes da casa" e a legenda "Toque num cartão para abrir os detalhes". O `.daily-panorama-bar` passou
+  de `<section>` a `<div>` dentro dela; as regras de grade seguem valendo.
+- As cenas ficam num **painel com moldura** (borda neutra, fundo próprio), e não como cartões soltos. Em
+  paisagem (≥ 900 px) o título vira uma **coluna à esquerda**, separada dos botões por um filete, o que também
+  devolve a linha de título à altura.
+
+**Custo vertical e como foi pago**: título novo e moldura custavam ~25 px, e a 1024×768 isso **cortava 19 px da
+última linha de cômodos** (base do último card em 787 numa tela de 768; a rolagem seguia "768/768" porque o
+excesso fica escondido). Pago em: margens menores (seção do resumo 24→14 px, cenas 18→10), botões de cena de
+60 para 56 px e piso do card de cômodo de 155 para 148 px, os dois só em paisagem até 830 px de altura.
+Resultado: a 1024×768 os cards ficam com **150 px** (eram 159) e nada é cortado.
+
+**Verificado**: a 1180×820 (cards de 170 px; eram 178), 1024×768 (150), 1280×800 (163), 768×1024 e 390×844.
+Sem sobreposição entre seções, sem corte na última linha, nenhum indicador sobre ícone ou nome nos cards,
+sem rolagem horizontal no celular. `npx tsc --noEmit` passa.
+
+**Ficou como estava**: no celular (< 641 px) as cenas não têm moldura, só o título acima; o resumo ganhou o
+título em todos os tamanhos.
