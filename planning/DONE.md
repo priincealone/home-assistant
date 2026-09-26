@@ -13,7 +13,7 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 (`pyremoteplay`), repareamento pelo *Reconfigurar*, `media_player.turn_off` confirmado pelo HA. Ventilação
 do console: liga em ~1 s e desliga 1 min após ele sair, com reconciliação por minuto (o gatilho `for` sozinho
 não cumpria nem os 2 min antigos). Medido em ciclo real. Especificação: `specs/features/ps5-desligar-remote-play.md`;
-detalhe e armadilhas em `ESTADO_DASHBOARD.md`. Falta apenas o botão de repouso no painel (Antigravity, sob pedido).
+detalhe e armadilhas em `ESTADO_DASHBOARD.md`. Botão de repouso no painel entregue em seguida (PS5-03, `specs/widgets/ps5-botao-repouso.md`), com confirmação e estado real.
 
 ---
 

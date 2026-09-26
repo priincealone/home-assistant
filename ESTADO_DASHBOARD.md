@@ -5336,3 +5336,26 @@ foi o gatilho e não o tick). O ciclo terminou com o console em repouso, como es
 **Armadilha**: ao entrar em repouso o console oscila `unavailable`↔`off` por ~50 s e cada oscilação reinicia
 a contagem; da ordem de repouso ao corte foram ~2 min. **Risco aceito pelo André**: queda de rede do PS5 por mais
 de 1 min com o console quente corta a ventilação até ele voltar a `on`.
+
+### Botão de repouso no painel (25/09/2026)
+
+**Pedido**: botão de repouso do PS5 no painel; o André autorizou mexer no `dashboard-app`. Spec:
+`specs/widgets/ps5-botao-repouso.md` (PS5-03).
+**Achado**: o botão "Colocar em Repouso" já existia na aba Console Gamer, mas ligado ao `alternar()` genérico
+(trava otimista de 5 s, sem confirmação). Com o `turn_off` real: (1) a UI voltava a "Ligado" durante os ~50 s de
+oscilação do console; (2) um toque durante a oscilação lia `unavailable` como "não ligado" e mandava `turn_on`,
+religando o console; (3) o mesmo caminho serve ao tile do cômodo, então um toque acidental desligava o console.
+**Feito** (`dashboard-app`, commit próprio): `MediaHubModal.tsx` (rota dedicada `/api/tv`, confirmação em dois
+toques, pendente até chegar a `off`, estado "Sem resposta", erro visível), `lib/ha.ts` (`controlarPs5` lê o estado
+antes de agir; o caminho genérico recusa o repouso do PS5 e, em lote, só o ignora), `globals.css`.
+**Verificado**: `tsc` 0; painel real mostra "Modo Repouso" com o console em repouso; estados `on`, `unavailable`,
+oscilação e erro simulados no navegador (fetch interceptado, sem chegar ao HA): armar não envia, confirmar envia um
+`{"ps5_power":false}`, oscilação mantém o pendente, só `off` o encerra; 11 verificações das guardas de `ha.ts`
+contra um dublê do HA (incluindo lote com luz e `unavailable`); rotas reais só com no-op (console em repouso), e
+o log do HA não registrou comando.
+**Não verificado**: um ciclo físico completo pelo botão real; `npm run build` (não rodei: o servidor de
+desenvolvimento usa o mesmo `.next`); tablet/iPad (só o Chrome do painel).
+**Armadilhas**: (1) `unavailable` do PS5 é "sem resposta", nunca repouso; (2) o CSS `.is-on` e o hover genérico
+(azul) venciam a regra de confirmação por ordem no arquivo — as regras novas ficam depois de `.is-on`;
+(3) bug antigo, não tratado: `enviarComandoTv({ fonte: "HDMI", ps5_power: true })` nunca liga o console, porque a
+rota `/api/tv` retorna depois de tratar `fonte`; (4) `lib/ha.ts` é só de servidor, o cliente fala pela rota.
