@@ -324,7 +324,7 @@ o vocabulário na tela inicial, e perderia o ponto único de troca. Num painel d
 | `npm run build` | passa (linha de base: **falhava** por arquivo ausente em `node_modules/next` — ver abaixo) |
 | Emoji em `.tsx` | 0 |
 | Hex em `<svg>` | 1 (gráfico de energia, fora do escopo) |
-| `<svg>` restantes | 15: gráficos de energia (2), `TvAppLogos` (12), `HealthPill` (1, arquivo de outra frente) |
+| `<svg>` restantes | 14: gráficos de energia (2) e `TvAppLogos` (12). O chevron do `HealthPill` foi migrado em `90cc6fe` |
 | Bundle JS cliente | 391 → 444 kB gz (+53 kB) |
 | Painel real, escuro e claro | conferido: 10 cômodos, popup do Quarto, Central de Mídia |
 | Escala de cinza | `ligado` ≠ `repouso`; `offline` só se distinguia por opacidade → **selo adicionado** |
@@ -346,6 +346,5 @@ tablet de parede (o dev-tools não mede o custo de ~30 SVGs duotone com `backdro
 
 **Pendências**
 - `globals.css` mantém regras mortas (`.weather-compact-icon-wrap circle[stroke="#fbbf24"]`, `.room-icon-svg` com
-  `stroke`). Inofensivas; o arquivo tinha edição em andamento de outra frente e não foi tocado.
-- `HealthPill.tsx` (não commitado, de outra frente) ainda tem 1 chevron solto.
+  `stroke`). Inofensivas; não foram tocadas na migração. Limpar numa passada própria (linhas 1653 e 10815).
 - `TvAppLogos`: Prime Video, Disney+ e Globoplay não existem no Simple Icons; ficam como estão.

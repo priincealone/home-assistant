@@ -5296,6 +5296,21 @@ tela: badge 0/2 e o modal do Closet sem menção à Yeelight. A linha correspond
 de ser controlável pelo painel**. Ela não aparece em nenhum cômodo (o Quarto Luca segue com 1 ponto,
 `light.quarto_luca_switch_1`). No HA continua funcionando.
 
+## Quedas de imagem no iPad: motor nativo no Safari + telemetria do player (25/09/2026)
+
+**Contexto**: o André usa o painel no iPad (Safari) e relata queda constante. Tudo o que foi medido antes
+foi no Chrome (hls.js/MSE): fonte estável (30 min sem `DISCONTINUITY`, ping 0% de perda), proxy sem erro.
+**Nunca houve medição no iPad**, então a causa lá não está provada.
+**Feito** (`dashboard-app`, sem commit): (1) `CameraLivePlayer.tsx` — em Apple/Safari usa **HLS nativo**
+(`video.src`) em vez de hls.js; `localStorage cam-motor` = `hlsjs`|`nativo` força o motor; watchdog, backoff e
+retomada valem para os dois; (2) telemetria: novo `app/api/camera/diag` (POST, 8 KB, 60/min, só imprime
+`[cam-diag]` JSON no `servidor_dev.log`) recebe eventos do player em lotes de 5 s (sessão, motor, erros do
+hls.js/`<video>`, travadas com buffer, watchdog, retomadas, pausas inesperadas). Rota pública como o resto de
+`/api/camera*` (K-11) — não grava em disco.
+**Verificado**: `tsc` ok; a telemetria chega ao log (teste no Chrome); caminho nativo carrega o manifesto no
+Chrome (`videoWidth` 960). **Não verificado**: reprodução no Safari real. Ler o que o iPad reporta:
+`grep cam-diag` no log (decodificar UTF-16).
+
 ## PS5 desliga pelo Home Assistant — repouso por Remote Play (25/09/2026)
 
 **Contexto**: a integração `ps5` só ligava (WAKEUP por DDP); o DDP não tem comando de repouso. O André
