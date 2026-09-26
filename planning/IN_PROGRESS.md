@@ -49,14 +49,3 @@ A inversão Cozinha/Lavanderia foi corrigida em `lib/rooms.ts`, `manifesto-comod
 **Confirmação pendente**: acender a Cozinha pelo painel e verificar qual lâmpada acende. Toda a
 correção se apoia no registro do HA, não em observação da luz.
 
----
-
-## P-04 · PS5 desliga pelo HA (repouso por Remote Play)
-
-**Dono**: Claude Code · **Iniciado**: 25/09/2026
-
-Código escrito e testado no console em 25/09: repareamento gravou as chaves, a sessão Remote Play levou o PS5 a repouso (620) e o WAKEUP o devolveu a `on`. Especificação: `specs/features/ps5-desligar-remote-play.md` (PS5-02).
-
-**Onde parou**: o teste foi no módulo `remoteplay.py`, direto no container. **Não** foi chamado `media_player.turn_off` pelo HA, e não se confirmou que a entidade exibe `TURN_OFF`.
-**Próximo passo**: André chama `media_player.turn_off` em *Ferramentas do desenvolvedor → Ações* (desliga o console de novo); confirmar `TURN_OFF` na entidade e o efeito na `switch.ventilacao_ps5`. Depois disso o item vai para `DONE.md`.
-**Fora do escopo aqui**: botão de repouso no painel (Antigravity, só com pedido do André) e entrada de `turn_off` em `lib/rooms.ts`.

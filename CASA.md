@@ -222,10 +222,13 @@ O `dashboard-app` também lê o token do Music Assistant direto de
 Todas em `config/automations.yaml`, cada uma com a justificativa na `description`.
 
 **1. Ventilação do PS5 acompanha o console.** Liga `switch.ventilacao_ps5`
-quando o console entra em uso; desliga dois minutos depois que ele sai. Decide
-pelo **estado atual**, não pelo gatilho, e se reconcilia a cada 5 minutos e na
-partida do Home Assistant — a primeira versão perdia o desligamento quando o
-container reiniciava no meio da espera.
+quando o console entra em uso (~1 s); desliga **um minuto** depois que ele sai
+(era dois, até 25/09/2026). Decide pelo **estado atual**, não pelo gatilho, e se
+reconcilia **a cada minuto** e na partida do Home Assistant — a primeira versão
+perdia o desligamento quando o container reiniciava no meio da espera, e em 25/09
+se mediu que só o gatilho `for` não desligava no prazo. Só chama a tomada quando
+ela está no estado contrário. Ao entrar em repouso o console oscila entre
+`unavailable` e `off` por ~50 s, então o desligamento sai ~2 min depois do comando.
 
 **2. Porta do quarto fechada à noite apaga a casa.** Das 22h às 6h, fechar a
 porta apaga todas as luzes e desliga a TV. As luzes vêm de template (luz nova

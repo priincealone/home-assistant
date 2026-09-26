@@ -5317,3 +5317,22 @@ código usa o método privado `_send_standby()` e espera sozinho — pode quebra
 (3) sessão Remote Play contra console em repouso o **acorda**: o turn_off recusa fora de `on`; (4) `autostart`
 tem de ficar ligado, pois é o fluxo que marca a sessão como pronta; (5) o console fica ~20 s mudo ao entrar
 em repouso antes de responder 620 — não é queda.
+
+### Complemento (25/09/2026, mesma tarde): `turn_off` pelo HA e ventilação em 1 minuto
+
+**`media_player.turn_off` pelo HA**: o André chamou pelo serviço e funcionou. Conferido no histórico: sessão
+aberta pelo processo do HA às 21:59:38, entidade em `off` às 21:59:50, DDP em 620. Um aviso "blocking call"
+do import do `pyremoteplay` no event loop foi corrigido (`__init__.py` importa a biblioteca no executor).
+**Ventilação — o pedido**: desligar 1 minuto após o PS5 sair de `on`, e ligar no mesmo instante em que ele liga.
+**Medido antes de mudar**: ligar já era imediato (1,1 s e 0,8 s nos dois casos limpos do histórico).
+Desligar **não** cumpria nem os 2 minutos: os desligamentos observados caíram nos ticks de 5 min
+(20:20:01, 22:05:01), até 10 min depois do console sair. Causa do `for` não entregar: **não provada**.
+**Feito** (`config/automations.yaml`): `for` de 1 min; reconciliação de 1 em 1 min (era 5); limiar do template
+em 55 s (abaixo do `for`, para não perder a corrida); guarda de "tomada no estado contrário" nas duas ramas,
+para não chamar a nuvem Tuya a cada minuto; `description` reescrita com o porquê.
+**Verificado** (ciclo real, `check_config` 0, automação `on` após reinício): console `on` 22:09:18 → tomada `on`
+22:09:19 (1 s); última mudança do console 22:10:45 → tomada `off` 22:11:46 (61 s, fora de minuto redondo, logo
+foi o gatilho e não o tick). O ciclo terminou com o console em repouso, como estava antes.
+**Armadilha**: ao entrar em repouso o console oscila `unavailable`↔`off` por ~50 s e cada oscilação reinicia
+a contagem; da ordem de repouso ao corte foram ~2 min. **Risco aceito pelo André**: queda de rede do PS5 por mais
+de 1 min com o console quente corta a ventilação até ele voltar a `on`.

@@ -9,6 +9,14 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ## 25/09/2026
 
+**PS5 desliga pelo HA (PS5-02) e ventilação em 1 minuto** — repouso por sessão Remote Play
+(`pyremoteplay`), repareamento pelo *Reconfigurar*, `media_player.turn_off` confirmado pelo HA. Ventilação
+do console: liga em ~1 s e desliga 1 min após ele sair, com reconciliação por minuto (o gatilho `for` sozinho
+não cumpria nem os 2 min antigos). Medido em ciclo real. Especificação: `specs/features/ps5-desligar-remote-play.md`;
+detalhe e armadilhas em `ESTADO_DASHBOARD.md`. Falta apenas o botão de repouso no painel (Antigravity, sob pedido).
+
+---
+
 **Ícones do painel unificados sobre Phosphor (B-17)** — cinco linguagens de ícone viraram uma: fachada
 `<Icon name state size>` sobre `@phosphor-icons/react` (versão fixa), com regra única de peso por estado
 (contorno em repouso, preenchido ligado, duotone no cômodo, esmaecido + selo de sem-conexão no offline).

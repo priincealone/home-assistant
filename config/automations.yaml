@@ -4,12 +4,24 @@
     Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5
     entra em uso e desliga quando ele sai.
 
-    Duas decisões que não são óbvias:
+    Decisões que não são óbvias:
 
-    1. O desligar espera 2 minutos. "unavailable" é um dos estados que o dispara,
-    e a integração do PS5 fala por rede — uma oscilação de segundos cortaria a
-    ventilação com o console ainda quente. Ligar não tem espera, aí o atraso
-    seria justamente o que se quer evitar.
+    1. O desligar espera 1 minuto (era 2 até 25/09/2026, a pedido do André).
+    "unavailable" é um dos estados que o dispara, e a integração do PS5 fala por
+    rede — uma oscilação de segundos cortaria a ventilação com o console ainda
+    quente. Ligar não tem espera, aí o atraso seria justamente o que se quer
+    evitar (medido em 25/09: a tomada liga ~1 s depois do console).
+
+    1a. Por que a reconciliação é de 1 em 1 minuto. Medido em 25/09: o gatilho
+    `for` sozinho não desligou a tomada no prazo — os dois desligamentos
+    observados caíram exatamente nos ticks de 5 minutos (20:20:01 e 22:05:01),
+    até 10 minutos depois do console sair. Causa não provada. Com o tick por
+    minuto e o limiar de 55 s (abaixo do `for`, para não perder a corrida contra
+    o cronômetro), o pior caso é cerca de 2 minutos. A guarda "tomada no estado
+    contrário" evita chamar a nuvem Tuya a cada minuto à toa.
+
+    Risco aceito: uma queda de rede do PS5 com mais de 1 minuto, com o console
+    quente, corta a ventilação até ele voltar a `on` (aí religa em ~1 s).
 
     2. A decisão é tomada pelo **estado atual** do console, não por qual gatilho
     disparou. A primeira versão usava `condition: trigger` e ficou surda: o PS5
@@ -34,13 +46,13 @@
         - 'off'
         - idle
         - unavailable
-      for: '00:02:00'
+      for: '00:01:00'
       id: saiu_de_uso
     - trigger: homeassistant
       event: start
       id: partida
     - trigger: time_pattern
-      minutes: /5
+      minutes: /1
       id: reconciliacao
   conditions: []
   actions:
@@ -52,18 +64,24 @@
               state:
                 - 'on'
                 - playing
+            - condition: state
+              entity_id: switch.ventilacao_ps5
+              state: 'off'
           sequence:
             - action: switch.turn_on
               target:
                 entity_id: switch.ventilacao_ps5
-        - alias: Console fora de uso há mais de 2 minutos — ventilação desligada
+        - alias: Console fora de uso há mais de 1 minuto — ventilação desligada
           conditions:
+            - condition: state
+              entity_id: switch.ventilacao_ps5
+              state: 'on'
             - condition: template
               value_template: >-
                 {% set ps5 = states.media_player.sala_de_estar_ps5 %}
                 {{ ps5 is not none
                    and ps5.state not in ['on', 'playing']
-                   and (now() - ps5.last_changed).total_seconds() > 120 }}
+                   and (now() - ps5.last_changed).total_seconds() > 55 }}
           sequence:
             - action: switch.turn_off
               target:
