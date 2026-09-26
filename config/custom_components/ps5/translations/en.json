@@ -24,10 +24,12 @@
         }
       },
       "reconfigure": {
-        "title": "Update PS5 IP Address",
-        "description": "Enter the new IP address of your PlayStation 5.",
+        "title": "Update PS5 address / re-pair",
+        "description": "Change the IP address of your PlayStation 5. To enable putting it in rest mode, also re-pair: turn the console on, open Settings → System → Remote Play → Link Device, and fill in both the PIN and your NPSSO token. Leave both blank to only change the address.",
         "data": {
-          "host": "IP Address"
+          "host": "IP Address",
+          "pin": "8-Digit PIN (optional)",
+          "npsso": "NPSSO Token (optional)"
         }
       }
     },
@@ -35,7 +37,8 @@
       "cannot_connect": "Cannot reach the PS5 at that IP address.",
       "no_devices_found": "No PS5 consoles found on the network.",
       "invalid_pin": "The PIN must be exactly 8 digits.",
-      "invalid_npsso": "Invalid or expired NPSSO token.",
+      "pin_and_npsso": "To re-pair, fill in both the PIN and the NPSSO token, or leave both blank.",
+      "invalid_npsso":"Invalid or expired NPSSO token.",
       "linking_failed": "Linking failed. Make sure you entered the PIN within 60 seconds and that your PS5 is in Link Device mode.",
       "unknown": "An unexpected error occurred."
     },

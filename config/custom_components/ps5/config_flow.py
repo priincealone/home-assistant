@@ -8,9 +8,9 @@ from homeassistant.const import CONF_HOST
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 import voluptuous as vol
 
-from .const import CONF_CREDENTIAL, DOMAIN
+from .const import CONF_CREDENTIAL, CONF_RP_KEY, CONF_RP_REGIST_KEY, DOMAIN
 from .ddp import DDPStatus, async_discover, async_get_status
-from .ddp.link import LinkingError, async_link
+from .ddp.link import LinkingError, async_link_full
 from .psn.auth import PSNAuth
 
 _LOGGER = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ class PS5ConfigFlow(ConfigFlow, domain=DOMAIN):
                 assert self._host is not None
                 try:
                     account_id = await self._get_account_id(npsso)
-                    credential = await async_link(self._host, int(pin_str), account_id)
+                    linked = await async_link_full(self._host, int(pin_str), account_id)
                 except ValueError as exc:
                     _LOGGER.error("PSN NPSSO exchange failed: %s", exc)
                     errors["npsso"] = "invalid_npsso"
@@ -111,7 +111,9 @@ class PS5ConfigFlow(ConfigFlow, domain=DOMAIN):
                         title=status.host_name if status.available else "PlayStation 5",
                         data={
                             CONF_HOST: self._host,
-                            CONF_CREDENTIAL: credential,
+                            CONF_CREDENTIAL: linked["credential"],
+                            CONF_RP_REGIST_KEY: linked["regist_key"],
+                            CONF_RP_KEY: linked["rp_key"],
                         },
                     )
 
@@ -143,23 +145,60 @@ class PS5ConfigFlow(ConfigFlow, domain=DOMAIN):
         return account_id
 
     async def async_step_reconfigure(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
-        """Allow changing the PS5 IP address."""
+        """Change the PS5 IP address and/or re-pair to store the Remote Play keys.
+
+        PIN and NPSSO are optional: fill both to re-pair (needed once to enable standby),
+        leave both blank to only change the address. Neither is stored; only the keys the
+        console returns are.
+        """
         entry = self._get_reconfigure_entry()
         errors: dict[str, str] = {}
 
         if user_input is not None:
             host = user_input[CONF_HOST].strip()
+            pin_str = (user_input.get("pin") or "").strip().replace(" ", "")
+            npsso = (user_input.get("npsso") or "").strip()
+            updates: dict[str, Any] = {CONF_HOST: host}
+
             status = await async_get_status(host)
             if not status.available:
                 errors[CONF_HOST] = "cannot_connect"
-            else:
-                return self.async_update_reload_and_abort(
-                    entry,
-                    data_updates={CONF_HOST: host},
-                )
+            elif bool(pin_str) != bool(npsso):
+                errors["base"] = "pin_and_npsso"
+            elif pin_str:
+                if not pin_str.isdigit() or len(pin_str) != 8:
+                    errors["pin"] = "invalid_pin"
+                else:
+                    try:
+                        account_id = await self._get_account_id(npsso)
+                        linked = await async_link_full(host, int(pin_str), account_id)
+                    except ValueError as exc:
+                        _LOGGER.error("PSN NPSSO exchange failed: %s", exc)
+                        errors["npsso"] = "invalid_npsso"
+                    except LinkingError as exc:
+                        _LOGGER.error("PS5 linking failed: %s", exc)
+                        errors["base"] = "linking_failed"
+                    except Exception:
+                        _LOGGER.exception("Unexpected error during PS5 linking")
+                        errors["base"] = "unknown"
+                    else:
+                        updates |= {
+                            CONF_CREDENTIAL: linked["credential"],
+                            CONF_RP_REGIST_KEY: linked["regist_key"],
+                            CONF_RP_KEY: linked["rp_key"],
+                        }
+
+            if not errors:
+                return self.async_update_reload_and_abort(entry, data_updates=updates)
 
         return self.async_show_form(
             step_id="reconfigure",
-            data_schema=vol.Schema({vol.Required(CONF_HOST, default=entry.data.get(CONF_HOST, "")): str}),
+            data_schema=vol.Schema(
+                {
+                    vol.Required(CONF_HOST, default=entry.data.get(CONF_HOST, "")): str,
+                    vol.Optional("pin"): str,
+                    vol.Optional("npsso"): str,
+                },
+            ),
             errors=errors,
         )

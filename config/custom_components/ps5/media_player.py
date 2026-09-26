@@ -11,13 +11,15 @@ from homeassistant.components.media_player.const import (
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
+from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .const import CONF_CREDENTIAL, DOMAIN
+from .const import CONF_CREDENTIAL, CONF_RP_KEY, CONF_RP_REGIST_KEY, DOMAIN
 from .coordinator import PS5Coordinator
 from .ddp import async_wakeup
+from .remoteplay import StandbyError, async_standby
 
 PARALLEL_UPDATES = 0
 
@@ -44,7 +46,14 @@ class PS5MediaPlayer(CoordinatorEntity[PS5Coordinator], MediaPlayerEntity):
         self._credential = entry.data[CONF_CREDENTIAL]
         self._host = entry.data[CONF_HOST]
         self._attr_unique_id = entry.unique_id
-        self._attr_supported_features = MediaPlayerEntityFeature.TURN_ON
+        self._rp_regist_key = entry.data.get(CONF_RP_REGIST_KEY)
+        self._rp_key = entry.data.get(CONF_RP_KEY)
+        features = MediaPlayerEntityFeature.TURN_ON
+        # Só declara repouso se o pareamento guardou as chaves do Remote Play;
+        # entradas antigas precisam ser repareadas (Reconfigurar).
+        if self._rp_regist_key and self._rp_key:
+            features |= MediaPlayerEntityFeature.TURN_OFF
+        self._attr_supported_features = features
 
     @property
     def device_info(self) -> DeviceInfo:
@@ -79,3 +88,17 @@ class PS5MediaPlayer(CoordinatorEntity[PS5Coordinator], MediaPlayerEntity):
 
     async def async_turn_on(self) -> None:
         await async_wakeup(self._host, credential=self._credential)
+
+    async def async_turn_off(self) -> None:
+        """Põe o console em repouso (sessão Remote Play).
+
+        Não é idempotente: sessão contra console em repouso o acordaria. Por isso só age
+        com o console ligado; em qualquer outro estado não faz nada além de avisar.
+        """
+        if self.state != MediaPlayerState.ON:
+            raise HomeAssistantError("O PS5 não está ligado; nada a desligar.")
+        try:
+            await async_standby(self._host, self._rp_regist_key, self._rp_key)
+        except StandbyError as exc:
+            raise HomeAssistantError(f"Não foi possível pôr o PS5 em repouso: {exc}") from exc
+        await self.coordinator.async_request_refresh()

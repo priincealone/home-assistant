@@ -3,7 +3,7 @@
 - **ID**: PS5-02
 - **Autor**: Claude Code
 - **Data**: 24/09/2026
-- **Status**: Aprovada a direção pelo André em 24/09 (opção "Remote Play"). Implementação bloqueada por B-1 a B-3
+- **Status**: Código escrito em 25/09 (`remoteplay.py`, `media_player.py`, `config_flow.py`, `ddp/link.py`). **Não testado no console**: falta B-1 a B-4 e o teste físico da seção 6
 - **Classificação**: Alçada 2 (integração custom e contrato de entidade). Passo de pareamento é alçada 3 (credencial do André)
 - **Complementa**: `ps5-integracao-completa.md` (PS5-01). Este documento **revoga** o item "Desligar o PS5 — não faz" de PS5-01 §4 e a frase de §1.2 sobre a ausência de `turn_off`
 

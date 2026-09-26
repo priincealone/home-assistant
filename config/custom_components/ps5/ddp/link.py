@@ -1162,12 +1162,18 @@ def _regist_key_to_credential(regist_key_hex: str) -> str:
 
 
 async def async_link(host: str, pin: int, account_id: str) -> str:
-    """Link with a PS5 using PIN pairing. Returns DDP user-credential string.
+    """Link with a PS5 using PIN pairing. Returns DDP user-credential string."""
+    return (await async_link_full(host, pin, account_id))["credential"]
+
+
+async def async_link_full(host: str, pin: int, account_id: str) -> dict[str, str]:
+    """Link with a PS5 using PIN pairing. Returns the credential and the Remote Play keys.
 
     :param host: PS5 IP address.
     :param pin: 8-digit PIN from PS5 (Settings → System → Remote Play → Link Device).
     :param account_id_str: PSN account_id decimal string (from JWT or PSN API).
-    :returns: DDP user-credential string (decimal) for use in WAKEUP packets.
+    :returns: ``credential`` (decimal, for WAKEUP packets), ``regist_key`` and ``rp_key``
+        (hex, for the Remote Play session that sends standby).
     :raises RegistrationError: on failure.
     """
     payload, bright, ambassador = await asyncio.get_running_loop().run_in_executor(
@@ -1236,7 +1242,15 @@ async def async_link(host: str, pin: int, account_id: str) -> str:
     if not regist_key:
         raise LinkingError(f"PS5-RegistKey missing in response. Got keys: {list(result.keys())}")
 
-    return _regist_key_to_credential(regist_key)
+    rp_key = result.get("RP-Key")
+    if not rp_key:
+        raise LinkingError(f"RP-Key missing in response. Got keys: {list(result.keys())}")
+
+    return {
+        "credential": _regist_key_to_credential(regist_key),
+        "regist_key": regist_key,
+        "rp_key": rp_key,
+    }
 
 
 def _udp_search(host: str) -> None:

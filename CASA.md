@@ -51,7 +51,7 @@ usuário e cookie).
 
 | Cômodo | Entidades |
 | --- | --- |
-| **Sala de estar** | `light.luz_sala` e `fan.ventilador_sala` (LocalTuya, um aparelho aberto em dois) · `light.painel` · `media_player.tv_un65du8000gxzd` (local) e `media_player.sala_de_estar_tv` (nuvem, oculta) · `media_player.sala_de_estar_ps5` · `switch.ventilacao_ps5` (alimenta o ventilador externo do console) |
+| **Sala de estar** | `light.luz_sala` e `fan.ventilador_sala` (LocalTuya, um aparelho aberto em dois) · `light.painel` · `media_player.tv_un65du8000gxzd` (local) e `media_player.sala_de_estar_tv` (nuvem, oculta) · `media_player.sala_de_estar_ps5` (liga por WAKEUP; **repouso por Remote Play** desde 25/09/2026, com as chaves gravadas no repareamento — só age com o console ligado, ver `specs/features/ps5-desligar-remote-play.md`) · `switch.ventilacao_ps5` (alimenta o ventilador externo do console) |
 | **Quarto** | `light.luz_quarto` e `fan.ventilador_quarto` (LocalTuya, mesma separação da Sala) · `binary_sensor.porta_do_quarto_porta` |
 | **Quarto Luca** | `light.quarto_luca_switch_1` · luminária Yeelink `light.yeelink_cn_581528686_bslamp2_s_2_light` · tomada `switch.tomada_inteligente_socket_1/2` |
 | **Closet** | `light.closet_switch_1` · `light.led_escritorio_sonoff_1001dff472` · tomada `switch.computador_socket_1/2` · aspirador `vacuum.dreame_us_415783444_mc1808` · roteador "Roteador Closet" |

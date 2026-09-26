@@ -5295,3 +5295,25 @@ tela: badge 0/2 e o modal do Closet sem menção à Yeelight. A linha correspond
 ⚠️ **Efeito colateral**: como `rooms.ts` é a lista de permissão das rotas de escrita, **a luminária deixou
 de ser controlável pelo painel**. Ela não aparece em nenhum cômodo (o Quarto Luca segue com 1 ponto,
 `light.quarto_luca_switch_1`). No HA continua funcionando.
+
+## PS5 desliga pelo Home Assistant — repouso por Remote Play (25/09/2026)
+
+**Contexto**: a integração `ps5` só ligava (WAKEUP por DDP); o DDP não tem comando de repouso. O André
+escolheu o caminho Remote Play (spec `specs/features/ps5-desligar-remote-play.md`, PS5-02). Antes disso o
+console estava `unavailable` porque estava fora da rede; voltou no mesmo IP (`192.168.31.245`).
+**Feito** (`config/custom_components/ps5/`): `remoteplay.py` novo (abre sessão, manda standby, fecha);
+`media_player.py` com `async_turn_off` (só age com o console `on`) e `TURN_OFF` declarado só quando as chaves
+existem; `ddp/link.py` devolve também `RegistKey` e `RP-Key`; `config_flow.py` grava as chaves e a tela
+Reconfigurar aceita PIN + npsso opcionais para repareamento; `manifest.json` com
+`pyremoteplay==0.7.6` e `pyee==11.1.1`.
+**Verificado** (25/09, com o console): repareamento gravou `rp_key` e `rp_regist_key`; sessão Remote Play
+abriu em 8,3 s pelo NAT do Docker; console foi a 620 (Server Standby); WAKEUP devolveu `on` em 6 s; o HA
+reiniciou e instalou as dependências sozinho.
+**Não verificado**: `media_player.turn_off` chamado pelo HA (testei o módulo direto, sem token); que a
+entidade exiba `TURN_OFF`; efeito na `switch.ventilacao_ps5`.
+**Armadilhas**: (1) `pyremoteplay` só importa em Python 3.14 com `pyee` 11.x — 12 e 14 removeram
+`ExecutorEventEmitter`; (2) o `async_standby` da biblioteca tem laço de espera invertido (não espera), então o
+código usa o método privado `_send_standby()` e espera sozinho — pode quebrar se a lib mudar;
+(3) sessão Remote Play contra console em repouso o **acorda**: o turn_off recusa fora de `on`; (4) `autostart`
+tem de ficar ligado, pois é o fluxo que marca a sessão como pronta; (5) o console fica ~20 s mudo ao entrar
+em repouso antes de responder 620 — não é queda.
