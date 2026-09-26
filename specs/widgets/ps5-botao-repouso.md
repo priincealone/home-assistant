@@ -50,8 +50,8 @@ liga o console, porque a rota `/api/tv` retorna depois de tratar `fonte`, antes 
 
 ## 5. Verificação
 
-- [ ] `npx tsc --noEmit` sem erros
-- [ ] Leitura do estado real: chip e botão corretos para `on`, `off` e `unavailable` (sem acionar o console)
-- [ ] `/api/toggle` com `turn_off` no PS5 ligado é recusado; com `unavailable` não faz nada
-- [ ] Um ciclo físico único, com o André, via botão: confirmação → repouso → chip volta a "Modo Repouso";
-      estado anterior devolvido
+- [x] `npx tsc --noEmit` sem erros
+- [x] Leitura do estado real: chip e botão corretos para `on`, `off` e `unavailable` (sem acionar o console)
+- [x] `/api/toggle` com `turn_off` no PS5 ligado é recusado; com `unavailable` não faz nada
+- [x] Um ciclo físico único, com o André, via botão: confirmação → repouso → chip volta a "Modo Repouso";
+      estado anterior devolvido _(feito em 25/09, ver `ESTADO_DASHBOARD.md`)_

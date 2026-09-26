@@ -5359,3 +5359,15 @@ desenvolvimento usa o mesmo `.next`); tablet/iPad (só o Chrome do painel).
 (azul) venciam a regra de confirmação por ordem no arquivo — as regras novas ficam depois de `.is-on`;
 (3) bug antigo, não tratado: `enviarComandoTv({ fonte: "HDMI", ps5_power: true })` nunca liga o console, porque a
 rota `/api/tv` retorna depois de tratar `fonte`; (4) `lib/ha.ts` é só de servidor, o cliente fala pela rota.
+
+### Ciclo físico completo pelo botão do painel (25/09/2026, 22:22–22:28)
+
+**Verificado** (clique real no botão, cliques por `ref` no navegador do painel): console em repouso → "Ligar Console PS5" →
+"Ligando…" → `on` (22:22:23) → tomada do cooler `on` 2 s depois (22:22:25, automação) → dois toques em "Colocar em
+Repouso" (o primeiro arma, o segundo envia) → "Entrando em repouso…" → "Modo Repouso" em ~19 s → DDP 620 →
+última oscilação do console 22:26:42 → cooler `off` 22:27:43 (61 s). Sem erro no log do HA. **Estado final igual ao
+inicial** (console em repouso, cooler desligado).
+**Armadilha do teste**: os primeiros toques por coordenada não chegaram ao botão (nenhum evento `click` na página; nada
+foi enviado, conferido no log do HA e no DDP) — causa não determinada; por `ref` funcionou. Dois cliques no mesmo
+instante (lote sem pausa) também não enviam: a confirmação exige o redesenho entre os toques, impossível para uma
+pessoa. Nenhum efeito colateral: o histórico mostra só as mudanças esperadas.
