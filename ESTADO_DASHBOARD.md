@@ -5371,3 +5371,26 @@ inicial** (console em repouso, cooler desligado).
 foi enviado, conferido no log do HA e no DDP) — causa não determinada; por `ref` funcionou. Dois cliques no mesmo
 instante (lote sem pausa) também não enviam: a confirmação exige o redesenho entre os toques, impossível para uma
 pessoa. Nenhum efeito colateral: o histórico mostra só as mudanças esperadas.
+
+## 26/09/2026 — Monitoramento de rede (internet, DVR, luzes indisponíveis)
+
+Spec: `specs/automations/rede-mesh-internet-monitoramento.md`. Nascida de sugestões do Perplexity, filtradas
+pelo que o projeto de fato oferece.
+
+- **Sondas**: `config/rede_ping.yaml`, `command_line` com `ping -c 2 -W 2`. A plataforma YAML do `ping` não
+  existe no HA 2026.9; a integração `ping` (PC) é entrada de configuração e não foi tocada.
+- **Sensores**: `binary_sensor.internet_no_ar` (on se algum dos dois destinos responde; `unavailable` se as
+  fontes não permitem concluir), `sensor.rede_diagnostico`, `sensor.luzes_indisponiveis` (lista explícita de 18
+  luzes).
+- **Automações** (`automations.yaml`, ids `1758844800001` a `...003`): internet caiu/voltou, DVR fora, luzes
+  indisponíveis. Só notificam no iPhone; nenhuma comanda atuador.
+- **Achados que mudaram o plano**: 32 dos 60 MACs vistos pelo roteador são privados (78% dos ~120
+  eventos/dia), então presença e "dispositivo novo" por MAC foram descartados; `connect_device_ids` estoura o
+  limite de 255 caracteres; o Roteador Sala reporta `0` clientes mesmo no ar; as luzes por nuvem Tuya (Luzes
+  Externas, Quarto, Banheiro) caem muito mais que o Sonoff local.
+- **Armadilha do `check_config`** no Git Bash: `-c /config` vira `C:/Program Files/Git/config`; usar
+  `MSYS_NO_PATHCONV=1`.
+- **Formato do `command_line`**: um sensor por bloco `- binary_sensor:` (mapa, não lista).
+- **Pendências**: habilitar o RSSI do Sonoff pela interface; coletar uma semana e definir limiar de sinal;
+  confirmar suposição do nó da Sala; reserva de DHCP (K-06).
+- **Não provado**: envio real das notificações e disparo dos `for:`.

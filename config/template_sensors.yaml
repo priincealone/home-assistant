@@ -239,3 +239,79 @@
         ps5: "{{ states('media_player.sala_de_estar_ps5') }}"
         tv: "{{ states('sensor.tv_sala_estado') }}"
         fonte: "{{ state_attr('media_player.sala_de_estar_tv', 'source') }}"
+
+# --- Rede: internet, mesh e luzes (specs/automations/rede-mesh-internet-monitoramento.md) ---
+- binary_sensor:
+    - name: "Internet no Ar"
+      unique_id: internet_no_ar
+      device_class: connectivity
+      # Disponível se algum destino responde ou se os dois confirmam "sem resposta".
+      # Um `off` + `unavailable` não prova nada: fica indisponível, não "caiu".
+      availability: >
+        {% set a = states('binary_sensor.rede_internet_cloudflare') %}
+        {% set b = states('binary_sensor.rede_internet_google') %}
+        {{ a == 'on' or b == 'on' or (a == 'off' and b == 'off') }}
+      state: >
+        {{ is_state('binary_sensor.rede_internet_cloudflare', 'on')
+           or is_state('binary_sensor.rede_internet_google', 'on') }}
+
+    - name: "Rede Nó Sala Online"
+      unique_id: rede_no_sala_online
+      device_class: connectivity
+      # Sem IP confirmado do nó da Sala, a saúde dele é a disponibilidade da entidade do RD15.
+      # Só vale enquanto o Closet (que fala com a mesma nuvem Xiaomi) estiver disponível.
+      availability: >
+        {{ states('sensor.xiaomi_cn_771718035_rd15_connected_device_number_p_2_3') not in ['unavailable', 'unknown'] }}
+      state: >
+        {{ states('sensor.xiaomi_cn_863726955_rd15_connected_device_number_p_2_3') not in ['unavailable', 'unknown'] }}
+
+- sensor:
+    - name: "Rede Diagnóstico"
+      unique_id: rede_diagnostico
+      icon: mdi:lan-check
+      state: >
+        {% set gw = states('binary_sensor.rede_gateway') %}
+        {% set net = states('binary_sensor.internet_no_ar') %}
+        {% set sala = states('binary_sensor.rede_no_sala_online') %}
+        {% if gw not in ['on', 'off'] or (gw == 'on' and net not in ['on', 'off']) %}
+          indeterminado
+        {% elif gw == 'off' %}
+          sem_gateway
+        {% elif net == 'off' %}
+          sem_internet
+        {% elif sala == 'off' %}
+          no_mesh_fora
+        {% else %}
+          ok
+        {% endif %}
+
+    - name: "Luzes Indisponíveis"
+      unique_id: luzes_indisponiveis
+      icon: mdi:lightbulb-alert-outline
+      unit_of_measurement: luzes
+      # Lista explícita. Fora: tela do iPad (browser_mod), LED dos roteadores e o Yeelight
+      # aposentado (bslamp2), que vive `unavailable`.
+      state: >
+        {% set luzes = [
+          'light.banheiro_luz_de_fundo', 'light.circulacao_switch_1', 'light.circulacao_switch_2',
+          'light.closet_switch_1', 'light.cozinha_copa_varanda_switch_1',
+          'light.cozinha_copa_varanda_switch_2', 'light.cozinha_copa_varanda_switch_3',
+          'light.entrada_luz_de_fundo', 'light.led_escritorio_sonoff_1001dff472',
+          'light.luz_quarto', 'light.luz_sala', 'light.luzes_externas_luz_de_fundo',
+          'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
+          'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
+          'light.painel', 'light.quarto_luca_switch_1'] %}
+        {{ luzes | select('is_state', 'unavailable') | list | count }}
+      attributes:
+        entidades: >
+          {% set luzes = [
+            'light.banheiro_luz_de_fundo', 'light.circulacao_switch_1', 'light.circulacao_switch_2',
+            'light.closet_switch_1', 'light.cozinha_copa_varanda_switch_1',
+            'light.cozinha_copa_varanda_switch_2', 'light.cozinha_copa_varanda_switch_3',
+            'light.entrada_luz_de_fundo', 'light.led_escritorio_sonoff_1001dff472',
+            'light.luz_quarto', 'light.luz_sala', 'light.luzes_externas_luz_de_fundo',
+            'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
+            'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
+            'light.painel', 'light.quarto_luca_switch_1'] %}
+          {{ luzes | select('is_state', 'unavailable')
+                   | map('state_attr', 'friendly_name') | list | join(', ') }}

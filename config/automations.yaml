@@ -413,3 +413,183 @@
                 entity_id: >-
                   {{ ['light.circulacao_switch_1', 'light.painel']
                      | select('is_state', 'on') | list }}
+- id: '1758844800001'
+  alias: Rede - internet caiu e voltou
+  description: >-
+    Avisa no iPhone quando a internet fica fora por mais de 3 minutos e quando volta.
+    Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-03).
+
+    Decisões que não são óbvias:
+
+    1. Só avisa a queda se o gateway responde. Sem gateway, o PC pode estar sem
+    rede local e nada se conclui sobre a operadora.
+
+    2. O gatilho tem `for: 3 min`: oscilação curta não alarma. O aviso de retorno
+    só sai se a queda foi avisada (input_boolean.rede_queda_notificada).
+
+    3. Na partida do HA o helper é zerado se a internet está no ar; sem isso, um
+    "on" restaurado de antes do reinício faria o próximo retorno de uma queda
+    curta (não avisada) anunciar "voltou" sem motivo.
+
+    4. A duração vem de `from_state.last_changed` do sensor: é o momento real em
+    que a internet caiu, não o do aviso.
+
+    5. Entre 23h e 7h a notificação é passiva (sem som), para não acordar.
+
+    Dono: só esta automação escreve o helper. Não comanda nenhum atuador.
+  mode: queued
+  max: 3
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.internet_no_ar
+      to: 'off'
+      for: '00:03:00'
+      id: queda
+    - trigger: state
+      entity_id: binary_sensor.internet_no_ar
+      from: 'off'
+      to: 'on'
+      id: volta
+    - trigger: homeassistant
+      event: start
+      id: partida
+  actions:
+    - choose:
+        - conditions:
+            - condition: trigger
+              id: queda
+            - condition: state
+              entity_id: binary_sensor.rede_gateway
+              state: 'on'
+          sequence:
+            - action: input_boolean.turn_on
+              target:
+                entity_id: input_boolean.rede_queda_notificada
+            - action: notify.iphone_de_andre
+              data:
+                title: Internet fora do ar
+                message: >-
+                  Sem internet há mais de 3 minutos. A rede local responde:
+                  provável problema na operadora.
+                data:
+                  push:
+                    interruption-level: >-
+                      {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
+        - conditions:
+            - condition: trigger
+              id: volta
+            - condition: state
+              entity_id: input_boolean.rede_queda_notificada
+              state: 'on'
+          sequence:
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.rede_queda_notificada
+            - action: notify.iphone_de_andre
+              data:
+                title: Internet voltou
+                message: >-
+                  A internet voltou depois de
+                  {{ ((now() - trigger.from_state.last_changed).total_seconds() / 60) | round(0) | int }}
+                  min fora.
+                data:
+                  push:
+                    interruption-level: >-
+                      {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
+        - conditions:
+            - condition: trigger
+              id: partida
+            - condition: state
+              entity_id: binary_sensor.internet_no_ar
+              state: 'on'
+          sequence:
+            - action: input_boolean.turn_off
+              target:
+                entity_id: input_boolean.rede_queda_notificada
+
+- id: '1758844800002'
+  alias: Rede - DVR das câmeras fora do ar
+  description: >-
+    Avisa no iPhone quando o DVR das câmeras (192.168.31.216) deixa de responder
+    por 10 minutos. Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-04).
+
+    Por quê: o DVR já derrubou as câmeras duas vezes por mudança de IP (K-06,
+    20/09 e 24/09/2026). O aviso separa "DVR caiu" de "câmera com defeito".
+
+    Só avisa com o gateway respondendo: sem rede local todos os alvos caem juntos
+    e o aviso relevante é o de internet. PC e PS5 ficam de fora de propósito
+    (desligam por uso normal). Não comanda nenhum atuador.
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: binary_sensor.rede_dvr
+      to: 'off'
+      for: '00:10:00'
+  conditions:
+    - condition: state
+      entity_id: binary_sensor.rede_gateway
+      state: 'on'
+  actions:
+    - action: notify.iphone_de_andre
+      data:
+        title: DVR das câmeras fora do ar
+        message: >-
+          O DVR (192.168.31.216) não responde há 10 minutos, com a rede local
+          funcionando. Confira energia e IP.
+        data:
+          push:
+            interruption-level: >-
+              {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
+
+- id: '1758844800003'
+  alias: Rede - luzes indisponíveis
+  description: >-
+    Avisa no iPhone quando alguma luz fica `unavailable` por 10 minutos.
+    Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-05).
+
+    Por quê: no histórico de 15 a 26/09/2026 as luzes por nuvem Tuya (Luzes
+    Externas, Quarto, Banheiro) caíram dezenas de vezes; o Sonoff local quase
+    nunca. O aviso aponta a nuvem, não o Wi-Fi.
+
+    Decisões que não são óbvias:
+
+    1. Dispara pela mudança de `sensor.luzes_indisponiveis` estável por 10 min
+    (`for`): oscilação curta e a subida das integrações depois de um reinício do
+    HA não avisam. Não repete enquanto o número não mudar.
+
+    2. Só avisa com `sensor.rede_diagnostico` = ok. Sem rede local ou sem
+    internet todas as luzes de nuvem caem juntas e o aviso relevante é o da
+    internet.
+
+    3. Cinco ou mais juntas viram "queda em bloco", uma mensagem em vez de uma
+    lista longa. Sem aviso de retorno.
+
+    Não comanda nenhuma luz.
+  mode: single
+  triggers:
+    - trigger: state
+      entity_id: sensor.luzes_indisponiveis
+      for: '00:10:00'
+  conditions:
+    - condition: numeric_state
+      entity_id: sensor.luzes_indisponiveis
+      above: 0
+    - condition: state
+      entity_id: sensor.rede_diagnostico
+      state: ok
+  actions:
+    - action: notify.iphone_de_andre
+      data:
+        title: Luzes indisponíveis
+        message: >-
+          {% set n = states('sensor.luzes_indisponiveis') | int(0) %}
+          {% if n >= 5 %}
+            Queda em bloco: {{ n }} luzes sem resposta há 10 minutos. Provável
+            nuvem Tuya ou Wi-Fi.
+          {% else %}
+            Sem resposta há 10 minutos: {{ state_attr('sensor.luzes_indisponiveis', 'entidades') }}.
+          {% endif %}
+        data:
+          push:
+            interruption-level: >-
+              {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}

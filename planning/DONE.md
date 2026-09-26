@@ -7,6 +7,15 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 26/09/2026
+
+**Monitoramento de rede: internet, DVR e luzes indisponíveis (R-01 a R-05)** — sondas ICMP, sensor de
+diagnóstico (gateway × internet × nó da Sala) e três avisos no iPhone. Verificado: `check_config` sem erro,
+sensores lendo `ok`, três automações `on`. **Não** foi provada a notificação real (não se derrubou a rede para
+testar). Detalhe e armadilhas em `ESTADO_DASHBOARD.md`; spec em `specs/automations/rede-mesh-internet-monitoramento.md`.
+
+---
+
 ## 25/09/2026
 
 **PS5 desliga pelo HA (PS5-02) e ventilação em 1 minuto** — repouso por sessão Remote Play

@@ -262,6 +262,13 @@ no apagar, uma luz acesa perto do amanhecer ficaria acesa para sempre. Nas
 automações 2 e 3, a janela vai até as 6h porque uma condição só com
 `after: 22:00` para à meia-noite.
 
+**Monitoramento de rede (26/09/2026, só aviso — não comanda nada).** Sondas ICMP
+por `command_line` (`config/rede_ping.yaml`: gateway, 1.1.1.1, 8.8.8.8 e DVR) alimentam
+`binary_sensor.internet_no_ar`, `sensor.rede_diagnostico` (`ok`, `sem_internet`,
+`sem_gateway`, `no_mesh_fora`, `indeterminado`) e `sensor.luzes_indisponiveis`. Três
+automações avisam no iPhone: internet fora por 3 min (e o retorno), DVR fora por 10 min e
+luzes `unavailable` por 10 min. Spec: `specs/automations/rede-mesh-internet-monitoramento.md`.
+
 ## Automações propostas, ainda não feitas
 
 1. **Saiu de casa → apaga tudo**, incluindo os ventiladores, quando

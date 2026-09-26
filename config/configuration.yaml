@@ -33,3 +33,10 @@ automation: !include automations.yaml
 script: !include scripts.yaml
 scene: !include scenes.yaml
 template: !include template_sensors.yaml
+command_line: !include rede_ping.yaml
+
+# Guarda se a queda de internet já foi avisada, para só avisar o retorno de queda que alarmou.
+input_boolean:
+  rede_queda_notificada:
+    name: Queda de internet avisada
+    icon: mdi:wifi-alert
