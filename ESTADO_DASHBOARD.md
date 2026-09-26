@@ -5725,3 +5725,181 @@ sem rolagem horizontal no celular. `npx tsc --noEmit` passa.
 
 **Ficou como estava**: no celular (< 641 px) as cenas não têm moldura, só o título acima; o resumo ganhou o
 título em todos os tamanhos.
+
+## 25/09/2026 — Celular: cabeçalho e cenas reorganizados
+
+Pedido do André: analisar o projeto no telefone e reorganizar os cartões superiores de forma harmônica.
+Só CSS (`globals.css`), só até 640 px. Medido a 390×844, depois conferido a 360×740, 430×932 e 320×640.
+
+**O que a análise achou (390×844)**
+
+- **Hierarquia invertida**: o relógio tinha **16 px**, no canto, menor que a pílula do clima ao lado dele
+  (temperatura de 22 px). No tablet o relógio é a maior coisa da tela; no celular era quase invisível.
+- **As três pílulas de alerta viravam círculos só com ícone** (45, 49 e 36 px), sem nenhuma palavra. "Tudo
+  em ordem" tinha 36×44, abaixo do alvo de 44.
+- **A linha de ações mostrava 3 dos 4 controles**: o standby é `display: none` no celular por regra antiga
+  e deliberada. Mantido assim.
+- **As cenas ocupavam 193 px** numa grade 2×2, e o primeiro cômodo, que é a função principal, só começava
+  em y=737 numa tela de 844.
+
+**O que foi feito**
+
+- Cabeçalho vira uma grade de quatro linhas: **relógio de 54 px** com o clima à direita; "Casa · 1 luz
+  acesa" com a data à direita; as **três pílulas de alerta dividindo a largura, com texto**; e "Apagar
+  tudo" à esquerda com as ferramentas à direita. Feito com `display: contents` em
+  `.dashboard-header-center`, `.dashboard-datetime`, `.dashboard-info-row` e `.dashboard-header-brand`,
+  sem mexer no JSX.
+- **Cenas numa linha só, de quatro botões** (68 px de altura, 89 px de largura a 390): a caixa das cenas
+  vai de 193 para 95 px.
+- Cabeçalho de 138 para 211 px; o primeiro cômodo passa de y=737 para **712**, ou seja, a tela ganha 25 px
+  para o que importa, com um relógio legível e alertas que dizem alguma coisa.
+
+**Defeitos achados e corrigidos no caminho**: `.quick-actions-tools` era `display: block` no celular e o
+"Ao vivo" ficava 5 px abaixo do "Apagar tudo"; "Baterias 75%" passava 1 px da caixa e virava "Baterias 7…"
+(letter-spacing); a 360 px o ícone das pílulas foi retirado para caber a palavra; a 320 px a linha de ações
+passava 19 px da caixa e cortava o botão do plano de fundo, e "Tudo em ordem" era cortado; ajustados com
+folgas e fonte de 10 px só até 340 px.
+
+**Verificado** nos quatro tamanhos: sem sobreposição, nada fora do cabeçalho, nenhum alvo abaixo de 44 px,
+sem rolagem horizontal, todos os rótulos das pílulas inteiros.
+
+**Não mexido**: o "Resumo da casa" (cinco cartões empilhados, 298 px) e os cômodos; o standby no celular; o
+que fica abaixo de 320 px. **Não verificado** em celular real nem com alerta real nas pílulas.
+
+**Celular — energia, mídia, aspirador e compras numa fileira só** (mesmo dia, a pedido do André; só CSS, só
+até 640 px). Eram quatro cartões largos empilhados (mais a câmera), **298 px**. Agora são quatro peças
+pequenas lado a lado (89×88 a 390 px; 82 a 360; 72 a 320), cada uma com ícone, o dado principal e uma linha
+de apoio, e a câmera segue em cartão próprio logo abaixo. A seção do resumo passa de 298 para **179 px** e
+o primeiro cômodo sobe de y=712 para **y=594** (numa tela de 844).
+
+- Energia: watts em destaque e "N ativas"; a barra de carga fica; o selo "Moderado" sai (a barra e o ícone
+  já levam a cor).
+- Mídia: o estado (STANDBY, ...) é o dado e "MÍDIA" o rótulo.
+- Aspirador: o estado ("Pronto") e a palavra "Aspirador". O modo (Turbo) não cabe e foi zerado.
+- Compras: nome e situação.
+
+⚠️ **Perde-se o botão de ligar/desligar da mídia no celular** (44×44): não cabe numa peça de 89 px. Continua
+na tela de detalhe da mídia. Nada mais some: o cartão inteiro já abria o detalhe (`role="button"` no
+próprio cartão; o botão de abrir já era escondido no celular). **Verificado: as quatro peças abrem o seu
+modal (energia, compras, mídia, aspirador), com `fetch` de escrita bloqueado e nenhuma escrita enviada.**
+
+Verificado a 390, 360 e 320: sem rolagem horizontal, fonte mínima de 10 px. Única sobra: a 320 px "Tudo
+comprado" excede a peça e passa pelo marquee de leitura contínua, em vez de caber parado. Não verificado em
+celular real.
+
+## 26/09/2026 — Memória do plano de fundo: histórico, ajustes por imagem e "voltar ao anterior"
+
+Pedido do André: criar um sistema de memória para a alteração de wallpaper. O pedido não dizia o que a
+memória devia lembrar; interpretei como **o que já foi usado e como cada imagem foi ajustada**, e deixei fora
+o que exigiria decisão dele (ver "Não feito").
+
+**O que faltava** (`WallpaperContext.tsx`): desfoque, escurecimento e saturação eram **um conjunto global**.
+Ao trocar de imagem com a "adaptação automática" ligada, a recomendação do catálogo **sobrescrevia o que o
+usuário tinha calibrado**, e não havia como ver o que já fora usado nem voltar à imagem anterior.
+
+**O que foi feito**
+
+- `lib/wallpaperMemory.ts` (novo): funções puras, sem React. Histórico das últimas **12** imagens (sem
+  repetir, mais recente primeiro) e o **último ajuste feito à mão em cada imagem**. Chave
+  `dashboard_wallpaper_memoria` (`v: 1`). A leitura descarta versão desconhecida, JSON quebrado, entradas
+  duplicadas ou malformadas e limita cada ajuste aos limites dos controles.
+- `WallpaperContext.tsx`: cada troca entra no histórico (e a imagem que estava ativa entra junto, para a
+  primeira troca já ter um "anterior"). **Ajuste lembrado vale mais do que a recomendação do catálogo**; sem
+  ajuste seu, vale a recomendação, como antes. Mexer nos controles grava o ajuste da imagem ativa, com 300 ms
+  de espera para não gravar a cada quadro do arraste. Foto enviada e depois excluída é **podada** do
+  histórico, e só depois de a lista de fotos carregar (podar com a lista ainda vazia apagaria tudo).
+  "Redefinir" esquece o ajuste da imagem padrão. Novos no contexto: `historico`, `ajustesLembradosDe`,
+  `idAnterior`, `voltarAoAnterior`, `esquecerHistorico`.
+- Galeria (`WallpaperGalleryModal.tsx`): nova aba **"Recentes"** com a lista (miniatura, quando foi usada,
+  os ajustes lembrados ou "usa a recomendação do catálogo", selo "Ativo"), **"Voltar ao anterior"** (chamar de
+  novo alterna entre as duas últimas) e **"Esquecer histórico"** (com confirmação; a imagem ativa fica).
+  A barra de abas passou a rolar de lado: com quatro abas passava dos 388 px de um celular (593 de conteúdo).
+
+**Verificado**
+
+- Lógica pura: **16 verificações passam** (ordem e duplicatas do histórico, limite de 12, imutabilidade,
+  limites dos ajustes, poda, "anterior", tempo relativo, leitura tolerante a lixo, gravação sem cota). Rodadas
+  com `node --experimental-strip-types` num script avulso, **que não foi para o repositório**: o projeto não
+  tem suíte de testes.
+- No navegador, de ponta a ponta: 1ª troca gera `[novo, default]`; o ajuste (desfoque 12, escurecimento 60%)
+  só é gravado depois dos 300 ms; trocar para uma imagem sem ajuste aplica a recomendação do catálogo (4 px,
+  30%); **voltar à primeira restaura o ajuste (12 px, 60%) no lugar da recomendação (3 px, 35%)**; "Voltar ao
+  anterior" duas vezes alterna; após recarregar a memória persiste; uma entrada fantasma injetada
+  (`custom_fantasma`) foi podada; "Esquecer" zera a memória, mantém a imagem, desabilita "Voltar" e mostra o
+  estado vazio; **foto enviada de verdade** (gerada e enviada pelo mesmo campo da galeria) entra no histórico
+  com miniatura e, ao ser excluída, sai do histórico e a imagem volta ao padrão. `npx tsc --noEmit` passa. O
+  armazenamento do navegador de teste foi limpo ao final.
+
+**Não feito, por depender de decisão do André**: (1) **memória compartilhada entre aparelhos**. Tudo fica
+neste aparelho (`localStorage`, como já era a imagem ativa e as fotos enviadas em IndexedDB): o tablet da
+parede e cada celular têm a sua. Compartilhar exigiria guardar no servidor e decidir se o tablet manda em
+todos. (2) **Trocar por horário** (uma imagem de dia, outra de noite). (3) Não há limite de fotos enviadas nem
+de tamanho da memória além das 12 entradas.
+
+**Efeito colateral a saber**: uma imagem que o usuário já ajustou deixa de receber a recomendação do catálogo
+ao ser escolhida de novo. Para voltar à recomendação, "Esquecer histórico" ou "Redefinir" (esta só para a
+imagem padrão). Não há ainda um "esquecer o ajuste desta imagem" na tela, embora a função exista na lib
+(`esquecerAjustesDe`).
+
+## 26/09/2026 — Memória do plano de fundo COMPARTILHADA entre aparelhos
+
+Pedido do André, depois de eu explicar que a memória criada antes valia só para o aparelho e o navegador
+onde nascia: "compartilhar". **Isto substitui a nota da entrada anterior ("fica só neste aparelho")**, que
+continua verdadeira para as fotos enviadas, e só para elas.
+
+**Como funciona**
+
+- **No servidor**: rota nova `/api/wallpaper` (GET e PUT) e `lib/wallpaperStore.ts`, que guarda a cópia
+  compartilhada em `dashboard-app/data/wallpaper-memoria.json` (pasta no `.gitignore`: são preferências da
+  casa, não código). Contém só ids de imagens, instantes, o identificador aleatório de cada aparelho e
+  números de ajuste. A gravação é atômica (arquivo temporário e troca) e serializada.
+- **Nos aparelhos**: a cópia local (localStorage) segue sendo a que o painel usa e a que vale sem rede.
+  Cada aparelho sincroniza ao abrir, a cada 30 s, ao voltar para a aba e ao recuperar a rede; mudanças
+  sobem 600 ms depois. Sem conexão, tudo continua funcionando neste aparelho e sobe quando a rede volta.
+- **Sem "vencedor"**: cada informação carrega o instante em que nasceu e vale a mais recente
+  (`mesclar`, em `lib/wallpaperMemory.ts`, usada pelas duas pontas). Excluir uma imagem e "esquecer
+  histórico" viram marcadores com instante (`removidos`, `limpezaEm`), para um aparelho atrasado não
+  ressuscitar o que outro apagou.
+- **A imagem ativa deixou de ser um campo**: é a primeira entrada do histórico. Um campo único perdia
+  informação conforme a ordem das mesclagens; o teste aleatório achou isso (ver abaixo).
+- **Tela** (aba "Recentes"): a caixa **"Seguir o plano de fundo escolhido em outros aparelhos"**, ligada por
+  padrão e por aparelho (ao religar, adota já a imagem atual); a linha de estado ("Sincronizado" ou "Sem
+  conexão com o painel…") com **"Sincronizar agora"**; e cada entrada marca "Escolhido em outro aparelho".
+- **Fotos enviadas continuam só no aparelho que as enviou** (IndexedDB). Nos outros aparelhos a entrada
+  aparece esmaecida como "Foto enviada em outro aparelho" e não pode ser restaurada. Uma troca recebida
+  de outro aparelho para uma foto que este não tem é ignorada, e o aparelho mantém a sua imagem. Cada
+  aparelho só poda do histórico as fotos que ele mesmo enviou.
+
+**Verificado**
+
+- **Lógica**: 33 verificações passam, incluindo **200 execuções aleatórias com 3 aparelhos** sincronizando
+  em ordens diferentes (mesclagem comutativa, associativa e idempotente). Esse teste **achou um defeito real**
+  na primeira versão: com a imagem ativa num campo próprio, `(A+B)+C` e `(C+A)+B` divergiam quando um terceiro
+  aparelho excluía a imagem ativa. Corrigido derivando a ativa do histórico. Rodado com `node
+  --experimental-strip-types` num script avulso, **fora do repositório** (o projeto não tem suíte de testes).
+- **API (curl, simulando aparelhos)**: 401 sem cookie; união dos aparelhos; `rev` só sobe quando o conteúdo
+  muda; 400 para JSON quebrado e para corpo sem `memoria`; 413 acima de 16 KB; ids hostis (`../../etc/passwd`,
+  `<script>`), instantes negativos e ajustes inválidos são descartados; **25 gravações simultâneas** de
+  aparelhos diferentes ficam todas (com o teto de 12 entradas) e o arquivo segue JSON válido; o limite de 120
+  pedidos por minuto responde 429 (86 aceitos e 54 recusados em 140).
+- **Ponta a ponta no navegador**: uma troca feita no navegador aparece no servidor com a origem certa; um
+  segundo aparelho (curl) escolhe outra imagem com ajustes e o navegador a adota, **com os ajustes dele**;
+  com "seguir" desligado a imagem não muda mas o histórico chega, e ao religar adota a atual; "Esquecer
+  histórico" num aparelho zera o compartilhado e um aparelho atrasado **não** consegue ressuscitá-lo; com o
+  servidor "fora do ar" a troca fica local, a tela avisa e ao voltar a rede sobe. `npx tsc --noEmit` passa. O
+  navegador de teste e o arquivo do servidor foram limpos ao final.
+
+**A saber**
+
+- **Segurança**: a rota passa pelo middleware como as demais de escrita, que **só exige a presença do cookie
+  de sessão, sem validá-lo** (fraqueza já conhecida do painel). Quem chega à porta 3002 com qualquer cookie
+  `casa_auth_session` pode ler e gravar essa memória. O dano possível é mudar o plano de fundo dos outros
+  aparelhos. O corpo é limitado, filtrado e limitado em frequência.
+- **Migração**: a memória local da versão anterior (v1) é convertida na primeira leitura, com a origem
+  atribuída a este aparelho, e sobe ao servidor na primeira sincronização.
+- **Um aparelho novo adota a imagem compartilhada na primeira sincronização** (se segue): um celular
+  que abre o painel pela primeira vez passa a usar a imagem que o tablet escolheu.
+- **Limite conhecido**: o teto de 12 entradas com exclusões simultâneas pode, só na fronteira dos 12, dar
+  resultados diferentes conforme a ordem; com o catálogo atual (6 imagens) não é alcançável sem fotos.
+- **Não feito**: fotos compartilhadas entre aparelhos (exigiria enviar arquivos a uma rota sem autenticação
+  de verdade), troca por horário, e nomes de aparelho (a tela diz só "outro aparelho").
