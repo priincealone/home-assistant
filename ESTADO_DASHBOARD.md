@@ -5937,3 +5937,36 @@ acontece por `resolverAlertas`), `app/api/state/route.ts` (baterias servidas), e
 "5 pontos" fixo: agora usa o tamanho da lista (7). Verificado: `npx tsc --noEmit` 0; painel de baterias mostra as
 duas com 100% "Excelente"; modal de segurança lista as duas como "Fechada". **Não** foi provado o disparo real dos
 alertas (porta aberta, bateria baixa): isso exigiria abrir a porta ou forçar o estado, e não se fez.
+
+---
+
+## 26/09/2026 — Auditoria visual e correções P1 de desempenho
+
+Relatório completo em `artifacts/claude/auditoria-visual-painel-26-09.md` (nota 14/20). Aplicados os três itens P1:
+
+**1. Painel da parede passou a rodar em produção.** O watchdog (`dashboard-app/iniciar_servidor_background.ps1`)
+subia `npm run dev`. Agora sobe `npm run start` e **recompila sozinho** (`npm run build`) quando algum arquivo de código
+(`app/`, `lib/`, `public/`, configs) é mais novo que `.next/BUILD_ID`. Se a compilação falhar, sobe o último build bom; só
+cai para `dev` se nunca houve build. **Para publicar uma mudança**: pare o servidor (`taskkill` no processo que escuta a
+3002, ou reinicie o PC); o watchdog sobe em até 15 s, recompilando antes (cerca de 40 s). Desenvolver com recarga a
+quente: `npm run dev` **numa porta livre** (`npx next dev -p 3010`), não na 3002. Medido na home: JS **6,6 MB → 1,3 MB**
+(359 KB na rede), requisições **57 → 29**, TTFB **218 → 25 ms**, FCP **312 → 160 ms**, carga **404 → 325 ms**, CSS 340 → 280 KB
+(48 KB na rede). O selo "N" e o aviso "Compiling…" sumiram da tela.
+
+**2. `will-change` removido do `.dashboard`** (`globals.css`). Mantinha o app inteiro numa camada de GPU em repouso.
+
+**3. Orçamento de vidro.** Tirado o `backdrop-filter` de `.room-card` (10 desfoques de 36 px), `.scene-card-btn` (4) e
+`.daily-widget-compact` (5); o fundo ganhou 2 pontos de opacidade para compensar. O plano de fundo é um gradiente SVG já
+desfocado e estático, então o desfoque por cartão quase não aparecia. Desfoques visíveis na home: **27 → 8–9** (hero,
+pílulas do cabeçalho e modais mantêm o efeito). Modais conferidos: continuam centralizados (o `will-change: transform`
+fazia o `.dashboard` conter elementos `fixed`).
+
+**A saber**
+- `next start` avisa que não funciona com `output: "standalone"` ("use node .next/standalone/server.js"); funciona, e o
+  aviso é inofensivo. Migrar para o servidor standalone exigiria copiar `.next/static` e `public/` para dentro dele.
+- `/api/state` (31,6 KB a cada 5 s) **não sai comprimido**; o HTML sim. Pendência.
+- O erro de console "An unknown error occurred when fetching the script" **não é** do modo dev: continua em produção,
+  e `navigator.serviceWorker.getRegistrations()` volta vazio no navegador embutido. Provável limite desse navegador
+  (não confirmado em tablet real).
+- O servidor ficou fora do ar por cerca de 1 min na troca; as automações do HA não dependem dele.
+- Não verificado: fluidez (FPS) em tablet físico; a melhora é medida em carga e contagem de camadas, não em quadros.

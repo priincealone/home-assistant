@@ -24,9 +24,9 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
 ## 2. Comandos de desenvolvimento
 
 ```bash
-# Painel (porta 3002)
-cd dashboard-app && npm run dev          # predev limpa desktop.ini do .next
-npm run start                            # produção, exige build antes
+# Painel (porta 3002): o watchdog roda PRODUÇÃO (build automático quando o código muda)
+cd dashboard-app && npm run build && npm run start   # manual, se precisar
+npx next dev -p 3010                     # desenvolvimento com recarga a quente: porta livre, nunca a 3002
 
 # Home Assistant
 docker ps --format '{{.Names}} | {{.Status}}'
