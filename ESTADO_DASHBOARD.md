@@ -6031,3 +6031,32 @@ O botão "Tema" de `/icons-preview` (página de desenvolvimento, a única que at
 **Verificado.** `npx tsc --noEmit` 0; build automático do watchdog em 17 s; home idêntica na tela; `/api/state` com JSON válido
 (72 entidades). **Não verificado**: Tab real percorrendo a lista de Compras e a galeria; o teclado da galeria com foto
 personalizada (não havia fotos).
+
+---
+
+## 26/09/2026 — Auditoria: P3 aplicados (o detector zerou)
+
+O detector do impeccable passou de **337 achados** (5 reais + 331 avisos de deriva do sistema) para **0**.
+
+- **Curvas de pulo.** As 4 `cubic-bezier(0.34, 1.56, 0.64, 1)` (toque no ícone do cômodo, ponto de estado, ícone do subcartão e
+  arranque do ventilador) viraram `cubic-bezier(0.16, 1, 0.3, 1)`, a saída exponencial que o resto do arquivo já usa. **Atenção:**
+  o `PRODUCT.md` fala em "física de toque com spring"; a troca tira o leve overshoot desses quatro efeitos. Para voltar,
+  basta restaurar a curva antiga nessas quatro linhas (procure `photonic-icon-press`, `status-dot-ignite`,
+  `subcard-icon-pop` e `fan-spool-torque`).
+- **`transition: width`.** Removida da cápsula de volume da TV (`.media-volume-capsule-fill`); o valor já chega por `style`
+  a cada passo, então a transição de 0,1 s só forçava recálculo de layout.
+- **Paleta documentada, não normalizada.** As 54 cores base que o CSS e o `MediaHubModal.tsx` já usavam entraram no
+  `DESIGN.md` em famílias (`shadow-ink`, `warning-*`, `danger-*`, `info-*`, `success-*`, `violet`/`indigo`/`pink`, `slate`,
+  `ink-*` e `brand-*` para os aplicativos de mídia). O alfa varia no CSS e não cria cor nova.
+- **Raios.** Documentados `hairline` (2 px), `micro` (4 px) e `card-xl` (26 px), que já eram usados. Normalizados à escala
+  15 valores soltos: 3→4, 5→6, 9→10, 11→12, 13→12, 15→14, 22→21 e 30→28 px. Os raios fluidos do tablet de parede
+  (`clamp(…vh…)`) viraram variáveis `--raio-fluido-*` no `:root`.
+- **Fonte.** Removida a Geist (nunca renderizou; só aparecia no selo do modo dev). `--font-sans` aponta para a Inter, a
+  única fonte carregada.
+- **Cenas em tablet horizontal.** `.scene-card-desc` aceita até 2 linhas em vez de reticências: "Luzes de acolhimento" não
+  vira mais "Luzes de acolhime…".
+- **Volume da TV.** O campo tinha 42 px por causa da borda de 1 px da cápsula; a borda virou filete interno
+  (`inset box-shadow`) e o alvo é 44×44.
+- **Erro de console "fetching the script": causa encontrada, não é do painel.** No navegador embutido do app, até o registro de
+  um arquivo que nem é JavaScript (`/manifest.json`) dá o mesmo erro: esse navegador não busca scripts de service worker. O
+  `/sw.js` responde 200 e é válido. Não se conclui nada sobre tablet real, mas o defeito não está no código.

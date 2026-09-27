@@ -97,27 +97,27 @@ fora do `DESIGN.md` (481 avisos), não na estrutura.
 - Correção: apagar as regras `data-theme="light"`; dividir por área (cabeçalho, cômodos, modais, câmera).
 - Comando: `$impeccable distill` e `$impeccable extract`.
 
-**P3 — Achados do detector (todos em `globals.css`)**
+**P3 — Achados do detector (todos em `globals.css`)** — ✅ CORRIGIDO em 26/09
 - `cubic-bezier(0.34, 1.56, 0.64, 1)` (efeito de "pulo") em 5261, 5461, 5864 e 6883: trocar por curva expo-out.
 - `transition: width` em 9105: anima layout; usar `transform: scaleX`.
 - Comando: `$impeccable animate`.
 
-**P3 — Cor e raio fora do sistema**
+**P3 — Cor e raio fora do sistema** — ✅ CORRIGIDO em 26/09
 - 481 avisos: cores literais fora do `DESIGN.md` (azuis `#60a5fa`, `#3b82f6`, `#0369a1`; vermelhos `#b91c1c`) e raios
   22 px e 9 px. Muitas são de regras do tema claro morto (ver acima). Promover ao `DESIGN.md` o que é
   intencional e trocar o resto por token.
 - Comando: `$impeccable extract`.
 
-**P3 — Fonte declarada e não usada**
+**P3 — Fonte declarada e não usada** — ✅ CORRIGIDO em 26/09
 - Local: `layout.tsx:9` (`Geist`). Renderiza `Inter` em 432 elementos; `Geist` só aparece no selo do modo dev.
 - Correção: remover a importação.
 - Comando: `$impeccable optimize`.
 
-**P3 — Texto cortado na barra de cenas em tablet horizontal**
+**P3 — Texto cortado na barra de cenas em tablet horizontal** — ✅ CORRIGIDO em 26/09
 - "Luzes de acolhime…" (cenário "Chegar") em 1024×768. Encurtar o texto ou permitir duas linhas.
 - Comando: `$impeccable layout`.
 
-**P3 — Erro recorrente no console**
+**P3 — Erro recorrente no console** — ✅ DIAGNOSTICADO em 26/09: limite do navegador embutido, não do painel
 - "An unknown error occurred when fetching the script" (9 vezes numa sessão). `/sw.js` responde 200; a causa
   **não foi determinada** (**não é** do modo dev: continua em produção; o service worker não registra no navegador embutido,
   `getRegistrations()` vazio). Provável limite desse navegador; conferir em tablet real.
