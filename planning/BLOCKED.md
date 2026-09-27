@@ -80,6 +80,36 @@ projeto sincronizada pelo Google Drive.
 
 ---
 
+### K-16 · Medidor de energia Tuya sem nenhuma entidade (26/09/2026)
+**Destrava**: adicionar o medidor pelo `localtuya` (já instalado, v5.2.3), o que exige o **ID e a chave
+local** do dispositivo; ou, se preferir esperar, nada a fazer do lado do HA.
+**Por que só ele**: a chave local é credencial da conta Tuya IoT (nível 3); nenhum agente a busca.
+**Diagnóstico** (diagnóstico do dispositivo baixado pelo André): dispositivo "Medidor energia", produto
+"WIFI dual meter" (`wifech3utowiyknu`), categoria `cz`, **online**, `support_local: true`. Os campos
+`function`, `status_range` e `status` vêm **vazios**: a nuvem Tuya não devolve nenhum ponto de dados para
+esse produto, então a integração oficial não tem do que criar entidade e o dispositivo fica marcado
+"(unsupported)". Não é falha de conexão (outros três dispositivos adicionados na mesma sincronização
+receberam entidades) nem falta de leitura recente: a especificação em si está vazia. O produto também não
+consta da biblioteca `tuya-device-handlers` 0.0.27.
+**Onde está na rede** (26/09): não anunciou por UDP; sobraram dois endereços com a porta local aberta que
+não anunciaram, `192.168.31.37` e `192.168.31.169`. Um deles deve ser o medidor; confirmar no Smart Life.
+**Tentativa com o localtuya (26/09, pausada a pedido do André)**: o IP do medidor é **`192.168.31.169`**
+(confirmado no Smart Life; o `.37` não é Tuya, reseta a conexão). Com a chave do API Explorer, o aparelho
+**fecha a conexão ~1 s depois do primeiro pedido**, em 3.4 (negociação de sessão) e em 3.3 (status), então
+nenhum ponto de dados foi lido. Hipóteses não separadas: (1) o medidor fala **protocolo 3.5**, que o
+localtuya 5.2.3 não suporta (a porta 6699 é só de descoberta UDP; o TCP segue na 6668); (2) a chave não
+bate com o aparelho. Destrava: conferir a `local_key` de novo e, se for o caso, trocar o localtuya por uma
+versão com 3.5 (HACS) — mudança de integração, **nível 2**, com plano prévio.
+**Estado que ficou no HA**: dispositivo "Medidor energia" salvo no localtuya (host `.169`, protocolo 3.3,
+depuração por dispositivo ligada) e o sensor de teste `sensor.medidor_energia_medidor_teste_dp1`,
+`unavailable`. Remover ou corrigir ao retomar.
+**Uso** (informado pelo André): canal 1 mede a casa toda e canal 2 mede o chuveiro. Spec:
+`specs/features/medidor-energia-casa-chuveiro.md`.
+**Impacto de não fazer**: o medidor não aparece no HA nem no painel; a energia do painel segue vindo só
+das tomadas medidoras (`docs/PRODUCT.md`).
+**Depois de destravar**: descobrir os pontos de dados do medidor (potência, corrente, tensão e energia por
+canal), criar as entidades e só então decidir se entram em `lib/rooms.ts` e no widget de energia.
+
 ## Bloqueados por decisão, não por falta de acesso
 
 ### K-11 · Autenticação do painel

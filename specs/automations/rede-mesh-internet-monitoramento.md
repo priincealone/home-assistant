@@ -183,3 +183,18 @@ Desvios em relação ao texto acima:
 Verificado: `check_config` sem erro; após reinício, os 3 alvos de ping e o DVR `on`, `internet_no_ar` `on`,
 `rede_diagnostico` `ok`, `luzes_indisponiveis` `0`, helper `off`, três automações `on`. **Não verificado**: o
 envio real das notificações e o disparo dos gatilhos `for:` (exigiria derrubar rede ou luz de verdade).
+
+### Atualização do RSSI do Sonoff (26/09/2026)
+
+`sensor.led_escritorio_sonoff_1001dff472_rssi` foi ativado em 25/09 (edição pontual de
+`core.entity_registry`, com backup). **Em ~10 h de HA no ar continuou `unknown`, sem nenhuma leitura.**
+Conclusão: **o alerta de sinal do R-05 é inviável pelo caminho atual e sai desta leva.**
+
+- **Causa não provada.** No código da integração o RSSI é o parâmetro `rssi` (`core/devices.py:162`) e só
+  preenche quando o aparelho manda uma mensagem que o inclua. Não foi confirmado se o Sonoff fala por LAN ou
+  pela nuvem, nem se o firmware envia o campo.
+- **O que falta para reabrir:** (1) descobrir o modo de conexão do aparelho (LAN × nuvem eWeLink); (2) ver
+  se alguma mensagem real traz `rssi` (log de depuração da integração ou uma atualização provocada com a luz,
+  que aciona a casa e só se faz com aviso e devolução do estado, §11); (3) só então coletar uma semana e
+  definir o limiar.
+- O sensor **fica ativado** (não custa nada). Se aparecer leitura, a coleta começa daí.
