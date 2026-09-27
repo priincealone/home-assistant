@@ -66,26 +66,6 @@
         "domain": "samsungtv",
         "is_persistent": false,
         "issue_id": "deprecated_implicit_wake_on_lan_c8:a6:ef:1c:ec:28"
-      },
-      {
-        "created": "2026-09-26T20:18:00.671770+00:00",
-        "dismissed_version": null,
-        "domain": "automation",
-        "is_persistent": true,
-        "issue_id": "automation.rede_luzes_indisponiveis_service_not_found_notify.iphone_de_andre",
-        "breaks_in_ha_version": null,
-        "data": null,
-        "is_fixable": true,
-        "issue_domain": null,
-        "learn_more_url": null,
-        "severity": "error",
-        "translation_key": "service_not_found",
-        "translation_placeholders": {
-          "service": "notify.iphone_de_andre",
-          "entity_id": "automation.rede_luzes_indisponiveis",
-          "name": "Rede - luzes indisponíveis",
-          "edit": "/config/automation/edit/1758844800003"
-        }
       }
     ]
   }

@@ -1,595 +1,507 @@
 - id: '1757462400000'
   alias: Ventilação do PS5 acompanha o console
-  description: >-
-    Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando o PS5
-    entra em uso e desliga quando ele sai.
+  description: 'Liga a tomada do ventilador externo (switch.ventilacao_ps5) quando
+    o PS5 entra em uso e desliga quando ele sai.
 
     Decisões que não são óbvias:
 
-    1. O desligar espera 1 minuto (era 2 até 25/09/2026, a pedido do André).
-    "unavailable" é um dos estados que o dispara, e a integração do PS5 fala por
-    rede — uma oscilação de segundos cortaria a ventilação com o console ainda
-    quente. Ligar não tem espera, aí o atraso seria justamente o que se quer
-    evitar (medido em 25/09: a tomada liga ~1 s depois do console).
+    1. O desligar espera 1 minuto (era 2 até 25/09/2026, a pedido do André). "unavailable"
+    é um dos estados que o dispara, e a integração do PS5 fala por rede — uma oscilação
+    de segundos cortaria a ventilação com o console ainda quente. Ligar não tem espera,
+    aí o atraso seria justamente o que se quer evitar (medido em 25/09: a tomada liga
+    ~1 s depois do console).
 
-    1a. Por que a reconciliação é de 1 em 1 minuto. Medido em 25/09: o gatilho
-    `for` sozinho não desligou a tomada no prazo — os dois desligamentos
-    observados caíram exatamente nos ticks de 5 minutos (20:20:01 e 22:05:01),
-    até 10 minutos depois do console sair. Causa não provada. Com o tick por
-    minuto e o limiar de 55 s (abaixo do `for`, para não perder a corrida contra
-    o cronômetro), o pior caso é cerca de 2 minutos. A guarda "tomada no estado
-    contrário" evita chamar a nuvem Tuya a cada minuto à toa.
+    1a. Por que a reconciliação é de 1 em 1 minuto. Medido em 25/09: o gatilho `for`
+    sozinho não desligou a tomada no prazo — os dois desligamentos observados caíram
+    exatamente nos ticks de 5 minutos (20:20:01 e 22:05:01), até 10 minutos depois
+    do console sair. Causa não provada. Com o tick por minuto e o limiar de 55 s (abaixo
+    do `for`, para não perder a corrida contra o cronômetro), o pior caso é cerca
+    de 2 minutos. A guarda "tomada no estado contrário" evita chamar a nuvem Tuya
+    a cada minuto à toa.
 
-    Risco aceito: uma queda de rede do PS5 com mais de 1 minuto, com o console
-    quente, corta a ventilação até ele voltar a `on` (aí religa em ~1 s).
+    Risco aceito: uma queda de rede do PS5 com mais de 1 minuto, com o console quente,
+    corta a ventilação até ele voltar a `on` (aí religa em ~1 s).
 
-    2. A decisão é tomada pelo **estado atual** do console, não por qual gatilho
-    disparou. A primeira versão usava `condition: trigger` e ficou surda: o PS5
-    foi para "off" às 00:10:16, o container reiniciou às 00:12:17 e o
-    temporizador pendente de 2 minutos morreu junto. Ao voltar, o console já
-    estava "off" — sem transição nova, nada rearmava, e a ventilação teria ficado
-    ligada indefinidamente. Com a decisão baseada em estado, mais os gatilhos de
-    partida do Home Assistant e de tempo, a automação se reconcilia sozinha em no
-    máximo 5 minutos, aconteça o que acontecer.
+    2. A decisão é tomada pelo **estado atual** do console, não por qual gatilho disparou.
+    A primeira versão usava `condition: trigger` e ficou surda: o PS5 foi para "off"
+    às 00:10:16, o container reiniciou às 00:12:17 e o temporizador pendente de 2
+    minutos morreu junto. Ao voltar, o console já estava "off" — sem transição nova,
+    nada rearmava, e a ventilação teria ficado ligada indefinidamente. Com a decisão
+    baseada em estado, mais os gatilhos de partida do Home Assistant e de tempo, a
+    automação se reconcilia sozinha em no máximo 5 minutos, aconteça o que acontecer.'
   mode: single
   triggers:
-    - trigger: state
-      entity_id: media_player.sala_de_estar_ps5
-      to:
+  - trigger: state
+    entity_id: media_player.sala_de_estar_ps5
+    to:
+    - 'on'
+    - playing
+    id: entrou_em_uso
+  - trigger: state
+    entity_id: media_player.sala_de_estar_ps5
+    to:
+    - standby
+    - 'off'
+    - idle
+    - unavailable
+    for: 00:01:00
+    id: saiu_de_uso
+  - trigger: homeassistant
+    event: start
+    id: partida
+  - trigger: time_pattern
+    minutes: /1
+    id: reconciliacao
+  conditions: []
+  actions:
+  - choose:
+    - alias: Console em uso — ventilação ligada
+      conditions:
+      - condition: state
+        entity_id: media_player.sala_de_estar_ps5
+        state:
         - 'on'
         - playing
-      id: entrou_em_uso
-    - trigger: state
-      entity_id: media_player.sala_de_estar_ps5
-      to:
-        - standby
-        - 'off'
-        - idle
-        - unavailable
-      for: '00:01:00'
-      id: saiu_de_uso
-    - trigger: homeassistant
-      event: start
-      id: partida
-    - trigger: time_pattern
-      minutes: /1
-      id: reconciliacao
-  conditions: []
-  actions:
-    - choose:
-        - alias: Console em uso — ventilação ligada
-          conditions:
-            - condition: state
-              entity_id: media_player.sala_de_estar_ps5
-              state:
-                - 'on'
-                - playing
-            - condition: state
-              entity_id: switch.ventilacao_ps5
-              state: 'off'
-          sequence:
-            - action: switch.turn_on
-              target:
-                entity_id: switch.ventilacao_ps5
-        - alias: Console fora de uso há mais de 1 minuto — ventilação desligada
-          conditions:
-            - condition: state
-              entity_id: switch.ventilacao_ps5
-              state: 'on'
-            - condition: template
-              value_template: >-
-                {% set ps5 = states.media_player.sala_de_estar_ps5 %}
-                {{ ps5 is not none
-                   and ps5.state not in ['on', 'playing']
-                   and (now() - ps5.last_changed).total_seconds() > 55 }}
-          sequence:
-            - action: switch.turn_off
-              target:
-                entity_id: switch.ventilacao_ps5
-
+      - condition: state
+        entity_id: switch.ventilacao_ps5
+        state: 'off'
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.ventilacao_ps5
+    - alias: Console fora de uso há mais de 1 minuto — ventilação desligada
+      conditions:
+      - condition: state
+        entity_id: switch.ventilacao_ps5
+        state: 'on'
+      - condition: template
+        value_template: "{% set ps5 = states.media_player.sala_de_estar_ps5 %} {{
+          ps5 is not none\n   and ps5.state not in ['on', 'playing']\n   and (now()
+          - ps5.last_changed).total_seconds() > 55 }}"
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.ventilacao_ps5
 - id: '1757980800000'
   alias: Porta do quarto fechada à noite apaga a casa
-  description: >-
-    Depois das 22h, fechar a porta do quarto é o gesto de "fui dormir": apaga
-    todas as luzes e desliga a TV.
+  description: 'Depois das 22h, fechar a porta do quarto é o gesto de "fui dormir":
+    apaga todas as luzes e desliga a TV.
 
-    A janela vai das 22h às 6h, e não apenas "depois das 22h". Uma condição de
-    horário só com `after` cobriria das 22h à meia-noite e nada mais — fechar a
-    porta à uma da manhã não faria nada, que é justamente quando mais se quer.
-    Com `after` maior que `before`, o Home Assistant entende o intervalo como
-    atravessando a meia-noite.
+    A janela vai das 22h às 6h, e não apenas "depois das 22h". Uma condição de horário
+    só com `after` cobriria das 22h à meia-noite e nada mais — fechar a porta à uma
+    da manhã não faria nada, que é justamente quando mais se quer. Com `after` maior
+    que `before`, o Home Assistant entende o intervalo como atravessando a meia-noite.
 
-    As luzes são resolvidas por template, não por lista fixa, para que uma luz
-    nova entre na rotina sozinha. Três famílias ficam de fora de propósito: as
-    `luz_de_fundo` dos interruptores (são a marcação que se enxerga no escuro,
-    apagá-las é o contrário do que se quer), o `indicator_light` dos roteadores
-    (LED de equipamento de rede, não iluminação) e a tela do painel
-    (`browser_mod`), que é um monitor e não uma lâmpada.
+    As luzes são resolvidas por template, não por lista fixa, para que uma luz nova
+    entre na rotina sozinha. Três famílias ficam de fora de propósito: as `luz_de_fundo`
+    dos interruptores (são a marcação que se enxerga no escuro, apagá-las é o contrário
+    do que se quer), o `indicator_light` dos roteadores (LED de equipamento de rede,
+    não iluminação) e a tela do painel (`browser_mod`), que é um monitor e não uma
+    lâmpada.
 
-    ⚠️ A TV só recebe o comando **se estiver ligada**, e por **um caminho de
-    cada vez**. A primeira versão mandava `turn_off` nos dois caminhos sempre,
-    argumentando que desligar o que já está desligado não custaria nada. Custa:
-    nesta Samsung o desligar viaja como tecla POWER, que é *alternador*. Com a
-    TV apagada, o comando a acendia — medido no histórico, a porta fechava
-    23:18:52 e a TV ligava 23:18:56. Dois caminhos ainda dobravam a aposta, um
-    desligando e o outro tornando a ligar.
+    ⚠️ A TV só recebe o comando **se estiver ligada**, e por **um caminho de cada
+    vez**. A primeira versão mandava `turn_off` nos dois caminhos sempre, argumentando
+    que desligar o que já está desligado não custaria nada. Custa: nesta Samsung o
+    desligar viaja como tecla POWER, que é *alternador*. Com a TV apagada, o comando
+    a acendia — medido no histórico, a porta fechava 23:18:52 e a TV ligava 23:18:56.
+    Dois caminhos ainda dobravam a aposta, um desligando e o outro tornando a ligar.
 
-    Por isso o `choose`: o caminho local é o preferido, e o da nuvem só entra
-    quando o local não está respondendo. Se a TV já estiver desligada, nenhum
-    comando é enviado — que é o correto e, aqui, também o seguro.
+    Por isso o `choose`: o caminho local é o preferido, e o da nuvem só entra quando
+    o local não está respondendo. Se a TV já estiver desligada, nenhum comando é enviado
+    — que é o correto e, aqui, também o seguro.'
   mode: single
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.porta_do_quarto_porta
-      from: 'on'
-      to: 'off'
+  - trigger: state
+    entity_id: binary_sensor.porta_do_quarto_porta
+    from: 'on'
+    to: 'off'
   conditions:
-    - condition: time
-      after: '22:00:00'
-      before: '06:00:00'
+  - condition: time
+    after: '22:00:00'
+    before: 06:00:00
   actions:
-    - action: light.turn_off
-      target:
-        entity_id: >-
-          {{ states.light | map(attribute='entity_id')
-             | reject('search', 'luz_de_fundo')
-             | reject('search', 'indicator_light')
-             | reject('search', 'browser_mod')
-             | list }}
-    - choose:
-        - alias: TV respondendo no caminho local e ligada
-          conditions:
-            - condition: template
-              value_template: >-
-                {{ states('media_player.tv_un65du8000gxzd')
-                   not in ['off', 'standby', 'unavailable', 'unknown'] }}
-          sequence:
-            - action: media_player.turn_off
-              target:
-                entity_id: media_player.tv_un65du8000gxzd
-        - alias: Caminho local mudo — tenta pela nuvem, se ela vir a TV ligada
-          conditions:
-            - condition: template
-              value_template: >-
-                {{ states('media_player.tv_un65du8000gxzd')
-                     in ['unavailable', 'unknown']
-                   and states('media_player.sala_de_estar_tv')
-                     not in ['off', 'standby', 'unavailable', 'unknown'] }}
-          sequence:
-            - action: media_player.turn_off
-              target:
-                entity_id: media_player.sala_de_estar_tv
-
+  - action: light.turn_off
+    target:
+      entity_id: "{{ states.light | map(attribute='entity_id')\n   | reject('search',
+        'luz_de_fundo')\n   | reject('search', 'indicator_light')\n   | reject('search',
+        'browser_mod')\n   | list }}"
+  - choose:
+    - alias: TV respondendo no caminho local e ligada
+      conditions:
+      - condition: template
+        value_template: "{{ states('media_player.tv_un65du8000gxzd')\n   not in ['off',
+          'standby', 'unavailable', 'unknown'] }}"
+      sequence:
+      - action: media_player.turn_off
+        target:
+          entity_id: media_player.tv_un65du8000gxzd
+    - alias: Caminho local mudo — tenta pela nuvem, se ela vir a TV ligada
+      conditions:
+      - condition: template
+        value_template: "{{ states('media_player.tv_un65du8000gxzd')\n     in ['unavailable',
+          'unknown']\n   and states('media_player.sala_de_estar_tv')\n     not in
+          ['off', 'standby', 'unavailable', 'unknown'] }}"
+      sequence:
+      - action: media_player.turn_off
+        target:
+          entity_id: media_player.sala_de_estar_tv
 - id: '1757980800001'
   alias: Porta do quarto aberta à noite acende o painel
-  description: >-
-    O par da automação anterior: depois das 22h, abrir a porta do quarto acende
-    a luz do painel da TV, que serve de luz de guia para quem sai do quarto no
-    escuro.
+  description: 'O par da automação anterior: depois das 22h, abrir a porta do quarto
+    acende a luz do painel da TV, que serve de luz de guia para quem sai do quarto
+    no escuro.
 
-    Mesma janela de 22h às 6h, pelo mesmo motivo.
+    Mesma janela de 22h às 6h, pelo mesmo motivo.'
   mode: single
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.porta_do_quarto_porta
-      from: 'off'
-      to: 'on'
+  - trigger: state
+    entity_id: binary_sensor.porta_do_quarto_porta
+    from: 'off'
+    to: 'on'
   conditions:
-    - condition: time
-      after: '22:00:00'
-      before: '06:00:00'
+  - condition: time
+    after: '22:00:00'
+    before: 06:00:00
   actions:
-    - action: light.turn_on
-      target:
-        entity_id: light.painel
-
+  - action: light.turn_on
+    target:
+      entity_id: light.painel
 - id: '1757984400000'
   alias: Movimento na Lavanderia acende a luz à noite
-  description: >-
-    Do pôr do sol ao amanhecer, movimento na Lavanderia acende a luz; dez
-    minutos sem movimento, ela apaga.
+  description: 'Do pôr do sol ao amanhecer, movimento na Lavanderia acende a luz;
+    dez minutos sem movimento, ela apaga.
 
-    O temporizador é o `for: '00:10:00'` no próprio gatilho de ausência: se
-    alguém se mexer no meio da contagem, o sensor volta a `on` e o Home
-    Assistant descarta o agendamento — a contagem recomeça do zero sozinha, sem
-    precisar de `timer` nem de `input_datetime`.
+    O temporizador é o `for: ''00:10:00''` no próprio gatilho de ausência: se alguém
+    se mexer no meio da contagem, o sensor volta a `on` e o Home Assistant descarta
+    o agendamento — a contagem recomeça do zero sozinha, sem precisar de `timer` nem
+    de `input_datetime`.
 
-    A luz só apaga com **ausência nos dois lados**: Lavanderia e Área Gourmet
-    sem movimento há dez minutos. Quem está na Área Gourmet fica a poucos passos
-    da Lavanderia e pode estar de passagem por ela, então a ausência de
-    movimento só num dos sensores não basta. Como qualquer um dos dois pode ser
-    o último a esvaziar, **os dois têm gatilho de ausência**: se a Lavanderia
-    completa os dez minutos com a Área Gourmet ainda ocupada, a condição falha e
-    a luz fica; quando a Área Gourmet esvaziar por dez minutos, o segundo
-    gatilho reavalia e apaga. Sem ele, a luz ficaria acesa até alguém voltar à
-    Lavanderia. As duas condições exigem `off` **contínuo** (`for`), o que
-    também exclui `unavailable`: na dúvida a luz fica acesa.
+    A luz só apaga com **ausência nos dois lados**: Lavanderia e Área Gourmet sem
+    movimento há dez minutos. Quem está na Área Gourmet fica a poucos passos da Lavanderia
+    e pode estar de passagem por ela, então a ausência de movimento só num dos sensores
+    não basta. Como qualquer um dos dois pode ser o último a esvaziar, **os dois têm
+    gatilho de ausência**: se a Lavanderia completa os dez minutos com a Área Gourmet
+    ainda ocupada, a condição falha e a luz fica; quando a Área Gourmet esvaziar por
+    dez minutos, o segundo gatilho reavalia e apaga. Sem ele, a luz ficaria acesa
+    até alguém voltar à Lavanderia. As duas condições exigem `off` **contínuo** (`for`),
+    o que também exclui `unavailable`: na dúvida a luz fica acesa.
 
-    ⚠️ A condição de sol está **só no acender**. Se ela também guardasse o
-    apagar, uma luz acesa às 5h50 ficaria acesa para sempre: o sol nasceria, a
-    condição passaria a ser falsa e o desligamento nunca aconteceria. Apagar por
-    ausência é seguro a qualquer hora; acender é que só faz sentido no escuro.
+    ⚠️ A condição de sol está **só no acender**. Se ela também guardasse o apagar,
+    uma luz acesa às 5h50 ficaria acesa para sempre: o sol nasceria, a condição passaria
+    a ser falsa e o desligamento nunca aconteceria. Apagar por ausência é seguro a
+    qualquer hora; acender é que só faz sentido no escuro.'
   mode: queued
   max: 5
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.sensor_lavanderia_movimento
-      to: 'on'
-      id: chegou
-    - trigger: state
-      entity_id: binary_sensor.sensor_lavanderia_movimento
-      to: 'off'
-      for: '00:10:00'
-      id: vazio
-    - trigger: state
-      entity_id: binary_sensor.sensor_area_gourmet_movimento
-      to: 'off'
-      for: '00:10:00'
-      id: vazio
+  - trigger: state
+    entity_id: binary_sensor.sensor_lavanderia_movimento
+    to: 'on'
+    id: chegou
+  - trigger: state
+    entity_id: binary_sensor.sensor_lavanderia_movimento
+    to: 'off'
+    for: 00:10:00
+    id: vazio
+  - trigger: state
+    entity_id: binary_sensor.sensor_area_gourmet_movimento
+    to: 'off'
+    for: 00:10:00
+    id: vazio
   conditions: []
   actions:
-    - choose:
-        - alias: Movimento com o sol abaixo do horizonte — acende
-          conditions:
-            - condition: trigger
-              id: chegou
-            - condition: state
-              entity_id: sun.sun
-              state: below_horizon
-          sequence:
-            - action: light.turn_on
-              target:
-                entity_id: light.cozinha_copa_varanda_switch_3
-        - alias: Dez minutos sem ninguém na Lavanderia nem na Área Gourmet — apaga, a qualquer hora
-          conditions:
-            - condition: trigger
-              id: vazio
-            - condition: state
-              entity_id: binary_sensor.sensor_lavanderia_movimento
-              state: 'off'
-              for: '00:10:00'
-            - condition: state
-              entity_id: binary_sensor.sensor_area_gourmet_movimento
-              state: 'off'
-              for: '00:10:00'
-          sequence:
-            - action: light.turn_off
-              target:
-                entity_id: light.cozinha_copa_varanda_switch_3
-
+  - choose:
+    - alias: Movimento com o sol abaixo do horizonte — acende
+      conditions:
+      - condition: trigger
+        id: chegou
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.cozinha_copa_varanda_switch_3
+    - alias: Dez minutos sem ninguém na Lavanderia nem na Área Gourmet — apaga, a
+        qualquer hora
+      conditions:
+      - condition: trigger
+        id: vazio
+      - condition: state
+        entity_id: binary_sensor.sensor_lavanderia_movimento
+        state: 'off'
+        for: 00:10:00
+      - condition: state
+        entity_id: binary_sensor.sensor_area_gourmet_movimento
+        state: 'off'
+        for: 00:10:00
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.cozinha_copa_varanda_switch_3
 - id: '1757984400001'
   alias: Movimento na Área Gourmet acende as luzes à noite
-  description: >-
-    O par da automação da Lavanderia, com as quatro luzes da Área Gourmet —
-    Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do
+  description: 'O par da automação da Lavanderia, com as quatro luzes da Área Gourmet
+    — Plafons, Pendente, Led e Spots. Mesma regra: acende com movimento depois do
     pôr do sol, apaga dez minutos depois que a área esvazia.
 
-    Valem as mesmas duas decisões: o temporizador é o `for` do gatilho, que se
-    reinicia sozinho a cada movimento novo, e a condição de sol guarda apenas o
-    acender, para que o apagar funcione mesmo depois do amanhecer.
+    Valem as mesmas duas decisões: o temporizador é o `for` do gatilho, que se reinicia
+    sozinho a cada movimento novo, e a condição de sol guarda apenas o acender, para
+    que o apagar funcione mesmo depois do amanhecer.'
   mode: queued
   max: 5
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.sensor_area_gourmet_movimento
-      to: 'on'
-      id: chegou
-    - trigger: state
-      entity_id: binary_sensor.sensor_area_gourmet_movimento
-      to: 'off'
-      for: '00:10:00'
-      id: vazio
+  - trigger: state
+    entity_id: binary_sensor.sensor_area_gourmet_movimento
+    to: 'on'
+    id: chegou
+  - trigger: state
+    entity_id: binary_sensor.sensor_area_gourmet_movimento
+    to: 'off'
+    for: 00:10:00
+    id: vazio
   conditions: []
   actions:
-    - choose:
-        - alias: Movimento com o sol abaixo do horizonte — acende
-          conditions:
-            - condition: trigger
-              id: chegou
-            - condition: state
-              entity_id: sun.sun
-              state: below_horizon
-          sequence:
-            - action: light.turn_on
-              target:
-                entity_id: &luzes_gourmet
-                  - light.luzes_externas_switch_1
-                  - light.luzes_externas_switch_2
-                  - light.luzes_externas_switch_3
-                  - light.luzes_externas_switch_4
-        - alias: Dez minutos sem ninguém — apaga, a qualquer hora
-          conditions:
-            - condition: trigger
-              id: vazio
-          sequence:
-            - action: light.turn_off
-              target:
-                entity_id: *luzes_gourmet
-
+  - choose:
+    - alias: Movimento com o sol abaixo do horizonte — acende
+      conditions:
+      - condition: trigger
+        id: chegou
+      - condition: state
+        entity_id: sun.sun
+        state: below_horizon
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: &id001
+          - light.luzes_externas_switch_1
+          - light.luzes_externas_switch_2
+          - light.luzes_externas_switch_3
+          - light.luzes_externas_switch_4
+    - alias: Dez minutos sem ninguém — apaga, a qualquer hora
+      conditions:
+      - condition: trigger
+        id: vazio
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: *id001
 - id: '1758230400000'
   alias: Movimento nas câmeras da rua grava clipe de 30s
-  description: >-
-    O DVR Intelbras (canais 2 e 4, câmeras externas) detecta movimento e manda
-    e-mail de alarme para an.diogo98@gmail.com (filtro do Gmail arquiva e
-    aplica o marcador "DVR", sem notificar o André — o e-mail é só o sinal
-    para esta automação, ver specs/features/clipes-movimento-nuvem.md).
+  description: 'O DVR Intelbras (canais 2 e 4, câmeras externas) detecta movimento
+    e manda e-mail de alarme para an.diogo98@gmail.com (filtro do Gmail arquiva e
+    aplica o marcador "DVR", sem notificar o André — o e-mail é só o sinal para esta
+    automação, ver specs/features/clipes-movimento-nuvem.md).
 
-    O assunto do e-mail é igual para os dois canais ("ALERTA DVR"), sem dizer
-    qual câmera disparou — por isso a automação grava as DUAS câmeras a cada
-    alarme, em vez de tentar identificar o canal pelo e-mail. O nome do
-    arquivo (câmera + data + hora) já identifica cada clipe.
+    O assunto do e-mail é igual para os dois canais ("ALERTA DVR"), sem dizer qual
+    câmera disparou — por isso a automação grava as DUAS câmeras a cada alarme, em
+    vez de tentar identificar o canal pelo e-mail. O nome do arquivo (câmera + data
+    + hora) já identifica cada clipe.
 
-    O upload para o Google Drive NÃO é feito por esta automação — uma conta
-    de serviço do Google Cloud não tem cota de armazenamento em Drive pessoal
-    (só funciona em Google Workspace com "shared drives"). A sincronização é
-    feita por uma Tarefa Agendada do Windows que roda `rclone` fora do
-    container, direto na pasta montada (ver
-    scripts/camera_upload/sincronizar_clipes_drive.ps1 e CASA.md).
+    O upload para o Google Drive NÃO é feito por esta automação — uma conta de serviço
+    do Google Cloud não tem cota de armazenamento em Drive pessoal (só funciona em
+    Google Workspace com "shared drives"). A sincronização é feita por uma Tarefa
+    Agendada do Windows que roda `rclone` fora do container, direto na pasta montada
+    (ver scripts/camera_upload/sincronizar_clipes_drive.ps1 e CASA.md).'
   mode: queued
   max: 10
   triggers:
-    - trigger: event
-      event_type: imap_content
+  - trigger: event
+    event_type: imap_content
   conditions: []
   actions:
-    - repeat:
-        for_each:
-          - camera.rua_canal_2
-          - camera.rua_canal_4
-        sequence:
-          - action: camera.record
-            target:
-              entity_id: '{{ repeat.item }}'
-            data:
-              filename: >-
-                /config/www/clipes_movimento/{{ repeat.item.split('.')[1] }}_{{
-                now().strftime('%Y-%m-%d_%H-%M-%S') }}.mp4
-              duration: 30
-
+  - repeat:
+      for_each:
+      - camera.rua_canal_2
+      - camera.rua_canal_4
+      sequence:
+      - action: camera.record
+        target:
+          entity_id: '{{ repeat.item }}'
+        data:
+          filename: /config/www/clipes_movimento/{{ repeat.item.split('.')[1] }}_{{
+            now().strftime('%Y-%m-%d_%H-%M-%S') }}.mp4
+          duration: 30
 - id: '1758240000000'
   alias: Muro e Painel acesos do pôr do sol à meia-noite
-  description: >-
-    Todo dia, no pôr do sol, acende o Muro (light.circulacao_switch_1) e o
-    Painel da TV (light.painel); à meia-noite apaga os dois.
-    Especificação: specs/automations/luzes-muro-painel-noite.md.
+  description: 'Todo dia, no pôr do sol, acende o Muro (light.circulacao_switch_1)
+    e o Painel da TV (light.painel); à meia-noite apaga os dois. Especificação: specs/automations/luzes-muro-painel-noite.md.
 
-    "Ou quando forem apagadas manualmente" não precisa de lógica: o acender é
-    de borda, dispara uma única vez no evento de pôr do sol e nunca reacende.
-    Por isso também não há reconciliação na partida para o acender — se o
-    Home Assistant voltar às 21h, reacender desfaria um apagar manual.
+    "Ou quando forem apagadas manualmente" não precisa de lógica: o acender é de borda,
+    dispara uma única vez no evento de pôr do sol e nunca reacende. Por isso também
+    não há reconciliação na partida para o acender — se o Home Assistant voltar às
+    21h, reacender desfaria um apagar manual.
 
-    O apagar tem reconciliação estreita: se o HA estiver fora na virada da
-    meia-noite e voltar até 00:30, apaga o que ficou aceso. Depois disso não
-    mexe, porque o Painel pode ter sido aceso de propósito pela automação da
-    porta do quarto, que é dona dele entre 22h e 6h e tem precedência.
+    O apagar tem reconciliação estreita: se o HA estiver fora na virada da meia-noite
+    e voltar até 00:30, apaga o que ficou aceso. Depois disso não mexe, porque o Painel
+    pode ter sido aceso de propósito pela automação da porta do quarto, que é dona
+    dele entre 22h e 6h e tem precedência.
 
-    Donos dos atuadores: as duas automações da porta do quarto também tocam
-    estas luzes (a de fechar apaga ambas, a de abrir acende o Painel). Não há
-    conflito — nenhuma desfaz a outra dentro da mesma janela.
+    Donos dos atuadores: as duas automações da porta do quarto também tocam estas
+    luzes (a de fechar apaga ambas, a de abrir acende o Painel). Não há conflito —
+    nenhuma desfaz a outra dentro da mesma janela.'
   mode: single
   triggers:
-    - trigger: sun
-      event: sunset
-      id: acender
-    - trigger: time
-      at: '00:00:00'
-      id: apagar
-    - trigger: homeassistant
-      event: start
-      id: partida
+  - trigger: sun
+    event: sunset
+    id: acender
+  - trigger: time
+    at: 00:00:00
+    id: apagar
+  - trigger: homeassistant
+    event: start
+    id: partida
   conditions: []
   actions:
-    - choose:
-        - alias: Pôr do sol — acende Muro e Painel
+  - choose:
+    - alias: Pôr do sol — acende Muro e Painel
+      conditions:
+      - condition: trigger
+        id: acender
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.circulacao_switch_1
+          - light.painel
+    - alias: Meia-noite (ou partida até 00:30) — apaga o que estiver aceso
+      conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: apagar
+        - condition: and
           conditions:
-            - condition: trigger
-              id: acender
-          sequence:
-            - action: light.turn_on
-              target:
-                entity_id:
-                  - light.circulacao_switch_1
-                  - light.painel
-        - alias: Meia-noite (ou partida até 00:30) — apaga o que estiver aceso
-          conditions:
-            - condition: or
-              conditions:
-                - condition: trigger
-                  id: apagar
-                - condition: and
-                  conditions:
-                    - condition: trigger
-                      id: partida
-                    - condition: time
-                      after: '00:00:00'
-                      before: '00:30:00'
-            - condition: template
-              value_template: >-
-                {{ is_state('light.circulacao_switch_1', 'on')
-                   or is_state('light.painel', 'on') }}
-          sequence:
-            - action: light.turn_off
-              target:
-                entity_id: >-
-                  {{ ['light.circulacao_switch_1', 'light.painel']
-                     | select('is_state', 'on') | list }}
+          - condition: trigger
+            id: partida
+          - condition: time
+            after: 00:00:00
+            before: 00:30:00
+      - condition: template
+        value_template: "{{ is_state('light.circulacao_switch_1', 'on')\n   or is_state('light.painel',
+          'on') }}"
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: "{{ ['light.circulacao_switch_1', 'light.painel']\n   | select('is_state',
+            'on') | list }}"
 - id: '1758844800001'
   alias: Rede - internet caiu e voltou
-  description: >-
-    Avisa no iPhone quando a internet fica fora por mais de 3 minutos e quando volta.
-    Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-03).
+  description: 'Avisa no iPhone quando a internet fica fora por mais de 3 minutos
+    e quando volta. Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-03).
 
     Decisões que não são óbvias:
 
-    1. Só avisa a queda se o gateway responde. Sem gateway, o PC pode estar sem
-    rede local e nada se conclui sobre a operadora.
+    1. Só avisa a queda se o gateway responde. Sem gateway, o PC pode estar sem rede
+    local e nada se conclui sobre a operadora.
 
     2. O gatilho tem `for: 3 min`: oscilação curta não alarma. O aviso de retorno
     só sai se a queda foi avisada (input_boolean.rede_queda_notificada).
 
-    3. Na partida do HA o helper é zerado se a internet está no ar; sem isso, um
-    "on" restaurado de antes do reinício faria o próximo retorno de uma queda
-    curta (não avisada) anunciar "voltou" sem motivo.
+    3. Na partida do HA o helper é zerado se a internet está no ar; sem isso, um "on"
+    restaurado de antes do reinício faria o próximo retorno de uma queda curta (não
+    avisada) anunciar "voltou" sem motivo.
 
-    4. A duração vem de `from_state.last_changed` do sensor: é o momento real em
-    que a internet caiu, não o do aviso.
+    4. A duração vem de `from_state.last_changed` do sensor: é o momento real em que
+    a internet caiu, não o do aviso.
 
     5. Entre 23h e 7h a notificação é passiva (sem som), para não acordar.
 
-    Dono: só esta automação escreve o helper. Não comanda nenhum atuador.
+    Dono: só esta automação escreve o helper. Não comanda nenhum atuador.'
   mode: queued
   max: 3
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.internet_no_ar
-      to: 'off'
-      for: '00:03:00'
-      id: queda
-    - trigger: state
-      entity_id: binary_sensor.internet_no_ar
-      from: 'off'
-      to: 'on'
-      id: volta
-    - trigger: homeassistant
-      event: start
-      id: partida
+  - trigger: state
+    entity_id: binary_sensor.internet_no_ar
+    to: 'off'
+    for: 00:03:00
+    id: queda
+  - trigger: state
+    entity_id: binary_sensor.internet_no_ar
+    from: 'off'
+    to: 'on'
+    id: volta
+  - trigger: homeassistant
+    event: start
+    id: partida
   actions:
-    - choose:
-        - conditions:
-            - condition: trigger
-              id: queda
-            - condition: state
-              entity_id: binary_sensor.rede_gateway
-              state: 'on'
-          sequence:
-            - action: input_boolean.turn_on
-              target:
-                entity_id: input_boolean.rede_queda_notificada
-            - action: notify.iphone_de_andre
-              data:
-                title: Internet fora do ar
-                message: >-
-                  Sem internet há mais de 3 minutos. A rede local responde:
-                  provável problema na operadora.
-                data:
-                  push:
-                    interruption-level: >-
-                      {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
-        - conditions:
-            - condition: trigger
-              id: volta
-            - condition: state
-              entity_id: input_boolean.rede_queda_notificada
-              state: 'on'
-          sequence:
-            - action: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.rede_queda_notificada
-            - action: notify.iphone_de_andre
-              data:
-                title: Internet voltou
-                message: >-
-                  A internet voltou depois de
-                  {{ ((now() - trigger.from_state.last_changed).total_seconds() / 60) | round(0) | int }}
-                  min fora.
-                data:
-                  push:
-                    interruption-level: >-
-                      {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
-        - conditions:
-            - condition: trigger
-              id: partida
-            - condition: state
-              entity_id: binary_sensor.internet_no_ar
-              state: 'on'
-          sequence:
-            - action: input_boolean.turn_off
-              target:
-                entity_id: input_boolean.rede_queda_notificada
-
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: queda
+      - condition: state
+        entity_id: binary_sensor.rede_gateway
+        state: 'on'
+      sequence:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.rede_queda_notificada
+      - action: notify.iphone_de_andre
+        data:
+          title: Internet fora do ar
+          message: 'Sem internet há mais de 3 minutos. A rede local responde: provável
+            problema na operadora.'
+          data:
+            push:
+              interruption-level: '{{ ''passive'' if now().hour >= 23 or now().hour
+                < 7 else ''active'' }}'
+    - conditions:
+      - condition: trigger
+        id: volta
+      - condition: state
+        entity_id: input_boolean.rede_queda_notificada
+        state: 'on'
+      sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.rede_queda_notificada
+      - action: notify.iphone_de_andre
+        data:
+          title: Internet voltou
+          message: A internet voltou depois de {{ ((now() - trigger.from_state.last_changed).total_seconds()
+            / 60) | round(0) | int }} min fora.
+          data:
+            push:
+              interruption-level: '{{ ''passive'' if now().hour >= 23 or now().hour
+                < 7 else ''active'' }}'
+    - conditions:
+      - condition: trigger
+        id: partida
+      - condition: state
+        entity_id: binary_sensor.internet_no_ar
+        state: 'on'
+      sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.rede_queda_notificada
 - id: '1758844800002'
   alias: Rede - DVR das câmeras fora do ar
-  description: >-
-    Avisa no iPhone quando o DVR das câmeras (192.168.31.216) deixa de responder
-    por 10 minutos. Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-04).
+  description: 'Avisa no iPhone quando o DVR das câmeras (192.168.31.216) deixa de
+    responder por 10 minutos. Spec: specs/automations/rede-mesh-internet-monitoramento.md
+    (R-04).
 
-    Por quê: o DVR já derrubou as câmeras duas vezes por mudança de IP (K-06,
-    20/09 e 24/09/2026). O aviso separa "DVR caiu" de "câmera com defeito".
+    Por quê: o DVR já derrubou as câmeras duas vezes por mudança de IP (K-06, 20/09
+    e 24/09/2026). O aviso separa "DVR caiu" de "câmera com defeito".
 
     Só avisa com o gateway respondendo: sem rede local todos os alvos caem juntos
-    e o aviso relevante é o de internet. PC e PS5 ficam de fora de propósito
-    (desligam por uso normal). Não comanda nenhum atuador.
+    e o aviso relevante é o de internet. PC e PS5 ficam de fora de propósito (desligam
+    por uso normal). Não comanda nenhum atuador.'
   mode: single
   triggers:
-    - trigger: state
-      entity_id: binary_sensor.rede_dvr
-      to: 'off'
-      for: '00:10:00'
+  - trigger: state
+    entity_id: binary_sensor.rede_dvr
+    to: 'off'
+    for: 00:10:00
   conditions:
-    - condition: state
-      entity_id: binary_sensor.rede_gateway
-      state: 'on'
+  - condition: state
+    entity_id: binary_sensor.rede_gateway
+    state: 'on'
   actions:
-    - action: notify.iphone_de_andre
+  - action: notify.iphone_de_andre
+    data:
+      title: DVR das câmeras fora do ar
+      message: O DVR (192.168.31.216) não responde há 10 minutos, com a rede local
+        funcionando. Confira energia e IP.
       data:
-        title: DVR das câmeras fora do ar
-        message: >-
-          O DVR (192.168.31.216) não responde há 10 minutos, com a rede local
-          funcionando. Confira energia e IP.
-        data:
-          push:
-            interruption-level: >-
-              {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
-
-- id: '1758844800003'
-  alias: Rede - luzes indisponíveis
-  description: >-
-    Avisa no iPhone quando alguma luz fica `unavailable` por 10 minutos.
-    Spec: specs/automations/rede-mesh-internet-monitoramento.md (R-05).
-
-    Por quê: no histórico de 15 a 26/09/2026 as luzes por nuvem Tuya (Luzes
-    Externas, Quarto, Banheiro) caíram dezenas de vezes; o Sonoff local quase
-    nunca. O aviso aponta a nuvem, não o Wi-Fi.
-
-    Decisões que não são óbvias:
-
-    1. Dispara pela mudança de `sensor.luzes_indisponiveis` estável por 10 min
-    (`for`): oscilação curta e a subida das integrações depois de um reinício do
-    HA não avisam. Não repete enquanto o número não mudar.
-
-    2. Só avisa com `sensor.rede_diagnostico` = ok. Sem rede local ou sem
-    internet todas as luzes de nuvem caem juntas e o aviso relevante é o da
-    internet.
-
-    3. Cinco ou mais juntas viram "queda em bloco", uma mensagem em vez de uma
-    lista longa. Sem aviso de retorno.
-
-    Não comanda nenhuma luz.
-  mode: single
-  triggers:
-    - trigger: state
-      entity_id: sensor.luzes_indisponiveis
-      for: '00:10:00'
-  conditions:
-    - condition: numeric_state
-      entity_id: sensor.luzes_indisponiveis
-      above: 0
-    - condition: state
-      entity_id: sensor.rede_diagnostico
-      state: ok
-  actions:
-    - action: notify.iphone_de_andre
-      data:
-        title: Luzes indisponíveis
-        message: >-
-          {% set n = states('sensor.luzes_indisponiveis') | int(0) %}
-          {% if n >= 5 %}
-            Queda em bloco: {{ n }} luzes sem resposta há 10 minutos. Provável
-            nuvem Tuya ou Wi-Fi.
-          {% else %}
-            Sem resposta há 10 minutos: {{ state_attr('sensor.luzes_indisponiveis', 'entidades') }}.
-          {% endif %}
-        data:
-          push:
-            interruption-level: >-
-              {{ 'passive' if now().hour >= 23 or now().hour < 7 else 'active' }}
+        push:
+          interruption-level: '{{ ''passive'' if now().hour >= 23 or now().hour <
+            7 else ''active'' }}'
