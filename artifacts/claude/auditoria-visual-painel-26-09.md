@@ -56,14 +56,14 @@ fora do `DESIGN.md` (481 avisos), não na estrutura.
   por fundo translúcido sólido (mesma aparência a 4–18% de opacidade sobre o plano de fundo já desfocado).
 - Comando: `$impeccable optimize`.
 
-**P2 — Alvos de toque abaixo de 44 px nas páginas de cômodo**
+**P2 — Alvos de toque abaixo de 44 px nas páginas de cômodo** — ✅ CORRIGIDO em 26/09 (também nos modais do aspirador, mídia e galeria)
 - Local: botão "Casa" (`.back-btn`, 86×38), "Acender luzes do cômodo" (`.room-subpage-master-btn`, 161×36),
   "Ajustar" (`.device-tile__tune-btn`, 38×38); em `/icons-preview`, 8 botões de 36 px.
 - Impacto: erro de toque no celular e no tablet de parede, onde se toca a passos de distância.
 - Correção: `min-height`/`min-width` de 44 px (a página tem 31 regras `min-height:44`; faltam estes três).
 - Comando: `$impeccable adapt`.
 
-**P2 — Texto de 8,5 a 10 px na home**
+**P2 — Texto de 8,5 a 10 px na home** — ✅ CORRIGIDO em 26/09 (token `--texto-minimo: 11px`, 75 regras)
 - Medido: 9 elementos: `AO VIVO` 8,5 px (`.camera-live-text`), `MÍDIA`, `STANDBY`, `CFTV`, `Pronto`, `ativas`,
   `Tudo comprado` em 10 px. Nos cômodos, a bateria e rótulos em 10–10,5 px.
 - Impacto: ilegível "à distância", que é princípio do produto; no tablet de parede é o texto que mais importa.

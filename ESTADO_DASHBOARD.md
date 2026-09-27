@@ -5970,3 +5970,31 @@ fazia o `.dashboard` conter elementos `fixed`).
   (não confirmado em tablet real).
 - O servidor ficou fora do ar por cerca de 1 min na troca; as automações do HA não dependem dele.
 - Não verificado: fluidez (FPS) em tablet físico; a melhora é medida em carga e contagem de camadas, não em quadros.
+
+---
+
+## 26/09/2026 — Auditoria: alvos de toque de 44 px e piso de fonte de 11 px (P2)
+
+**Fonte.** Havia 75 regras com `font-size` de 7,5 a 10,5 px. Todas passaram a usar o token **`--texto-minimo: 11px`**
+(`globals.css`, junto dos tokens tipográficos), e dois `clamp(10px…)`/`clamp(10.5px…)` do ventilador começam nele. Subir o
+piso depois é mudar um valor. Ficaram de fora o texto de eixo do gráfico de energia (`.energy-chart-axis-text`, é SVG e
+escala pelo `viewBox`) e o "tv+" do modal de mídia (glifo SVG de 5,8 px). Na home do celular, "Tudo comprado" a 11 px
+passava 3 px da largura do cartão de Compras: no celular o status agora quebra em duas linhas.
+
+**Alvos de toque.** `min-height: var(--touch-min)` (44 px) em `.back-btn`, `.room-subpage-master-btn`,
+`.fan-toggle-btn`, `.fan-direction-btn`, `.vacuum-locate-btn`, `.media-tab-pill`; `.device-tile__tune-btn` e
+`.wallpaper-modal-close` passaram de 36–38 para 44 px. Os botões compactos de ícone, em linhas densas, ganharam
+**área de toque ampliada por pseudo-elemento** (o desenho e o layout não mudam): `.vacuum-zone-action-btn` (28 px,
++8 px por lado) e o direcional da TV `.dpad-direction-btn` (+2 px). São controles reais (iniciar limpeza, navegar na
+TV). Bloco no fim do `globals.css`, com cabeçalho.
+
+**Verificado.** Em 390, 768 e 1024 px, nas páginas `/`, sala, quarto e quarto do Luca: 0 alvos abaixo de 44 px, 0 textos
+abaixo de 11 px, 0 estouro de largura. Modais de baterias, segurança, energia, compras, aspirador, mídia e galeria:
+sem alvo pequeno (a área ampliada foi testada nos quatro lados de cada botão do aspirador). O servidor da parede
+recompilou sozinho (~20 s) e subiu em produção com o CSS novo: o mecanismo de rebuild automático funcionou de ponta a ponta.
+
+**Não verificado.** Toque real em tablet e celular (só emulação); os modais de câmera, controle da TV e o popup de
+cômodo não foram medidos; o `Controle de volume da TV` (149×42) não foi tratado.
+
+**Armadilha.** Nenhum botão foi acionado nos testes: modais foram só abertos e medidos. O botão do modo noturno
+(`.quick-action-btn--night`) ativa a tela de repouso; um toque a desfaz.
