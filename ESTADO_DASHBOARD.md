@@ -6193,3 +6193,10 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - `HeaderStatusBlocks` agrupa segurança, baterias, saúde e rede pelo nível de cada um (segurança com sensor ativo e bateria crítica = vermelho; bateria baixa e saúde/rede em atenção = âmbar). Bloco vazio não aparece. A pílula de rede saiu de `HeaderQuickActions` para `RedePill`.
 - Armadilha: ao mudar de gravidade o selo troca de bloco e remonta; um modal aberto dele fecha.
 - Verificado: tsc 0; 375 e 1024 px (dois blocos no celular, os três cartões separados no tablet). Produção sobe no próximo rebuild do watchdog.
+
+## 27/09/2026 — Tátil global, bordas mínimas e alinhamento do "Casa"
+- Selos sem vidro compartilhado (só agrupamento). Publicação em produção feita à mão: o watchdog não estava rodando; build + `npm run start` (a 3002 ficou fora ~3 min). Armadilha: não matar processos por `CommandLine` com "dashboard-app", derruba o próprio shell; usar a porta.
+- `HapticFeedback` (layout): 8 ms em todo clique em controle (captura, roda antes do handler; padrões próprios sobrescrevem). Sem efeito no iOS. `data-sem-haptico` desliga.
+- Bordas mínimas: `--borda-minima` (1 px, 8%) e três preenchimentos (5/7/9%) em bloco final do `globals.css`, só em cartões neutros (estados alert/danger/critical/active/on/high preservados). Antes: preenchimento 5–11%, borda 12–16%.
+- Paisagem: o bloco "Casa" agora ocupa só as linhas dos cartões ao lado (topo dos selos até a base das ferramentas: 41→139 px).
+- Verificado: tsc 0, produção 3002, bordas/preenchimentos computados, vibração interceptada (8 e depois 14). Não verificado: aparelho com vibração real; cartões de modais/mídia fora da lista.
