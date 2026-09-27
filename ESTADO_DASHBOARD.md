@@ -5928,3 +5928,12 @@ estava ligada no momento da verificação e foi deixada como estava.
 - O `manifesto-comodos.json` não foi atualizado: nenhum código o lê e ele nem cita a porta do quarto.
 - Medidor de energia e as entidades de configuração do Led + tomada (luz de fundo, modo do indicador) ficaram de
   fora de propósito.
+
+**Bateria e alertas das portas (mesmo dia).** A pedido do André, as duas portas passaram a aparecer como os demais
+sensores: `lib/batteries.ts` (painel de baterias do cabeçalho, com o alerta de bateria baixa/crítica, que já
+acontece por `resolverAlertas`), `app/api/state/route.ts` (baterias servidas), e a lista de segurança de
+`HeaderAlertPill.tsx` (modal "Segurança & Sensores") e de `AmbientNightMode.tsx` (alerta no modo noturno). O alerta
+"Aberta • cômodo" de `lib/alertas.ts` já cobria as portas pelo contrato. Também corrigi o texto do modal, que dizia
+"5 pontos" fixo: agora usa o tamanho da lista (7). Verificado: `npx tsc --noEmit` 0; painel de baterias mostra as
+duas com 100% "Excelente"; modal de segurança lista as duas como "Fechada". **Não** foi provado o disparo real dos
+alertas (porta aberta, bateria baixa): isso exigiria abrir a porta ou forçar o estado, e não se fez.
