@@ -6089,3 +6089,28 @@ detector do impeccable 0. Publicado em produção pelo watchdog.
 
 **Não verificado.** O ritmo da rolagem em tablet físico; o modal do regulador de luz com nomes de cena longos (não havia
 nome longo para forçar o estouro); o texto "Distribuição de carga" a 56 px mostra uma janela pequena por natureza.
+
+---
+
+## 27/09/2026 — Cabeçalho da página de cômodo no celular e no tablet vertical
+
+**Defeito (captura do André, Sala de Estar em 375 px).** O relógio aparecia cortado ("00") na borda do vidro. Causa: ele herdava o
+`font-size: 54px` da regra do cabeçalho da home; na segunda linha, botão + setas + relógio (149 px) disputavam 98 px. Medindo o
+tablet vertical (768 px) apareceu o mesmo defeito em pior grau: o relógio chegava a 318 px e **a área do título media 0 px**,
+então o nome do cômodo sumia.
+
+**Correção (só CSS, sem mexer no HTML).** Até 899 px o cabeçalho vira uma grade de duas linhas: `.room-subpage-actions` passa a
+`display: contents` e seus filhos entram na grade de `.room-subpage-header`.
+- Linha 1: voltar + título e subtítulo (rolam se não couberem) | relógio compacto.
+- Linha 2: "Acender/Apagar Cômodo" | setas ‹ ›.
+- Celular (≤ 640 px): relógio de 28 px e botão voltar só com a seta (o nome "Casa" segue no botão para leitor de tela, fora da
+  vista); o título ganha 42 px. Tablet vertical (641–899 px): relógio de 44 px, voltar com nome e botão de acender em tamanho natural.
+- A data e o clima ficam ocultos nessa página (`.dashboard-info-row`), como já não cabiam.
+
+**Verificado** (oito tamanhos, página do Quarto do Luca): 320, 375 e 430 px (celular), 700, 768 e 834 px (tablet vertical), 1024
+(paisagem) e 1280 px (parede). Nada sai do vidro; altura do cabeçalho 132–135 px (era 176 no celular); paisagem e parede
+**ficaram idênticos** (relógio 287×99 e 299×103, botão 161 px). Em 375 px o subtítulo cabe sem rolar; em 320 px rola. Em produção:
+0 alvos abaixo de 44 px.
+
+**Não verificado.** Celular deitado (paisagem estreita, ~640–899 px de largura) e cômodo sem luzes (sem o botão de acender; a
+célula fica vazia e as setas seguem à direita).
