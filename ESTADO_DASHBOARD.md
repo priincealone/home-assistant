@@ -6136,3 +6136,43 @@ rolava também na vertical (conteúdo de 51 px numa faixa de 45 px). Agora `over
 **Rede & Conexão: só especificação.** `specs/features/painel-rede-conexao.md` propõe transformar a pílula "Ao vivo" em "Rede" com
 um modal (diagnóstico em uma frase, cadeia painel→HA→roteador→internet, tráfego, aparelhos conectados e quedas de 24 h). Aguarda
 as quatro decisões do André. Nada implementado.
+
+---
+
+## 27/09/2026 — Campo "Rede & Conexão" (pílula "Ao vivo" virou "Rede")
+
+Especificação: `specs/features/painel-rede-conexao.md` (decisões do André: pílula "Rede"; sem histórico de quedas; aparelhos só
+contagem e horários; sem botão "Atualizar agora").
+
+**O que existe.** A pílula do cabeçalho mostra o **pior estado** da conexão e abre o modal "Rede & Conexão" (só leitura): frase de
+diagnóstico, cadeia (painel e HA, roteador, internet, nó da Sala, DVR), tráfego do roteador principal, número de aparelhos e
+horários do último a entrar e a sair. Rótulos: "Rede", "1 fora", "Sem internet" ("o roteador responde, então é a operadora"), "Sem
+roteador", "Sem leitura", "Sincronizando", "Offline". `lib/alertas.ts` ganhou o alerta "Rede • …" (crítico ou aviso).
+
+**Regras que a lógica garante (`tests/rede.test.mjs`, 20 casos):** `unavailable`/`unknown`/ausente é "sem leitura" e **nunca** vira
+queda; "Sem internet" só com o roteador **respondendo**; sincronizando não esconde uma queda; painel offline vence tudo. Rodar:
+`node --experimental-strip-types tests/rede.test.mjs` (Node 22).
+
+**Verificado.** Em 375 px e 1280 px, com dados reais e com os quatro estados simulados no navegador (interceptando `/api/state` só
+na aba): "Sem internet", "Sem roteador", "Sem leitura" e o estado real. `tsc` 0; detector 0; 0 alvos abaixo de 44 px com o modal
+aberto. A rede da casa **não** foi derrubada. Publicado em produção pelo watchdog.
+
+**Achado (não é defeito do painel): o DVR não responde agora.** `binary_sensor.rede_dvr` está `off` ao vivo e a checagem direta
+confirma: `192.168.31.216` responde a 50% dos pings e as portas 80, 443, 554 e 37777 estão fechadas. Por isso a pílula mostra
+"1 fora" e o "Requer atenção" sobe. As câmeras do painel exibem "Ao vivo" mesmo assim (imagem em cache ou outro caminho: não
+investigado). Ver K-06 em `planning/BLOCKED.md`.
+
+**Unidade da velocidade do roteador.** O roteador não informa (`unit: null` na especificação). Mostrado como KB/s presumido, com aviso no modal.
+
+**Teste de velocidade da operadora (entrou durante o trabalho).** A integração Speedtest.net foi adicionada ao HA e o modal ganhou a seção
+"Teste de velocidade · a cada hora" (download, upload e ping reais em Mbit/s, com "medido há N min" e aviso se o teste parou por mais de 2 h),
+acima do tráfego do roteador. `lib/rede.ts` passou a 15 entidades e `tests/rede.test.mjs` a 24 casos, todos passando. Foi acrescentado
+por outra frente de trabalho nos mesmos arquivos e conferido aqui: `tsc` 0, detector 0, produção reconstruída.
+
+## 27/09/2026 · Teste de velocidade real no modal "Rede"
+
+- Integração Speedtest.net adicionada pelo André; intervalo confirmado em 60 min (`DEFAULT_SCAN_INTERVAL = 60` no código da integração; as opções da entrada só têm o servidor, "Auto Detect").
+- `lib/rede.ts`: `resolverTeste`/`formatarTeste`, campo `teste` em `ResumoRede`; `RedeModal.tsx`: bloco "Teste de velocidade · a cada hora" (download, upload, ping, "medido há N"); CSS `.rede-teste-rodape`.
+- Armadilhas: unidade lida do atributo (Mbit/s), não presumida; `unavailable` vira "—", nunca 0; medida com mais de 2 h aparece como desatualizada. Usa `last_updated`, porque `last_changed` não muda quando dois testes dão o mesmo valor. O teste mede a conexão do PC do HA.
+- Verificação: `npx tsc --noEmit` 0; `tests/rede.test.mjs` 24 verificações; 3 `entity_id` conferidos no `core.entity_registry`. **Não verificado no navegador**: falta rebuild do painel (o watchdog roda produção).
+

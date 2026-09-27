@@ -3,8 +3,7 @@
 - **Data**: 27/09/2026
 - **Pedido**: "pense em um campo funcional com principais funções relacionadas à conexão de rede
   (especifique antes de aplicar)"
-- **Status**: **proposta, aguardando aprovação do André.** Nada foi implementado. Alçada 2 (rota nova e
-  mudança na lista de entidades do contrato).
+- **Status**: **aprovado e implementado em 27/09/2026** (alçada 2), com as decisões do André abaixo.
 - **Natureza**: **só leitura.** Nenhum botão do campo muda a rede, reinicia roteador ou aciona a casa
   (isso seria nível 3).
 
@@ -31,8 +30,8 @@ responder isso (abaixo); falta mostrá-los.
 | Roteador da Sala | `sensor.xiaomi_cn_863726955_rd15_*` | **marca 0 mesmo com o nó no ar** (os clientes são do principal): não usar como saúde |
 | Situação do painel × HA | estado `online`/`sincronizando`/`offline` do próprio painel | já existe (`app/page.tsx`) |
 
-**Não existe** (e por isso fica fora): latência em ms (as sondas são liga/desliga), teste de velocidade
-da operadora (`speedtest`), lista de aparelhos por nome (só MAC), telemetria de rede do PC (os
+**Não existia** na data da proposta (o que entrou depois está em "Como ficou implementado"): latência em ms (as sondas são
+liga/desliga) e teste de velocidade da operadora (`speedtest`). **Continua fora**: lista de aparelhos por nome (só MAC), telemetria de rede do PC (os
 `sensor.pc_andre_*` estão `unavailable`).
 
 ## Proposta
@@ -87,14 +86,26 @@ gera "sem leitura", nunca "queda".
 Regras que valem (`CLAUDE.md`): estado desconhecido nunca é apresentado como desligado (§12); falha de leitura
 não limpa a tela nem dispara comando; a automação da casa **não depende** do painel (§1).
 
-## Decisões que só o André pode tomar
+## Decisões do André (27/09/2026)
 
-1. **Pílula**: transformar "Ao vivo" em "Rede" (recomendado) ou criar uma quarta pílula?
-2. **Histórico de quedas (item 5)**: incluir? É o único que exige rota nova; sem ele o modal é só leitura de
-   sensores que já chegam.
-3. **Lista de aparelhos**: só contagem e horários (recomendado, por privacidade) ou também MAC?
-4. **Ação**: "Atualizar agora" basta, ou quer também um atalho que leve ao app do roteador? (Reiniciar
-   roteador pelo painel **não** entra: é nível 3.)
+1. **Pílula**: transformar "Ao vivo" em **"Rede"**. ✅ Feito. Tocar abre o modal e refaz a leitura.
+2. **Histórico de quedas (item 5)**: **não**. Sem rota nova; nenhuma chamada além do `/api/state`.
+3. **Aparelhos**: **só a contagem** e os **horários** do último a entrar e do último a sair. Sem lista de MAC.
+4. **"Atualizar agora"**: **não**. A leitura já se atualiza a cada 5 s; abrir o modal força uma leitura.
+
+## Como ficou implementado
+
+- `lib/rede.ts`: lógica pura (`resolverRede`, `formatarVelocidade`, `haQuanto`); as 12 entidades entram em `/api/state` por
+  `ENTIDADES_REDE`. Verificada por `tests/rede.test.mjs` (20 casos com estados simulados).
+- `app/components/RedeModal.tsx` e a pílula em `HeaderQuickActions.tsx`; alerta "Rede • …" em `lib/alertas.ts`
+  (crítico: sem roteador ou sem internet com o roteador respondendo; aviso: nó da Sala ou DVR fora; **sensor sem leitura
+  nunca vira alerta**).
+- **Desvio do plano**: rótulos da pílula "Rede" (ok), "1 fora" / "2 fora", "Sem internet", "Sem roteador", "Sem leitura",
+  "Sincronizando" e "Offline"; a sincronização em andamento **não esconde** uma queda real.
+- **Velocidade do roteador**: a especificação miot do RD15 declara `unit: null`. Exibida como KB/s **presumido**, com aviso no rodapé do modal.
+- **Teste de velocidade da operadora (acrescentado em 27/09, fora do plano original)**: a integração Speedtest.net entrou no HA
+  (`sensor.speedtest_download`, `_upload`, `_ping`, a cada 60 min) e o modal mostra download, upload e ping na unidade que o HA informa
+  (Mbit/s), com "medido há N min" e aviso se o teste parou de rodar (mais de 2 h). Entidades em `lib/rede.ts` (`ENTIDADES_REDE`, 15).
 
 ## Verificação (definição de pronto)
 
@@ -107,6 +118,6 @@ não limpa a tela nem dispara comando; a automação da casa **não depende** do
 
 ## Não verificado
 
-- Unidade das velocidades do roteador (bytes ou bits, por segundo).
-- Estado ao vivo do DVR (`rede_dvr` estava `off` no último registro do banco).
-- Se o histórico de 24 h do `internet_no_ar` tem retenção suficiente no recorder.
+- Unidade das velocidades do roteador: **continua presumida** (o roteador não a informa).
+- Comportamento com a rede realmente caída: testado só por estados simulados (a rede da casa não foi derrubada).
+- Tap real em tablet e celular físicos.
