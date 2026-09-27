@@ -40,3 +40,10 @@ input_boolean:
   rede_queda_notificada:
     name: Queda de internet avisada
     icon: mdi:wifi-alert
+
+# Silencia o aviso "Connection pool is full" da nuvem Tuya (apigw.tuyaus.com): a biblioteca
+# descarta a conexão excedente e segue funcionando; o aviso é só ruído no log.
+logger:
+  default: warning
+  logs:
+    urllib3.connectionpool: error
