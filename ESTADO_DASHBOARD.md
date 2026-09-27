@@ -5903,3 +5903,28 @@ continua verdadeira para as fotos enviadas, e só para elas.
   resultados diferentes conforme a ordem; com o catálogo atual (6 imagens) não é alcançável sem fotos.
 - **Não feito**: fotos compartilhadas entre aparelhos (exigiria enviar arquivos a uma rota sem autenticação
   de verdade), troca por horário, e nomes de aparelho (a tela diz só "outro aparelho").
+
+---
+
+## 26/09/2026 — Novos dispositivos no painel (portas e Led + tomada)
+
+**O que entrou.** No `dashboard-app/lib/rooms.ts`, seguindo o precedente da porta do quarto e das tomadas do
+Quarto Luca: **Porta da Sala** e **Porta da Lavanderia** (`binary_sensor`, categoria `seguranca`, só estado, com
+`batteryEntityId`), **Led** (`light.led_tomada_switch_1`) e **Tomada do Led** (`switch.led_tomada_switch_2`) no
+Quarto Luca. O André confirmou que a tecla 1 é o Led e quis a tomada com comando e as portas só com estado.
+
+**Verificado.** As seis entidades existem e estão ativas em `core.entity_registry`; `npx tsc --noEmit` sai com
+0; o painel em execução devolve o estado real delas em `/api/state`; as telas do Quarto Luca (7 dispositivos), da
+Lavanderia (3) e da Sala (9) as mostram, com bateria de 100% e "Fechada" nas portas.
+
+**Não verificado.** O comando do Led e da tomada pelo painel: nada foi acionado (regra da casa). A tomada
+estava ligada no momento da verificação e foi deixada como estava.
+
+**Armadilhas.**
+- `switch.led_tomada_switch_1` e `light.led_tomada_switch_1` são o **mesmo ponto físico** (`switch_as_x`); só a
+  `light` entra no contrato, para não haver dois donos.
+- As portas aparecem na seção "Tomadas inteligentes & bloqueios": é como o painel já tratava a porta do quarto
+  (`app/comodo/[id]/page.tsx:176` agrupa `seguranca` com tomadas). Não é defeito deste trabalho.
+- O `manifesto-comodos.json` não foi atualizado: nenhum código o lê e ele nem cita a porta do quarto.
+- Medidor de energia e as entidades de configuração do Led + tomada (luz de fundo, modo do indicador) ficaram de
+  fora de propósito.

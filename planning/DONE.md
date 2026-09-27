@@ -9,6 +9,15 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ## 26/09/2026
 
+**Novos dispositivos no painel: portas da sala e da lavanderia, Led + tomada do Quarto Luca** — contrato
+`lib/rooms.ts` ganhou seis entidades: `binary_sensor.sensor_porta_sala_porta` e `binary_sensor.door_sensor_2_porta`
+(só estado, com bateria), `light.led_tomada_switch_1` (Led, a tecla 1 confirmada pelo André) e
+`switch.led_tomada_switch_2` (tomada, com comando). Verificado: as seis existem e estão ativas no registro do
+HA, `npx tsc --noEmit` passa, `/api/state` devolve o estado real das seis e as três telas (Quarto Luca,
+Lavanderia, Sala) as mostram. **Não** foi acionado nenhum ponto: o comando do Led e da tomada não foi
+provado. Spec: `specs/features/painel-novos-dispositivos-set26.md`. O medidor de energia ficou de fora (K-16 em
+`BLOCKED.md`).
+
 **Monitoramento de rede: internet, DVR e luzes indisponíveis (R-01 a R-05)** — sondas ICMP, sensor de
 diagnóstico (gateway × internet × nó da Sala) e três avisos no iPhone. Verificado: `check_config` sem erro,
 sensores lendo `ok`, três automações `on`. **Não** foi provada a notificação real (não se derrubou a rede para

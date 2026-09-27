@@ -53,11 +53,11 @@ usuário e cookie).
 | --- | --- |
 | **Sala de estar** | `light.luz_sala` e `fan.ventilador_sala` (LocalTuya, um aparelho aberto em dois) · `light.painel` · `media_player.tv_un65du8000gxzd` (local) e `media_player.sala_de_estar_tv` (nuvem, oculta) · `media_player.sala_de_estar_ps5` (liga por WAKEUP; **repouso por Remote Play** desde 25/09/2026, com as chaves gravadas no repareamento — só age com o console ligado, ver `specs/features/ps5-desligar-remote-play.md`) · `switch.ventilacao_ps5` (alimenta o ventilador externo do console) |
 | **Quarto** | `light.luz_quarto` e `fan.ventilador_quarto` (LocalTuya, mesma separação da Sala) · `binary_sensor.porta_do_quarto_porta` |
-| **Quarto Luca** | `light.quarto_luca_switch_1` · luminária Yeelink `light.yeelink_cn_581528686_bslamp2_s_2_light` · tomada `switch.tomada_inteligente_socket_1/2` |
+| **Quarto Luca** | `light.quarto_luca_switch_1` · luminária Yeelink `light.yeelink_cn_581528686_bslamp2_s_2_light` · tomada `switch.tomada_inteligente_socket_1/2` · **Led + tomada** (Tuya 1 Gang Switch+Socket): Led `light.led_tomada_switch_1` (a tecla 1, convertida de `switch`) e tomada `switch.led_tomada_switch_2` |
 | **Closet** | `light.closet_switch_1` · `light.led_escritorio_sonoff_1001dff472` · tomada `switch.computador_socket_1/2` · aspirador `vacuum.dreame_us_415783444_mc1808` · roteador "Roteador Closet" |
 | **Cozinha** | `light.cozinha_copa_varanda_switch_1` |
 | **Copa** | `light.cozinha_copa_varanda_switch_2` |
-| **Lavanderia** | `light.cozinha_copa_varanda_switch_3` · `binary_sensor.sensor_lavanderia_movimento` |
+| **Lavanderia** | `light.cozinha_copa_varanda_switch_3` · `binary_sensor.sensor_lavanderia_movimento` · `binary_sensor.door_sensor_2_porta` (porta, só estado) |
 | **Área Gourmet** | `light.luzes_externas_switch_1` Plafon Área Gourmet · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` |
 | **Circulação** | `light.circulacao_switch_1` Muro · `light.circulacao_switch_2` Corredor |
 | **Banheiro** | `switch.banheiro_switch_1` e `_2` |
