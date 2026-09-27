@@ -6176,3 +6176,14 @@ por outra frente de trabalho nos mesmos arquivos e conferido aqui: `tsc` 0, dete
 - Armadilhas: unidade lida do atributo (Mbit/s), não presumida; `unavailable` vira "—", nunca 0; medida com mais de 2 h aparece como desatualizada. Usa `last_updated`, porque `last_changed` não muda quando dois testes dão o mesmo valor. O teste mede a conexão do PC do HA.
 - Verificação: `npx tsc --noEmit` 0; `tests/rede.test.mjs` 24 verificações; 3 `entity_id` conferidos no `core.entity_registry`. **Não verificado no navegador**: falta rebuild do painel (o watchdog roda produção).
 
+---
+
+## 27/09/2026 — Data e clima: de pílula para texto (pedido do André)
+
+O André preferiu as duas minimalistas, como a data era antes. As pílulas de vidro saíram: **data** e **clima** agora são texto, no mesmo padrão
+(valor em destaque em negrito + detalhe mais suave: "Dom." + "27 de set."; "28°" + "Noite limpa"), do mesmo tamanho e peso
+(`--info-forte` e `--info-suave`, definidos em `.dashboard-info-row`). O ícone de calendário foi removido (a data volta a não ter
+ícone); o clima **mantém o ícone da condição**, que carrega informação, e continua sendo botão (abre a previsão) com a área de toque de
+44 px, agora invisível. A data não é botão. Nos tablets e na parede as duas ficam na mesma linha; no celular, em linhas diferentes,
+como no desenho da grade do cabeçalho. Verificado em 375, 768, 1024 e 1280 px (sem fundo nem borda nos dois) e em produção.
+O ícone `calendar` segue no registro de ícones, sem uso.
