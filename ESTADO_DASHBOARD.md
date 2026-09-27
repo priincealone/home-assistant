@@ -6201,3 +6201,4 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - Paisagem: o bloco "Casa" agora ocupa só as linhas dos cartões ao lado (topo dos selos até a base das ferramentas: 41→139 px).
 - Verificado: tsc 0, produção 3002, bordas/preenchimentos computados, vibração interceptada (8 e depois 14). Não verificado: aparelho com vibração real; cartões de modais/mídia fora da lista.
 - Bordas mínimas também nos modais (folhas, popovers e cartões internos); modal de baterias conferido: folha 1 px a 8%, linhas com preenchimento de 7%. Publicado.
+- Bordas mínimas verificadas em todos os modais (rede, segurança, baterias, energia, TV/mídia, aspirador, tarefas, câmeras, clima, plano de fundo): folhas, cartões, chips e controles neutros a 8%. Correções: folha de mídia tinha `!important`; cartão do plano de fundo é folha opaca (só borda, sem preenchimento de cartão). Estados coloridos e aba ativa mantêm a cor.
