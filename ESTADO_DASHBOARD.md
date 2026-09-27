@@ -6187,3 +6187,9 @@ O André preferiu as duas minimalistas, como a data era antes. As pílulas de vi
 44 px, agora invisível. A data não é botão. Nos tablets e na parede as duas ficam na mesma linha; no celular, em linhas diferentes,
 como no desenho da grade do cabeçalho. Verificado em 375, 768, 1024 e 1280 px (sem fundo nem borda nos dois) e em produção.
 O ícone `calendar` segue no registro de ícones, sem uso.
+
+## 27/09/2026 — Selos do cabeçalho em blocos por gravidade
+- Pedido do André: blocos "em ordem", "requer atenção" e "sinalização vermelha"; plano de fundo e descanso em cartões separados.
+- `HeaderStatusBlocks` agrupa segurança, baterias, saúde e rede pelo nível de cada um (segurança com sensor ativo e bateria crítica = vermelho; bateria baixa e saúde/rede em atenção = âmbar). Bloco vazio não aparece. A pílula de rede saiu de `HeaderQuickActions` para `RedePill`.
+- Armadilha: ao mudar de gravidade o selo troca de bloco e remonta; um modal aberto dele fecha.
+- Verificado: tsc 0; 375 e 1024 px (dois blocos no celular, os três cartões separados no tablet). Produção sobe no próximo rebuild do watchdog.
