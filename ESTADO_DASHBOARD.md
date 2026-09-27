@@ -6114,3 +6114,25 @@ então o nome do cômodo sumia.
 
 **Não verificado.** Celular deitado (paisagem estreita, ~640–899 px de largura) e cômodo sem luzes (sem o botão de acender; a
 célula fica vazia e as setas seguem à direita).
+
+---
+
+## 27/09/2026 — Data e clima no mesmo padrão; faixas de rolagem travadas na horizontal
+
+**Data e clima (`Clock.tsx`, `globals.css`).** A data era texto solto ao lado da pílula do clima. Agora as duas são pílulas de
+vidro do mesmo desenho: ícone + valor em destaque em negrito (temperatura / dia da semana) + detalhe (condição /
+"27 de set."), mesma altura (44 px), raio, borda e desfoque. A data ganhou o ícone `calendar` (novo no registro de ícones,
+`CalendarBlankIcon`) na cor de acento do relógio, e não é botão (sem cursor de clique). Verificado em 1280 (parede), 768
+(tablet vertical) e 375 px (celular): no celular a data é compacta (36 px) na linha do "Casa", e o clima segue com 44 px.
+O relógio e a página de cômodo não mudaram (a data continua oculta lá).
+
+**Faixas de rolagem horizontal.** Eram quatro regras com `overflow-x: auto` e o eixo vertical em `auto` por omissão:
+`.quick-actions-bar`, `.wallpaper-tabs-bar`, `.popup-sensors-bar` e `.media-hub-tabs-bar`. A faixa de sensores do modal de energia
+rolava também na vertical (conteúdo de 51 px numa faixa de 45 px). Agora `overflow-y: hidden`, `overscroll-behavior-x: contain`
+(o gesto que passa do fim da faixa não vaza para o modal) e barra de rolagem oculta. Verificado: nenhum chip cortado.
+**Não foi alterado `touch-action`**: um `pan-x` na faixa impediria a página de rolar na vertical quando o dedo começa nela, e o
+`travamento-zoom-mobile.md` (22/09) já trata a interação entre `touch-action` dos ancestrais.
+
+**Rede & Conexão: só especificação.** `specs/features/painel-rede-conexao.md` propõe transformar a pílula "Ao vivo" em "Rede" com
+um modal (diagnóstico em uma frase, cadeia painel→HA→roteador→internet, tráfego, aparelhos conectados e quedas de 24 h). Aguarda
+as quatro decisões do André. Nada implementado.
