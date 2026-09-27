@@ -5998,3 +5998,36 @@ cômodo não foram medidos; o `Controle de volume da TV` (149×42) não foi trat
 
 **Armadilha.** Nenhum botão foi acionado nos testes: modais foram só abertos e medidos. O botão do modo noturno
 (`.quick-action-btn--night`) ativa a tela de repouso; um toque a desfaz.
+
+---
+
+## 26/09/2026 — Auditoria: P2 restantes (rede, teclado, CSS morto)
+
+**Rede.**
+- `lib/intervalo.ts` (`intervaloVisivel`): substitui `setInterval` nas leituras de dados, **pausa com a aba oculta** e lê
+  na hora ao voltar. Aplicado em Compras (15 s), controle da TV (6 s), energia (60 s), atividade do cômodo, standby (5 s) e
+  central de mídia (3 s). Medido com a aba "oculta" por 18 s: 0 chamadas (eram 1), volta com leitura imediata e retoma o
+  ritmo. A home e a página de cômodo já pausavam; o `WallpaperContext` (30 s) e os contadores de UI ficaram como estavam.
+- `lib/jsonGzip.ts` (`respostaJson`): `/api/state` passou a sair em gzip quando o cliente aceita, com `Vary: Accept-Encoding`.
+  **31,6 KB → 5,8 KB por leitura (−82%)**, a cada 5 s por aparelho. O `next start` só comprimia HTML, não JSON de rota.
+  Só a `/api/state` (a mais chamada); as demais rotas de dados seguem sem compressão.
+
+**Teclado.**
+- **Achado corrigido:** a auditoria disse "foco de teclado quase sem indicador", e **isso estava errado**: existe uma regra global
+  `:focus-visible` (3 px, `!important`, `globals.css`, C-07 de 22/09) que vence os `outline: none`. Só faltavam elementos que
+  nem recebiam foco: os itens da lista de Compras (`li onClick`, agora `role="checkbox"` + `aria-checked` + `tabIndex` +
+  Enter/Espaço) e o cartão de foto personalizada da galeria (`role="button"` + `aria-pressed` + teclado, sem disparar
+  quando o foco está no botão interno de apagar). Os fundos de modal (`popup-overlay` com `role="dialog"`) estão corretos.
+
+**CSS.** Removidas **118 regras** e 7 blocos `@media` vazios do tema claro (o painel é só noturno desde 25/09): 363 → 341 KB, e
+o CSS servido caiu de 280 para 263 KB. O podador usa um analisador de blocos (não regex), mantém `:not([data-theme="light"])`
+e foi validado contra a versão anterior: chaves balanceadas, 1972 → 1854 regras, **nenhuma regra do tema escuro perdida**.
+O botão "Tema" de `/icons-preview` (página de desenvolvimento, a única que ativava o tema claro) foi removido.
+
+**Zoom no celular: mantido bloqueado, de propósito.** A auditoria sugeriu liberar no celular (WCAG 1.4.4), mas o bloqueio
+(`layout.tsx`, `maximumScale: 1` + gestos do Safari) foi um pedido do André em 22/09 depois de um card "travado" em celular
+(`artifacts/audit/travamento-zoom-mobile.md`). Reverter é decisão dele.
+
+**Verificado.** `npx tsc --noEmit` 0; build automático do watchdog em 17 s; home idêntica na tela; `/api/state` com JSON válido
+(72 entidades). **Não verificado**: Tab real percorrendo a lista de Compras e a galeria; o teclado da galeria com foto
+personalizada (não havia fotos).

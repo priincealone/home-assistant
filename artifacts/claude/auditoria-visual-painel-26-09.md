@@ -70,19 +70,19 @@ fora do `DESIGN.md` (481 avisos), não na estrutura.
 - Correção: piso de 11–12 px para rótulos e badges; 12 px para o que precisa ser lido de longe.
 - Comando: `$impeccable typeset`.
 
-**P2 — Foco de teclado quase sem indicador**
+**P2 — Foco de teclado quase sem indicador** — ❌ ACHADO INCORRETO (retificado em 26/09: há regra global `:focus-visible` de 3 px com `!important`; só faltavam `li`/`div` clicáveis sem foco, corrigidos)
 - Local: `globals.css`: 9 regras `:focus-visible` contra 10 `outline: none/0`; 37 `<div onClick>` (18 com `tabIndex`).
 - Impacto: navegação por teclado/leitor de tela sem saber onde está o foco. Menos grave em tela de toque.
 - Correção: um estilo de foco único por token para botões e cartões; trocar `div onClick` por `button`.
 - Comando: `$impeccable harden`.
 
-**P2 — Zoom desabilitado**
+**P2 — Zoom desabilitado** — ⏸ MANTIDO: decisão do André de 22/09 (`artifacts/audit/travamento-zoom-mobile.md`)
 - Local: `layout.tsx:44–45` (`maximumScale: 1`, `userScalable: false`) e bloqueio de gestos no script de arranque.
 - Impacto: decisão consciente para o tablet de parede, mas impede ampliar texto no celular (WCAG 1.4.4).
 - Correção: manter só para o modo tablet/parede (por `navigator.maxTouchPoints` e tamanho), liberar no celular.
 - Comando: `$impeccable adapt`.
 
-**P2 — Vários temporizadores independentes de rede**
+**P2 — Vários temporizadores independentes de rede** — ✅ CORRIGIDO em 26/09 (pausa com aba oculta; `/api/state` 31,6 → 5,8 KB)
 - Local: 15 `setInterval` (`page.tsx:128`, `comodo/[id]/page.tsx:59`, `MediaHubModal.tsx:374` a 3 s,
   `TvRemoteWidget.tsx:71`, `TodoListWidget.tsx:62`, `EnergyWidget.tsx:124`, `RoomActivity.tsx:51`, entre outros);
   23 `fetch` de API durante a vida da home; `/api/state` devolve **31,6 KB a cada 5 s** sem `Content-Encoding`.
@@ -91,7 +91,7 @@ fora do `DESIGN.md` (481 avisos), não na estrutura.
   resposta de `/api/state`.
 - Comando: `$impeccable optimize`.
 
-**P2 — CSS de 368 KB / 15 mil linhas em um arquivo, com 153 regras de tema claro mortas**
+**P2 — CSS de 368 KB / 15 mil linhas em um arquivo, com 153 regras de tema claro mortas** — ✅ tema claro removido em 26/09 (118 regras, 363 → 341 KB); a divisão do arquivo em partes segue pendente
 - Local: `app/globals.css`; 201 `!important`; 219 `box-shadow`; 53 `@keyframes`.
 - Impacto: mais análise de estilo por página, difícil de manter e de auditar; o tema claro foi retirado em 25/09.
 - Correção: apagar as regras `data-theme="light"`; dividir por área (cabeçalho, cômodos, modais, câmera).
