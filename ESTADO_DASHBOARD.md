@@ -6060,3 +6060,32 @@ O detector do impeccable passou de **337 achados** (5 reais + 331 avisos de deri
 - **Erro de console "fetching the script": causa encontrada, não é do painel.** No navegador embutido do app, até o registro de
   um arquivo que nem é JavaScript (`/manifest.json`) dá o mesmo erro: esse navegador não busca scripts de service worker. O
   `/sw.js` responde 200 e é válido. Não se conclui nada sobre tablet real, mas o defeito não está no código.
+
+---
+
+## 27/09/2026 — Leitura dinâmica em todos os textos que truncavam com reticências
+
+**Pedido do André:** todo texto cortado com "…" deve deslizar sozinho para ser lido, como já acontecia em 15 pontos.
+
+**O que foi feito.** Mapeei as 41 regras de CSS com `text-overflow: ellipsis` e onde cada classe é usada no TSX: 29 classes não
+usavam o `SmartTruncateText`. Converti **49 elementos em 15 arquivos** (cabeçalho e títulos, cartões de cômodo, chips de
+ambiente, subcartões e distribuição do modal de energia, central de mídia, previsão do tempo, galeria de planos de fundo,
+regulador de luz, atividade do cômodo, câmera, ventilador, aspirador e pílulas de segurança/bateria). Sobraram três classes
+de contêiner (`.dashboard-header-pills`, `.room-subpage-title-group`, o gatilho do popover) que não têm texto próprio; o texto
+dentro delas já rola.
+
+**Como.** `SmartTruncateText` agora aceita conteúdo JSX sem a prop `text` (o título do elemento sai do texto renderizado) e as
+tags `h1`–`h4`/`p`; títulos e parágrafos ganham a classe `smart-truncate-block` (ocupam a linha inteira, como antes). A
+conversão em massa foi feita por script que só toca em `<tag className="X">…</tag>` de classes da lista.
+
+**Correção que a leitura dinâmica exigiu.** O rodapé dos subcartões do modal de energia dividia **uma linha de 128 px entre o
+selo, o nome e o estado** no celular, e já antes virava "P…" e "1…" (ilegível). Agora, até 640 px, o rodapé empilha
+(selo, nome, estado): "PC Principal", "Periféricos PC" e "Tomada Cabeceira" aparecem inteiros, e só o que é maior que o
+cartão rola.
+
+**Verificado.** Em 320 px, 5 textos da home rolam e **0 elementos ficaram truncados com reticências** nas 6 páginas
+testadas; em 1024 px, 0. Modais de energia, mídia, aspirador, clima, baterias, segurança e galeria: 0 truncados. `tsc` 0,
+detector do impeccable 0. Publicado em produção pelo watchdog.
+
+**Não verificado.** O ritmo da rolagem em tablet físico; o modal do regulador de luz com nomes de cena longos (não havia
+nome longo para forçar o estouro); o texto "Distribuição de carga" a 56 px mostra uma janela pequena por natureza.
