@@ -6225,3 +6225,11 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - Feito com o HA parado (validado antes, backup em `backups/novo-dashboard-auto-<data>/`): só `lovelace_dashboards` (nova entrada) e o novo arquivo `lovelace.aparelho_auto`. Não toquei em `core.config_entries` desta vez.
 - Verificado: HA subiu limpo, a rota `/aparelho-auto` responde e pede login (comportamento normal), sem tocar no dashboard "Dispositivos" nem no "Painel de controle".
 - Continua sem cartão nenhum: é a visão automática pura. Se o André quiser algo sob medida para o aparelho (tamanho de tela, só alguns cômodos), isso é o próximo passo, com `lib/rooms.ts` como referência.
+
+## 29/09/2026 — Bubble Card no dashboard "Área Gourmet"
+- Pedido do André: ajustar o dashboard automático para o aparelho que vai ficar na Área Gourmet (tablet, paisagem), com estética Bubble Card.
+- Instalado Bubble Card v3.4.1 (`config/www/community/bubble-card/bubble-card.js`, fora do git por `.gitignore`), registrado como recurso do Lovelace.
+- O dashboard "aparelho_auto" (criado ontem, ainda genérico) virou "Área Gourmet" (`area-gourmet`, ícone `mdi:silverware-fork-knife`): separador com o nome, uma linha com os 4 botões de luz (Plafon, Pendente, Led, Spots — nomes e `entity_id` de `dashboard-app/lib/rooms.ts`, o contrato canônico) e um cartão de Presença/Movimento com a bateria como sub-botão.
+- **Incidente:** no primeiro reinício desse trabalho, o dashboard "Painel de controle" (que o André pediu para manter) sumiu do registro e do disco — não foi o meu script, que só tocava o "aparelho_auto"; a hipótese mais provável é o container não ter terminado de parar antes de eu editar o `.storage` (não conferi o status `Exited` antes daquela vez). Restaurado do git (estava commitado) e reinserido no registro; confirmado estável por mais de 45 s e num reinício limpo com o status conferido antes de editar.
+- Verificado: HA sobe limpo; `/area-gourmet`, `/painel-de-controle` e o `.js` do Bubble Card respondem 200; contagem de entidades/dispositivos inalterada (434/74). Não verificado: renderização visual real (pede login do HA, que não faço por mim).
+- Sem spec formal em `specs/` para este item — se o André quiser, escrevo depois.

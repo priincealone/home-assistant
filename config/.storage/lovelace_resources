@@ -3,6 +3,12 @@
   "minor_version": 1,
   "key": "lovelace_resources",
   "data": {
-    "items": []
+    "items": [
+      {
+        "id": "bubble_card_js",
+        "type": "module",
+        "url": "/local/community/bubble-card/bubble-card.js?v=3.4.1"
+      }
+    ]
   }
 }

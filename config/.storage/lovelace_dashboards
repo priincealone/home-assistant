@@ -31,10 +31,10 @@
         "mode": "storage"
       },
       {
-        "id": "aparelho_auto",
-        "icon": "mdi:tablet-dashboard",
-        "title": "Visão Automática",
-        "url_path": "aparelho-auto",
+        "id": "area_gourmet_kiosk",
+        "icon": "mdi:silverware-fork-knife",
+        "title": "Área Gourmet",
+        "url_path": "area-gourmet",
         "require_admin": false,
         "show_in_sidebar": true,
         "mode": "storage"

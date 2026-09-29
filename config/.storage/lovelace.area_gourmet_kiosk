@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "lovelace.area_gourmet_kiosk",
+  "data": {
+    "config": {
+      "views": [
+        {
+          "type": "panel",
+          "title": "Área Gourmet",
+          "path": "area-gourmet",
+          "cards": [
+            {
+              "type": "vertical-stack",
+              "cards": [
+                {
+                  "type": "custom:bubble-card",
+                  "card_type": "separator",
+                  "name": "Área Gourmet",
+                  "icon": "mdi:string-lights-outline"
+                },
+                {
+                  "type": "horizontal-stack",
+                  "cards": [
+                    {
+                      "type": "custom:bubble-card",
+                      "card_type": "button",
+                      "button_type": "switch",
+                      "entity": "light.luzes_externas_switch_1",
+                      "name": "Plafon",
+                      "icon": "mdi:ceiling-light"
+                    },
+                    {
+                      "type": "custom:bubble-card",
+                      "card_type": "button",
+                      "button_type": "switch",
+                      "entity": "light.luzes_externas_switch_2",
+                      "name": "Pendente",
+                      "icon": "mdi:lamp"
+                    },
+                    {
+                      "type": "custom:bubble-card",
+                      "card_type": "button",
+                      "button_type": "switch",
+                      "entity": "light.luzes_externas_switch_3",
+                      "name": "Led",
+                      "icon": "mdi:led-strip-variant"
+                    },
+                    {
+                      "type": "custom:bubble-card",
+                      "card_type": "button",
+                      "button_type": "switch",
+                      "entity": "light.luzes_externas_switch_4",
+                      "name": "Spots",
+                      "icon": "mdi:spotlight-beam"
+                    }
+                  ]
+                },
+                {
+                  "type": "custom:bubble-card",
+                  "card_type": "button",
+                  "button_type": "state",
+                  "entity": "binary_sensor.sensor_area_gourmet_movimento",
+                  "name": "Presença / Movimento",
+                  "icon": "mdi:motion-sensor",
+                  "card_layout": "large",
+                  "state_content": [
+                    "state",
+                    "last-changed"
+                  ],
+                  "sub_button": [
+                    {
+                      "entity": "sensor.sensor_area_gourmet_bateria",
+                      "icon": "mdi:battery",
+                      "state_content": "state",
+                      "show_background": false
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
