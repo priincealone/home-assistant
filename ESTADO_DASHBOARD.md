@@ -6247,3 +6247,4 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - Verificado: `check_config` sem erro; HA reiniciado só por YAML; `/api/state` devolve `light.quarto_luca_switch_1` com estado real (`off`, o mesmo do interruptor, não mais `null`). **Não** acionei a luz (regra de comando físico): o comando liga/desliga não foi provado.
 - Armadilha: `light: - platform: switch` em YAML não aceita `unique_id` nesta versão do HA (`check_config` recusa); por isso o wrapper é template light.
 - Pendente do André: se preferir o helper de UI (Configurações → Dispositivos → Ajudantes → Switch as X, apontando ao `switch.quarto_luca_switch_1`, como o Led + tomada), é só criá-lo e remover o bloco de template — o entity_id colide, então uma coisa por vez.
+- **Confirmado pelo André (29/09):** ligou e desligou a luz do Quarto Luca pelo painel e funcionou — o comando de ponta a ponta (painel → template light → `switch.quarto_luca_switch_1` → Tuya) está provado. Item fechado.
