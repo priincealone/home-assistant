@@ -315,3 +315,21 @@
             'light.painel', 'light.quarto_luca_switch_1'] %}
           {{ luzes | select('is_state', 'unavailable')
                    | map('state_attr', 'friendly_name') | list | join(', ') }}
+
+# Luz do Quarto do Luca: o interruptor Tuya (switch.quarto_luca_switch_1) voltou ao HA como `switch`
+# ao refazer a adição em 29/09. Este wrapper o expõe como `light` com o entity_id de antes
+# (light.quarto_luca_switch_1), porque painel, contadores acima e rooms.ts dependem dele.
+# Não decide nada: só repassa liga/desliga e estado ao interruptor (um atuador, um dono).
+- light:
+    - name: "Quarto Luca Switch 1"
+      unique_id: quarto_luca_luz_wrapper
+      state: "{{ is_state('switch.quarto_luca_switch_1', 'on') }}"
+      availability: "{{ states('switch.quarto_luca_switch_1') not in ['unavailable', 'unknown'] }}"
+      turn_on:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.quarto_luca_switch_1
+      turn_off:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.quarto_luca_switch_1
