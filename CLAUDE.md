@@ -303,6 +303,12 @@ Correção de defeito e diagnóstico não exigem especificação.
   ```bash
   docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/g" /usr/local/lib/python3.14/site-packages/glances_api/__init__.py
   ```
+- **Publicar o painel é derrubar a porta, não subir servidor à mão.** O watchdog
+  (`dashboard-app/iniciar_servidor_background.ps1`, tarefa agendada `CasaDashboardAutoStart`) só recompila
+  quando a 3002 está livre. Para publicar: matar o processo **dono da porta 3002** (pela porta, nunca por
+  `CommandLine`) e esperar ~20–60 s. Nunca rodar `npm run build`/`npm run start` pelo shell do agente: o
+  servidor morre com a sessão, e um build manual apaga o `BUILD_ID` e faz o watchdog cair para `dev` na 3002
+  (foi assim que o painel ficou fora em 27–29/09)
 - **IP do PC é DHCP** (`192.168.31.22`) e está escrito fixo em `app/api/mass/route.ts`
 - **O painel não tem autenticação** — quem alcança a porta 3002 comanda a casa
 - **Google Drive** injeta `desktop.ini` em toda pasta nova (ignorados desde 15/09)

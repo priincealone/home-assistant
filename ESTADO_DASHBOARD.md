@@ -6233,3 +6233,10 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - **Incidente:** no primeiro reinício desse trabalho, o dashboard "Painel de controle" (que o André pediu para manter) sumiu do registro e do disco — não foi o meu script, que só tocava o "aparelho_auto"; a hipótese mais provável é o container não ter terminado de parar antes de eu editar o `.storage` (não conferi o status `Exited` antes daquela vez). Restaurado do git (estava commitado) e reinserido no registro; confirmado estável por mais de 45 s e num reinício limpo com o status conferido antes de editar.
 - Verificado: HA sobe limpo; `/area-gourmet`, `/painel-de-controle` e o `.js` do Bubble Card respondem 200; contagem de entidades/dispositivos inalterada (434/74). Não verificado: renderização visual real (pede login do HA, que não faço por mim).
 - Sem spec formal em `specs/` para este item — se o André quiser, escrevo depois.
+
+## 29/09/2026 — Painel offline de novo: causa raiz e correção
+- Sintoma: nada escutando a 3002 (HA na 8123 normal).
+- Causa raiz: o watchdog (`iniciar_servidor_background.ps1`, tarefa `CasaDashboardAutoStart`) morreu em 27/09 ~02h, durante publicações feitas à mão pelo agente (build manual apagou o `BUILD_ID`, o watchdog caiu para `dev` na 3002, e esse processo foi morto ao liberar a porta). A tarefa agendada **só dispara no logon**, e o PC não reinicia desde 24/09, então ninguém o religou. Os servidores subidos à mão pelo agente morreram junto com a sessão dele.
+- Feito: watchdog religado pela própria tarefa (`Start-ScheduledTask`), fora da sessão do agente; servidor em produção (`next start`) como filho dele. Teste de autorrecuperação: matei o dono da 3002 e ele voltou sozinho em 22 s.
+- Regra nova no `CLAUDE.md` (armadilhas): publicar = matar o dono da porta 3002 e deixar o watchdog recompilar; nunca `npm run build`/`start` pelo shell do agente.
+- **Pendente (do André):** acrescentar à tarefa um gatilho que a repita a cada 5 min, para o próprio watchdog renascer se morrer sem logon. O sistema de permissões bloqueou o agente de alterar a tarefa agendada (configuração persistente do Windows). O mutex do script já impede duas instâncias.
