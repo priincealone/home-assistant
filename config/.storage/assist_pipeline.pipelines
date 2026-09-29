@@ -18,8 +18,38 @@
         "wake_word_entity": null,
         "wake_word_id": null,
         "prefer_local_intents": false
+      },
+      {
+        "conversation_engine": "conversation.claude_conversation",
+        "conversation_language": "*",
+        "id": "01m3nh2chmymhpx240nw5ynkg4",
+        "language": "pt",
+        "name": "Claude",
+        "stt_engine": null,
+        "stt_language": null,
+        "tts_engine": null,
+        "tts_language": null,
+        "tts_voice": null,
+        "wake_word_entity": null,
+        "wake_word_id": null,
+        "prefer_local_intents": true
+      },
+      {
+        "conversation_engine": "conversation.google_ai_conversation",
+        "conversation_language": "*",
+        "id": "01m3nhtt8n15sfgcw5egkd3mty",
+        "language": "pt",
+        "name": "Google",
+        "stt_engine": "stt.google_ai_stt",
+        "stt_language": "pt-BR",
+        "tts_engine": "tts.google_translate_pt_com_br",
+        "tts_language": "pt-br",
+        "tts_voice": null,
+        "wake_word_entity": null,
+        "wake_word_id": null,
+        "prefer_local_intents": true
       }
     ],
-    "preferred_item": "01m1ms596qhy2ywjgtc0er3snh"
+    "preferred_item": "01m3nhtt8n15sfgcw5egkd3mty"
   }
 }

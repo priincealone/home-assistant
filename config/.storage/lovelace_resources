@@ -3,12 +3,6 @@
   "minor_version": 1,
   "key": "lovelace_resources",
   "data": {
-    "items": [
-      {
-        "id": "d31adf1b98b942b09496b42f0ba43a68",
-        "url": "/browser_mod.js?automatically-added&3.2.2",
-        "type": "module"
-      }
-    ]
+    "items": []
   }
 }

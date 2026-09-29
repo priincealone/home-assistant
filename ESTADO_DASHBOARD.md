@@ -6212,3 +6212,9 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - HA (8123) nunca saiu do ar; os avisos no log são conhecidos (medidor Tuya K-16 bloqueado, DVR fora K-06).
 - Verificado: tsc 0, build ok, `npm run start`, estáticos 200, tela de PIN renderizada com CSS. Não entrei o PIN (segredo do André).
 - TODO permanece: watchdog não está rodando; enquanto isso, a 3002 cai se o processo do `npm run start` morrer.
+
+## 29/09/2026 — Integração Browser Mod removida
+- Sem função hoje: nenhuma automação/script/cena a usava; era resquício de antes da troca do Lovelace pelo painel Next.js (15/09). Dashboard Lovelace antigo ("Painel de controle") mantido, a pedido do André.
+- Removido com o HA parado (validado antes, backup em `backups/remocao-browser_mod-<data>/`): 1 entrada em `core.config_entries`, 15 entidades e 1 dispositivo no registro, 1 recurso `/browser_mod.js` no `lovelace_resources`, a pasta `config/custom_components/browser_mod/` e o `browser_mod.storage`.
+- Verificado: HA subiu limpo (sem aviso "custom integration browser_mod"), 0 entidades residuais, os 3 dashboards Lovelace intactos (Mapa, Dispositivos, Painel de controle), nenhum issue novo em `repairs.issue_registry`.
+- Achado à parte (não relacionado): a integração Anthropic (Claude no HA) está falhando com "credit balance too low" — falta crédito na conta da Anthropic para o assistente de voz funcionar.
