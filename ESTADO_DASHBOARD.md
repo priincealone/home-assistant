@@ -6218,3 +6218,10 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - Removido com o HA parado (validado antes, backup em `backups/remocao-browser_mod-<data>/`): 1 entrada em `core.config_entries`, 15 entidades e 1 dispositivo no registro, 1 recurso `/browser_mod.js` no `lovelace_resources`, a pasta `config/custom_components/browser_mod/` e o `browser_mod.storage`.
 - Verificado: HA subiu limpo (sem aviso "custom integration browser_mod"), 0 entidades residuais, os 3 dashboards Lovelace intactos (Mapa, Dispositivos, Painel de controle), nenhum issue novo em `repairs.issue_registry`.
 - Achado à parte (não relacionado): a integração Anthropic (Claude no HA) está falhando com "credit balance too low" — falta crédito na conta da Anthropic para o assistente de voz funcionar.
+
+## 29/09/2026 — Novo dashboard Lovelace automático, para um aparelho separado
+- Pedido do André: dashboard Lovelace para um aparelho específico (não substitui o painel Next.js). Achado antes de criar: já existia um automático ("Dispositivos", `dashboard-dispositivos`) — o André preferiu um separado, para não disputar com o uso que já dão a esse.
+- Criado "Visão Automática" (`aparelho-auto`, ícone `mdi:tablet-dashboard`), com `strategy: original-states` — a mesma estratégia do "Dispositivos" existente, sem cartão nenhum desenhado à mão. Agrupa pelas áreas do HA, que já batem com os cômodos do painel.
+- Feito com o HA parado (validado antes, backup em `backups/novo-dashboard-auto-<data>/`): só `lovelace_dashboards` (nova entrada) e o novo arquivo `lovelace.aparelho_auto`. Não toquei em `core.config_entries` desta vez.
+- Verificado: HA subiu limpo, a rota `/aparelho-auto` responde e pede login (comportamento normal), sem tocar no dashboard "Dispositivos" nem no "Painel de controle".
+- Continua sem cartão nenhum: é a visão automática pura. Se o André quiser algo sob medida para o aparelho (tamanho de tela, só alguns cômodos), isso é o próximo passo, com `lib/rooms.ts` como referência.

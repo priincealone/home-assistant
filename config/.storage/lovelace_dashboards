@@ -29,6 +29,15 @@
         "title": "Painel de controle",
         "url_path": "painel-de-controle",
         "mode": "storage"
+      },
+      {
+        "id": "aparelho_auto",
+        "icon": "mdi:tablet-dashboard",
+        "title": "Visão Automática",
+        "url_path": "aparelho-auto",
+        "require_admin": false,
+        "show_in_sidebar": true,
+        "mode": "storage"
       }
     ]
   }
