@@ -21,14 +21,18 @@
       const targetUrl = getDashboardUrl();
       console.log(`[Casa Dashboard] Painel lateral conectando a: ${targetUrl}`);
 
+      // No fluxo normal, ocupando só a área que a HA reserva ao painel (06/10/2026). Antes era
+      // position:absolute com top/left 0 sem ancestral posicionado, ou seja, relativo à JANELA:
+      // a barra lateral cobria o começo do painel, e o que a HA ou o aparelho põe no topo passava
+      // por cima dele (faixa clara no topo). A área segura do topo é descontada aqui porque o
+      // iframe não enxerga env(safe-area-inset-*) e o painel declara handle_safe_area: true.
       this.style.display = "block";
-      this.style.position = "absolute";
-      this.style.top = "0";
-      this.style.left = "0";
-      this.style.right = "0";
-      this.style.bottom = "0";
+      this.style.position = "relative";
       this.style.width = "100%";
-      this.style.height = "100%";
+      this.style.height = "100vh";
+      this.style.height = "100dvh";
+      this.style.boxSizing = "border-box";
+      this.style.paddingTop = "env(safe-area-inset-top, 0px)";
       this.style.overflow = "hidden";
       this.style.background = "#07090e";
 
