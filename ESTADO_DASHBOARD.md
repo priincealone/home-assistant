@@ -6276,3 +6276,20 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - **Defeitos achados no teste e corrigidos**: (1) ao concluir o segurar no PC, o clique que o navegador dispara ao soltar executava a ação de novo como toque simples (a tomada já parecia desligada) e religava o PC — o gancho agora consome esse clique; (2) uma leitura que chegasse antes de a HA aplicar a cena fazia o Desfazer pular o brilho — agora o brilho é sempre reenviado (inofensivo).
 - **Não feito**: Desfazer depois de "Dormir" (a tela entra em descanso; precisa de desenho próprio). Nomes das tomadas truncados no modal de energia (já era assim na produção antiga; fase 3).
 - Nenhum dispositivo foi acionado.
+
+## 06/10/2026 — Fase 3, lote A: leituras honestas, alvos de toque e vocabulário único (painel)
+- Pedido do André ("seguir para a fase 3", direção "só refinar"). Lote A = correções da auditoria de 05/10 (E-05 a E-20) + B-02.
+- **B-02** (spec de 15/09, aprovada com a fase 3): saem do contrato `binary_sensor.sensor_banheiro_movimento` e `..._closet_movimento` (não existem no HA; eram usados para acordar o descanso de tela por presença, então nunca disparavam); entram `sensor.dreame_..._battery_level_p_2_1` e `todo.lista_de_compras` (conferidos no registro).
+- **Cabeçalho (E-08)**: "Baterias 50%" virou "Baterias ok" (o 50% era a menor bateria); o selo de saúde, que mostrava "Requer atenção" dentro do bloco "Requer atenção", agora diz "N avisos" e tem ícone e `aria-label`; "1 fora" virou "DVR fora".
+- **Portas (E-07)**: modal de segurança, cartão de sensor e descanso de tela mostram há quanto tempo estão abertas; passou de 24 h, sugere conferir o sensor. ⚠️ Armadilha: o `last_changed` zera quando a HA reinicia, então a duração conta a partir do boot.
+- **Consumo (E-05)**: faixas com histerese de ±10 W (o PC oscila em volta de 120 W e o selo trocava a cada leitura).
+- **Ventilador (E-10)**: segmentos com `aria-pressed`; "Desligado" selecionado neutro (era o elemento mais chamativo do modal); o botão diz a ação ("Ligar"), não repete o estado.
+- **Toque no iPad (E-11)**: o piso de 44–48 px só valia em `pointer: coarse`, que o Safari do iPad em modo desktop não relata; agora vale também com `html[data-toque]`.
+- **Cartões (E-12, E-15)**: chips de porta, presença, TV e offline com ícone (no celular o rótulo some e sobrava só a cor); ícones alinhados na linha da grade por container query (reservam duas linhas de indicadores quando o cartão tem ≤ 230 px).
+- **Popup × página (E-13)**: mesmos títulos (Iluminação, Ventilação e clima, Mídia, Tomadas, Sensores), sem as dicas fixas, botão "Acender/Apagar luzes", luz "Acesa/Apagada"; porta em "Sensores" (estava em "Tomadas & Bloqueios").
+- **Compras (E-14)**: leitura que falha não vira "Tudo comprado" quando não há dado anterior ("Sem leitura da lista"); com dado anterior, mantém a última leitura (CLAUDE.md §12).
+- **Desempenho (E-19)**: "Apagar tudo" e "Dormir" usam `lib/useSegurarParaConfirmar.ts` (barra em CSS, sem `setInterval` de 20 ms); relógio e descanso atualizam na virada do minuto; animações do painel pausadas sob o descanso. **Descanso (E-20)**: telemetria 15–20 px (era 13) e "3 alertas · Porta do Quarto" (antes só a primeira).
+- **Tomadas**: nomes inteiros no modal de energia (selo, nome e estado disputavam uma linha só).
+- **Limpeza**: `HealthWidget.tsx` removido (sem uso); `WeatherWidget.tsx` também sem uso, mas não rastreado no git — deixado como está. `AGENTS.md` (TTL 5 s) e `PRODUCT.md` (escopo) atualizados.
+- **Verificado**: `tsc` = 0; servidor de teste na 3010 com escrita interceptada: ícones a 70 px nos 10 cartões, tela sem rolagem em 1024×768, selos, portas com duração, nomes inteiros, popup e página unificados, toque curto em "Apagar tudo"/"Dormir" = 0 comandos e segurar = comando certo, descanso com 12 animações pausadas. Publicado às 09:45 (build ok). Nenhum dispositivo acionado.
+- **Não verificado**: "Sem leitura da lista" (só ocorre com falha na primeira leitura; conferido no código).

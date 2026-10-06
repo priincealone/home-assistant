@@ -7,13 +7,6 @@ Ordenado por valor, não por esforço.
 
 ## Alto valor
 
-### B-02 · Corrigir as 4 entidades inexistentes no contrato do painel
-`binary_sensor.sensor_banheiro_movimento`, `binary_sensor.sensor_closet_movimento`, o id de bateria do
-aspirador e `todo.tarefas`. Nenhuma quebra o build; todas chegam à tela como estado nulo.
-→ `docs/SYSTEM-MAP.md`
-**Esforço**: baixo · **Executor**: Antigravity
-❓ Antes: decidir se os dois sensores de movimento devem existir fisicamente.
-
 ### B-03 · Teste de contrato entidades × Home Assistant
 Um teste que compara `lib/rooms.ts` com `GET /api/states` teria barrado B-02 e a inversão
 Cozinha/Lavanderia no dia em que entraram. → `artifacts/claude/test-gap-analysis.md` L-01, L-02

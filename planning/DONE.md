@@ -9,6 +9,13 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ## 06/10/2026
 
+**Fase 3 do painel, lote A: leituras honestas, alvos de toque e vocabulário único** — inclui B-02 (entidades
+inexistentes fora do contrato, IDs certos de bateria do aspirador e da lista de compras). Selos do cabeçalho
+dizem o que contam; portas com duração; consumo com histerese; ventilador com `aria-pressed`; piso de toque com
+`data-toque` (iPad); chips com ícone e ícones alinhados; popup e página do cômodo com o mesmo vocabulário;
+"segurar" unificado no gancho; relógio por minuto; animações pausadas no descanso. Verificado no navegador com
+escrita interceptada, `tsc` = 0, publicado às 09:45. Detalhe em `ESTADO_DASHBOARD.md`.
+
 **Fase 2 do painel: estados verdadeiros, régua de confirmação e Desfazer** — E-01 a E-04, M-07 e M-08 da
 auditoria de 05/10. TV com uma fonte (sensor da HA com a TV local primeiro; botão manda estado explícito;
 contrato "TV Sala" na entidade local), selo da câmera vindo do player ("SEM SINAL" em 25 s), "Apagar tomadas",

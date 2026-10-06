@@ -3,7 +3,7 @@
 - **ID da Tarefa**: B-02
 - **Nome**: correcao-entidades-contrato
 - **Executor Principal**: Antigravity (UX / Frontend)
-- **Status**: Especificado (Aguardando Aprovação para Implementação)
+- **Status**: Implementado em 06/10/2026 (Claude Code, fase 3 do painel, aprovada pelo André). IDs novos conferidos no registro. `SecurityAlertsBar.tsx` já não existia; os sensores também saíram de `HeaderAlertPill.tsx`
 - **Data de Especificação**: 15/09/2026
 - **Classificação**: Baixo risco / Higiene de Contrato
 

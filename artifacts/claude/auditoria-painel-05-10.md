@@ -115,6 +115,11 @@ tela diz "Desligada" — viola a regra do CLAUDE.md §12. Também "de 5 tomadas"
 
 ### P2
 
+> **Atualização de 06/10/2026 (fase 3, lote A):** corrigidos E-05, E-06 (B-02), E-07, E-08, E-10, E-12, E-13,
+> E-14, E-15, E-16 (HealthWidget), E-17, E-19 e parte do E-20 (telemetria e contagem de alertas; o escurecimento
+> por horário ficou como estava). E-11: o "Ajustar" e as setas já tinham 44 px sob toque; o que faltava era o
+> iPad, que relata `pointer: fine` — corrigido com `data-toque`. E-18 deixou de existir com a saída do PIN.
+
 **E-05 · Selo de consumo pisca entre Econômico e Moderado.** Limite seco em 120 W; medi 112 → 121 → 146 → 112 W
 em minutos, com troca de cor e texto. Falta histerese (ex.: sobe em 130, desce em 110) ou média móvel.
 

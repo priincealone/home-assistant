@@ -102,7 +102,7 @@ O modelo físico do imóvel divide-se em 10 cômodos oficiais (`core.area_regist
 | **Quarto Luca** | `light.quarto_luca_switch_1`, `switch.tomada_inteligente_socket_1/2`, `sensor.tomada_inteligente_energia` | Tuya Cloud, switch_as_x | Iluminação, tomadas controladas e telemetria de Watts |
 | **Closet** | `light.closet_switch_1`, `light.led_escritorio_sonoff_1001dff472`, `switch.computador_socket_1/2`, `sensor.computador_energia`, `vacuum.dreame_us_415783444_mc1808` | Tuya, Sonoff LAN, Xiaomi Home (China/US), switch_as_x | Iluminação principal, fita LED, tomadas PC e aspirador |
 | **Quarto** | `light.luz_quarto`, `fan.ventilador_quarto`, `binary_sensor.porta_do_quarto_porta` | LocalTuya, Tuya Cloud | Luz/ventilador de teto e sensor magnético de porta |
-| **Banheiro** | `switch.banheiro_switch_1`, `switch.banheiro_switch_2`, `binary_sensor.sensor_banheiro_movimento` | Tuya Cloud | Interruptor de luz, tomada e sensor de movimento |
+| **Banheiro** | `switch.banheiro_switch_1`, `switch.banheiro_switch_2` | Tuya Cloud | Interruptor de luz e tomada (o sensor de movimento não existe no HA; saiu do contrato em 06/10/2026, B-02) |
 
 ---
 
