@@ -9,6 +9,11 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ## 06/10/2026
 
+**Fase 3 do painel, lote B: cômodos primeiro, menos ruído e piso de 12 px** — cômodos antes do resumo (y=436 →
+278 na parede, sem rolagem), sem frases de instrução fixas, seta de detalhe discreta, piso de texto de 12 px em
+todos os tamanhos. M-04 e M-06 ficaram de fora por contrariarem decisões de 25 e 27/09; M-05 é redesenho; M-11
+(dividir o CSS) fica à parte. Publicado às 09:51.
+
 **Fase 3 do painel, lote A: leituras honestas, alvos de toque e vocabulário único** — inclui B-02 (entidades
 inexistentes fora do contrato, IDs certos de bateria do aspirador e da lista de compras). Selos do cabeçalho
 dizem o que contam; portas com duração; consumo com histerese; ventilador com `aria-pressed`; piso de toque com

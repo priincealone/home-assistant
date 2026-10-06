@@ -174,6 +174,10 @@ lista vazia por falha vira "tudo comprado" (hoje a rota responde 200 com 6 itens
 
 ## 2. Melhorias de design e uso
 
+> **Atualização de 06/10/2026 (fase 3, lote B):** feitos M-01/M-12 (ordem), M-02, M-03 e M-10. M-07, M-08 e M-09
+> saíram na fase 2. Não feitos de propósito: M-04 e M-06 (contrariam decisões do André de 27 e 25/09), M-05
+> (redesenho) e M-11 (dividir o CSS, trabalho à parte).
+
 **M-01 · Os cômodos são a ação principal e recebem 43% da tela.** Em 1024×768 a grade começa em y=436.
 Cabeçalho, cenas e resumo comem o resto. Comprimir o resumo numa faixa única e deixar a grade ser o herói.
 
