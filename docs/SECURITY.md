@@ -22,11 +22,15 @@ dispositivo na tailnet.
 
 ## Achados abertos
 
-### A-01 · O painel não autentica ninguém — **Crítico**
+### A-01 · O painel não autentica ninguém — **Crítico, risco aceito pelo André (05/10/2026)**
 
-Não há `middleware.ts` nem verificação em nenhuma das 10 rotas. O `HA_TOKEN` está bem protegido no
-servidor, mas **quem alcança a porta 3002 comanda a casa**: luzes, TV, ventiladores, aspirador, cenas.
-Alcance atual: toda a LAN e toda a tailnet.
+Não há proxy/middleware nem verificação em nenhuma rota. O `HA_TOKEN` está bem protegido no
+servidor, mas **quem alcança a porta 3002 comanda a casa**: luzes, TV, ventiladores, aspirador, cenas, e
+vê as câmeras. Alcance atual: toda a LAN e toda a tailnet (o servidor anuncia `100.74.130.30:3002`).
+
+Histórico: um PIN existiu de 24/09 a 05/10, mas usava o valor padrão do código e não validava o cookie.
+Foi removido por decisão do André (D-011 em `docs/DECISIONS.md`). Se for preciso fechar, o caminho é
+firewall ou proxy autenticado na 3002.
 
 ❓ **DESCONHECIDO** — se a 3002 responde fora da tailnet (depende da configuração do Tailscale e do
 firewall do Windows) e quantos aparelhos têm acesso hoje.

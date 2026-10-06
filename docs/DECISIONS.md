@@ -135,11 +135,26 @@ os filhos que ele havia desativado.
 
 ---
 
+## D-011 · O painel não pede PIN — 05/10/2026
+
+**Contexto.** Um login por PIN entrou no painel em 24/09 (`middleware.ts`, `lib/auth.ts`, `/login`). A
+auditoria de 05/10 (`artifacts/claude/auditoria-painel-05-10.md`) achou que ele protegia pouco: o PIN em uso
+era o padrão escrito no código, o cookie de sessão não era validado (qualquer valor passava) e
+`/api/state` e `/api/camera/*` já ficavam de fora.
+
+**Decisão.** O André escolheu acesso livre: o PIN, a tela `/login` e a rota `/api/auth/login` foram
+removidos. `/login` redireciona para `/`.
+
+**Consequência.** Risco aceito: quem alcança a porta 3002 (toda a LAN e toda a tailnet, `100.74.130.30`)
+comanda a casa e vê as câmeras, sem se identificar. Se a rede deixar de ser confiável, a saída é restringir a
+3002 no firewall ou num proxy autenticado, não voltar ao PIN de antes.
+
+---
+
 ## Decisões pendentes
 
 | Assunto | Quem decide |
 | :--- | :--- |
-| Autenticar o painel na porta 3002 | André |
 | Sair de `npm run dev` para produção, e como (container ou serviço) | André |
 | Qual hardware dedicado, e quando migrar | André |
 | Manter cenas no painel ou levá-las para o HA | André |

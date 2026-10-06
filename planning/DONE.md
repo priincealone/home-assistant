@@ -7,6 +7,16 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 05/10/2026
+
+**Painel sem PIN: acesso livre (K-11 e B-01 encerrados por decisão)** — o André escolheu não autenticar o
+painel (D-011 em `docs/DECISIONS.md`). Removidos `middleware.ts`, `lib/auth.ts`, `app/api/auth/login`,
+`app/login` e os estilos do login; `/login` redireciona para `/`; `offline.html` testa `/` para saber se o
+servidor voltou. Verificado em produção, sem cookie: `/`, `/comodo/*`, `/standby` e as rotas de leitura da
+API respondem 200 (inclusive pelo IP `192.168.31.22`), `/login` → 307 para `/`, `/api/auth/login` → 404;
+`npx tsc --noEmit` passa. Nenhum dispositivo foi acionado. Auditoria que motivou:
+`artifacts/claude/auditoria-painel-05-10.md`.
+
 ## 26/09/2026
 
 **Novos dispositivos no painel: portas da sala e da lavanderia, Led + tomada do Quarto Luca** — contrato

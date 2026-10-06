@@ -310,7 +310,8 @@ Correção de defeito e diagnóstico não exigem especificação.
   servidor morre com a sessão, e um build manual apaga o `BUILD_ID` e faz o watchdog cair para `dev` na 3002
   (foi assim que o painel ficou fora em 27–29/09)
 - **IP do PC é DHCP** (`192.168.31.22`) e está escrito fixo em `app/api/mass/route.ts`
-- **O painel não tem autenticação** — quem alcança a porta 3002 comanda a casa
+- **O painel não tem autenticação, por decisão** (05/10/2026, D-011) — quem alcança a porta 3002 (LAN e tailnet)
+  comanda a casa. Não recriar o PIN sem pedido do André
 - **Google Drive** injeta `desktop.ini` em toda pasta nova (ignorados desde 15/09)
 
 ## Alçadas

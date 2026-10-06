@@ -25,7 +25,7 @@ Nada aqui é funcionalidade nova. É parar de sangrar.
 
 | # | Item | Executor | Observação |
 | :--- | :--- | :--- | :--- |
-| 2.1 | **Autenticar o painel** na porta 3002 | Antigravity + André | Não constava no roadmap original. É o maior risco aberto |
+| 2.1 | ~~Autenticar o painel na porta 3002~~ | André | **Decidido em 05/10/2026: sem autenticação**, risco aceito (D-011 em `docs/DECISIONS.md`) |
 | 2.2 | Sair de `npm run dev` para execução de produção | Claude Code + Antigravity | ⚠️ Containerizar **quebra** a leitura de `C:\HomeAssistant\config\...` em `app/api/mass/route.ts` e exige rever `HA_URL`. O diretório `ha-addon/` já existe e nunca foi usado |
 | 2.3 | Testes de contrato: entidades do painel × HA | Ambos | Ver `artifacts/claude/test-gap-analysis.md` L-01 e L-02. Barato e impede a classe de defeito que já aconteceu |
 | 2.4 | Instalar e configurar ESLint | Antigravity | O roadmap original falava em "ajustar o script"; não há ESLint instalado |

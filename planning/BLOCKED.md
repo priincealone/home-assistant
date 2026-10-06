@@ -112,16 +112,6 @@ canal), criar as entidades e só então decidir se entram em `lib/rooms.ts` e no
 
 ## Bloqueados por decisão, não por falta de acesso
 
-### K-11 · Autenticação do painel
-**Destrava**: decidir o método — senha simples no painel, proxy autenticado, ou restringir a porta 3002
-por firewall e confiar só na tailnet.
-**Por que está aqui**: é decisão de produto e de conveniência (o tablet de parede não deveria pedir
-senha a cada toque), não uma tarefa de código esperando ser escrita.
-⚠️ **Achado de 23/09/2026 que pesa nessa decisão**: `middleware.ts` isenta `/api/camera*` do PIN — o vídeo ao
-vivo das duas câmeras e o `POST /api/camera/record` (grava 30 s por chamada) respondem sem autenticação para
-quem alcança a porta 3002. Além disso `lib/auth.ts` cai num PIN padrão de 4 dígitos quando `DASHBOARD_PIN` não
-está definido. Não alterei nada (decisão do André).
-
 ### K-12 · Como sair do servidor de desenvolvimento
 **Destrava**: escolher entre container na `casa-net`, serviço do Windows, ou o `ha-addon/` que já
 existe no repositório e nunca foi usado.

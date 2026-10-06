@@ -7,11 +7,6 @@ Ordenado por valor, não por esforço.
 
 ## Alto valor
 
-### B-01 · Autenticar o painel (porta 3002)
-Hoje qualquer aparelho da LAN ou da tailnet controla a casa sem se identificar. Não há middleware nem
-verificação nas 10 rotas. → `docs/SECURITY.md` A-01
-**Esforço**: médio · **Executor**: Antigravity + André (decisão do método)
-
 ### B-02 · Corrigir as 4 entidades inexistentes no contrato do painel
 `binary_sensor.sensor_banheiro_movimento`, `binary_sensor.sensor_closet_movimento`, o id de bateria do
 aspirador e `todo.tarefas`. Nenhuma quebra o build; todas chegam à tela como estado nulo.

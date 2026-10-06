@@ -202,7 +202,8 @@ Nada físico foi tocado (é a TV e os containers, não um atuador de risco).
 HA (`camera/stream` por WebSocket, componente `stream`/PyAV — **não** depende do go2rtc). Modos: `live` (LL-HLS,
 modal) e `glance` (miniatura). Detalhes e medições em `ESTADO_DASHBOARD.md` (23/09). Fora disso, `snapshot` e
 `stream` do painel são código morto e o go2rtc embutido do HA falha em `frame.jpeg` (K-15 em `planning/BLOCKED.md`).
-As rotas `/api/camera*` do painel são públicas (sem PIN) — ver K-11.
+O painel inteiro, câmeras incluídas, é aberto a quem alcança a porta 3002: o PIN foi removido em 05/10/2026
+por decisão do André (D-011 em `docs/DECISIONS.md`).
 
 ### Sensores que o painel consome
 
