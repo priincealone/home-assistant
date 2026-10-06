@@ -7,6 +7,16 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 06/10/2026
+
+**Fase 2 do painel: estados verdadeiros, régua de confirmação e Desfazer** — E-01 a E-04, M-07 e M-08 da
+auditoria de 05/10. TV com uma fonte (sensor da HA com a TV local primeiro; botão manda estado explícito;
+contrato "TV Sala" na entidade local), selo da câmera vindo do player ("SEM SINAL" em 25 s), "Apagar tomadas",
+"Modo Eco" e desligar o PC só segurando (PC fora do lote), tomada indisponível como "Indisponível", Desfazer
+de 8 s. Verificado com escrita interceptada no navegador (nenhum comando chegou à casa), `check_config` e
+`tsc` = 0, publicado em produção. Spec: `specs/features/painel-estados-verdadeiros.md`. Fica para depois:
+Desfazer após "Dormir".
+
 ## 05/10/2026
 
 **Painel sem PIN: acesso livre (K-11 e B-01 encerrados por decisão)** — o André escolheu não autenticar o

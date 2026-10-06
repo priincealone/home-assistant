@@ -88,6 +88,9 @@ um aparelho novo provavelmente não consegue entrar. Testar num celular que nunc
 
 ### P1 — Funcionamento
 
+> **Atualização de 06/10/2026:** E-01 a E-04 corrigidos e publicados, junto com M-07 (Desfazer) e M-08
+> (régua de confirmação) — `specs/features/painel-estados-verdadeiros.md` e `ESTADO_DASHBOARD.md` (06/10).
+
 **E-01 · O botão "Desligar TV" envia `turn_on`.**
 O rótulo e o selo "LIGADA" vêm de `sensor.tv_sala_estado` (travado em `on` desde 01/10, 21:47), e a ação vem de
 `media_player.tv_un65du8000gxzd` (que está `off`). `TvRemoteWidget.tsx:44,219` + `page.tsx:687` + `alternar()`

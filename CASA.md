@@ -204,6 +204,8 @@ modal) e `glance` (miniatura). Detalhes e medições em `ESTADO_DASHBOARD.md` (2
 `stream` do painel são código morto e o go2rtc embutido do HA falha em `frame.jpeg` (K-15 em `planning/BLOCKED.md`).
 O painel inteiro, câmeras incluídas, é aberto a quem alcança a porta 3002: o PIN foi removido em 05/10/2026
 por decisão do André (D-011 em `docs/DECISIONS.md`).
+Desde 06/10/2026 o selo do vídeo segue o player: "AO VIVO" só com imagem andando; sem quadro em 25 s vira
+"SEM SINAL" (com "Tentar agora" no modal) e continua tentando sozinho.
 
 ### Sensores que o painel consome
 
@@ -211,6 +213,11 @@ Criados em `config/template_sensors.yaml` — **o `dashboard-app` depende deles*
 
   - `sensor.luzes_<comodo>` e `sensor.luzes_acesas_total` — quantas luzes acesas
   - `sensor.tv_fonte` e `sensor.sala_atividade` — o que está passando na sala
+  - `sensor.tv_sala_estado` — TV ligada/desligada. **Desde 06/10/2026 a TV local decide** sempre que
+    responde; a nuvem SmartThings só quando a local está muda (em 01–05/10 a nuvem congelou em `on` e a
+    regra antiga, "qualquer `on` vence", mostrou a TV ligada por 4 dias). O botão de energia do painel
+    lê este sensor e manda o estado oposto, explícito, à TV local; o cartão "TV Sala" do contrato
+    (`lib/rooms.ts`) passou a ser a TV local
   - `sensor.saude_*` — passos, distância, calorias, FC de repouso, sono e
     horário da última atualização, alimentados por webhook (id em
     `secrets.yaml`, chave `webhook_saude`)

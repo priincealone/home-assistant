@@ -22,7 +22,10 @@ Medido em 24/09/2026 (TV ligada, SmartThings autenticado):
 
 ## Regras
 
-1. Fonte de verdade: SmartThings. A TV local só responde ligada/desligada (`sensor.tv_sala_estado`).
+1. Fonte de verdade do **contexto** (entrada, volume, canal, app): SmartThings. Para **ligada/desligada**, a TV
+   local decide sempre que responde; a nuvem só quando a local está muda (revisão de 06/10/2026: a SmartThings
+   congelou em `on` de 01 a 05/10 e a regra antiga "qualquer `on` vence" mostrou a TV ligada por 4 dias —
+   `specs/features/painel-estados-verdadeiros.md`, E-01).
 2. Dado ausente aparece como ausente ("—" / "sem leitura"), nunca como valor padrão.
 3. `unavailable` e `unknown` são estados próprios (CLAUDE.md §12).
 4. Leitura que falha não dispara comando.

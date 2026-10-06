@@ -146,21 +146,28 @@
 # Daí estes dois: um traduz a fonte, o outro cruza fonte + console para dizer o
 # que está acontecendo, que é o mais perto do "conteúdo em uso" possível hoje.
 - sensor:
-    # Estado consolidado da TV da sala. A nuvem (SmartThings) cai com frequência
-    # (24/09/2026: falha de autenticação, `unavailable` por horas) enquanto a TV
-    # local (SamsungTV) segue respondendo. Regra: qualquer caminho `on` vence; senão
-    # `off` só se um caminho confirmar off/standby; senão `unavailable` — sem
-    # leitura nunca é apresentado como desligada. Os atributos de fonte só existem
-    # quando a nuvem responde.
+    # Estado consolidado da TV da sala. A nuvem (SmartThings) falha de dois jeitos:
+    # cai (24/09/2026: falha de autenticação, `unavailable` por horas) e CONGELA
+    # (05/10/2026: `on` desde 01/10 com a TV desligada — a regra antiga "qualquer
+    # caminho `on` vence" fazia o painel mostrar a TV ligada por 4 dias e oferecer
+    # "Desligar" que mandava ligar). Regra: a TV local (SamsungTV, rede da casa)
+    # decide sempre que tiver leitura; a nuvem só quando a local estiver muda; senão
+    # `unavailable` — sem leitura nunca é apresentado como desligada. É a mesma
+    # regra da automação "Boa noite". Os atributos de fonte só existem quando a
+    # nuvem responde. Especificação: specs/features/painel-estados-verdadeiros.md.
     - name: "TV Sala Estado"
       unique_id: tv_sala_estado
       icon: mdi:television
       state: >
         {% set n = states('media_player.sala_de_estar_tv') %}
         {% set l = states('media_player.tv_un65du8000gxzd') %}
-        {% if n == 'on' or l == 'on' %}
+        {% if l == 'on' %}
           on
-        {% elif n in ['off', 'standby'] or l in ['off', 'standby'] %}
+        {% elif l in ['off', 'standby'] %}
+          off
+        {% elif n == 'on' %}
+          on
+        {% elif n in ['off', 'standby'] %}
           off
         {% else %}
           unavailable
