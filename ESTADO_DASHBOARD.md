@@ -6293,3 +6293,11 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - **Limpeza**: `HealthWidget.tsx` removido (sem uso); `WeatherWidget.tsx` também sem uso, mas não rastreado no git — deixado como está. `AGENTS.md` (TTL 5 s) e `PRODUCT.md` (escopo) atualizados.
 - **Verificado**: `tsc` = 0; servidor de teste na 3010 com escrita interceptada: ícones a 70 px nos 10 cartões, tela sem rolagem em 1024×768, selos, portas com duração, nomes inteiros, popup e página unificados, toque curto em "Apagar tudo"/"Dormir" = 0 comandos e segurar = comando certo, descanso com 12 animações pausadas. Publicado às 09:45 (build ok). Nenhum dispositivo acionado.
 - **Não verificado**: "Sem leitura da lista" (só ocorre com falha na primeira leitura; conferido no código).
+
+## 06/10/2026 — Fase 3, lote B: cômodos primeiro, menos ruído e piso de 12 px (painel)
+- **Ordem (M-01/M-12)**: cabeçalho → cenas → cômodos → resumo (antes o resumo vinha antes dos cômodos). Mesma altura total, então a parede continua sem rolagem; os cômodos sobem de y=436 para 278 em 1024×768, de ~710 para 543 em 768×1024 e de 666 para 421 no celular.
+- **Instruções fixas (M-02)**: saem "Toque para ativar atmosfera", "Toque num cartão para abrir os detalhes" e "Contador: luzes acesas / total · Toque no cômodo…". As dicas dos modais saíram no lote A.
+- **Seta de detalhe (M-03)**: sem borda e sem fundo, no tom do texto secundário; o alvo de 48 px continua.
+- **Piso de texto (M-10)**: `--texto-minimo` 11 → 12 px; `--font-micro` (era 11 px fixo) e as 54 declarações de `font-size: 11px`/`0.6875rem` escritas à mão passam a usar o token. Medido em 1280×800, 1024×768, 768×1024 e 375×812: 0 texto cortado, 0 rolagem lateral, 0 texto visível abaixo de 12 px.
+- **Ficaram de fora de propósito**: M-04 (trocar os selos por uma linha) e M-06 (borda colorida só para problema) contrariam decisões suas registradas aqui — blocos de selos por gravidade (27/09) e "a borda âmbar e o ícone dizem luz acesa" (refino de 25/09). M-05 (caixa do ícone do cômodo) é identidade; mexer é redesenho. M-11 (dividir o `globals.css`) é trabalho à parte.
+- Verificado com escrita interceptada no servidor de teste; publicado às 09:51 (build ok). Nenhum dispositivo acionado.
