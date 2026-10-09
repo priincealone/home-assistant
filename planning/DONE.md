@@ -13,8 +13,9 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 `bgutil-provider` e suas imagens; dados do MA movidos (não apagados) para `backups/music-assistant-20261009/`;
 no painel saíram a aba "Música & Som", `app/api/mass`, o sink de áudio e o CSS `mass-*` (commit `e34178f`,
 que levou junto o trabalho em andamento que estava sem commit, a pedido). `tsc --noEmit` sem erros fora de
-`.next/`. Pendente do André: apagar `MASS_TOKEN` do `dashboard-app/.env.local`; o painel só aparece sem o MA
-depois de ser republicado (derrubar a porta 3002).
+`.next/`. **Publicado** (porta 3002 derrubada duas vezes; produção, `next start`, `BUILD_ID` presente; `/api/mass`
+responde 404, bundles sem restos, Central de Mídia com as abas "Vídeo & TV" e "Console PS5"). Pendente do
+André: apagar `MASS_TOKEN` do `dashboard-app/.env.local`.
 
 ## 08/10/2026
 
