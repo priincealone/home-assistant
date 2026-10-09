@@ -18,18 +18,12 @@ ventilação. → `docs/AUTOMATION-POLICY.md` R8
 **Esforço**: baixo · **Executor**: ambos
 
 ### B-05 · Sair do servidor de desenvolvimento
-O painel de produção roda `npm run dev` sob watchdog. ⚠️ Containerizar quebra a leitura de
-`C:\HomeAssistant\config\.storage\core.config_entries` feita por `app/api/mass/route.ts`.
+O painel de produção roda `npm run dev` sob watchdog.
 **Esforço**: médio · **Executor**: ambos
 
 ---
 
 ## Médio valor
-
-### B-06 · Investigar a ausência da integração `music_assistant`
-A entrada sumiu de `core.config_entries`; o container segue no ar e o painel funciona pelo token do
-`.env.local`. ❓ Não se sabe quando nem por quê.
-**Esforço**: baixo · **Executor**: Claude Code
 
 ### B-07 · Instalar e configurar ESLint
 Não existe dependência nem configuração; `npm run lint` não funciona.

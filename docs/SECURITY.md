@@ -16,8 +16,6 @@ dispositivo na tailnet.
 | :--- | :--- | :--- | :--- |
 | Home Assistant | 8123 | ✅ Usuário e senha | Sessão por token |
 | **Painel Next.js** | 3002 | ❌ **Nenhuma** | Ver A-01 |
-| Music Assistant | 8095 | ✅ Token | Também 8097 para streams |
-| bgutil-provider | 4416 | — | Publicado só em `127.0.0.1` |
 | Glances | 61208 | ❓ | ❓ **DESCONHECIDO** se exige credencial |
 
 ## Achados abertos

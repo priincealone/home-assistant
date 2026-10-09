@@ -14,8 +14,6 @@ o raciocínio de cada decisão.
 | Peça | Onde |
 | --- | --- |
 | Home Assistant 2026.9 | container `homeassistant`, Docker Desktop (WSL2), porta 8123, config em `config/` |
-| Music Assistant 2.10.2 | container `music-assistant`, porta 8095, dados em `music-assistant/data` |
-| Servidor de PO token (YouTube) | container `bgutil-provider`, alcançado como `http://bgutil-provider:4416` |
 | Painel | `dashboard-app/`, porta 3002, git próprio |
 | Acesso remoto | Tailscale |
 | IP do PC na LAN | `192.168.31.22` (DHCP — **precisa de reserva**) |
@@ -23,8 +21,8 @@ o raciocínio de cada decisão.
 ⚠️ **Rede.** Os containers rodam em *bridge* sobre o WSL2 em modo NAT. Unicast
 chega à LAN (é por isso que Tuya, TV e aspirador funcionam), mas **multicast não**:
 mDNS, descoberta automática, AirPlay e Chromecast não enxergam os aparelhos.
-`homeassistant`, `music-assistant` e `bgutil-provider` estão na rede `casa-net` e
-se enxergam pelo nome. Dentro de um container, `127.0.0.1` é o próprio container,
+O Music Assistant e o `bgutil-provider` foram **removidos em 09/10/2026** (ver `ESTADO_DASHBOARD.md`).
+Dentro de um container, `127.0.0.1` é o próprio container,
 nunca o Windows.
 
 ⚠️ **Glances.** O patch de timeout se perde sempre que o container é recriado do
@@ -38,14 +36,13 @@ docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/
 
 `tuya` (nuvem) e `localtuya` · `switch_as_x` (11×, transforma interruptor em luz) ·
 `sonoff` · `xiaomi_home` (duas regiões: China e Estados Unidos) · `smartthings` e
-`samsungtv` · `ps5` · `music_assistant` · `browser_mod` · `findmy` · `glances` ·
+`samsungtv` · `ps5` · `browser_mod` · `findmy` · `glances` ·
 `mobile_app` (iPhone e iPad do André) · `met` · `sun` · `ping` · `wake_on_lan` ·
 `radio_browser` · `google_translate` (TTS em inglês e em português) · `hacs` ·
 `backup` · `generic` (câmeras do DVR Intelbras, ver seção **Câmeras**).
 
-Instaladas mas **sem configuração concluída**: `alexa_media` (barrada pela chave de
-acesso da conta Amazon) e o provedor YouTube Music no Music Assistant (faltam
-usuário e cookie).
+Instalada mas **sem configuração concluída**: `alexa_media` (barrada pela chave de
+acesso da conta Amazon).
 
 ## Dispositivos por cômodo
 
@@ -222,9 +219,6 @@ Criados em `config/template_sensors.yaml` — **o `dashboard-app` depende deles*
     horário da última atualização, alimentados por webhook (id em
     `secrets.yaml`, chave `webhook_saude`)
 
-O `dashboard-app` também lê o token do Music Assistant direto de
-`config/.storage/core.config_entries` (`app/api/mass/route.ts`).
-
 ## Automações ativas
 
 Todas em `config/automations.yaml`, cada uma com a justificativa na `description`.
@@ -302,15 +296,13 @@ de claridade (mede a sala, não o cômodo do movimento).
   automação 4. Desligar no app a que sobrar. As cenas do banheiro estão
   desativadas no HA, mas **continuam rodando na nuvem** — desativar a entidade
   daqui não para a rotina de lá.
-- **Reserva de DHCP** no roteador para o PS5 e para o PC (`192.168.31.22`), que
-  virou endereço de serviço do Music Assistant.
+- **Reserva de DHCP** no roteador para o PS5 e para o PC (`192.168.31.22`), que é
+  o destino do webhook de saúde.
 - **Alexa Media Player** — a conta Amazon usa passkey, que não atravessa o proxy
   da integração. Caminho: trocar para senha + verificação em duas etapas por app
   autenticador.
-- **YouTube Music** — falta o usuário e o cookie; `scripts/music_assistant/ytmusic_setup.js`
-  faz o resto sem passar pela interface do Music Assistant, que trava.
-- **Som ambiente** — caixas embutidas (música, sincronizadas pelo Music Assistant)
-  e Echos (voz e avisos). O ponto de som atual é o navegador via `browser_mod`,
+- **Som ambiente** — sem camada de música desde a remoção do Music Assistant (09/10/2026). Ficam
+  as caixas embutidas e os Echos (voz e avisos). O ponto de som é o navegador via `browser_mod`,
   que só toca com a página aberta e depois de um toque na tela. Multiroom depende
   de resolver a rede multicast.
 - **Atalho do Apple Saúde** no iPhone — os sensores funcionam, os valores ainda
@@ -337,8 +329,6 @@ de claridade (mede a sala, não o cômodo do movimento).
 | `scripts/diagnostico/quem_acendeu.py` | Quem acendeu cada luz: pessoa, automação do HA, ou fora do HA |
 | `scripts/diagnostico/rajadas.py` | Distingue acendimento por retorno de energia de acendimento por comando |
 | `scripts/tuya_map.py` | Decifra os anúncios UDP da Tuya e mapeia aparelho → IP |
-| `scripts/music_assistant/api_console.js` | Cliente da API do Music Assistant, para quando a interface trava |
-| `scripts/music_assistant/ytmusic_setup.js` | Adiciona o YouTube Music |
 
 Os scripts de diagnóstico rodam pelo Python do container, sem depender do Python do
 Windows:

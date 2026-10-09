@@ -7,6 +7,15 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 09/10/2026
+
+**Music Assistant removido da casa e do painel** (D-012, pedido do André) — containers `music-assistant` e
+`bgutil-provider` e suas imagens; dados do MA movidos (não apagados) para `backups/music-assistant-20261009/`;
+no painel saíram a aba "Música & Som", `app/api/mass`, o sink de áudio e o CSS `mass-*` (commit `e34178f`,
+que levou junto o trabalho em andamento que estava sem commit, a pedido). `tsc --noEmit` sem erros fora de
+`.next/`. Pendente do André: apagar `MASS_TOKEN` do `dashboard-app/.env.local`; o painel só aparece sem o MA
+depois de ser republicado (derrubar a porta 3002).
+
 ## 08/10/2026
 
 **Projeto no GitHub, privado e sem segredos no histórico** — `priincealone/home-assistant` (casa) e `priincealone/casa-dashboard` (painel, 3 branches). Tokens Xiaomi, chave privada, tokens locais dos aparelhos e uma senha RTSP removidos de todos os commits da casa antes do primeiro push; hashes mudaram. Backup do histórico antigo em `backups/git-antes-limpeza-2026-10-08.bundle` (contém segredos).

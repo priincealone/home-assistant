@@ -25,15 +25,14 @@ primeira especificação entra quando houver funcionalidade nova a descrever.
 
 **Dono**: André (compra) + Claude Code (integração) · **Iniciado**: 11/09/2026
 
-Music Assistant de pé, com Apple Music funcionando, integrado ao HA. O ponto de som atual é o navegador
-via `browser_mod` — funciona, mas só com a página aberta e depois de um toque na tela, por causa da
-política de autoplay.
+O Music Assistant foi **removido em 09/10/2026** (D-012); não há camada de música. O ponto de som atual é o
+navegador via `browser_mod` — funciona, mas só com a página aberta e depois de um toque na tela, por causa
+da política de autoplay.
 
-**Onde parou**: decidido o desenho — caixas embutidas para música sincronizada, Echos para voz e
-avisos, sem sincronia entre os dois mundos.
-**Próximo passo**: compra do equipamento. Multiroom sincronizado depende do multicast, que este
-hospedeiro não entrega (ver Fase 4 do roadmap).
-❓ **DESCONHECIDO**: a entrada `music_assistant` sumiu de `core.config_entries` — ver B-06.
+**Onde parou**: o desenho original (caixas embutidas para música, Echos para voz e avisos) depende de uma
+nova camada de música, ainda não escolhida.
+**Próximo passo**: decidir se a camada de música volta, e com quê, antes de comprar o equipamento.
+Multiroom sincronizado depende do multicast, que este hospedeiro não entrega (ver Fase 4 do roadmap).
 
 ---
 

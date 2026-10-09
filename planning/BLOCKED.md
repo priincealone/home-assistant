@@ -24,11 +24,6 @@ app autenticador; a integração tem campo próprio para a chave de 52 caractere
 endereço — o navegador recusa por origem diferente. Não é defeito de configuração. Tentado também
 neutralizar o WebAuthn na aba: não contorna.
 
-### K-03 · YouTube Music no Music Assistant
-**Destrava**: usuário e cookie de sessão do Google.
-**Pronto para receber**: `scripts/music_assistant/ytmusic_setup.js` faz o resto sem passar pela
-interface do MA, que congela nesse diálogo. O servidor de PO token já está de pé e no endereço certo.
-
 ### K-04 · Chaves dos AirTags (FindMy)
 **Destrava**: rodar `python3 -m findmy decrypt` **num Mac** e trazer o arquivo de chaves — **e**
 recriar o servidor anisette, removido em 20/09/2026 a pedido do André (container, imagem e pasta
@@ -51,8 +46,8 @@ HA, mas sem o anisette não tem como autenticar. Sem ele, este item não destrav
 HLS das duas câmeras voltou a gerar. Falta a reserva/exclusão da faixa DHCP no roteador, senão outro
 aparelho pode receber o `.216` e gerar conflito. O MAC do DVR deve ser lido no menu do DVR ou na lista
 do roteador — o `arp` do PC mostrou o mesmo MAC em `.155` e `.216` (proxy ARP do mesh), não serve.
-**Impacto de não fazer**: o IP do PC está escrito fixo em `app/api/mass/route.ts` e é o destino do
-webhook de saúde. Se mudar, o painel perde o Music Assistant e a telemetria para de chegar. O IP do
+**Impacto de não fazer**: o IP do PC é o destino do webhook de saúde. Se mudar, a telemetria para de
+chegar. O IP do
 DVR está fixo na URL RTSP das duas integrações `generic` — se mudar de novo, as câmeras voltam a
 ficar indisponíveis até alguém perceber e corrigir manualmente.
 
@@ -115,8 +110,7 @@ canal), criar as entidades e só então decidir se entram em `lib/rooms.ts` e no
 ### K-12 · Como sair do servidor de desenvolvimento
 **Destrava**: escolher entre container na `casa-net`, serviço do Windows, ou o `ha-addon/` que já
 existe no repositório e nunca foi usado.
-⚠️ Containerizar **quebra** a leitura de `C:\HomeAssistant\config\.storage\core.config_entries` feita
-por `app/api/mass/route.ts`, e exige rever `HA_URL`.
+Containerizar exige rever `HA_URL`.
 
 **K-14 (reprodução das câmeras da rua na TV) encerrado, não só destravado** — André decidiu em
 19/09/2026 descartar a abordagem em vez de resolver o transcode, e pediu para remover toda a

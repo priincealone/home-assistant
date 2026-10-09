@@ -47,8 +47,6 @@ config/.storage/xiaomi_home/cert/
 config/.storage/xiaomi_home/miot_config/
 config/.storage/xiaomi_home/miot_devices/
 
-# Dados do container Music Assistant (biblioteca, cache, credenciais)
-music-assistant/
 
 # Dados do servidor anisette (provisionamento da "máquina" Apple)
 anisette/

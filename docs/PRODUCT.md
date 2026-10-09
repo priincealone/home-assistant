@@ -40,7 +40,7 @@ Nenhuma das cinco automações ativas passa pelo painel.
 - Energia: potência ao vivo e histórico de 24 h de duas tomadas medidoras
 - Clima, relógio, lista de compras e telemetria do PC
 - Saúde: seis indicadores vindos do Apple Saúde por webhook
-- Áudio: Music Assistant com Apple Music (ver limitações em `docs/ARCHITECTURE.md`)
+- Áudio: sem camada de música desde 09/10/2026 (Music Assistant removido)
 
 ## O que está fora de escopo
 

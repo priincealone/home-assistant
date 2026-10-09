@@ -85,7 +85,7 @@ propriedade a assumir.
 
 ---
 
-## D-007 · Som ambiente: Music Assistant como cérebro — 11/09/2026
+## D-007 · Som ambiente: Music Assistant como cérebro — 11/09/2026 (substituída por D-012)
 
 **Contexto.** A casa não tinha nenhum dispositivo de áudio; os media players existentes não ofereciam
 nem biblioteca nem agrupamento.
@@ -151,6 +151,25 @@ comanda a casa e vê as câmeras, sem se identificar. Se a rede deixar de ser co
 
 ---
 
+## D-012 · Music Assistant removido da casa e do painel — 09/10/2026
+
+**Contexto.** O Music Assistant (D-007) nunca chegou a entregar música confiável: a integração sumiu do HA
+sem explicação, o player só existia com o navegador do MA aberto, o YouTube Music ficou sem cookie e o
+multiroom depende de multicast, que este hospedeiro não entrega. O André também quer liberar recursos do PC
+para o Jarvis (IA local).
+
+**Decisão.** Pedido do André, com o painel incluído: container `music-assistant` e `bgutil-provider`
+removidos (com as imagens); dados do MA **movidos** para `backups/music-assistant-20261009/`, não apagados (têm
+credenciais do YouTube Music); aba "Música & Som", `app/api/mass`, o sink de áudio e o CSS `mass-*` saíram do
+painel (commit `e34178f`); `scripts/music_assistant/` e a linha do `.gitignore` saíram do repositório da casa.
+
+**Consequência.** Não há mais camada de música. Ganho de RAM pequeno (~100 MB). Os 6 registros órfãos em
+`deleted_entities` e `deleted_devices` não foram editados: o HA os descarta sozinho (~11/10), e parar o HA só
+para isso seria downtime por algo cosmético. Pendência do André: apagar `MASS_TOKEN` de `dashboard-app/.env.local`
+e decidir quando apagar o backup.
+
+---
+
 ## Decisões pendentes
 
 | Assunto | Quem decide |
@@ -158,4 +177,3 @@ comanda a casa e vê as câmeras, sem se identificar. Se a rede deixar de ser co
 | Sair de `npm run dev` para produção, e como (container ou serviço) | André |
 | Qual hardware dedicado, e quando migrar | André |
 | Manter cenas no painel ou levá-las para o HA | André |
-| O que fazer com a integração `music_assistant` ausente do HA | André |

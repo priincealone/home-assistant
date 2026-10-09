@@ -100,8 +100,6 @@ config/.storage/core.*      lib/ha.ts (HA_TOKEN)      app/components/*
 | Serviço | Porta | Papel |
 | :--- | :--- | :--- |
 | `homeassistant` | 8123 | Núcleo da automação |
-| `music-assistant` | 8095 | Áudio |
-| `bgutil-provider` | 4416 | Token do YouTube (só para o MA) |
 | `anisette` | 6969 | Autenticação Apple (FindMy) |
 | Painel Next.js | 3002 | Interface, sob watchdog PowerShell |
 | Glances | 61208 | Telemetria do PC |
@@ -109,9 +107,9 @@ config/.storage/core.*      lib/ha.ts (HA_TOKEN)      app/components/*
 **Rede**: Docker Desktop sobre WSL2 em NAT. Unicast passa; **multicast não** — sem mDNS, descoberta,
 AirPlay ou Chromecast. Dentro de um container, `127.0.0.1` é o próprio container.
 
-**Fluxos medidos**: leitura por polling HTTP de 5 s (uma chamada a `/api/states`, filtrada em memória);
-comandos por `POST /api/services/...`; WebSocket **apenas** servidor → Music Assistant. Não há
-WebSocket no navegador.
+**Fluxos**: leitura por espelho WebSocket servidor → HA (`lib/haStream.ts`), entregue ao navegador por SSE
+(`/api/stream`), com o polling HTTP de 5 s como reserva; comandos por `POST /api/services/...`. Não há
+WebSocket no navegador. Música/áudio: o Music Assistant foi **removido em 09/10/2026**.
 
 Detalhe completo em `docs/ARCHITECTURE.md`.
 
@@ -165,7 +163,7 @@ Regras completas em `docs/AUTOMATION-POLICY.md`. As obrigatórias:
 | `config/.storage/auth*` | Ninguém edita |
 | `config/.storage/core.config_entries` | Contém tokens; não versionado, não editar |
 | `config/home-assistant_v2.db*` | Só leitura, e em `mode=ro` |
-| `music-assistant/data`, `anisette/data` | Dados de container |
+| `anisette/data` | Dados de container |
 | `dashboard-app/` | Só com pedido inequívoco do André |
 | `.git/` | Só comandos git normais |
 
@@ -184,7 +182,8 @@ restart`.** Backup em `backups/` antes, validação **antes** de parar o contain
 4. CAPTCHA e chave de acesso são do dono.
 5. Fora do versionamento: `secrets.yaml`, `.env.local`, `.storage/auth*`, `core.config_entries`,
    `.storage/sonoff/`, os tokens e a chave da Xiaomi (`.storage/xiaomi_miot/auth-*`, `.storage/xiaomi_home/cert/`,
-   `miot_config/`, `miot_devices/`), dados do Music Assistant e do anisette.
+   `miot_config/`, `miot_devices/`), dados do anisette e `backups/` (guarda os dados removidos do Music Assistant,
+com credenciais do YouTube Music).
 6. Remotes: GitHub **privado** — `priincealone/home-assistant` e `priincealone/casa-dashboard`. Antes de
    qualquer push, conferir que nenhum segredo entrou no que vai subir.
 
@@ -228,19 +227,16 @@ recusar ou apenas reverter a trava otimista. Não confirmado no código.
 
 ## 13. Reconexão WebSocket
 
-Confirmado: **há um único WebSocket**, servidor → Music Assistant, em `app/api/mass/route.ts`.
+Conforme `specs/features/painel-tempo-real.md` (implementado em 08/10/2026): **um único WebSocket**, Node →
+HA, em `lib/haStream.ts`, assinando `state_changed`. O WebSocket para o Music Assistant (`app/api/mass`) foi
+removido junto com o MA em 09/10/2026.
 
-- Aberto **sob demanda**, uma conexão por requisição, fechado ao fim
-- **Timeout de 12 s**; ao estourar, fecha o socket e rejeita com erro
-- `onerror` rejeita a promessa
-- **Não há laço de reconexão**, nem backoff, nem conexão persistente — cada requisição nova abre a sua
+- Conexão persistente que **só lê**: nunca envia comando, nem ao reconectar
+- Reconexão com backoff exponencial de 1 s a 30 s; `ping` a cada 20 s e queda se não houver `pong` em 10 s
+- Ao reconectar, `get_states` ressincroniza tudo; enquanto não sincroniza, `/api/state` cai para o REST
 
-Regras: não introduza WebSocket no cliente sem discutir — o padrão atual é polling, e misturar os dois
-cria duas fontes de verdade. Se um dia houver conexão persistente, ela precisa de backoff exponencial
-com teto e de não disparar comando ao reconectar.
-
-**TODO** — decidir se o Music Assistant merece conexão persistente (hoje o custo é abrir e fechar a
-cada ação).
+Regras: não introduza WebSocket no navegador sem discutir — o navegador recebe SSE. Qualquer conexão nova
+precisa de backoff exponencial com teto e de não disparar comando ao reconectar.
 
 ---
 
@@ -312,7 +308,8 @@ Correção de defeito e diagnóstico não exigem especificação.
   `CommandLine`) e esperar ~20–60 s. Nunca rodar `npm run build`/`npm run start` pelo shell do agente: o
   servidor morre com a sessão, e um build manual apaga o `BUILD_ID` e faz o watchdog cair para `dev` na 3002
   (foi assim que o painel ficou fora em 27–29/09)
-- **IP do PC é DHCP** (`192.168.31.22`) e está escrito fixo em `app/api/mass/route.ts`
+- **IP do PC é DHCP** (`192.168.31.22`); já não está fixo no painel (saiu com o `app/api/mass/route.ts`), mas
+  segue sendo o destino do webhook de saúde (`planning/BLOCKED.md`)
 - **O painel não tem autenticação, por decisão** (05/10/2026, D-011) — quem alcança a porta 3002 (LAN e tailnet)
   comanda a casa. Não recriar o PIN sem pedido do André
 - **Google Drive** injeta `desktop.ini` em toda pasta nova (ignorados desde 15/09)
