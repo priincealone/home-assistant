@@ -399,7 +399,7 @@
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.rede_queda_notificada
-      - action: notify.iphone_de_andre
+      - action: notify.mobile_app_iphone_de_andre
         data:
           title: Internet fora do ar
           message: 'Sem internet há mais de 3 minutos. A rede local responde: provável
@@ -418,7 +418,7 @@
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.rede_queda_notificada
-      - action: notify.iphone_de_andre
+      - action: notify.mobile_app_iphone_de_andre
         data:
           title: Internet voltou
           message: A internet voltou depois de {{ ((now() - trigger.from_state.last_changed).total_seconds()
@@ -460,7 +460,7 @@
     entity_id: binary_sensor.rede_gateway
     state: 'on'
   actions:
-  - action: notify.iphone_de_andre
+  - action: notify.mobile_app_iphone_de_andre
     data:
       title: DVR das câmeras fora do ar
       message: O DVR (192.168.31.216) não responde há 10 minutos, com a rede local

@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "minor_version": 1,
+  "key": "browser_mod.storage",
+  "data": {
+    "browsers": {
+      "browser_mod_d95dfb08_d488353f": {
+        "last_seen": "2026-09-25T00:10:18.629998+00:00",
+        "registered": true,
+        "locked": false,
+        "camera": false,
+        "go2rtc": false,
+        "settings": {
+          "hideSidebar": null,
+          "hideHeader": null,
+          "defaultPanel": null,
+          "defaultAction": null,
+          "sidebarPanelOrder": null,
+          "sidebarHiddenPanels": null,
+          "sidebarTitle": null,
+          "faviconTemplate": null,
+          "titleTemplate": null,
+          "hideInteractIcon": null,
+          "autoRegister": null,
+          "lockRegister": null,
+          "saveScreenState": null,
+          "overlayIcon": null,
+          "fullInteraction": null,
+          "kioskMode": null,
+          "cameraResolution": null,
+          "go2rtcBaseUrl": null,
+          "forceFullInteraction": null
+        },
+        "meta": "default"
+      }
+    },
+    "version": "3.2.2",
+    "settings": {
+      "hideSidebar": null,
+      "hideHeader": null,
+      "defaultPanel": null,
+      "defaultAction": null,
+      "sidebarPanelOrder": null,
+      "sidebarHiddenPanels": null,
+      "sidebarTitle": null,
+      "faviconTemplate": null,
+      "titleTemplate": null,
+      "hideInteractIcon": null,
+      "autoRegister": null,
+      "lockRegister": null,
+      "saveScreenState": null,
+      "overlayIcon": null,
+      "fullInteraction": null,
+      "kioskMode": null,
+      "cameraResolution": null,
+      "go2rtcBaseUrl": null,
+      "forceFullInteraction": null
+    },
+    "user_settings": {},
+    "session_browser_map": {}
+  }
+}

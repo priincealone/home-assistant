@@ -1,5 +1,7 @@
 # Banco de dados e logs do HA (grandes e voláteis)
+# (o segundo padrão pega as cópias de conflito do Google Drive, "home-assistant_v2 (1).db-wal")
 config/home-assistant_v2.db*
+config/home-assistant_v2*.db*
 config/*.log
 config/*.log.*
 config/*.fault
@@ -38,6 +40,12 @@ config/.storage/core.config_entries
 config/.storage/sonoff/
 config/.storage/onboarding
 config/.storage/person
+# Xiaomi: token da nuvem, OAuth access_token, chave privada e tokens locais dos aparelhos.
+# Removidos de todo o histórico em 08/10/2026, antes da primeira publicação no GitHub.
+config/.storage/xiaomi_miot/auth-*.json
+config/.storage/xiaomi_home/cert/
+config/.storage/xiaomi_home/miot_config/
+config/.storage/xiaomi_home/miot_devices/
 
 # Dados do container Music Assistant (biblioteca, cache, credenciais)
 music-assistant/
