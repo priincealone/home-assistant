@@ -9,6 +9,8 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ## 08/10/2026
 
+**Projeto no GitHub, privado e sem segredos no histórico** — `priincealone/home-assistant` (casa) e `priincealone/casa-dashboard` (painel, 3 branches). Tokens Xiaomi, chave privada, tokens locais dos aparelhos e uma senha RTSP removidos de todos os commits da casa antes do primeiro push; hashes mudaram. Backup do histórico antigo em `backups/git-antes-limpeza-2026-10-08.bundle` (contém segredos).
+
 **Painel em tempo real** — espelho dos estados da HA por WebSocket no servidor, `/api/stream` (SSE) e polling de 5 s só como reserva. Atraso HA → tela de ~2,5 s (média) para ~30–50 ms; `/api/state` em ~8 ms. Limite: integrações em nuvem têm o atraso próprio. Spec: `specs/features/painel-tempo-real.md`. Publicado, `tsc` = 0.
 
 ## 06/10/2026

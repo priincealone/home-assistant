@@ -183,7 +183,10 @@ restart`.** Backup em `backups/` antes, validação **antes** de parar o contain
 3. Nenhum segredo em log, commit, documento ou mensagem.
 4. CAPTCHA e chave de acesso são do dono.
 5. Fora do versionamento: `secrets.yaml`, `.env.local`, `.storage/auth*`, `core.config_entries`,
-   `.storage/sonoff/`, dados do Music Assistant e do anisette.
+   `.storage/sonoff/`, os tokens e a chave da Xiaomi (`.storage/xiaomi_miot/auth-*`, `.storage/xiaomi_home/cert/`,
+   `miot_config/`, `miot_devices/`), dados do Music Assistant e do anisette.
+6. Remotes: GitHub **privado** — `priincealone/home-assistant` e `priincealone/casa-dashboard`. Antes de
+   qualquer push, conferir que nenhum segredo entrou no que vai subir.
 
 ⚠️ `C:\HomeAssistant` é sincronizada pelo Google Drive. Os segredos estão fora do git e **dentro do
 Drive**. Ver `docs/SECURITY.md`.

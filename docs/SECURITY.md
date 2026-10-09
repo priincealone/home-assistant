@@ -49,6 +49,8 @@ firewall do Windows) e quantos aparelhos têm acesso hoje.
 Estão fora do **git** — e dentro do **Drive**. Um token de longa duração do HA equivale à casa inteira,
 e não expira sozinho.
 
+Desde 08/10/2026 os dois repositórios estão no GitHub, **privados** (`priincealone/home-assistant` e `priincealone/casa-dashboard`). Antes do primeiro push, os tokens Xiaomi (`xiaomi_miot/auth-*.json`, `xiaomi_home/miot_config/`, `xiaomi_home/miot_devices/`), a chave privada (`xiaomi_home/cert/`) e uma senha RTSP foram removidos de todo o histórico da casa. Continuam valendo: repositório privado (há coordenadas, IPs e MACs) e conferir segredos antes de qualquer push.
+
 ### A-03 · Parâmetros repassados sem lista de permissão — **Médio**
 
 `toggle` e `control` validam a entidade contra `lib/rooms.ts` — proteção correta. Mas:
