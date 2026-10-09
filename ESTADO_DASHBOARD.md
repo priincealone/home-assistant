@@ -6319,3 +6319,12 @@ O ícone `calendar` segue no registro de ícones, sem uso.
 - **Verificado** no navegador do app (logado pelo André), 1280×893 com a lateral aberta: módulo novo carregado, painel em (256,0) 1024×894, iframe igual, HA sem rolagem; relógio e cartão da Sala inteiros.
 - **Não reproduzido aqui**: a faixa branca em si (o navegador do app é Chromium e tema escuro; com a lateral aberta ou oculta, o painel já começava em y=0). A correção remove a causa provável (painel fora do fluxo); confirmar no aparelho em que ela aparece.
 - Achado à parte: o dashboard Lovelace `casa-dashboard` (`dashboards/casa.yaml`, fora da barra lateral) mostra só um cartão de erro no lugar do `casa-dashboard-card`; não mexi.
+
+## 08/10/2026 — Painel em tempo real: espelho por WebSocket + SSE (atraso de ~2,5 s → ~30–50 ms)
+- Pedido do André: zerar o atraso entre a HA e o painel. Medido antes: o gargalo era o polling de 5 s (0–5 s, média 2,5 s); o servidor respondia em ~20 ms. Spec: `specs/features/painel-tempo-real.md`.
+- **Servidor**: `lib/haStream.ts` mantém um WebSocket Node → HA (`state_changed`) e um espelho em memória; `GET /api/stream` (SSE) empurra `snapshot`/`diff`/`ping`; `GET /api/state` lê do espelho (≈8 ms, sem ida à HA) e cai para o REST se o espelho não está sincronizado. Lista de entidades movida para `lib/entidadesPainel.ts`; `lib/ha.ts` ganhou `configHA()`.
+- **Cliente**: `lib/useStreamEstados.ts` em `/`, `/comodo/[id]` e `/standby`; polling de 5 s virou reserva (age só com o stream mudo ≥35 s). Travas otimistas preservadas (`aplicarEstados`).
+- **Verificado**: `tsc` = 0; em dev (3010) e produção (3002), `X-Fonte: espelho`; mudanças reais da HA chegaram 26–51 ms após o `last_updated`; `ping` a cada 15 s; resposta SSE sem compressão/bufferização em `next start`; a página aberta parou de chamar `/api/state`. Publicado ~02:30 (≈55 s fora, painel). Nenhum dispositivo acionado.
+- **Armadilhas**: (1) o espelho vive em `globalThis` — o Next pode duplicar módulos por rota; (2) `Cache-Control: no-transform` no SSE evita que a compressão do `next start` segure os eventos; (3) o heartbeat é um evento `ping` (comentário SSE não dispara JS e o cliente acharia o canal morto); (4) reconectar nunca envia comando.
+- **Limite**: "zero" até a HA. Aparelhos em nuvem (Tuya, Xiaomi, Sonoff) e sensores de intervalo têm o atraso da própria integração. Rotas `energy`, `mass`, `todo`, `weather` seguem com polling.
+- **Achado à parte**: `camera.rua_canal_2/4` ficam `unavailable` (ver card "DVR fora" no painel); não mexi.

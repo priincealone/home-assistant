@@ -7,6 +7,10 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 08/10/2026
+
+**Painel em tempo real** — espelho dos estados da HA por WebSocket no servidor, `/api/stream` (SSE) e polling de 5 s só como reserva. Atraso HA → tela de ~2,5 s (média) para ~30–50 ms; `/api/state` em ~8 ms. Limite: integrações em nuvem têm o atraso próprio. Spec: `specs/features/painel-tempo-real.md`. Publicado, `tsc` = 0.
+
 ## 06/10/2026
 
 **Fase 3 do painel, lote B: cômodos primeiro, menos ruído e piso de 12 px** — cômodos antes do resumo (y=436 →
