@@ -24,10 +24,6 @@ O painel de produção roda `npm run dev` sob watchdog.
 Não existe dependência nem configuração; `npm run lint` não funciona.
 **Esforço**: baixo · **Executor**: Antigravity
 
-### B-08 · Reaplicar o patch do Glances automaticamente
-Some toda vez que o container é recriado do zero.
-**Esforço**: baixo · **Executor**: Claude Code
-
 ### B-09 · Levar as quatro cenas do painel para o Home Assistant
 Hoje existem só em TypeScript: invisíveis ao HA, inacessíveis por voz ou automação, e somem se o
 painel cair. `config/scenes.yaml` está vazio.

@@ -6387,3 +6387,13 @@ Pedido do André: melhorar o painel visualmente. Piloto com a biblioteca `motion
 - **Publicação**: derrubada a porta 3002 pelo PID dono (15704, `next start`), watchdog recompilou e subiu em ~85 s; `BUILD_ID` novo (18:20), `/api/state` 200, 10 cartões, 157 W, sem indicador do Next, sem erro de laço.
 - **Não verificado**: as animações em si (dependem de mudança de estado; a casa não foi acionada) e o desempenho no tablet de parede. Tablets com a página aberta antes ainda rodam o JS antigo até recarregar.
 - **Armadilhas**: o contador de erros do `read_console_messages` acumula entre recargas e não serve de prova; usar o selo de problemas do Next e um listener de `console.error`.
+
+
+## 13/10/2026 — B-08: patch do Glances com verificação agendada
+
+Descoberto ao começar o B-08: o patch de timeout do `glances_api` estava **ausente** (container recriado em 20/09). A API v3 do Glances no PC levou ~18 s na primeira chamada a frio, contra o timeout padrão de 5 s do httpx; nos 3 dias anteriores o log não mostrava erro do Glances, então o impacto era pequeno.
+
+- **Script**: `scripts/manutencao/glances_patch.ps1` (sem argumentos só verifica: 0 presente, 1 ausente, 2 erro; `-Aplicar` idempotente; `-Reiniciar` faz `docker restart homeassistant`). Aplicado em 13/10 com reinício (HA de volta em ~40 s).
+- **Tarefa agendada** `CasaGlancesPatch` (usuário atual, sem elevação, sem janela): no logon e de hora em hora, chama `glances_patch_tarefa.ps1` → `-Aplicar -Reiniciar`. Com o patch presente não faz nada; **se ele sumir, reinicia o HA sozinho** (a casa fica sem automação ~1 min). Log: `%LOCALAPPDATA%\CasaHA\glances_patch.log`.
+- **Armadilha**: a primeira versão da tarefa embutia o comando no `-Command` e falhou por aspas (resultado 1, sem log); o script-embrulho em arquivo resolveu. Se mudar a imagem do HA e o Python deixar de ser 3.14, o script sai com 2 e avisa em vez de adivinhar o caminho.
+- **Erros que já existiam**: DVR `192.168.31.216` fora (K-06); "Camera not found" do painel enquanto o HA sobe.

@@ -29,7 +29,7 @@ Nada aqui é funcionalidade nova. É parar de sangrar.
 | 2.2 | Sair de `npm run dev` para execução de produção | Claude Code + Antigravity | Containerizar exige rever `HA_URL`. O diretório `ha-addon/` já existe e nunca foi usado |
 | 2.3 | Testes de contrato: entidades do painel × HA | Ambos | Ver `artifacts/claude/test-gap-analysis.md` L-01 e L-02. Barato e impede a classe de defeito que já aconteceu |
 | 2.4 | Instalar e configurar ESLint | Antigravity | O roadmap original falava em "ajustar o script"; não há ESLint instalado |
-| 2.5 | Reaplicar o patch do Glances automaticamente | Claude Code | — |
+| 2.5 | ~~Reaplicar o patch do Glances automaticamente~~ | Claude Code | ✅ 13/10/2026 — tarefa `CasaGlancesPatch` |
 | 2.6 | Resolver a cena "gamer" × automação da ventilação do PS5 | Ambos | Conflito de dono do atuador |
 | 2.7 | ~~Expurgo de `desktop.ini`~~ | — | ✅ Já implementado no `predev` e no watchdog |
 

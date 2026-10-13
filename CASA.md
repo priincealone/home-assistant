@@ -26,7 +26,10 @@ Dentro de um container, `127.0.0.1` é o próprio container,
 nunca o Windows.
 
 ⚠️ **Glances.** O patch de timeout se perde sempre que o container é recriado do
-zero (só sobrevive a `docker restart`). Se as métricas do PC caírem:
+zero (só sobrevive a `docker restart`). Desde 13/10/2026 a tarefa agendada `CasaGlancesPatch` (no logon e
+de hora em hora) roda `scripts/manutencao/glances_patch_tarefa.ps1`: se o patch sumiu, reaplica e **reinicia o HA**;
+com ele presente não faz nada. Log em `%LOCALAPPDATA%CasaHAglances_patch.log`. Verificação manual:
+`scripts/manutencao/glances_patch.ps1` (sem argumentos só confere). Se as métricas do PC caírem mesmo assim, o comando à mão:
 
 ```bash
 docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/g" /usr/local/lib/python3.14/site-packages/glances_api/__init__.py

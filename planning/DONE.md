@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026 (c)
+
+**B-08 · Patch do Glances reaplicado automaticamente** — `scripts/manutencao/glances_patch.ps1` (verifica; `-Aplicar` aplica; `-Reiniciar` reinicia o HA) e a tarefa agendada `CasaGlancesPatch` (logon + de hora em hora, sem janela, usuário atual) que o chama pelo `glances_patch_tarefa.ps1`. O patch estava ausente desde a recriação do container (20/09); aplicado em 13/10 com reinício do HA. Verificado: linha `client.get(url, timeout=15)`, 42 sensores no registro, sem erro do Glances nos logs; a tarefa rodou uma vez com o patch presente (exit 0, sem reinício). Log em `%LOCALAPPDATA%CasaHAglances_patch.log`.
+
+---
+
 ## 13/10/2026 (b)
 
 **Painel com animações (Motion) publicado** — cartões de cômodo, energia, mídia, cenas, dispositivos, clima, selos, aspirador, câmera e compras; SmartTruncateText sem laço de atualização. Publicado (3002 derrubada, watchdog recompilou). Animações e desempenho no tablet não verificados. Detalhe em ESTADO_DASHBOARD.md.
