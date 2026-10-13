@@ -6487,3 +6487,10 @@ Continuação da correção do "0 W" falso: varredura por `Number(...) || <valor
 - **Detector impeccable agora limpo** (`[]`): `#64748b` (ponto "parado" da câmera) documentada em `DESIGN.md` como `slate-deep`.
 - **Wake Lock** (pergunta da pesquisa): `lib/wakeLock.ts` já pede o bloqueio de novo em `visibilitychange`; nada a corrigir.
 - **Descartado**: brilho deslizando no cartão do cômodo. Só 2 das 16 luzes são regulagem (`light.painel` em `color_temp`, sem `brightness`; `light.led_escritorio_sonoff…` em `rgb`, indisponível); as outras 14 são liga/desliga. O ganho não paga o gesto.
+
+
+## 13/10/2026 (noite) — Leitura honesta do aspirador publicada
+
+`fix/leitura-honesta` (`a3ac421`, `a3f38f4`) juntada na `fix/audit-p1-batch-01` (avanço direto), **enviada ao GitHub e publicada** (3002 derrubada pelo PID dono 16224, `next start`; watchdog recompilou em ~39 s; `BUILD_ID` 20:36). `tsc` e `npm test` (51) passam; `/api/state` 200; sem indicador do Next.
+
+Verificado em produção, a 800 px, com o aspirador **de volta** (o robô reconectou durante a publicação): `Estado: Pronto`, `Bateria: 100%`, `Total Limpo 11,3 mil m²` (dado real, o número de fábrica antigo mostraria 11,0) e `Última: Sem leitura`, `Área: Sem leitura` porque esses dois sensores seguem sem resposta — antes apareceriam 43 min e 39 m² mesmo com o robô online. Cartão de energia `107 W`, selo "Econômico", 10 cômodos hidratados.
