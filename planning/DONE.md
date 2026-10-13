@@ -7,6 +7,16 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026
+
+**B-04 · Cena "gamer" × ventilação do PS5 — encerrado** — a cena já é `script.cena_gamer` (`config/scripts.yaml`,
+desde `cf2380c`, 25/09): apaga `light.luz_sala` e põe `light.painel` a 30%, sem tocar em `switch.ventilacao_ps5`,
+que fica só com a automação. `app/api/scene/route.ts` apenas chama o script; nenhuma referência à tomada em
+`dashboard-app/`. Era só documentação desatualizada (`AUTOMATION-POLICY.md` R8, agente `architecture-reviewer`,
+BACKLOG), corrigida. Verificado por leitura de código; a casa não foi acionada.
+
+---
+
 ## 09/10/2026
 
 **Music Assistant removido da casa e do painel** (D-012, pedido do André) — containers `music-assistant` e

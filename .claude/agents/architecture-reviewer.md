@@ -20,8 +20,8 @@ config/.storage/core.*    lib/ha.ts (HA_TOKEN)     app/components/*
 ## O que verificar, sempre
 
 1. **Automação não pode morar na interface.** Regra física em `app/api/*` ou em componente é achado.
-   Precedente real: a cena "gamer" alterna `switch.ventilacao_ps5`, que pertence à automação da
-   ventilação do PS5.
+   Precedente real (corrigido, B-04): a cena "gamer" alternava `switch.ventilacao_ps5`, que
+   pertence à automação da ventilação do PS5; hoje é `script.cena_gamer` e não toca nela.
 2. **Um atuador, um dono.** Duas camadas mandando no mesmo relé produzem comportamento
    indeterminado.
 3. **O token nunca cruza para o cliente.** `lib/ha.ts` é servidor-only; se for importado por

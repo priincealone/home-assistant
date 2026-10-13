@@ -6354,3 +6354,23 @@ Pedido do André ("remover todo o rastro de Music Assistant do projeto HA", pain
 - **Correção**: o próprio servidor `dev` regenerou o `validator.ts` sem a rota; `npx tsc --noEmit` passou com código 0 (agora incluindo `.next`); derrubei a 3002 de novo e o build de produção passou (~57 s). **Regra para o futuro**: ao **apagar uma rota ou página**, rode `npx tsc --noEmit` depois de o `next dev` regenerar `.next/dev/types`; se `.next/dev/types` estiver velho, o build falha por causa dele e o painel cai para `dev` na primeira tentativa.
 - Segunda publicação (commit `bcaa6dd`): o cartão de mídia ainda dizia "Apple Music & TV" e "Música e Vídeo"; agora "TV & Console PS5" e "Central de Mídia". Verificado no navegador: duas abas, nenhuma requisição a `/api/mass`, rotas em 200. Os `ERR_CONNECTION_REFUSED` do console eram do intervalo do reinício.
 - **Aviso**: tablets com a página aberta antes da publicação ainda rodam o JS antigo e batem em `/api/mass` (404, inofensivo) até recarregar a página.
+
+
+## 13/10/2026 — Skills e plugin de terceiros instalados no Claude Code (fora do projeto)
+
+Pedido do André: instalar `awesome-claude-skills` e o marketplace `homeassistant-ai/skills`. Tudo vive em `C:\Users\adoli\.claude\` (usuário), **não** em `D:\HomeAssistant`; nada do projeto foi alterado.
+
+- **Skills copiadas** de `ComposioHQ/awesome-claude-skills` para `~/.claude/skills/`: `webapp-testing` (Playwright em Python) e `mcp-builder` (guia de servidor MCP). O clone completo foi apagado. Revisadas antes: só texto e scripts locais; `with_server.py` executa em shell o comando que o usuário passar; `evaluation.py` chama a API da Anthropic e exige chave. As demais skills do repositório (incluindo as da Composio, que pedem chave de API) **não** foram ativadas.
+- **Marketplace** `home-assistant-skills` (`homeassistant-ai/skills`, v0.49.0) adicionado e o plugin `home-assistant-skills` instalado no escopo de usuário. Traz uma skill, `home-assistant-best-practices` (texto e referências em Markdown, sem scripts nem hooks; revisada).
+- **Conflitos com as regras do projeto — valem as do CLAUDE.md**: a skill prefere Template Helper pela interface (aqui os sensores ficam em `config/template_sensors.yaml`); manda criar automação pela API do HA (aqui é `automations.yaml`, com plano e aprovação do André, alçada 2); traz guia de Lovelace (a dashboard foi retirada e **não deve ser recriada**). Concorda em não editar `.storage` direto e em fazer backup antes de operação irreversível.
+- **Armadilhas**: (1) o CLI `claude` não estava instalado; o instalador pôs `claude.exe` em `~/.local/bin`, que só entra no PATH de terminais **novos** (nos abertos antes, use o caminho completo); (2) `webapp-testing` precisa de Playwright em Python e `mcp-builder` de `anthropic` e `mcp` — **nenhum foi instalado**, e o Python do Windows falha com frequência (usar o container ou um ambiente à parte); (3) o painel segue sem suíte de testes, e `dashboard-app/` só se mexe com pedido inequívoco do André; (4) as skills só aparecem em sessões novas.
+
+
+## 13/10/2026 — B-04 encerrado: a cena "gamer" já não toca na ventilação do PS5
+
+Verificação por leitura de código, sem acionar a casa. `script.cena_gamer` (`config/scripts.yaml`, desde `cf2380c`, 25/09) só apaga `light.luz_sala` e põe `light.painel` a 30%. `switch.ventilacao_ps5` aparece apenas na automação `1757462400000`, e nada em `dashboard-app/` o referencia; `app/api/scene/route.ts` apenas chama o script. O conflito (R8) estava corrigido havia semanas; o que ficou velho foi a documentação.
+
+- **Corrigido**: `docs/AUTOMATION-POLICY.md` (R8 passou de "aberto" para "resolvido"), `.claude/agents/architecture-reviewer.md`, `planning/BACKLOG.md` (B-04 saiu) e `planning/DONE.md` (entrada de 13/10).
+- **Também no commit**: regras R10 (escolha do `mode`) e R11 (`id`/`unique_id` estáveis) em `AUTOMATION-POLICY.md`, e a entrada anterior sobre as skills instaladas.
+- **Não verificado**: se o script carregado no HA é idêntico ao arquivo (não consultei a API).
+- **Fora do commit de propósito**: `core.device_registry`, `core.entity_registry` e `frontend.user_data_*`, reescritos pelo HA. Ficam para um commit separado.

@@ -12,11 +12,6 @@ Um teste que compara `lib/rooms.ts` com `GET /api/states` teria barrado B-02 e a
 Cozinha/Lavanderia no dia em que entraram. → `artifacts/claude/test-gap-analysis.md` L-01, L-02
 **Esforço**: baixo · **Executor**: Antigravity
 
-### B-04 · Resolver a cena "gamer" × automação da ventilação do PS5
-A cena dá `toggle` cego em `switch.ventilacao_ps5`, que tem dono. Com o console ligado, ela desliga a
-ventilação. → `docs/AUTOMATION-POLICY.md` R8
-**Esforço**: baixo · **Executor**: ambos
-
 ### B-05 · Sair do servidor de desenvolvimento
 O painel de produção roda `npm run dev` sob watchdog.
 **Esforço**: médio · **Executor**: ambos

@@ -56,9 +56,9 @@ escrito: luzes de fundo dos interruptores, LEDs de equipamento de rede e telas d
 ### R8 · Um atuador, um dono
 
 Antes de escrever, verifique se o alvo já é governado por outra automação. Conflito conhecido e ainda
-aberto: a cena "gamer" do painel dá `toggle` em `switch.ventilacao_ps5`, que pertence à automação de
-ventilação — com o console ligado, a cena **desliga** a ventilação e a automação só corrige na
-reconciliação seguinte.
+resolvido (B-04): a cena "gamer" dava `toggle` em `switch.ventilacao_ps5`, que pertence à automação de
+ventilação. Hoje ela é `script.cena_gamer` (`scripts.yaml`) e não toca na ventilação — quem decide é a
+automação. Cena ou rota nova que precise da ventilação deve passar pela automação, nunca `toggle`.
 
 ### R9 · Verifique a nuvem antes de automatizar presença
 
@@ -66,10 +66,32 @@ O app Smart Life tem rotinas próprias sobre os mesmos sensores. Desativar a ent
 **não** para a rotina na nuvem. Confirme com `scripts/diagnostico/quem_acendeu.py`: acendimento sem
 contexto não partiu do Home Assistant.
 
+### R10 · Escolha o `mode` de propósito
+
+O `mode` padrão (`single`) descarta o novo disparo enquanto a execução anterior não termina, e isso
+costuma estar errado. Declare sempre e justifique na `description` (R1):
+
+| Situação | `mode` |
+| :--- | :--- |
+| Luz por presença, com temporizador | `restart` — cada novo disparo reinicia a contagem |
+| Passos que precisam ocorrer em ordem | `queued`, com `max` |
+| Ações independentes por entidade | `parallel`, com `max` |
+| Aviso pontual | `single` |
+
+`parallel` e `queued` sem `max` deixam a fila crescer sem limite.
+
+### R11 · Identidade estável
+
+Toda automação leva `id` próprio e toda entidade de template leva `unique_id`. Sem eles a UI não edita,
+o registro não guarda renomeação nem área, e uma troca de `alias` vira entidade nova. Antes de criar,
+confira que o `id`/`unique_id` não existe (`grep` em `automations.yaml` e `template_sensors.yaml`):
+reutilizar um sobrescreve a automação ou o sensor existente. Depois de criado, **não mude** o `id`.
+
 ## Procedimento para criar ou alterar automação
 
 1. **Mapear o alvo** — qual entidade, quem mais mexe nela (R8, R9)
-2. **Escrever com justificativa** na `description` (R1)
+2. **Escrever com justificativa** na `description` (R1), com `mode` escolhido (R10) e `id`/`unique_id`
+   inéditos (R11)
 3. **Validar a sintaxe** antes de recarregar:
    ```bash
    docker exec -i homeassistant python -m homeassistant --script check_config -c /config
