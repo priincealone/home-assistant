@@ -7,7 +7,7 @@
       "theme": "default"
     },
     "core": {
-      "default_panel": "dashboard-dispositivos",
+      "default_panel": "casa-dashboard",
       "apps_info_dismissed": true,
       "showEntityIdPicker": false
     },
