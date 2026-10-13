@@ -6432,3 +6432,14 @@ Auditoria e crítica do painel (16/20, "Bom"; detector `impeccable detect` achou
 ## 13/10/2026 (noite) — Correções P2 de acessibilidade publicadas
 
 `fix/a11y-resumo` entrou na `fix/audit-p1-batch-01` do painel (avanço direto, `69641df`; `tsc` e `npm test` passaram, 32 verificações). Publicado derrubando a 3002 pelo PID dono (14204, `next start`); o watchdog recompilou e subiu em ~45 s (`BUILD_ID` 19:38). Verificado em produção a 375 px: 5 camadas `widget-hit`, 0 botões aninhados, 0 `tabindex` solto, toque no centro de cada cartão cai na camada, nenhum texto cortado, sem rolagem horizontal, `/api/state` 200, sem indicador do Next e sem erro de laço no console. **Sem push** do painel. Tablets com a página aberta antes rodam o JS antigo até recarregar.
+
+
+## 13/10/2026 (noite) — Cabeçalho do celular: compactado (ganho pequeno) e "Aspirador •" sem corte
+
+`dashboard-app/`, branch `fix/cabecalho-celular` (commit `8fdf283`, **enviada ao GitHub, sem merge e sem publicar**). `tsc` e `npm test` passam.
+
+- **Medido a 375 × 812**: cabeçalho de 263 px (32% da tela), primeiro cômodo em y = 642. Estrutura: grade de 4 linhas (relógio+clima / Casa+data / selos / ações) montada só com CSS (`display: contents` nos invólucros), em `globals.css` na regra `@media (max-width: 640px)` de 25/09.
+- **Aplicado (≤ 420 px)**: respiros menores no contêiner, na grade e no bloco de selos, relógio de 54 → 46 px, botões de ação de 44 px. Resultado: cabeçalho **244 px (−19)**, primeiro cômodo em y ≈ 622. Selos e botões seguem ≥ 44 px (medido).
+- **Por que o ganho é pequeno**: o resto é conteúdo. Os quatro selos não cabem numa linha só (somam ~430 px para 329 disponíveis); o vermelho fica numa segunda fileira. Mesclar selos e ações exigiria achatar quatro níveis de invólucros e perderia o agrupamento por gravidade.
+- **Defeito achado**: "Aspirador •" saía cortado ("pirador •"). A regra de 25/09 `.vacuum-compact-hint > svg { display: none }` deixou de funcionar quando o `SmartTruncateText` passou a embrulhar o conteúdo num `<span>` (o ícone deixou de ser filho direto). Passou a `.vacuum-compact-hint svg`.
+- **Decisão pendente do André** (muda a ordem das seções no celular, não foi feita): para os cômodos aparecerem na primeira tela, as opções são (a) mover "Ambientes da casa" para antes de Cenas e Resumo com CSS `order` (custo: a ordem do foco do teclado deixa de coincidir com a visual, WCAG 2.4.3), (b) recolher o "Resumo da casa" no celular, (c) deixar como está.
