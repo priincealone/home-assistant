@@ -6427,3 +6427,8 @@ Auditoria e crítica do painel (16/20, "Bom"; detector `impeccable detect` achou
 - **Armadilha achada**: o `motion.div` com `whileTap` no cartão do aspirador (piloto anterior) fazia o Motion injetar `tabindex="0"` num `div` sem papel nem nome. Voltou a `div` simples. Qualquer `motion.*` com `whileTap` em elemento não focável tem esse efeito.
 - **Não verificado**: leitor de tela real, toque físico e o tablet em paisagem (as capturas de viewport grande saem encolhidas no painel de teste; as medidas vêm do DOM). O contraste é estimativa por cálculo sobre fundos translúcidos.
 - **Pendentes da auditoria**: zoom bloqueado (`user-scalable=no`), cabeçalho que ocupa ~1/3 da primeira tela no celular, brilho em 3 passos (piloto de arrastar), cor `#64748b` fora do DESIGN.md.
+
+
+## 13/10/2026 (noite) — Correções P2 de acessibilidade publicadas
+
+`fix/a11y-resumo` entrou na `fix/audit-p1-batch-01` do painel (avanço direto, `69641df`; `tsc` e `npm test` passaram, 32 verificações). Publicado derrubando a 3002 pelo PID dono (14204, `next start`); o watchdog recompilou e subiu em ~45 s (`BUILD_ID` 19:38). Verificado em produção a 375 px: 5 camadas `widget-hit`, 0 botões aninhados, 0 `tabindex` solto, toque no centro de cada cartão cai na camada, nenhum texto cortado, sem rolagem horizontal, `/api/state` 200, sem indicador do Next e sem erro de laço no console. **Sem push** do painel. Tablets com a página aberta antes rodam o JS antigo até recarregar.
