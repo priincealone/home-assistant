@@ -6443,3 +6443,15 @@ Auditoria e crítica do painel (16/20, "Bom"; detector `impeccable detect` achou
 - **Por que o ganho é pequeno**: o resto é conteúdo. Os quatro selos não cabem numa linha só (somam ~430 px para 329 disponíveis); o vermelho fica numa segunda fileira. Mesclar selos e ações exigiria achatar quatro níveis de invólucros e perderia o agrupamento por gravidade.
 - **Defeito achado**: "Aspirador •" saía cortado ("pirador •"). A regra de 25/09 `.vacuum-compact-hint > svg { display: none }` deixou de funcionar quando o `SmartTruncateText` passou a embrulhar o conteúdo num `<span>` (o ícone deixou de ser filho direto). Passou a `.vacuum-compact-hint svg`.
 - **Decisão pendente do André** (muda a ordem das seções no celular, não foi feita): para os cômodos aparecerem na primeira tela, as opções são (a) mover "Ambientes da casa" para antes de Cenas e Resumo com CSS `order` (custo: a ordem do foco do teclado deixa de coincidir com a visual, WCAG 2.4.3), (b) recolher o "Resumo da casa" no celular, (c) deixar como está.
+
+
+## 13/10/2026 (noite) — "Resumo da casa" recolhível no celular, publicado
+
+Opção (b) escolhida pelo André. Spec: `specs/features/resumo-recolhivel-celular.md`. `dashboard-app/`: `c7d5d54` (recolhimento) sobre `8fdf283` (cabeçalho compacto e "Aspirador •" sem corte), juntados na `fix/audit-p1-batch-01`, **enviados ao GitHub e publicados** (3002 derrubada pelo PID dono 41156, `next start`; watchdog recompilou e subiu em ~55 s; `BUILD_ID` 19:54).
+
+- **Comportamento** (só até 640 px): o título "Resumo da casa" vira botão (`aria-expanded`, `aria-controls`), padrão **recolhido**; recolhido, os cartões **saem do DOM** (o player da câmera para de baixar vídeo escondido); a escolha fica em `localStorage` (`casa.resumoAberto`). A primeira pintura sai recolhida por CSS (`.telemetry-section:not(.is-aberto) > .daily-panorama-bar`), sem "pisca". Acima de 640 px nada mudou (título sem botão, faixa visível). Ordem do DOM e do foco intactas. Novo `lib/useCelular.ts` (`useSyncExternalStore`, servidor = false).
+- **Resultado a 375 × 812**: primeiro cômodo de y = 642 para **y = 463** (cabeçalho 244 px + cenas + uma linha de título); abrindo o Resumo, volta a ~647.
+- **Verificado** (dev e produção): botão de 44 px, `aria-expanded` acompanha, Enter alterna e o foco fica no botão, preferência sobrevive a recarregar, faixa fora do DOM quando recolhida, 641+ px sem mudança, `tsc` e `npm test` (32).
+- **Armadilha**: reabrir `preview_start` reaproveita a aba antiga, que fica com o HTML do servidor anterior e **sem hidratar** (o botão não aparece e o console enche de `ERR_CONNECTION_REFUSED`); navegar de novo com `?r=N` resolve. Não é defeito do painel.
+- **Fora desta entrega**: resumo de uma linha enquanto recolhido (ex.: "118 W · TV em standby"), caso o André sinta falta de ver a potência sem abrir.
+- **Não verificado**: aparelho físico, leitor de tela real e tablet em paisagem. Tablets e celulares com a página aberta antes rodam o JS antigo até recarregar.
