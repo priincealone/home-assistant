@@ -25,14 +25,28 @@ Só em tela de **até 640 px** (celular); tablet de parede e desktop não mudam.
 - A ordem do DOM não muda: foco do teclado e leitor de tela seguem a ordem visual.
 - Acima de 640 px o título volta a ser um `h2` comum, sem botão.
 
+### Resumo de uma linha (entregue em 13/10/2026)
+
+Enquanto recolhido, uma linha de apoio sob o título: `133 W · Mídia em standby · Aspirador pronto`.
+
+- **O que mostra**: potência instantânea (soma dos dois medidores que respondem), estado da mídia (TV e PS5) e do
+  aspirador. Só o que o painel já lê (`lib/resumoCasa.ts`, função pura).
+- **Estado desconhecido nunca vira zero** (CLAUDE.md §12): os dois medidores fora = "Energia sem leitura"; TV sem
+  leitura = "TV sem leitura" (não "standby"); aspirador `unavailable`/`unknown`/ausente = "Aspirador sem leitura".
+  Zero watt de verdade continua "0 W".
+- **Acessibilidade**: o botão do título aponta a linha com `aria-describedby` (o título do `h2` continua só
+  "Resumo da casa"); tocar na linha também abre, como conveniência para o dedo. Some quando aberto.
+- **Fora**: a lista de compras e a câmera (não estão no estado lido pelo painel; a lista tem busca própria) e
+  qualquer dado em tablet ou desktop.
+- **Testes**: `tests/resumo-casa.test.mjs` (15) e, no teste de contrato, as 5 entidades do resumo precisam estar no
+  polling (`todasEntidades`) e no registro do HA, senão a linha leria "sem leitura" para sempre.
+
 ## Entidades envolvidas
 
 Nenhuma entidade nova nem comando: é só interface. Os cartões continuam lendo os mesmos estados.
 
 ## Fora desta entrega
 
-- Resumo de uma linha com o dado principal enquanto recolhido (ex.: "118 W · TV em standby"). Fica como
-  evolução, se o André sentir falta de ver a potência sem abrir.
 - Reordenar as seções, mudar o cabeçalho de novo, qualquer mudança em tablet ou desktop.
 
 ## Se o HA reiniciar no meio

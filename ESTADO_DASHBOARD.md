@@ -6455,3 +6455,14 @@ Opção (b) escolhida pelo André. Spec: `specs/features/resumo-recolhivel-celul
 - **Armadilha**: reabrir `preview_start` reaproveita a aba antiga, que fica com o HTML do servidor anterior e **sem hidratar** (o botão não aparece e o console enche de `ERR_CONNECTION_REFUSED`); navegar de novo com `?r=N` resolve. Não é defeito do painel.
 - **Fora desta entrega**: resumo de uma linha enquanto recolhido (ex.: "118 W · TV em standby"), caso o André sinta falta de ver a potência sem abrir.
 - **Não verificado**: aparelho físico, leitor de tela real e tablet em paisagem. Tablets e celulares com a página aberta antes rodam o JS antigo até recarregar.
+
+
+## 13/10/2026 (noite) — Resumo de uma linha no celular (enviado, ainda não publicado)
+
+`dashboard-app/`, branch `feat/resumo-uma-linha` (`a2ea299`, **enviada ao GitHub; sem merge e sem publicar**; parte da `fix/audit-p1-batch-01` em `c7d5d54`). Com o "Resumo da casa" recolhido, o celular mostra sob o título `133 W · Mídia em standby · Aspirador pronto` (cabe em uma linha de 359 px a 375). Primeiro cômodo em y = 482 (463 sem a linha, 642 antes de tudo isso).
+
+- `lib/resumoCasa.ts` (função pura) lê só o que o painel já recebe: `sensor.computador_energia`, `sensor.tomada_inteligente_energia`, `sensor.tv_sala_estado`, `media_player.sala_de_estar_ps5` e `vacuum.dreame_us_415783444_mc1808`. **Estado desconhecido nunca vira zero**: os dois medidores fora = "Energia sem leitura"; TV sem leitura não vira "standby"; aspirador fora = "Aspirador sem leitura".
+- **Achado**: o `EnergyWidget` faz `Number(estado) || 0`, então um medidor `unavailable` aparece como **0 W** no cartão (contra o CLAUDE.md §12). Não mexi nele; o resumo trata o caso de forma honesta. Fica como pendência de dashboard-app.
+- **Testes**: `tests/resumo-casa.test.mjs` (15) e uma verificação nova no teste de contrato (as cinco entidades do resumo precisam estar no polling e no registro). `npm test` = 48 verificações.
+- **Verificado no navegador a 375 px**: a linha aparece só recolhida, o botão aponta para ela (`aria-describedby`), tocar na linha abre (a linha e o `aria-describedby` somem), o botão recolhe e a linha volta. A compra e a câmera ficam de fora (não estão no estado lido pelo painel).
+- **Para publicar**: juntar `feat/resumo-uma-linha` na `fix/audit-p1-batch-01` e derrubar a 3002 (pedir ao André).
