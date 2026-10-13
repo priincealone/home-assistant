@@ -62,6 +62,16 @@ cd dashboard-app && npm test      # 32 verificações; leva ~1 s; não aciona a 
   Lê `../config/.storage` (ou `HA_STORAGE`); sem a pasta, **pula com código 3**, nunca passa em silêncio.
   Rode-o sempre que mexer em `lib/rooms.ts` ou nas áreas/entidades do HA.
 
+**Automações** (L-05): um teste estrutural, somente leitura, confere em `config/automations.yaml` as regras da
+`docs/AUTOMATION-POLICY.md` (R1 descrição, R2 desligar TV só por estado, R3 janela de horário, R4 sol só no acender,
+R5 sem `delay`, R8 um atuador/um dono, também contra `scripts.yaml`, R10 `mode`, R11 `id` e `alias` únicos):
+
+```bash
+docker exec -i homeassistant python - < scripts/testes/invariantes_automacoes.py   # 0 ok, 1 violação nova
+```
+
+Exceção conhecida só entra em `EXCECOES`, com o motivo. **Não** substitui o `check_config` (sintaxe).
+
 Os arquivos `dashboard-app/scratch/test_*.mjs` **não são testes** — imprimem no console e não afirmam
 nada.
 
@@ -260,7 +270,7 @@ A suíte (§3) cobre só a leitura; para o resto vale o mínimo:
 | Registro `.storage` | Validar **antes** do `docker stop`; script aborta se o mundo não estiver como espera |
 | Painel | `npx tsc --noEmit` e `npm test` |
 | Contrato de entidades (`lib/rooms.ts`, áreas, entidades do HA) | `npm test` (confere cada `entity_id` e a área contra `core.entity_registry`) |
-| Automação nova | Confirmar que carregou (`on`) e que nenhuma outra governa o mesmo atuador |
+| Automação nova ou alterada | `check_config`, `invariantes_automacoes.py` (§3), confirmar que carregou (`on`) e que nenhuma outra governa o mesmo atuador |
 
 Todo teste de escrita precisa de dublê do HA — a casa não é ambiente de teste.
 Teste que só verifica "respondeu 200" passa com a luz errada acesa.

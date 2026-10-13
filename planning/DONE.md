@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026 (e)
+
+**L-05 · Invariantes das automações** — `scripts/testes/invariantes_automacoes.py` (somente leitura, Python do container) confere em `automations.yaml` e `scripts.yaml` as regras R1, R2, R3, R4, R5, R8, R10 e R11 da `AUTOMATION-POLICY.md`. Hoje as 8 automações passam (0 violações, 2 avisos de revisão: janela 00:00→00:30 e `light.painel` com dois donos que acendem em contextos distintos). Validado contra um YAML adulterado com 10 defeitos plantados: as 10 foram pegas (R1, R2, R3, R4, R5, R8, R10, R11). Entrou no CLAUDE.md §3/§14 e no procedimento da política.
+
+---
+
 ## 13/10/2026 (d)
 
 **B-03 · Teste de contrato entidades × HA** — `dashboard-app/tests/contrato-entidades.test.mjs` (commit `72efee9` no painel): toda entidade de `lib/rooms.ts` existe no `core.entity_registry`, não está desativada, tem o domínio declarado, e cada dispositivo está na área do cômodo (L-01/L-02). Só lê arquivos. Passa hoje (8 verificações) e **falha** de verdade numa cópia adulterada do registro (entidade removida, desativada e fora da área: 3 defeitos, 3 falhas). `npm test` roda também `rede.test.mjs`, que estava **quebrado** desde o vocabulário de 06/10 (duas expectativas velhas, corrigidas). **Limpeza de documentação**: B-05 e ROADMAP 1.4, 2.2, 2.3 e 2.6 já estavam feitos e constavam abertos; CLAUDE.md §3/§14 dizia que não havia teste algum.

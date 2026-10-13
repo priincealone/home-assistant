@@ -96,6 +96,10 @@ reutilizar um sobrescreve a automação ou o sensor existente. Depois de criado,
    ```bash
    docker exec -i homeassistant python -m homeassistant --script check_config -c /config
    ```
+   e rodar as **invariantes** das regras acima (somente leitura; sai com código 1 se uma regra foi quebrada):
+   ```bash
+   docker exec -i homeassistant python - < scripts/testes/invariantes_automacoes.py
+   ```
 4. **Recarregar sem reiniciar** — serviço `automation.reload`
 5. **Conferir que carregou** — a automação deve aparecer `on`
 6. **Não disparar para testar** se o efeito for físico e inoportuno. Prefira renderizar os templates e
