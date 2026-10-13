@@ -6397,3 +6397,11 @@ Descoberto ao começar o B-08: o patch de timeout do `glances_api` estava **ause
 - **Tarefa agendada** `CasaGlancesPatch` (usuário atual, sem elevação, sem janela): no logon e de hora em hora, chama `glances_patch_tarefa.ps1` → `-Aplicar -Reiniciar`. Com o patch presente não faz nada; **se ele sumir, reinicia o HA sozinho** (a casa fica sem automação ~1 min). Log: `%LOCALAPPDATA%\CasaHA\glances_patch.log`.
 - **Armadilha**: a primeira versão da tarefa embutia o comando no `-Command` e falhou por aspas (resultado 1, sem log); o script-embrulho em arquivo resolveu. Se mudar a imagem do HA e o Python deixar de ser 3.14, o script sai com 2 e avisa em vez de adivinhar o caminho.
 - **Erros que já existiam**: DVR `192.168.31.216` fora (K-06); "Camera not found" do painel enquanto o HA sobe.
+
+
+## 13/10/2026 — B-03 (teste de contrato) e limpeza de documentação desatualizada
+
+- **B-03**: `dashboard-app/tests/contrato-entidades.test.mjs` compara `lib/rooms.ts` com `config/.storage` (entidade, desativada, domínio, cômodo × área). Lê `../config/.storage` ou `HA_STORAGE`; sem a pasta, **pula com código 3**. Validado contra uma cópia adulterada do registro. Mapa `circulacao` → área `corredor` (o id do cômodo no contrato difere do da área no HA). Listas de exceção (`SEM_REGISTRO_OK`, `FORA_DA_AREA_OK`) começaram vazias: toda exceção futura exige motivo.
+- **Achado**: o único teste que existia (`tests/rede.test.mjs`) estava **quebrado** desde 06/10 (`5456d3a` mudou o vocabulário, o teste esperava "1 fora"/"2 fora"). Corrigido; ninguém o rodava porque não havia script. `npm test` agora roda os dois (32 verificações).
+- **Documentação que estava errada** e foi corrigida: B-05 e ROADMAP 2.2 (painel já roda `next start`), ROADMAP 1.4 e 2.6 (feitos), 2.3 (agora feito), `ARCHITECTURE.md`, `DECISIONS.md`, `BLOCKED.md` K-12, `SECURITY.md` (o `.bat` registra o watchdog de produção, não "o servidor de desenvolvimento") e `CLAUDE.md` §3 e §14 (dizia "zero testes").
+- **Limite**: o teste lê o registro em disco, não o `/api/states` ao vivo; entidade só de runtime (YAML sem `unique_id`) aparece como "fora do registro" e precisa de exceção justificada.

@@ -107,7 +107,7 @@ já não existia em `core.config_entries` desde antes; restavam só lápides em 
 
 | Ponto | Efeito |
 | :--- | :--- |
-| Painel roda `npm run dev` sob watchdog | A casa depende de um servidor de desenvolvimento |
+| Painel roda sob watchdog PowerShell, em produção (`next start`) | Processo do Windows sem container: se o PC dorme ou o watchdog morre, o painel cai (a automação do HA não) |
 | Pasta do projeto sincronizada pelo Google Drive | Injeta `desktop.ini` no build; há expurgo defensivo |
 | Patch do Glances é volátil | Some quando o container é recriado do zero; a tarefa `CasaGlancesPatch` reaplica (e reinicia o HA) |
 | HA depende do PC ligado | Se o PC dorme, a casa perde a automação |

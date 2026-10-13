@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026 (d)
+
+**B-03 · Teste de contrato entidades × HA** — `dashboard-app/tests/contrato-entidades.test.mjs` (commit `72efee9` no painel): toda entidade de `lib/rooms.ts` existe no `core.entity_registry`, não está desativada, tem o domínio declarado, e cada dispositivo está na área do cômodo (L-01/L-02). Só lê arquivos. Passa hoje (8 verificações) e **falha** de verdade numa cópia adulterada do registro (entidade removida, desativada e fora da área: 3 defeitos, 3 falhas). `npm test` roda também `rede.test.mjs`, que estava **quebrado** desde o vocabulário de 06/10 (duas expectativas velhas, corrigidas). **Limpeza de documentação**: B-05 e ROADMAP 1.4, 2.2, 2.3 e 2.6 já estavam feitos e constavam abertos; CLAUDE.md §3/§14 dizia que não havia teste algum.
+
+---
+
 ## 13/10/2026 (c)
 
 **B-08 · Patch do Glances reaplicado automaticamente** — `scripts/manutencao/glances_patch.ps1` (verifica; `-Aplicar` aplica; `-Reiniciar` reinicia o HA) e a tarefa agendada `CasaGlancesPatch` (logon + de hora em hora, sem janela, usuário atual) que o chama pelo `glances_patch_tarefa.ps1`. O patch estava ausente desde a recriação do container (20/09); aplicado em 13/10 com reinício do HA. Verificado: linha `client.get(url, timeout=15)`, 42 sensores no registro, sem erro do Glances nos logs; a tarefa rodou uma vez com o patch presente (exit 0, sem reinício). Log em `%LOCALAPPDATA%CasaHAglances_patch.log`.

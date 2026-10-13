@@ -107,7 +107,9 @@ canal), criar as entidades e só então decidir se entram em `lib/rooms.ts` e no
 
 ## Bloqueados por decisão, não por falta de acesso
 
-### K-12 · Como sair do servidor de desenvolvimento
+### K-12 · Container ou serviço para o painel (opcional)
+O painel **já roda em produção** (`next build` + `next start` sob o watchdog `CasaDashboardAutoStart`); o que resta é decidir se ele
+vira container ou serviço do Windows, o que **não** é necessário para funcionar.
 **Destrava**: escolher entre container na `casa-net`, serviço do Windows, ou o `ha-addon/` que já
 existe no repositório e nunca foi usado.
 Containerizar exige rever `HA_URL`.

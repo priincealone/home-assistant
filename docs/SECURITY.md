@@ -68,7 +68,7 @@ verificação é a checagem de tipos do `next build`.
 | Script | Comportamento |
 | :--- | :--- |
 | `parar_servidor.bat` | `taskkill /T /F` contra **quem estiver** escutando a 3002, sem confirmar identidade |
-| `instalar_servico_agendado.bat` | Registra o servidor de desenvolvimento no logon com **privilégio máximo** (`/rl highest`), sobrescrevendo tarefa homônima |
+| `instalar_servico_agendado.bat` | Registra o supervisor do painel (watchdog que roda em produção) no logon com **privilégio máximo** (`/rl highest`), sobrescrevendo tarefa homônima |
 
 ## Fronteiras que estão corretas
 

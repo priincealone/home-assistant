@@ -174,6 +174,6 @@ e decidir quando apagar o backup.
 
 | Assunto | Quem decide |
 | :--- | :--- |
-| Sair de `npm run dev` para produção, e como (container ou serviço) | André |
+| Mover o painel para container ou serviço do Windows (hoje roda em produção sob watchdog) | André |
 | Qual hardware dedicado, e quando migrar | André |
 | Manter cenas no painel ou levá-las para o HA | André |

@@ -7,19 +7,6 @@ Ordenado por valor, não por esforço.
 
 ## Alto valor
 
-### B-03 · Teste de contrato entidades × Home Assistant
-Um teste que compara `lib/rooms.ts` com `GET /api/states` teria barrado B-02 e a inversão
-Cozinha/Lavanderia no dia em que entraram. → `artifacts/claude/test-gap-analysis.md` L-01, L-02
-**Esforço**: baixo · **Executor**: Antigravity
-
-### B-05 · Sair do servidor de desenvolvimento
-O painel de produção roda `npm run dev` sob watchdog.
-**Esforço**: médio · **Executor**: ambos
-
----
-
-## Médio valor
-
 ### B-07 · Instalar e configurar ESLint
 Não existe dependência nem configuração; `npm run lint` não funciona.
 **Esforço**: baixo · **Executor**: Antigravity

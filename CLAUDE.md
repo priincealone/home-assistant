@@ -49,8 +49,18 @@ docker run --rm -i -v D:/HomeAssistant/config:/config \
 
 ## 3. Comandos de teste
 
-**Não existe suíte de testes.** Confirmado: zero arquivos `*.test.*` / `*.spec.*`, zero configuração de
-Vitest, Jest ou Playwright, zero dependências de teste, sem script `npm test`.
+**Não existe framework de testes** (zero Vitest, Jest ou Playwright), mas desde 13/10/2026 há uma suíte
+mínima em `dashboard-app/tests/`, em Node puro com `node:assert`:
+
+```bash
+cd dashboard-app && npm test      # 32 verificações; leva ~1 s; não aciona a casa nem fala com o HA
+```
+
+- `tests/rede.test.mjs` — lógica pura do campo "Rede" (`lib/rede.ts`) com estados simulados.
+- `tests/contrato-entidades.test.mjs` — **B-03**: toda entidade de `lib/rooms.ts` existe no
+  `core.entity_registry`, não está desativada, tem o domínio declarado e está na área do cômodo (L-01/L-02).
+  Lê `../config/.storage` (ou `HA_STORAGE`); sem a pasta, **pula com código 3**, nunca passa em silêncio.
+  Rode-o sempre que mexer em `lib/rooms.ts` ou nas áreas/entidades do HA.
 
 Os arquivos `dashboard-app/scratch/test_*.mjs` **não são testes** — imprimem no console e não afirmam
 nada.
@@ -65,8 +75,8 @@ docker exec -i homeassistant python -m homeassistant --script check_config -c /c
 docker exec -i homeassistant python -c "import json,io;json.load(io.open('/config/.storage/core.entity_registry',encoding='utf-8'));print('ok')"
 ```
 
-**TODO** — definir a suíte. Prioridade em `artifacts/claude/test-gap-analysis.md`: contrato de
-entidades (L-01) e coerência cômodo × área (L-02) antes de qualquer outra coisa.
+**TODO** — ampliar a suíte (`artifacts/claude/test-gap-analysis.md`): L-04 (lógica pura de energia, clima e
+travas otimistas) e teste de rota com dublê do HA. Teste de escrita **nunca** contra a casa.
 
 ---
 
@@ -242,17 +252,17 @@ precisa de backoff exponencial com teto e de não disparar comando ao reconectar
 
 ## 14. Testes
 
-Enquanto não existir suíte (§3), vale o mínimo:
+A suíte (§3) cobre só a leitura; para o resto vale o mínimo:
 
 | Mudança | Verificação obrigatória |
 | :--- | :--- |
 | YAML do HA | `check_config` antes de recarregar |
 | Registro `.storage` | Validar **antes** do `docker stop`; script aborta se o mundo não estiver como espera |
-| Painel | `npx tsc --noEmit` |
-| Contrato de entidades | Conferir cada `entity_id` contra `core.entity_registry` |
+| Painel | `npx tsc --noEmit` e `npm test` |
+| Contrato de entidades (`lib/rooms.ts`, áreas, entidades do HA) | `npm test` (confere cada `entity_id` e a área contra `core.entity_registry`) |
 | Automação nova | Confirmar que carregou (`on`) e que nenhuma outra governa o mesmo atuador |
 
-Quando a suíte existir: todo teste de escrita precisa de dublê do HA — a casa não é ambiente de teste.
+Todo teste de escrita precisa de dublê do HA — a casa não é ambiente de teste.
 Teste que só verifica "respondeu 200" passa com a luz errada acesa.
 
 ---

@@ -14,7 +14,7 @@ Nada aqui é funcionalidade nova. É parar de sangrar.
 | 1.1 | Desativar as rotinas de presença no app Smart Life (Lavanderia e Banheiro) | **André** | 🔴 Bloqueado nele |
 | 1.2 | ~~Alinhar Cozinha × Lavanderia~~ | — | ✅ **Feito em 15/09** |
 | 1.3 | Reserva de DHCP para o PC (`192.168.31.22`) e o PS5 | **André** | 🔴 Bloqueado nele |
-| 1.4 | Corrigir as 4 entidades inexistentes no contrato do painel | Antigravity | ⚪ A fazer |
+| 1.4 | ~~Corrigir as 4 entidades inexistentes no contrato do painel~~ | Claude Code | ✅ 06/10/2026 (B-02, fase 3) |
 | 1.5 | ~~Decidir o destino da integração `music_assistant`~~ | André + Claude Code | ✅ Music Assistant removido em 09/10/2026 (D-012) |
 
 > **Correção ao roadmap original.** O item 1.2 atribuía a correção ao Claude Code, mas os arquivos do
@@ -26,11 +26,11 @@ Nada aqui é funcionalidade nova. É parar de sangrar.
 | # | Item | Executor | Observação |
 | :--- | :--- | :--- | :--- |
 | 2.1 | ~~Autenticar o painel na porta 3002~~ | André | **Decidido em 05/10/2026: sem autenticação**, risco aceito (D-011 em `docs/DECISIONS.md`) |
-| 2.2 | Sair de `npm run dev` para execução de produção | Claude Code + Antigravity | Containerizar exige rever `HA_URL`. O diretório `ha-addon/` já existe e nunca foi usado |
-| 2.3 | Testes de contrato: entidades do painel × HA | Ambos | Ver `artifacts/claude/test-gap-analysis.md` L-01 e L-02. Barato e impede a classe de defeito que já aconteceu |
+| 2.2 | ~~Sair de `npm run dev` para execução de produção~~ | Claude Code + Antigravity | ✅ O watchdog roda `next build` + `next start` (porta 3002). Container ou serviço do Windows seguem como opção, sem urgência (K-12) |
+| 2.3 | ~~Testes de contrato: entidades do painel × HA~~ | Claude Code | ✅ 13/10/2026 — `dashboard-app/tests/contrato-entidades.test.mjs`. Original: Ver `artifacts/claude/test-gap-analysis.md` L-01 e L-02. Barato e impede a classe de defeito que já aconteceu |
 | 2.4 | Instalar e configurar ESLint | Antigravity | O roadmap original falava em "ajustar o script"; não há ESLint instalado |
 | 2.5 | ~~Reaplicar o patch do Glances automaticamente~~ | Claude Code | ✅ 13/10/2026 — tarefa `CasaGlancesPatch` |
-| 2.6 | Resolver a cena "gamer" × automação da ventilação do PS5 | Ambos | Conflito de dono do atuador |
+| 2.6 | ~~Resolver a cena "gamer" × automação da ventilação do PS5~~ | Ambos | ✅ A cena é `script.cena_gamer` e não toca na ventilação (B-04, encerrado em 13/10/2026) |
 | 2.7 | ~~Expurgo de `desktop.ini`~~ | — | ✅ Já implementado no `predev` e no watchdog |
 
 ## Fase 3 — Completar o que está pela metade
