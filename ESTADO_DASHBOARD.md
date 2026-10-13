@@ -6415,3 +6415,15 @@ Os logs do HA mostravam "Timeout while contacting DNS servers" (Sonoff/eWeLink, 
 - **Correção** (não aplicada: é configuração de rede do Windows, alçada 3): `Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses` como administrador. Registrado em `planning/BLOCKED.md` como K-17.
 - **Alternativa descartada por ora**: fixar `--dns 192.168.31.1` no container exigiria recriá-lo (e refazer o patch do Glances); só se a correção no Windows não bastar.
 - **Não confirmado**: que o servidor morto seja a única causa; a verificação é recontar as ocorrências 24 h depois da correção.
+
+
+## 13/10/2026 — Auditoria `impeccable` (só leitura) e correções P2 de acessibilidade e responsivo
+
+Auditoria e crítica do painel (16/20, "Bom"; detector `impeccable detect` achou 1 problema: a cor `#64748b` fora do DESIGN.md em `globals.css`). Contraste, alvos de toque (45 controles ≥ 44 px), anel de foco, semântica e carga (421 KB de JS, 556 elementos no DOM) saíram bem. Aplicadas as duas ações aprovadas, no `dashboard-app/`, branch `fix/a11y-resumo` (commit `69641df`), **sem merge e sem publicar**:
+
+- **Interativo aninhado (WCAG 4.1.2)**: os cinco cartões da faixa de resumo eram `div role="button"` com `<button>` dentro; mídia e aspirador nem respondiam a Enter/Espaço. Novo `app/components/WidgetHit.tsx`: um `<button class="widget-hit">` transparente cobre o cartão e é **irmão** dos controles secundários (mesmo padrão do `.room-card-toggle`). Verificado a 375 e 900 px: 0 botões aninhados, o toque no centro de cada cartão cai na camada, e ligar a TV, canais C2/C4 e os botões de abrir **continuam recebendo o clique** (checado por `elementFromPoint`, sem clicar). Enter abre o painel de energia e Escape fecha devolvendo o foco ao cartão.
+- **Aspirador cortado a 375 px**: "Pronto" e "100%" passavam 13 px da peça (~85 px) e saíam cortados. Passam a quebrar de linha (zero texto cortado). **Custo**: a fileira de peças passa de ~95 para ~114 px de altura (a faixa, de ~165 para ~184 px). Abaixo de 360 px a faixa vai para 2×2 (verificado a 340 px, sem corte nem rolagem horizontal).
+- **Decisão mantida**: a fileira de quatro peças entre 360 e 640 px (pedido do André em 25/09) **não** virou 2×2 como a auditoria sugeriu: custaria ~88 px na primeira tela, e o próprio relatório já aponta que o cabeçalho gasta espaço demais no celular.
+- **Armadilha achada**: o `motion.div` com `whileTap` no cartão do aspirador (piloto anterior) fazia o Motion injetar `tabindex="0"` num `div` sem papel nem nome. Voltou a `div` simples. Qualquer `motion.*` com `whileTap` em elemento não focável tem esse efeito.
+- **Não verificado**: leitor de tela real, toque físico e o tablet em paisagem (as capturas de viewport grande saem encolhidas no painel de teste; as medidas vêm do DOM). O contraste é estimativa por cálculo sobre fundos translúcidos.
+- **Pendentes da auditoria**: zoom bloqueado (`user-scalable=no`), cabeçalho que ocupa ~1/3 da primeira tela no celular, brilho em 3 passos (piloto de arrastar), cor `#64748b` fora do DESIGN.md.
