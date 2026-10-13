@@ -6466,3 +6466,13 @@ Opção (b) escolhida pelo André. Spec: `specs/features/resumo-recolhivel-celul
 - **Testes**: `tests/resumo-casa.test.mjs` (15) e uma verificação nova no teste de contrato (as cinco entidades do resumo precisam estar no polling e no registro). `npm test` = 48 verificações.
 - **Verificado no navegador a 375 px**: a linha aparece só recolhida, o botão aponta para ela (`aria-describedby`), tocar na linha abre (a linha e o `aria-describedby` somem), o botão recolhe e a linha volta. A compra e a câmera ficam de fora (não estão no estado lido pelo painel).
 - **Para publicar**: juntar `feat/resumo-uma-linha` na `fix/audit-p1-batch-01` e derrubar a 3002 (pedir ao André).
+
+
+## 13/10/2026 (noite) — Resumo de uma linha e "0 W" falso corrigido, publicados
+
+`dashboard-app/`: `a2ea299` (resumo de uma linha) e `a01f3f6` (energia sem leitura) juntados na `fix/audit-p1-batch-01`, **enviados ao GitHub e publicados** (3002 derrubada pelo PID dono 58296, `next start`; watchdog recompilou em ~53 s; `BUILD_ID` 20:11). Verificado em produção a 375 px: botão do Resumo recolhido, linha `97 W · Mídia em standby · Aspirador sem leitura`, 10 cômodos, sem rolagem horizontal, sem indicador do Next. `tsc` e `npm test` (50 verificações) passam.
+
+- **0 W falso (CLAUDE.md §12)**: `EnergyWidget` fazia `Number(estado) || 0`; medidor `unavailable` aparecia como "0 W", a faixa verde "Econômico" e "0 W (0%)" no modal. Agora `lerWatts` (em `lib/resumoCasa.ts`) devolve `null` e a tela diz "Sem leitura": cartão "—", selo neutro (`.is-sem-leitura`), "Estimativa: —", distribuição por circuito e tomadas sem watts inventados; a faixa guarda a última para a histerese. **No estado real de hoje** a tomada do Quarto Luca (`sensor.tomada_inteligente_energia`) está `unavailable` e o modal passou de "0 W (0%)" para "Sem leitura".
+- **Como foi verificado sem a casa**: um gancho temporário (`?forcarSemLeitura=1`) forçou os dois medidores a `null` só no servidor de teste; confirmei cartão, selo, `aria-label`, subtítulo, chips, distribuição e tomadas; **o gancho foi removido antes do commit** (conferido por `grep`, zero resto). O caso parcial (um medidor fora) não se testa na tela porque o medidor do Luca já está fora hoje; fica coberto pelos testes de `lerWatts`/`wattsDaCasa`.
+- **Dado honesto no resumo**: o aspirador (`vacuum.dreame_us_415783444_mc1808`) está `unavailable` agora (nuvem Dreame), e a linha diz "Aspirador sem leitura"; o cartão dele mostra "Offline".
+- **Pendente**: a tomada do Quarto Luca e o aspirador seguem fora (diagnóstico de integração, não de painel).
