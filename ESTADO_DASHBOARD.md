@@ -6405,3 +6405,13 @@ Descoberto ao começar o B-08: o patch de timeout do `glances_api` estava **ause
 - **Achado**: o único teste que existia (`tests/rede.test.mjs`) estava **quebrado** desde 06/10 (`5456d3a` mudou o vocabulário, o teste esperava "1 fora"/"2 fora"). Corrigido; ninguém o rodava porque não havia script. `npm test` agora roda os dois (32 verificações).
 - **Documentação que estava errada** e foi corrigida: B-05 e ROADMAP 2.2 (painel já roda `next start`), ROADMAP 1.4 e 2.6 (feitos), 2.3 (agora feito), `ARCHITECTURE.md`, `DECISIONS.md`, `BLOCKED.md` K-12, `SECURITY.md` (o `.bat` registra o watchdog de produção, não "o servidor de desenvolvimento") e `CLAUDE.md` §3 e §14 (dizia "zero testes").
 - **Limite**: o teste lê o registro em disco, não o `/api/states` ao vivo; entidade só de runtime (YAML sem `unique_id`) aparece como "fora do registro" e precisa de exceção justificada.
+
+
+## 13/10/2026 — Diagnóstico do DNS do container (só leitura): causa achada, correção é do André
+
+Os logs do HA mostravam "Timeout while contacting DNS servers" (Sonoff/eWeLink, HACS, SmartThings, Nabu Casa). Medido sem alterar nada: dentro do container o `/etc/resolv.conf` aponta para `192.168.65.7` (resolvedor do Docker Desktop, que repassa ao DNS do Windows); a resolução normal leva 2–5 ms (primeira consulta de cada host 15–95 ms, o resto em cache). O Windows tem **dois** servidores DNS: `192.168.31.1` (Wi-Fi, responde em ~7 ms) e `192.168.100.1` (interface "Ethernet", **desconectada**, IP 169.254.x, métrica 5 contra 30 do Wi-Fi; não responde a ping nem a DNS). Consultas que caem no segundo expiram.
+
+- **Frequência**: 14 "Timeout while contacting DNS" no log do container (desde 26/09) e 55 erros de DNS só do `us-dispa.coolkit.cc` (4–10 por dia desde 20/09). Efeito pequeno: reconexão do WebSocket Sonoff e atualização do HACS que falha às vezes.
+- **Correção** (não aplicada: é configuração de rede do Windows, alçada 3): `Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses` como administrador. Registrado em `planning/BLOCKED.md` como K-17.
+- **Alternativa descartada por ora**: fixar `--dns 192.168.31.1` no container exigiria recriá-lo (e refazer o patch do Glances); só se a correção no Windows não bastar.
+- **Não confirmado**: que o servidor morto seja a única causa; a verificação é recontar as ocorrências 24 h depois da correção.

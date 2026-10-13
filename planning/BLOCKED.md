@@ -66,6 +66,18 @@ apaga tudo" deixa de ser segura como está escrita.
 **Resolve de uma vez**: multicast e som multiroom, queda da casa quando o PC dorme, e a pasta do
 projeto sincronizada pelo Google Drive.
 
+### K-17 · DNS morto na placa Ethernet desconectada do PC (13/10/2026)
+**Destrava**: limpar o DNS da interface "Ethernet" do Windows (PowerShell **como administrador**):
+`Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses`
+**Por que só ele**: é configuração de rede do Windows (alçada 3).
+**Diagnóstico**: a "Ethernet" está desconectada (IP 169.254.x), mas guarda o DNS `192.168.100.1` (outra sub-rede, não responde:
+ping falha, consulta DNS expira) e tem métrica 5, **menor** que a do Wi-Fi (30). O DNS do Docker Desktop (`192.168.65.7`,
+dentro do container) repassa ao DNS do Windows, então algumas consultas caem no servidor morto: "Timeout while contacting
+DNS servers" no HA (Sonoff/eWeLink `us-dispa.coolkit.cc`: 55 ocorrências desde 20/09, 4–10 por dia; HACS, SmartThings,
+Nabu Casa). O DNS bom (`192.168.31.1`) responde em ~7 ms e a resolução normal leva 2–5 ms.
+**Impacto de não fazer**: baixo, mas contínuo: reconexões da nuvem Sonoff e atualizações do HACS que falham de vez em quando.
+**Depois de fazer**: nada a reiniciar; conferir com `docker logs --since 24h homeassistant | grep -c "contacting DNS"`.
+
 ### K-10 · Termostato e calendário
 **Destrava**: o termostato existe fisicamente e está offline; o calendário nunca foi integrado.
 ❓ **DESCONHECIDO**: modelo do termostato e se é integrável ao HA.
