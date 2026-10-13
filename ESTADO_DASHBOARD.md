@@ -6476,3 +6476,14 @@ Opção (b) escolhida pelo André. Spec: `specs/features/resumo-recolhivel-celul
 - **Como foi verificado sem a casa**: um gancho temporário (`?forcarSemLeitura=1`) forçou os dois medidores a `null` só no servidor de teste; confirmei cartão, selo, `aria-label`, subtítulo, chips, distribuição e tomadas; **o gancho foi removido antes do commit** (conferido por `grep`, zero resto). O caso parcial (um medidor fora) não se testa na tela porque o medidor do Luca já está fora hoje; fica coberto pelos testes de `lerWatts`/`wattsDaCasa`.
 - **Dado honesto no resumo**: o aspirador (`vacuum.dreame_us_415783444_mc1808`) está `unavailable` agora (nuvem Dreame), e a linha diz "Aspirador sem leitura"; o cartão dele mostra "Offline".
 - **Pendente**: a tomada do Quarto Luca e o aspirador seguem fora (diagnóstico de integração, não de painel).
+
+
+## 13/10/2026 (noite) — Varredura de leitura honesta: o aspirador inventava números
+
+Continuação da correção do "0 W" falso: varredura por `Number(...) || <valor>` em `app/` e `lib/`. Achado: `VacuumWidget` usava **números de fábrica** (`|| 43` min, `|| 39` m², `|| 307` limpezas, `|| 10968` m²) e o modal mostrava isso como medido sempre que o robô ficava offline (hoje está: nuvem Dreame). `dashboard-app/`, branch `fix/leitura-honesta` (`a3ac421`, `a3f38f4`; **enviada ao GitHub, sem merge e sem publicar**; `tsc` e `npm test` = 51 verificações).
+
+- `lerNumero` (em `lib/resumoCasa.ts`, base de `lerWatts`) devolve `null` quando não há leitura; o aspirador passa a mostrar "Sem leitura" nos chips e "—" nas estatísticas. Bateria 0% deixa de sumir (antes `|| null`). `totalLimpezas` (nunca usado) saiu. Verificado com o robô realmente offline: `Última Duração —`, `Área Limpa —`, `Total Limpo —` (antes 43 min, 39 m², 11,0 mil m²).
+- **Resultado da varredura**: nenhum outro `Number(estado) || n` em `app/` e `lib/`. Fora do padrão de busca (não varrido): leituras que tratam estado desconhecido como "desligado" por outro caminho; `DeviceTile`, TV e `RoomCard` já tratam `unavailable` como estado próprio.
+- **Detector impeccable agora limpo** (`[]`): `#64748b` (ponto "parado" da câmera) documentada em `DESIGN.md` como `slate-deep`.
+- **Wake Lock** (pergunta da pesquisa): `lib/wakeLock.ts` já pede o bloqueio de novo em `visibilitychange`; nada a corrigir.
+- **Descartado**: brilho deslizando no cartão do cômodo. Só 2 das 16 luzes são regulagem (`light.painel` em `color_temp`, sem `brightness`; `light.led_escritorio_sonoff…` em `rgb`, indisponível); as outras 14 são liga/desliga. O ganho não paga o gesto.
