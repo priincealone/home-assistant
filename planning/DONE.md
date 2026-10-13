@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026 (b)
+
+**Painel com animações (Motion) publicado** — cartões de cômodo, energia, mídia, cenas, dispositivos, clima, selos, aspirador, câmera e compras; SmartTruncateText sem laço de atualização. Publicado (3002 derrubada, watchdog recompilou). Animações e desempenho no tablet não verificados. Detalhe em ESTADO_DASHBOARD.md.
+
+---
+
 ## 13/10/2026
 
 **B-04 · Cena "gamer" × ventilação do PS5 — encerrado** — a cena já é `script.cena_gamer` (`config/scripts.yaml`,

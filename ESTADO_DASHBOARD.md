@@ -6374,3 +6374,16 @@ Verificação por leitura de código, sem acionar a casa. `script.cena_gamer` (`
 - **Também no commit**: regras R10 (escolha do `mode`) e R11 (`id`/`unique_id` estáveis) em `AUTOMATION-POLICY.md`, e a entrada anterior sobre as skills instaladas.
 - **Não verificado**: se o script carregado no HA é idêntico ao arquivo (não consultei a API).
 - **Fora do commit de propósito**: `core.device_registry`, `core.entity_registry` e `frontend.user_data_*`, reescritos pelo HA. Ficam para um commit separado.
+
+
+## 13/10/2026 — Painel com Motion publicado (animações) e laço do SmartTruncateText corrigido
+
+Pedido do André: melhorar o painel visualmente. Piloto com a biblioteca `motion` no cartão de cômodo, aprovado e então estendido, cartão a cartão, a todo o painel. Tudo no repositório `dashboard-app/` (git próprio), branch `fix/audit-p1-batch-01`; **sem push** ainda.
+
+- **Animações** (só `transform` e `opacity`; `MotionRoot` em `layout.tsx` com `reducedMotion="user"`): cartão de cômodo (chips entram/saem, contador `RollingNumber`), energia (`NumberTicker` nos watts), mídia (selo, ícone, botão), cenas rápidas (toque, pulo do ícone, selo "Ativando"), dispositivos, clima, selos de status (deslizam entre blocos de gravidade), pílulas, aspirador, câmera e lista de compras. Componentes novos: `components/ui/rolling-number.tsx`, `components/ui/number-ticker.tsx`, `app/components/MotionRoot.tsx`. Dependência nova: `motion`.
+- **Descartado de propósito**: BorderBeam do Magic UI. O cartão ativo já tem a `.room-card-refraction` em CSS puro, e o beam rodaria no processador em até 10 cartões.
+- **Correção de defeito antigo**: `SmartTruncateText` entrava em laço ("Maximum update depth exceeded", ~400 erros por carga em dev). Duas causas: `useEffect` sem dependências chamando `setState` a cada commit, e truncadores aninhados (dica do cartão de energia) alternando `isOverflowing` um por causa do outro. Solução: comparar por ref antes do `setState` e um disjuntor (6 trocas em 1 s congela o estado até o texto ou a janela mudarem). **A causa de fundo, o aninhamento, continua.**
+- **Texto corrigido**: a cena Gamer dizia "ventilação do PS5"; a ventilação é da automação (B-04).
+- **Publicação**: derrubada a porta 3002 pelo PID dono (15704, `next start`), watchdog recompilou e subiu em ~85 s; `BUILD_ID` novo (18:20), `/api/state` 200, 10 cartões, 157 W, sem indicador do Next, sem erro de laço.
+- **Não verificado**: as animações em si (dependem de mudança de estado; a casa não foi acionada) e o desempenho no tablet de parede. Tablets com a página aberta antes ainda rodam o JS antigo até recarregar.
+- **Armadilhas**: o contador de erros do `read_console_messages` acumula entre recargas e não serve de prova; usar o selo de problemas do Next e um listener de `console.error`.
