@@ -6652,3 +6652,26 @@ Painel `94cf233`, `12f6116`, `14b686d` (branch `fix/audit-p1-batch-01`), publica
   `dashboard-app/app/**` (menos `app/api`), `components/**`, `DESIGN.md` e `PRODUCT.md`; silêncio no resto. Testado com 7
   casos (inclui caminho Windows e entrada inválida).
 - Armadilha: agente e gancho novos só valem em sessão nova do Claude Code (são lidos na abertura).
+
+### 14/10/2026 · Revisão completa do porteiro e publicação (sem o aval final dele)
+
+Painel `7ec0023` (branch `fix/audit-p1-batch-01`) publicado na 3002 (BUILD_ID novo, conferido no ar: 10 cartões de cômodo com uma altura só, botões
+dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
+
+- **Percurso**: o `visual-gatekeeper` revisou o painel inteiro em 4 frentes (tela principal; cômodos e clima; energia, mídia e câmeras; aspirador, lista,
+  galeria e estados). Rodada 1 sobre o publicado (4 recusas: 10 altos, 23 médios); rodadas 2, 3 e 4 sobre a 3010. Cada rodada achou menos e mais
+  raro; tudo foi corrigido. Registro achado a achado em `artifacts/claude/revisao-porteiro-2026-10-14.md`.
+- **Exceção declarada**: a 4ª rodada voltou recusada nas 4 frentes; as correções dela (`fc9e11a`, `e89fc96`, `7ec0023`) **não foram reauditadas**. A 5ª rodada foi
+  interrompida pelo André por custo (cada rodada completa gasta ~600–900 mil tokens) e ele mandou publicar ("publique agora"). Foi uma decisão dele,
+  contra a regra do §17; a regra continua valendo para as próximas mudanças.
+- **Lição de custo**: porteiro completo (10 larguras × 2 orientações × 100/125/150%) só para mudança grande. Para mudança pequena: rodada enxuta (6 larguras,
+  100% e 150%, só a área alterada). Decisão do formato fica com o André.
+- **O que a revisão mudou no painel**: leitura honesta (sem leitura nunca vira Apagada/Desligado/Seguro/Baterias ok/Tudo apagado/0); nada escondido no
+  celular; texto grande de verdade (135 `font-size` de px para rem); Escape fecha todos os modais e o descanso; alvos de 44 px; folha inteira rola em tela
+  baixa; cabeçalho de modal que quebra entre palavras; cartões de cômodo de mesma altura.
+- **Incidente**: na 1ª rodada a frente B mandou por acidente `POST /api/control` (cena Leitura da luz do Painel); a rota respondeu 502 e a luz seguiu
+  apagada (conferido no HA). Desde então o porteiro instala uma trava de rede (só GET) antes de interagir e não clica por coordenada.
+- **Aberto (baixo)**: altura da folha da Mídia muda ao trocar de aba; `.preset-desc` sem `title`; aba ativa da galeria fora da faixa visível; iPad Pro em pé
+  deixa o 10º cômodo sozinho; zoom por pinça segue bloqueado por decisão do André.
+- **Não verificado**: estados 502/offline reais com HA parado (só simulados no navegador); animações do motion (a aba de auditoria roda em segundo plano);
+  zoom de teclado real; rolagem por toque físico no descanso de tela.

@@ -17,7 +17,9 @@ GET) antes de qualquer interação e não clica por coordenada.
 
 Legenda de estado: ☐ aberto · ☑ corrigido (aguarda nova revisão) · ✔ aprovado na nova revisão.
 
-## Correções (painel, branch fix/audit-p1-batch-01): aef6bba, 7cf88b8, a974f64 — não publicadas; aguardam nova revisão
+## Correções (painel, branch fix/audit-p1-batch-01): aef6bba, 7cf88b8, a974f64, c824155, e477b10, ac8bdb7, e09a018, 2509afc, 2aa580a, fc9e11a, e89fc96, 7ec0023
+
+**Publicado na 3002 em 14/10/2026 por decisão do André, SEM a reauditoria da 4ª rodada** (a 5ª foi interrompida por custo). Rodadas: 1 (publicado), 2, 3 e 4 (3010). Em cada uma as 4 frentes voltaram recusadas e o apontado foi corrigido; a 4ª teve correções ainda sem veredito.
 
 ## Frente A — tela principal
 - ☑ A-G01 Alto · ícone do cômodo cobre nome e selos em telas baixas (1024×640, 1024×600): `.room-card .room-icon-wrapper` piso 42 px (`globals.css:3614`)
