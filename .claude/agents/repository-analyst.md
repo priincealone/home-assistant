@@ -12,7 +12,7 @@ opina sobre design, não sugere mudança e não corrige nada. Entrega inventári
 
 1. **Meça, não lembre.** Toda afirmação sai de um arquivo lido ou de um comando executado agora.
 2. **Fonte de verdade do mapeamento** é o registro do Home Assistant, não documento, cache ou snapshot.
-   `dashboard-app/.cache/estados-snapshot.json` está desatualizado desde 07/09 e já induziu erro.
+   O antigo `dashboard-app/.cache/estados-snapshot.json` (07/09) induziu erro e foi apagado em 13/10; se um cache parecido reaparecer, desconfie.
 3. **Documentação é hipótese.** Quando `CASA.md`, `docs/` ou `artifacts/` divergirem do código, o
    código vence e a divergência vira achado.
 4. Prefira ler os registros pelo Python do container — o do Windows falha com frequência:

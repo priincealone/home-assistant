@@ -32,7 +32,7 @@ navegador.
 
 - **Escreve apenas em**: `dashboard-app/app/**` e `dashboard-app/components/**`.
 - **Proibido escrever em**: `config/**` (qualquer arquivo), `scripts/**`, `lib/ha.ts`,
-  `app/api/**` (é do `backend-engineer`), `lib/rooms.ts` e `manifesto-comodos.json` (contrato
+  `app/api/**` (é do `backend-engineer`), `lib/rooms.ts` (contrato
   compartilhado — proponha, não altere).
 - **Nunca** importe `lib/ha.ts` em componente `"use client"`: o token vazaria para o navegador.
 - **Nunca** acione a casa para testar visual. Se precisar ver um estado aceso, simule o dado.

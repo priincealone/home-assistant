@@ -157,7 +157,8 @@ componentes), `dashboard-app/components/ui/`, `dashboard-app/DESIGN.md` e `PRODU
 ## 7. Backend / borda — compartilhado, com revisão
 
 `dashboard-app/app/api/*/route.ts` (10 rotas), `dashboard-app/lib/ha.ts`,
-`dashboard-app/lib/rooms.ts`, `dashboard-app/manifesto-comodos.json`.
+`dashboard-app/lib/rooms.ts`. O `manifesto-comodos.json` é **histórico** (instantâneo da V1): nada o lê e o gerador foi
+aposentado em 13/10/2026 (B-12); o contrato é só `lib/rooms.ts`, conferido contra o registro do HA por `npm test`.
 
 `lib/rooms.ts` é o **contrato canônico**: descreve a casa e serve de lista de permissão das rotas
 `toggle` e `control`. Mudança aqui exige conferir as entidades no HA — foi a falta disso que deixou
@@ -324,7 +325,8 @@ Correção de defeito e diagnóstico não exigem especificação.
 
 - **Nuvem Tuya age sozinha.** O app Smart Life tem rotinas próprias; desativar a entidade `scene.*` no
   HA não para a rotina de lá. Diagnóstico: `scripts/diagnostico/quem_acendeu.py`
-- **Cache velho mente.** `dashboard-app/.cache/estados-snapshot.json` é de 07/09 e traz o mapa anterior
+- **Cache velho mente.** (O `dashboard-app/.cache/estados-snapshot.json` de 07/09 foi apagado em 13/10/2026; se um cache
+  parecido reaparecer, desconfie dele.) Ele trazia o mapa anterior
   à correção dos cômodos. A fonte de verdade é o registro do HA, lido na hora
 - **Glances**: o patch de timeout some quando o container é recriado do zero:
   ```bash

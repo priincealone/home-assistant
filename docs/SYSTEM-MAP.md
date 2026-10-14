@@ -32,7 +32,7 @@ está errado até prova em contrário — foi assim que a inversão foi resolvid
 | 3 | `light.cozinha_copa_varanda_switch_3` | **Lavanderia** |
 
 Corrigido em 15/09/2026 em seis lugares: registro `light.*`, nomes `switch.*`, `template_sensors.yaml`,
-`automations.yaml`, `lib/rooms.ts` e `manifesto-comodos.json`.
+`automations.yaml` e `lib/rooms.ts` (o `manifesto-comodos.json` é histórico desde 13/10/2026).
 
 ⚠️ **Resíduo conhecido**: os títulos das entradas `switch_as_x` em `core.config_entries` ainda trazem
 os rótulos antigos e invertidos. Não afetam comportamento, mas enganam quem audita — foi o que induziu

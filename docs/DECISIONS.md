@@ -18,6 +18,8 @@ junto com dez itens do HACS, temas e cards que só ela usava.
 
 **Consequência.** Uma interface para manter em vez de duas. O histórico do Lovelace continua no git.
 A regeneração do `manifesto-comodos.json` ficou quebrada, porque o gerador lia a dashboard removida.
+**Resolvido em 13/10/2026 (B-12)**: o gerador (`tools/gerar_manifesto.py`) e o snapshot de estados foram aposentados; o
+manifesto virou histórico e `lib/rooms.ts` é o contrato.
 
 ---
 
@@ -50,7 +52,7 @@ marcado como tal. Reverter exige regenerar o modelo a partir do IFC original.
 (infraestrutura e automação).
 
 **Decisão.** Claude Code opera em `config/`, `scripts/` e infraestrutura; Antigravity opera em
-`dashboard-app/`. `lib/rooms.ts`, `manifesto-comodos.json` e `app/api/*` são fronteira compartilhada.
+`dashboard-app/`. `lib/rooms.ts` e `app/api/*` são fronteira compartilhada (o `manifesto-comodos.json` é histórico desde 13/10/2026).
 Segredos, nuvem Tuya e rede são exclusivos do André.
 
 **Consequência.** Correção de contrato pode exigir o agente "errado" para o arquivo — foi o caso da

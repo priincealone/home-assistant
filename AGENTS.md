@@ -10,7 +10,7 @@ Este repositório abriga o sistema de automação residencial do André, estrutu
 
 - **Claude Code**: Opera na base de automações, infraestrutura de containers, scripts forenses em Python e manutenções do sistema operacional. **Não deve editar componentes visuais ou CSS em `dashboard-app/`**.
 - **Antigravity**: Opera na experiência de usuário (UX), interface em Next.js, sistema de design Liquid Glass, performance de renderização e acessibilidade. **Não deve alterar configurações físicas em `config/` (`automations.yaml`, `configuration.yaml`, `.storage/`) sem planejamento prévio aprovado**.
-- **Contrato Canônico Compartilhado**: O mapeamento entre a casa real e a interface é governado por [`dashboard-app/lib/rooms.ts`](file:///d:/HomeAssistant/dashboard-app/lib/rooms.ts) e [`dashboard-app/manifesto-comodos.json`](file:///d:/HomeAssistant/dashboard-app/manifesto-comodos.json). Renomear uma entidade física ou alterar seu `entity_id` sem sincronização quebra o painel.
+- **Contrato Canônico Compartilhado**: O mapeamento entre a casa real e a interface é governado por [`dashboard-app/lib/rooms.ts`](file:///d:/HomeAssistant/dashboard-app/lib/rooms.ts) . O `manifesto-comodos.json` é histórico (instantâneo da V1, aposentado em 13/10/2026). Renomear uma entidade física ou alterar seu `entity_id` sem sincronização quebra o painel.
 
 ---
 

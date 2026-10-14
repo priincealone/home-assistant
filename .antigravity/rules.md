@@ -59,7 +59,7 @@ Escopo: Atuação do agente Antigravity no ecossistema Home Assistant & Dashboar
 
 1. **Solicitação Prévia de Aprovação**:
    - O Antigravity **deve solicitar aprovação explícita do proprietário André para qualquer mudança arquitetural**, incluindo:
-     - Alterações no contrato canônico de dados ([`dashboard-app/lib/rooms.ts`](file:///c:/HomeAssistant/dashboard-app/lib/rooms.ts) e [`dashboard-app/manifesto-comodos.json`](file:///c:/HomeAssistant/dashboard-app/manifesto-comodos.json));
+     - Alterações no contrato canônico de dados ([`dashboard-app/lib/rooms.ts`](file:///c:/HomeAssistant/dashboard-app/lib/rooms.ts); o `manifesto-comodos.json` é histórico desde 13/10/2026);
      - Criação ou modificação de endpoints de API em `dashboard-app/app/api/*`;
      - Adição de novas dependências ou bibliotecas de terceiros no `package.json`;
      - Alterações na estratégia de autenticação, tokens ou comunicação de rede;
