@@ -170,6 +170,20 @@ e decidir quando apagar o backup.
 
 ---
 
+## D-013 · Automações do B-11 não serão feitas — 13/10/2026
+
+**Contexto.** O backlog propunha três automações novas: "saiu de casa → apagar tudo", luz de acolhimento ao
+chegar à noite e aspirador quando a casa esvazia. A primeira só seria segura enquanto houvesse uma pessoa
+cadastrada para a presença.
+
+**Decisão.** O André respondeu "B-11 não precisa". O item saiu do backlog; as oito automações atuais ficam como estão.
+
+**Consequência.** Nenhuma especificação em `specs/automations/` será escrita para esses três casos. Se algum voltar a
+fazer falta, entra como item novo, com a especificação antes (CLAUDE.md §16) e, para presença, a verificação da nuvem
+Tuya (R9) e do cadastro de pessoas.
+
+---
+
 ## Decisões pendentes
 
 | Assunto | Quem decide |

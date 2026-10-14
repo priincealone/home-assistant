@@ -76,8 +76,7 @@ docker exec -i homeassistant python - < scripts/testes/invariantes_automacoes.py
 
 Exceção conhecida só entra em `EXCECOES`, com o motivo. **Não** substitui o `check_config` (sintaxe).
 
-Os arquivos `dashboard-app/scratch/test_*.mjs` **não são testes** — imprimem no console e não afirmam
-nada.
+Os roteiros `dashboard-app/scratch/test_*.mjs` foram **removidos** em 13/10/2026 (liam o token e não afirmavam nada).
 
 O que existe hoje como verificação real:
 
