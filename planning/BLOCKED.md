@@ -82,8 +82,14 @@ projeto sincronizada pelo Google Drive.
    nuvem libera o mapa para convidado.
 5. Reservar o IP do robô no roteador (junto do K-06).
 6. **Rodar o script que ativa** (ele só confere nomes de chave, valida o token e o `check_config`, e restaura o arquivo se reprovar; não imprime valor nenhum):
-   `docker exec -i homeassistant python - < scripts/manutencao/ativa_mapa_aspirador.py`
-   (use `ATIVA_SIMULAR=1` antes para ver o que ele faria sem escrever; nomes de chave diferentes: `ATIVA_CHAVES=ip=a,token=b,usuario=c,senha=d`).
+   **no PowerShell** (o `<` não existe lá): `docker cp scripts/manutencao/ativa_mapa_aspirador.py homeassistant:/tmp/a.py`, depois
+   `docker exec homeassistant python /tmp/a.py`, depois `docker exec homeassistant rm /tmp/a.py`
+   (`ATIVA_SIMULAR=1` antes, **dentro** do exec: `docker exec -e ATIVA_SIMULAR=1 homeassistant python /tmp/a.py`; nomes de chave diferentes:
+   `-e ATIVA_CHAVES=ip=a,token=b,usuario=c,senha=d`).
+   **Diagnóstico** se a câmera não entrar (não imprime valor): `scripts/manutencao/diagnostico_mapa_aspirador.py`, copiado e rodado do mesmo jeito
+   (`/tmp/d.py`); o login na nuvem só com `-e DIAG_NUVEM=1`, **uma** vez.
+   **Usuário** é o da CONTA Xiaomi (e-mail, telefone ou id da conta), **não** o id de 9 dígitos que a ferramenta de tokens mostra ao lado do robô;
+   para trocar só usuário e senha: `docker exec -it -e GRAVA_SUBSTITUIR=usuario,senha homeassistant python /tmp/g.py`.
    **O token vai entre aspas** no `secrets.yaml` (um token só de dígitos vira número no YAML).
 7. Reiniciar o HA (`docker restart homeassistant`). Se a Xiaomi pedir confirmação em duas etapas, o aviso aparece no HA; não repita o pedido antes de 1 hora.
 **Já pronto do meu lado**: spec (`specs/features/mapa-aspirador.md`), o script acima (testado numa cópia com valores falsos, inclusive o rollback) e **o lado do

@@ -4,7 +4,11 @@
 # QUEM RODA: o André, DEPOIS de instalar o complemento pelo HACS e de gravar IP, token e conta Xiaomi no
 # config/secrets.yaml. O script só confere se as CHAVES existem; nenhum valor é impresso, copiado ou enviado.
 #
-#   docker exec -i homeassistant python - < scripts/manutencao/ativa_mapa_aspirador.py
+#   No PowerShell (o operador < NÃO existe lá):
+#     docker cp scripts/manutencao/ativa_mapa_aspirador.py homeassistant:/tmp/a.py
+#     docker exec homeassistant python /tmp/a.py
+#     docker exec homeassistant rm /tmp/a.py
+#   (no Git Bash/WSL também serve:  docker exec -i homeassistant python - < scripts/manutencao/ativa_mapa_aspirador.py)
 #
 # Variáveis (docker exec -e NOME=valor ...), todas opcionais:
 #   ATIVA_CHAVES   nomes das chaves no secrets.yaml, no formato  ip=a,token=b,usuario=c,senha=d

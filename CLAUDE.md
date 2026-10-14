@@ -38,6 +38,10 @@ docker exec -i homeassistant python - < script.py
 docker exec -i homeassistant python - --validar < script.py
 ```
 
+No **PowerShell** o operador `<` não existe (`Operador '<' reservado para uso futuro`): para rodar um script no container, copie-o e
+chame pelo caminho (`docker cp x.py homeassistant:/tmp/x.py`, `docker exec homeassistant python /tmp/x.py`); variáveis de ambiente vão
+**dentro** do exec (`docker exec -e VAR=1 homeassistant python /tmp/x.py`). Os exemplos com `< script.py` valem para Git Bash/WSL.
+
 Para editar `.storage` com o HA parado, use a própria imagem do HA:
 
 ```bash

@@ -1,7 +1,11 @@
 # Diagnóstico do mapa do aspirador (K-18): separa "o token está errado" de "o login da conta Xiaomi falhou".
 # QUEM RODA: o André (este script abre o secrets.yaml). NENHUM valor é impresso: nem IP, nem token, nem usuário, nem senha, nem URL de 2FA.
 #
-#   docker exec -i homeassistant python - < scripts/manutencao/diagnostico_mapa_aspirador.py
+#   No PowerShell (o operador < NÃO existe lá: copie o arquivo para dentro do container e rode pelo caminho):
+#     docker cp scripts/manutencao/diagnostico_mapa_aspirador.py homeassistant:/tmp/d.py
+#     docker exec homeassistant python /tmp/d.py
+#     docker exec homeassistant rm /tmp/d.py
+#   (no Git Bash/WSL também serve:  docker exec -i homeassistant python - < scripts/manutencao/diagnostico_mapa_aspirador.py)
 #
 # Passos (cada um diz OK ou FALHOU e o que fazer):
 #   1. as quatro chaves existem e o token é um texto de 32 hexadecimais;
@@ -10,7 +14,9 @@
 #   4. OPCIONAL, só com DIAG_NUVEM=1: um (1) login na nuvem Xiaomi, igual ao do complemento. Cada tentativa errada conta contra o limite
 #      da conta; rode no máximo uma vez e só se o passo 3 passou.
 #
-# Variáveis: ATIVA_CHAVES (mesmo formato do ativa_mapa_aspirador.py), DIAG_NUVEM=1, CONFIG_DIR (padrão /config).
+# Variáveis (vão DENTRO do docker exec, antes do nome do container): ATIVA_CHAVES (mesmo formato do ativa_mapa_aspirador.py),
+# DIAG_NUVEM=1, CONFIG_DIR (padrão /config). Exemplo do login na nuvem, UMA vez:
+#     docker exec -e DIAG_NUVEM=1 homeassistant python /tmp/d.py
 import io
 import os
 import re
