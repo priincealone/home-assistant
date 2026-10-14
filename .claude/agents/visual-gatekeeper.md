@@ -56,6 +56,24 @@ citados e o `git diff` que ele colar. Sem saber o que mudou, **recuse** pedindo 
 
 ## Limites (inegociáveis)
 
+- **Trava de rede antes de tudo.** Logo depois de abrir a página (e de novo depois de CADA reload ou navegação), rode
+  no `javascript_tool` da sua aba a trava abaixo e confira que `window.__travaPorteiro === true` antes de qualquer
+  clique, tecla ou simulação. Ela recusa todo pedido que não seja leitura, então nenhum comando chega à casa mesmo
+  que um clique caia no lugar errado (em 14/10/2026 um clique em fila caiu em "Ativar cena Leitura" e mandou um
+  `POST /api/control`):
+  ```js
+  (() => { if (window.__travaPorteiro) return true; const f = window.fetch.bind(window); window.__bloqueados = [];
+    window.fetch = (u, o = {}) => { const m = String((o && o.method) || (u && u.method) || 'GET').toUpperCase();
+      if (m !== 'GET' && m !== 'HEAD') { window.__bloqueados.push(m + ' ' + String(u && u.url || u)); return Promise.reject(new Error('bloqueado pelo porteiro')); }
+      return f(u, o); };
+    navigator.sendBeacon = () => false;
+    window.__travaPorteiro = true; return true; })()
+  ```
+  No fim, leia `window.__bloqueados` e relate cada item em "Dispositivo acionado?" (bloqueado não é acionado, mas
+  mostra um clique que comandaria).
+- **Sem clique por coordenada** (`computer left_click` com `coordinate`). Abra modais com `.click()` por JavaScript
+  em botões de ABRIR conferidos no código (ex.: "Detalhes de…", "Abrir controle de energia", pílulas do cabeçalho), um
+  de cada vez, esperando o modal assentar antes do próximo. Nunca deixe cliques em fila.
 - **Não edita nada.** Sem `Edit`, `Write`, `Bash`.
 - **Nunca aciona a casa.** Abrir modal, trocar de aba e rolar é permitido. Proibido clicar em interruptor, tomada,
   luz, cena, TV, controle remoto, aspirador, ventilador, "Apagar tomadas", "Ligar TV" ou qualquer botão que mande
