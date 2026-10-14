@@ -11,6 +11,12 @@
 # Depois rode o ativa_mapa_aspirador.py (primeiro com ATIVA_SIMULAR=1). As chaves criadas são:
 #   mapa_aspirador_ip, mapa_aspirador_token, mapa_xiaomi_usuario, mapa_xiaomi_senha
 #
+# Colar em campo oculto: no Windows Terminal use Ctrl+Shift+V (ou clique com o botão direito); Ctrl+V não cola ali. O script mostra
+# QUANTOS caracteres recebeu (nunca quais), para você saber se o colar funcionou. No token ele aceita a linha inteira que a ferramenta
+# imprime ("TOKEN: 5544…"): extrai sozinho os 32 caracteres hexadecimais.
+# Se o colar oculto não funcionar de jeito nenhum, use o modo VISÍVEL (o valor aparece na tela e fica no histórico do SEU terminal):
+#   docker exec -it -e GRAVA_VISIVEL=1 homeassistant python /tmp/grava_segredos_mapa.py
+#
 # Não sobrescreve: se alguma chave já existir, para sem alterar o arquivo. Variável opcional: CONFIG_DIR (padrão /config).
 import getpass
 import io
@@ -38,9 +44,16 @@ def sair(codigo, msg):
     sys.exit(codigo)
 
 
+VISIVEL = os.environ.get("GRAVA_VISIVEL") == "1"
+
+
 def pedir(rotulo, secreto=False):
-    leitor = getpass.getpass if secreto else input
-    return leitor(f"{rotulo}: ").strip()
+    oculto = secreto and not VISIVEL
+    leitor = getpass.getpass if oculto else input
+    valor = leitor(f"{rotulo}: ").strip()
+    if secreto:
+        print(f"   (recebi {len(valor)} caracteres)")  # só a quantidade, nunca o conteúdo
+    return valor
 
 
 def main():
@@ -59,9 +72,12 @@ def main():
     m = RE_IP.match(ip)
     if not m or any(int(x) > 255 for x in m.groups()):
         sair(1, "IP inválido. Nada foi gravado.")
-    token = pedir("Token do robô (32 caracteres hexadecimais)", secreto=True)
-    if not RE_TOKEN.match(token):
-        sair(1, "O token deve ter exatamente 32 caracteres hexadecimais. Nada foi gravado.")
+    bruto = pedir("Token do robô (32 caracteres hexadecimais)", secreto=True)
+    achado = re.search(r"(?<![0-9a-fA-F])[0-9a-fA-F]{32}(?![0-9a-fA-F])", bruto)
+    if not achado:
+        dica = " Parece que o colar não funcionou (nada chegou): use Ctrl+Shift+V ou o modo visível (GRAVA_VISIVEL=1)." if len(bruto) == 0 else ""
+        sair(1, f"Não achei 32 caracteres hexadecimais seguidos no que foi digitado ({len(bruto)} caracteres).{dica} Nada foi gravado.")
+    token = achado.group(0)
     usuario = pedir("Usuário da conta Xiaomi (e-mail ou id numérico)")
     if not usuario:
         sair(1, "Usuário vazio. Nada foi gravado.")

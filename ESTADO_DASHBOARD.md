@@ -6580,3 +6580,12 @@ O André colou no chat o IP e o token local do robô e disse "liberdade total pa
 - **Rede, sem token**: o "hello" público do miio (UDP 54321) do **container do HA** ao robô foi respondido em 181 ms e o id do aparelho (`415783444`) confere; ping do Windows sem perda. O unicast passa pelo Docker em NAT.
 - **`scripts/manutencao/grava_segredos_mapa.py`**: o André roda no terminal dele (`docker exec -it`); ele digita IP, token e senha (token e senha sem eco), o script valida (IP, token de 32 hex), acrescenta as quatro chaves ao `secrets.yaml` **sem sobrescrever** e **sem imprimir valor**, e confere que os valores voltam idênticos do YAML antes de gravar. Testado numa cópia com valores inventados: IP inválido, token curto, token não hexadecimal, usuário vazio (arquivo intacto), gravação boa com `:`, `#`, aspas e acento na senha (round-trip igual, comentário e chave existente preservados), segunda execução (recusa) e o `ativa_mapa_aspirador.py` enxergando as chaves. Cópia removida.
 - **Falta do André**: rodar `grava_segredos_mapa.py`, depois `ativa_mapa_aspirador.py` (primeiro com `ATIVA_SIMULAR=1`) e reiniciar o HA; depois, uma linha minha (`ENTIDADE_MAPA`), merge e publicação do painel.
+
+
+## 13/10/2026 (noite) — `grava_segredos_mapa.py`: o colar no campo oculto falhou para o André; script ficou mais tolerante
+
+Leitura do terminal do André (abas 5 e 6): o script rodou, o IP foi aceito e **o prompt do token recusou** ("deve ter exatamente 32 caracteres hexadecimais"): o colar em campo oculto provavelmente não chegou (Ctrl+V não cola em `getpass` no Windows Terminal; é Ctrl+Shift+V ou botão direito). Antes disso ele tinha rodado `docker exec` antes do `docker cp` (arquivo ainda não existia no container).
+
+- **Mudanças**: o script mostra **quantos** caracteres recebeu (nunca quais), extrai os 32 hexadecimais de uma linha inteira (`TOKEN:    5544…`), recusa 33 ou mais seguidos (para não cortar um valor errado), dá a dica do colar quando chega 0 caractere e ganhou o modo `GRAVA_VISIVEL=1` (o valor aparece na tela e fica no histórico do terminal do próprio André).
+- Testado numa cópia com valores falsos: token vazio, lixo, linha com rótulo (extraído certo), 33 hex (recusa) e modo visível.
+- Os valores que apareceram no terminal do André (IP, e só isso) não foram repetidos nem gravados por mim.
