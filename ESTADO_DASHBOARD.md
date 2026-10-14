@@ -6550,3 +6550,13 @@ Relatório completo em `artifacts/claude/aspirador-mapa-e-comodos.md`. Resumo: o
 
 - **Achado lateral**: "Última duração" e "Área" ficam "Sem leitura" porque `time-duration`, `size` e `start-time` são propriedades **só de notificação**: o HA guarda o último valor até reiniciar a integração (os reinícios de hoje, 18:26 e 20:09, os zeraram). O histórico guarda a última limpeza (49 min, 37 m², 15:26); total 11.346 m² em 318 limpezas. Dá para o painel mostrar "última limpeza" a partir do histórico, sem credencial.
 - **Decisão do André pendente**: (1) mapa e cômodos no painel via Map Extractor (ele configura conta e token; eu faço a rota e o cartão), (2) só a "última limpeza" pelo histórico, ou (3) nada.
+
+
+## 13/10/2026 (noite) — "Adicionar login": conta Xiaomi do aspirador, preparada e à espera do André
+
+O André pediu "adicionar login" e, perguntado, escolheu a **conta Xiaomi para o mapa do aspirador** (não login no painel; o painel segue sem autenticação, D-011).
+
+- **O que eu não posso fazer** (CLAUDE.md §10 e alçada 3): ver, digitar ou transportar a conta, a senha e o token do robô. **Nada disso foi pedido, lido ou usado.** O `config/secrets.yaml` não foi aberto.
+- **Pronto**: `specs/features/mapa-aspirador.md` (comportamento do painel, rota `GET /api/mapa` só leitura com o token do HA no servidor, estado "Mapa sem leitura", bloco `camera:` do Xiaomi Cloud Map Extractor com `!secret`, riscos e verificação) e `K-18` em `planning/BLOCKED.md` com os passos do André.
+- **Achados que mudam o plano**: o Map Extractor **não tem tela de configuração**: vai no `configuration.yaml` (`camera:`), com usuário e senha no `secrets.yaml`, que está dentro do Google Drive; por isso a recomendação de **conta Xiaomi secundária** com o aspirador compartilhado. Para o token, o mesmo autor tem o `Xiaomi Cloud Tokens Extractor` (roda no PC do André; login por senha ou QR code; limite de 2FA por dia).
+- **Não aplicado de propósito**: o bloco `camera:` **não** entrou no `configuration.yaml`. Com `!secret` apontando para chaves que ainda não existem, o `check_config` falharia e o HA não subiria.

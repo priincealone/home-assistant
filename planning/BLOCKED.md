@@ -66,6 +66,22 @@ apaga tudo" deixa de ser segura como está escrita.
 **Resolve de uma vez**: multicast e som multiroom, queda da casa quando o PC dorme, e a pasta do
 projeto sincronizada pelo Google Drive.
 
+### K-18 · Mapa e cômodos do aspirador: precisa da sua conta Xiaomi e do token do robô (13/10/2026)
+**Destrava** (só o André; token e senha nunca passam pela conversa):
+1. Instalar o **Xiaomi Cloud Map Extractor** pelo HACS (Integrações → buscar o nome). Ler antes o código no repositório do PiotrMachowski.
+2. Obter o **token e o IP do robô**: rodar **no seu PC** o `Xiaomi Cloud Tokens Extractor` (mesmo autor; Windows: `token_extractor.exe` da página de releases;
+   login por usuário e senha **ou por QR code**, que é o mais seguro). Ele lista cada aparelho da conta com IP e token. A Xiaomi limita pedidos de 2FA
+   por dia e manda o código por e-mail (olhar o spam).
+3. Gravar no `config/secrets.yaml` (só você abre esse arquivo): IP, token, usuário e senha Xiaomi. Se já houver chaves equivalentes (o `docs/SECURITY.md`
+   cita token do aspirador e conta Xiaomi), me diga **só os nomes das chaves**, nunca os valores.
+4. (Recomendado) Usar uma **conta Xiaomi secundária** com o aspirador compartilhado, para a senha da conta principal não ficar no Google Drive; testar se a
+   nuvem libera o mapa para convidado.
+5. Reservar o IP do robô no roteador (junto do K-06).
+**Depois disso**: eu acrescento o bloco `camera:` ao `configuration.yaml` com `!secret` (nível 2: plano na spec, sua aprovação), valido com `check_config`,
+reinicio o HA e construo a rota e o cartão do mapa. Spec pronta: `specs/features/mapa-aspirador.md`.
+**Impacto de não fazer**: nenhum risco; o robô liga, desliga e muda a sucção como hoje. Só não há mapa nem lista de cômodos no painel.
+**Limite**: limpar por cômodo pelo HA não aparece possível neste modelo (ver `artifacts/claude/aspirador-mapa-e-comodos.md`).
+
 ### K-17 · DNS morto na placa Ethernet desconectada do PC (13/10/2026)
 **Destrava**: limpar o DNS da interface "Ethernet" do Windows (PowerShell **como administrador**):
 `Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ResetServerAddresses`
