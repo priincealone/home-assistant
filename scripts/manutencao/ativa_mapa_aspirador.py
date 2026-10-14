@@ -11,12 +11,16 @@
 #                  (padrão: ip=mapa_aspirador_ip,token=mapa_aspirador_token,usuario=mapa_xiaomi_usuario,senha=mapa_xiaomi_senha)
 #   ATIVA_PAIS     país da conta Xiaomi: cn, de, us, ru, tw, sg, in, i2   (padrão: us, como as entidades dreame_us_…)
 #   ATIVA_SIMULAR  1 = só confere, não escreve nada
+#   ATIVA_SEM_LER_SEGREDOS  1 = NÃO abre o secrets.yaml: a validação das chaves fica com o próprio HA (o check_config lê o secrets por conta
+#                  própria e reprova se faltar chave ou se o token não for um texto de 32 caracteres). Usado quando quem roda NÃO é o dono
+#                  do arquivo (o Claude). A saída do check_config passa por uma máscara (32 hexadecimais e URLs viram ***).
 #   CONFIG_DIR     pasta de configuração (padrão /config; serve para testar numa cópia)
 #
 # Saída: 0 pronto (ou simulação ok), 1 falta algo (mensagem diz o quê), 2 o check_config reprovou e o
 # configuration.yaml foi RESTAURADO exatamente como estava. O script NÃO reinicia o HA.
 import io
 import os
+import re
 import subprocess
 import sys
 
@@ -24,6 +28,7 @@ import yaml
 
 CONFIG = os.environ.get("CONFIG_DIR", "/config")
 SIMULAR = os.environ.get("ATIVA_SIMULAR") == "1"
+SEM_LER = os.environ.get("ATIVA_SEM_LER_SEGREDOS") == "1"
 PAIS = os.environ.get("ATIVA_PAIS", "us")
 PAISES = {"cn", "de", "us", "ru", "tw", "sg", "in", "i2"}
 PADRAO = "ip=mapa_aspirador_ip,token=mapa_aspirador_token,usuario=mapa_xiaomi_usuario,senha=mapa_xiaomi_senha"
@@ -40,6 +45,12 @@ def chaves():
     if faltam:
         sair(1, f"ATIVA_CHAVES sem: {', '.join(faltam)} (formato ip=a,token=b,usuario=c,senha=d)")
     return mapa
+
+
+def mascarar(texto):
+    """Tira da saída do check_config qualquer 32 hexadecimais e URL (podem ser token ou convite de 2FA)."""
+    texto = re.sub(r"(?<![0-9a-fA-F])[0-9a-fA-F]{32}(?![0-9a-fA-F])", "***", texto)
+    return re.sub(r"https?://\S+", "***", texto)
 
 
 def sair(codigo, msg):
@@ -78,28 +89,33 @@ def main():
         sair(1, f"Falta instalar o complemento: não existe {CONFIG}/custom_components/{PLATAFORMA}. "
                 "No HACS: Integrações, buscar 'Xiaomi Cloud Map Extractor', baixar, reiniciar o HA.")
 
-    # 2) as chaves existem no secrets.yaml? (só os NOMES são lidos para comparar; valores nunca saem daqui)
-    caminho_sec = os.path.join(CONFIG, "secrets.yaml")
-    if not os.path.isfile(caminho_sec):
-        sair(1, f"Não achei {caminho_sec}.")
-    with io.open(caminho_sec, encoding="utf-8") as f:
-        presentes = set((yaml.safe_load(f) or {}).keys())
-    ausentes = [nome for nome in ch.values() if nome not in presentes]
-    if ausentes:
-        sair(1, "Faltam no secrets.yaml (só você abre esse arquivo): " + ", ".join(sorted(ausentes)) +
-                ". Se já existirem com outros nomes, rode de novo com ATIVA_CHAVES=ip=…,token=…,usuario=…,senha=…")
-    # valores vazios também reprovam, sem imprimir nada deles
-    with io.open(caminho_sec, encoding="utf-8") as f:
-        dados = yaml.safe_load(f) or {}
-    vazios = [nome for nome in ch.values() if dados.get(nome) in (None, "")]
-    if vazios:
-        sair(1, "Chaves sem valor no secrets.yaml: " + ", ".join(sorted(vazios)))
-    token = dados.get(ch["token"])
-    if not isinstance(token, str):
-        # token só de dígitos (ou do tipo "1e5…") vira número no YAML e o complemento o rejeita: precisa de aspas
-        sair(1, f"A chave '{ch['token']}' virou número no YAML. Coloque o token ENTRE ASPAS no secrets.yaml.")
-    if len(token) != 32:
-        sair(1, f"A chave '{ch['token']}' deve ter 32 caracteres (o complemento exige); tem {len(token)}. Confira o token do robô.")
+    if not SEM_LER:
+        # 2) as chaves existem no secrets.yaml? (só os NOMES são lidos para comparar; valores nunca saem daqui)
+        caminho_sec = os.path.join(CONFIG, "secrets.yaml")
+        if not os.path.isfile(caminho_sec):
+            sair(1, f"Não achei {caminho_sec}.")
+        with io.open(caminho_sec, encoding="utf-8") as f:
+            presentes = set((yaml.safe_load(f) or {}).keys())
+        ausentes = [nome for nome in ch.values() if nome not in presentes]
+        if ausentes:
+            sair(1, "Faltam no secrets.yaml (só você abre esse arquivo): " + ", ".join(sorted(ausentes)) +
+                    ". Se já existirem com outros nomes, rode de novo com ATIVA_CHAVES=ip=…,token=…,usuario=…,senha=…")
+        # valores vazios também reprovam, sem imprimir nada deles
+        with io.open(caminho_sec, encoding="utf-8") as f:
+            dados = yaml.safe_load(f) or {}
+        vazios = [nome for nome in ch.values() if dados.get(nome) in (None, "")]
+        if vazios:
+            sair(1, "Chaves sem valor no secrets.yaml: " + ", ".join(sorted(vazios)))
+        token = dados.get(ch["token"])
+        if not isinstance(token, str):
+            # token só de dígitos (ou do tipo "1e5…") vira número no YAML e o complemento o rejeita: precisa de aspas
+            sair(1, f"A chave '{ch['token']}' virou número no YAML. Coloque o token ENTRE ASPAS no secrets.yaml.")
+        if len(token) != 32:
+            sair(1, f"A chave '{ch['token']}' deve ter 32 caracteres (o complemento exige); tem {len(token)}. Confira o token do robô.")
+
+
+    else:
+        print("(modo ATIVA_SEM_LER_SEGREDOS: o secrets.yaml não foi aberto; o check_config confere as chaves)")
 
     # 3) configuration.yaml: sem duplicar
     caminho_cfg = os.path.join(CONFIG, "configuration.yaml")
@@ -130,7 +146,7 @@ def main():
             f.write(original)
         saida = (r.stdout + r.stderr).strip().splitlines()
         print("check_config REPROVOU; configuration.yaml restaurado como estava. Últimas linhas:")
-        print("\n".join(saida[-15:]))
+        print(mascarar("\n".join(saida[-15:])))
         return 2
     print("check_config passou e o bloco foi acrescentado ao configuration.yaml.")
     print("Falta reiniciar o HA (docker restart homeassistant). O mapa pode levar alguns minutos para aparecer;")
