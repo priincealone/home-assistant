@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 13/10/2026 (f)
+
+**B-15 · Lógica pura testada** — `lib/energiaHistorico.ts` (histórico de energia, previsão) e `lib/estadosOtimistas.ts` (travas otimistas) extraídos sem mudar o comportamento (teste diferencial: 500 casos aleatórios idênticos ao código antigo); `tests/logica-pura.test.mjs`, 30 verificações. **O teste achou um defeito**: a primeira série da resposta virava sempre o PC, mesmo quando o `entity_id` dizia Luca; agora o `entity_id` manda. **B-07 · ESLint** — `eslint@9` + `eslint-config-next@16.3.3`, `eslint.config.mjs`, `npm run lint` com teto de 58 avisos (0 erros; erro ou aviso novo derruba, provado com defeitos plantados), `npm run typecheck` para o `tsc`. Achou e corrigiu um erro real: `useCallback` depois de `return` antecipado em `app/comodo/[id]/page.tsx`. Branches do painel ainda **não publicadas**: `test/logica-pura` e `chore/eslint` (empilhadas), enviadas ao GitHub.
+
+---
+
 ## 13/10/2026 (e)
 
 **L-05 · Invariantes das automações** — `scripts/testes/invariantes_automacoes.py` (somente leitura, Python do container) confere em `automations.yaml` e `scripts.yaml` as regras R1, R2, R3, R4, R5, R8, R10 e R11 da `AUTOMATION-POLICY.md`. Hoje as 8 automações passam (0 violações, 2 avisos de revisão: janela 00:00→00:30 e `light.painel` com dois donos que acendem em contextos distintos). Validado contra um YAML adulterado com 10 defeitos plantados: as 10 foram pegas (R1, R2, R3, R4, R5, R8, R10, R11). Entrou no CLAUDE.md §3/§14 e no procedimento da política.

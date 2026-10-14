@@ -7,10 +7,6 @@ Ordenado por valor, não por esforço.
 
 ## Alto valor
 
-### B-07 · Instalar e configurar ESLint
-Não existe dependência nem configuração; `npm run lint` não funciona.
-**Esforço**: baixo · **Executor**: Antigravity
-
 ### B-09 · Levar as quatro cenas do painel para o Home Assistant
 Hoje existem só em TypeScript: invisíveis ao HA, inacessíveis por voz ou automação, e somem se o
 painel cair. `config/scenes.yaml` está vazio.
@@ -44,11 +40,6 @@ o que induziu a auditoria do Antigravity ao erro.
 ### B-14 · Arquivar resíduos de desenvolvimento no `dashboard-app`
 `test_err.log`, `test_out.log` (vazios), `scratch/` com roteiros exploratórios e `.cache` com snapshot
 de 07/09 já desatualizado — este último quase causou uma correção invertida.
-**Esforço**: baixo · **Executor**: Antigravity
-
-### B-15 · Testes de lógica pura
-`getEnergyHistory`, `getWeatherForecast` e o mesclador de travas otimistas são determinísticos e
-testáveis sem rede. → `test-gap-analysis.md` L-04
 **Esforço**: baixo · **Executor**: Antigravity
 
 ### B-16 · Rever peças do aspirador

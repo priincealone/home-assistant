@@ -53,10 +53,14 @@ docker run --rm -i -v D:/HomeAssistant/config:/config \
 mínima em `dashboard-app/tests/`, em Node puro com `node:assert`:
 
 ```bash
-cd dashboard-app && npm test      # 32 verificações; leva ~1 s; não aciona a casa nem fala com o HA
+cd dashboard-app && npm test      # 81 verificações; leva ~1 s; não aciona a casa nem fala com o HA
 ```
 
 - `tests/rede.test.mjs` — lógica pura do campo "Rede" (`lib/rede.ts`) com estados simulados.
+- `tests/resumo-casa.test.mjs` — resumo de uma linha do celular e `lerNumero`/`lerWatts` (sem leitura nunca vira 0).
+- `tests/logica-pura.test.mjs` — **B-15**: histórico de energia (`lib/energiaHistorico.ts`), escolha da previsão do tempo e
+  fusão de estados com travas otimistas (`lib/estadosOtimistas.ts`); houve também um teste diferencial, feito uma vez
+  contra o código antigo (500 casos).
 - `tests/contrato-entidades.test.mjs` — **B-03**: toda entidade de `lib/rooms.ts` existe no
   `core.entity_registry`, não está desativada, tem o domínio declarado e está na área do cômodo (L-01/L-02).
   Lê `../config/.storage` (ou `HA_STORAGE`); sem a pasta, **pula com código 3**, nunca passa em silêncio.
@@ -85,8 +89,8 @@ docker exec -i homeassistant python -m homeassistant --script check_config -c /c
 docker exec -i homeassistant python -c "import json,io;json.load(io.open('/config/.storage/core.entity_registry',encoding='utf-8'));print('ok')"
 ```
 
-**TODO** — ampliar a suíte (`artifacts/claude/test-gap-analysis.md`): L-04 (lógica pura de energia, clima e
-travas otimistas) e teste de rota com dublê do HA. Teste de escrita **nunca** contra a casa.
+**TODO** — ampliar a suíte (`artifacts/claude/test-gap-analysis.md`): teste de rota com dublê do HA e fumaça ponta a ponta
+(L-06). Teste de escrita **nunca** contra a casa.
 
 ---
 
@@ -94,15 +98,20 @@ travas otimistas) e teste de rota com dublê do HA. Teste de escrita **nunca** c
 
 ```bash
 cd dashboard-app
-npx tsc --noEmit     # ✅ funciona (verificado em 15/09, saída 0)
+npx tsc --noEmit     # ✅ ou `npm run typecheck`
+npm run lint         # ✅ ESLint 9 + eslint-config-next (desde 13/10/2026): 0 erros, teto de 58 avisos
 npm run build        # ✅ passa (verificado em 25/09). Se falhar com "Module not found" em next/dist/compiled,
                      #    faltam arquivos em node_modules/next (Google Drive): reinstalar o Next
-npm run lint         # ❌ NÃO FUNCIONA
 ```
 
-`npm run lint` chama `next lint`, removido no Next 16 — e **não há ESLint instalado** no projeto
-(nenhuma dependência, nenhuma configuração). Não existe análise estática. Enquanto isso não mudar,
-`npx tsc --noEmit` é a única verificação disponível para o painel.
+`npm run lint` é `eslint . --max-warnings 58`: **erro novo ou aviso novo derruba** (provado com defeitos plantados).
+As regras "estilo React Compiler" (`set-state-in-effect`, `refs`, `purity`, `static-components`) e `no-explicit-any` ficam
+como **aviso** em `eslint.config.mjs`, porque o padrão que condenam é o do código inteiro; as que pegam defeito de verdade
+(`rules-of-hooks`, `exhaustive-deps`) valem. Ao limpar avisos, **baixe o teto** no `package.json`.
+
+⚠️ O `node_modules` mora no Google Drive e pode perder arquivos (já aconteceu com `next` e com `@babel/*`: "Cannot find
+module ./generated/index.js"). Sintoma no ESLint: "Oops! Something went wrong". Conserto: apagar a pasta do pacote
+citada (ex.: `rm -rf node_modules/@babel`) e rodar `npm install`.
 
 ---
 
