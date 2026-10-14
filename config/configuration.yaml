@@ -48,3 +48,18 @@ logger:
   default: warning
   logs:
     urllib3.connectionpool: error
+
+# Mapa do aspirador (Xiaomi Cloud Map Extractor): K-18, specs/features/mapa-aspirador.md
+camera:
+  - platform: xiaomi_cloud_map_extractor
+    name: Mapa do aspirador
+    host: !secret mapa_aspirador_ip
+    token: !secret mapa_aspirador_token
+    username: !secret mapa_xiaomi_usuario
+    password: !secret mapa_xiaomi_senha
+    country: us
+    draw: ["all"]
+    attributes: [calibration_points, rooms, room_numbers, vacuum_room_name]
+    scan_interval: 60
+    store_map_raw: false
+    store_map_image: false
