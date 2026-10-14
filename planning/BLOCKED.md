@@ -77,8 +77,14 @@ projeto sincronizada pelo Google Drive.
 4. (Recomendado) Usar uma **conta Xiaomi secundária** com o aspirador compartilhado, para a senha da conta principal não ficar no Google Drive; testar se a
    nuvem libera o mapa para convidado.
 5. Reservar o IP do robô no roteador (junto do K-06).
-**Depois disso**: eu acrescento o bloco `camera:` ao `configuration.yaml` com `!secret` (nível 2: plano na spec, sua aprovação), valido com `check_config`,
-reinicio o HA e construo a rota e o cartão do mapa. Spec pronta: `specs/features/mapa-aspirador.md`.
+6. **Rodar o script que ativa** (ele só confere nomes de chave, valida o token e o `check_config`, e restaura o arquivo se reprovar; não imprime valor nenhum):
+   `docker exec -i homeassistant python - < scripts/manutencao/ativa_mapa_aspirador.py`
+   (use `ATIVA_SIMULAR=1` antes para ver o que ele faria sem escrever; nomes de chave diferentes: `ATIVA_CHAVES=ip=a,token=b,usuario=c,senha=d`).
+   **O token vai entre aspas** no `secrets.yaml` (um token só de dígitos vira número no YAML).
+7. Reiniciar o HA (`docker restart homeassistant`). Se a Xiaomi pedir confirmação em duas etapas, o aviso aparece no HA; não repita o pedido antes de 1 hora.
+**Já pronto do meu lado**: spec (`specs/features/mapa-aspirador.md`), o script acima (testado numa cópia com valores falsos, inclusive o rollback) e **o lado do
+painel** (`/api/mapa`, `/api/mapa/imagem` e a seção "Mapa" do modal), desligado até a câmera existir. Falta só **uma linha** minha depois do passo 7: o
+`entity_id` da câmera em `lib/mapaAspirador.ts` (`ENTIDADE_MAPA`), mais o merge e a publicação do painel.
 **Impacto de não fazer**: nenhum risco; o robô liga, desliga e muda a sucção como hoje. Só não há mapa nem lista de cômodos no painel.
 **Limite**: limpar por cômodo pelo HA não aparece possível neste modelo (ver `artifacts/claude/aspirador-mapa-e-comodos.md`).
 

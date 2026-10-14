@@ -36,11 +36,14 @@ camera:
     password: !secret mapa_xiaomi_senha
     country: us            # o robô está na conta "us" (entidades dreame_us_…); confirmar com o André
     draw: ["all"]
-    attributes: [calibration_points, rooms, room_numbers]
-    scan_interval: 30      # o padrão é 5 s; 30 s poupa a nuvem e a conta
+    attributes: [calibration_points, rooms, room_numbers, vacuum_room_name]
+    scan_interval: 60      # o padrão é 5 s e, a cada falha de mapa, o complemento refaz o login: pode travar a conta
+    store_map_raw: false   # sem planta da casa em /tmp
+    store_map_image: false
 ```
 
-Os quatro nomes de chave são sugestões: se o `secrets.yaml` já tiver chaves equivalentes (o `docs/SECURITY.md` cita token do
+**Quem aplica**: o script `scripts/manutencao/ativa_mapa_aspirador.py` (o André roda, depois do passo 1; ele só confere os NOMES das
+chaves, valida o token e o `check_config`, e restaura o arquivo se reprovar). Os quatro nomes de chave são sugestões: se o `secrets.yaml` já tiver chaves equivalentes (o `docs/SECURITY.md` cita token do
 aspirador e conta Xiaomi), reutilize os nomes dele em vez de duplicar. **Nenhum valor passa pela conversa.**
 
 ## Entidades envolvidas
@@ -63,6 +66,15 @@ A câmera some e volta com o HA; o painel mostra "Mapa sem leitura" enquanto iss
 automação depende do mapa. O primeiro mapa pode levar alguns minutos depois de um boot.
 
 ## Riscos e cuidados
+
+- **Revisão do código do complemento** (feita por leitura de `camera.py` e `xiaomi_cloud_connector.py`, **não** foi uma auditoria completa: os módulos por
+  fabricante, como o da Dreame, não foram lidos): só fala com hosts da Xiaomi (`account.xiaomi.com`, `*.api.io.mi.com`), não grava credencial em disco nem
+  em log, sem `eval`/`exec`/`subprocess`/`pickle`, TLS verificado. Pontos fracos: senha em MD5 sem sal e **credenciais na query string** do login (é o protocolo da
+  Xiaomi), RC4 (idem), `requirements` **sem versão fixa** (pillow, python-miio, requests…, instalados no boot do HA), a URL de 2FA fica num **atributo da
+  câmera**, e a cada falha de mapa ele refaz o login (daí o `scan_interval: 60`).
+- **A câmera nunca entra no polling geral** do painel (`todasEntidades`): os atributos dela podem trazer a URL de 2FA e o painel não tem autenticação. O teste de
+  contrato barra isso, e a rota `/api/mapa` só devolve `status`, `salas`, `salaAtual` e `atualizadoEm`.
+- **Token entre aspas no `secrets.yaml`**: um token só de dígitos vira número no YAML e o complemento o rejeita; o script avisa.
 
 - **Segredos no Google Drive**: `config/secrets.yaml` está dentro da pasta sincronizada (`docs/SECURITY.md`). Preferir uma **conta Xiaomi
   secundária** com o aspirador compartilhado, em vez da conta principal (se a nuvem liberar o arquivo do mapa para convidado; testar).
