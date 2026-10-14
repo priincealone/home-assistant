@@ -72,7 +72,11 @@ projeto sincronizada pelo Google Drive.
 2. Obter o **token e o IP do robô**: rodar **no seu PC** o `Xiaomi Cloud Tokens Extractor` (mesmo autor; Windows: `token_extractor.exe` da página de releases;
    login por usuário e senha **ou por QR code**, que é o mais seguro). Ele lista cada aparelho da conta com IP e token. A Xiaomi limita pedidos de 2FA
    por dia e manda o código por e-mail (olhar o spam).
-3. Gravar no `config/secrets.yaml` (só você abre esse arquivo): IP, token, usuário e senha Xiaomi. Se já houver chaves equivalentes (o `docs/SECURITY.md`
+3. Gravar no `config/secrets.yaml` (só você abre esse arquivo): IP, token, usuário e senha Xiaomi. **Atalho sem passar pela conversa**: o script interativo
+   `scripts/manutencao/grava_segredos_mapa.py` pede os quatro valores no seu terminal (token e senha sem eco), valida e acrescenta as chaves sem
+   sobrescrever nada e sem imprimir valor: `docker cp scripts/manutencao/grava_segredos_mapa.py homeassistant:/tmp/g.py`, depois
+   `docker exec -it homeassistant python /tmp/g.py`, depois `docker exec homeassistant rm /tmp/g.py`. (Rede já conferida em 13/10: o container do HA
+   alcança o robô por UDP 54321 e o id do aparelho bate.) Se já houver chaves equivalentes (o `docs/SECURITY.md`
    cita token do aspirador e conta Xiaomi), me diga **só os nomes das chaves**, nunca os valores.
 4. (Recomendado) Usar uma **conta Xiaomi secundária** com o aspirador compartilhado, para a senha da conta principal não ficar no Google Drive; testar se a
    nuvem libera o mapa para convidado.
