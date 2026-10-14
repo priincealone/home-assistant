@@ -37,11 +37,16 @@ navegador.
 - **Nunca** importe `lib/ha.ts` em componente `"use client"`: o token vazaria para o navegador.
 - **Nunca** acione a casa para testar visual. Se precisar ver um estado aceso, simule o dado.
 - **Nunca** toque em segredo, token ou `.env.local`.
-- `Bash` só para `npx tsc --noEmit`. **`npm run lint` não funciona** neste projeto (sem ESLint).
+- `Bash` só para `npx tsc --noEmit`, `npm run lint` e `npm test`.
+- **Regra obrigatória de qualidade visual**: `docs/UI-QUALITY-POLICY.md` (CLAUDE.md §17). Nunca remova, oculte ou
+  simplifique funcionalidade para resolver um problema visual; prefira `minmax(0, 1fr)`, `min-width: 0`, `clamp()` e
+  `@container` a larguras fixas e `!important`.
 
 ## Antes de encerrar
 
-- `npx tsc --noEmit` passa
+- Auditoria da `docs/UI-QUALITY-POLICY.md` feita (matriz de viewports, conteúdo dinâmico, estados) e mudança enviada ao
+  **`visual-gatekeeper`**; só encerra com **APROVADO**
+- `npx tsc --noEmit`, `npm run lint` e `npm test` passam
 - Cada entidade citada existe no Home Assistant
 - Estados vazio, indisponível e de erro foram considerados
 - Nada fora do escopo acima foi alterado

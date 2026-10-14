@@ -184,6 +184,18 @@ cadastrada para a presença.
 fazer falta, entra como item novo, com a especificação antes (CLAUDE.md §16) e, para presença, a verificação da nuvem
 Tuya (R9) e do cadastro de pessoas.
 
+## D-014 · Regra obrigatória de qualidade visual e porteiro visual — 14/10/2026
+
+**Decisão** (André): toda mudança visual do painel segue `docs/UI-QUALITY-POLICY.md` e só fica pronta com APROVADO do
+agente `visual-gatekeeper`. Nunca remover, ocultar, simplificar ou substituir funcionalidade para resolver problema visual.
+
+**Por quê**: correções pontuais deixavam regressões em telas vizinhas (texto vazando, corte seco, desalinhamento) que o
+André achava no uso. A revisão humana passa a ser a última camada de confirmação, não a etapa de correção.
+
+**Como**: CLAUDE.md §17; agente `.claude/agents/visual-gatekeeper.md` (somente leitura, nunca aciona a casa); gancho
+`.claude/settings.json` → `scripts/hooks/lembrete_revisao_visual.mjs` lembra a regra a cada edição de arquivo visual;
+`dashboard-app/AGENTS.md` §3 para o Antigravity.
+
 ---
 
 ## Decisões pendentes

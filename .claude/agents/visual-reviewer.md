@@ -1,6 +1,6 @@
 ---
 name: visual-reviewer
-description: Inspeciona a interface renderizada no navegador — layout, contraste, alvos de toque, estados e comportamento responsivo. Use após mudança visual ou quando algo parecer errado na tela. Observa e mede; nunca corrige nem aciona dispositivos.
+description: Inspeção exploratória da interface renderizada — layout, contraste, alvos de toque, estados e responsividade. Use quando algo parecer errado na tela ou para auditoria geral. Para aprovar ou recusar uma mudança visual, use o visual-gatekeeper. Observa e mede; nunca corrige nem aciona dispositivos.
 tools: Read, Grep, Glob, mcp__Claude_Browser__navigate, mcp__Claude_Browser__computer, mcp__Claude_Browser__read_page, mcp__Claude_Browser__get_page_text, mcp__Claude_Browser__find, mcp__Claude_Browser__javascript_tool, mcp__Claude_Browser__resize_window, mcp__Claude_Browser__read_console_messages
 model: sonnet
 ---

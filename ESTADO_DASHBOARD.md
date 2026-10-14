@@ -6640,3 +6640,15 @@ Painel `94cf233`, `12f6116`, `14b686d` (branch `fix/audit-p1-batch-01`), publica
 - `SmartTruncateText`: transborda a partir de 1 px (eram 3 px; "Tomada Cabeceira", 131 em 128 px, era cortada seco).
 - Armadilha: a regra global de cartão neutro (`:where(...)`, 27/09) pega qualquer classe listada. Antes de incluir um
   elemento interno de cartão nela, confira se ele não é só um agrupador de texto.
+
+### 14/10/2026 · Regra obrigatória de qualidade visual (D-014)
+
+- `docs/UI-QUALITY-POLICY.md`: a regra do André (não entregar erros, matriz de 10 larguras × retrato/paisagem, conteúdo
+  dinâmico, estados, fluxo diagnóstico → auditoria → correção → porteiro → relatório) adaptada ao projeto: zoom por pinça
+  segue bloqueado por decisão; `!important` novo só para vencer um `!important` herdado; auditoria nunca aciona a casa.
+- Agente `visual-gatekeeper` (Opus, somente leitura, ferramentas do navegador): mede e devolve APROVADO/RECUSADO.
+  O `visual-reviewer` fica para inspeção exploratória.
+- Gancho PostToolUse (`.claude/settings.json` → `scripts/hooks/lembrete_revisao_visual.mjs`): avisa em edição de
+  `dashboard-app/app/**` (menos `app/api`), `components/**`, `DESIGN.md` e `PRODUCT.md`; silêncio no resto. Testado com 7
+  casos (inclui caminho Windows e entrada inválida).
+- Armadilha: agente e gancho novos só valem em sessão nova do Claude Code (são lidos na abertura).

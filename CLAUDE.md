@@ -284,6 +284,7 @@ A suíte (§3) cobre só a leitura; para o resto vale o mínimo:
 | Painel | `npx tsc --noEmit` e `npm test` |
 | Contrato de entidades (`lib/rooms.ts`, áreas, entidades do HA) | `npm test` (confere cada `entity_id` e a área contra `core.entity_registry`) |
 | Automação nova ou alterada | `check_config`, `invariantes_automacoes.py` (§3), confirmar que carregou (`on`) e que nenhuma outra governa o mesmo atuador |
+| Qualquer mudança visual do painel | Auditoria da `docs/UI-QUALITY-POLICY.md` (matriz de viewports, conteúdo dinâmico, estados) e **APROVADO** do agente `visual-gatekeeper` (§17) |
 
 Todo teste de escrita precisa de dublê do HA — a casa não é ambiente de teste.
 Teste que só verifica "respondeu 200" passa com a luz errada acesa.
@@ -305,6 +306,8 @@ Uma tarefa está pronta quando:
 
 Não está pronto se a verificação foi pulada "porque obviamente funciona".
 
+Mudança visual só está pronta com o **APROVADO** do `visual-gatekeeper` e com o relatório final da §17.
+
 ---
 
 ## 16. Especificação antes da implementação
@@ -322,6 +325,28 @@ automação isso não é burocracia: é onde se declara o dono de cada atuador e
 reiniciar no meio, que são exatamente os erros que já aconteceram aqui.
 
 Correção de defeito e diagnóstico não exigem especificação.
+
+---
+
+## 17. Qualidade visual — regra obrigatória (desde 14/10/2026)
+
+Toda mudança na interface do painel (`dashboard-app/app/**`, `components/**`, `globals.css`, `DESIGN.md`) segue
+**`docs/UI-QUALITY-POLICY.md`**, instituída pelo André. Em resumo:
+
+- **Não entregue erros.** Audite a área alterada **e as adjacentes** (mesma classe, mesmo componente, regra global do
+  `globals.css`) em 320, 375, 390, 430, 768, 820, 1024, 1280, 1440 e 1920 px, retrato e paisagem, texto grande,
+  conteúdo curto/longo/vazio e estados carregando/erro/offline/indisponível. Corrija tudo antes de entregar.
+- **Proibido**: texto cortado seco, sobreposto ou fora do contêiner; desalinhamento; largura/altura fixa que quebra com
+  conteúdo; rolagem horizontal não intencional; layout que depende de quantidade ou tamanho de dado.
+- **Nunca remova, oculte, simplifique ou substitua funcionalidade** para resolver problema visual: corrija a causa raiz.
+- **Porteiro**: o agente **`visual-gatekeeper`** (`.claude/agents/visual-gatekeeper.md`) revisa toda mudança visual e
+  devolve APROVADO ou RECUSADO. RECUSADO volta para correção; não se publica sem APROVADO.
+- **Gancho**: `.claude/settings.json` roda `scripts/hooks/lembrete_revisao_visual.mjs` a cada edição de arquivo visual e
+  lembra a regra no contexto.
+- **Relatório final**: o que mudou, problemas encontrados e corrigidos, testes feitos, o que **não** pôde ser verificado
+  (com a verificação manual mínima que falta) e, só se for verdade, "Nenhuma regressão visual ou funcional conhecida
+  permanece." **Não finja teste.**
+- A auditoria **nunca aciona a casa** (§11): abrir modal e rolar, sim; botão que manda comando, não. Simule o dado.
 
 ---
 
