@@ -6627,3 +6627,16 @@ Leitura do terminal do André (nenhum valor foi repetido): usuário e senha Xiao
   (`ENTIDADE_MAPA = null`); a branch `feat/mapa-aspirador` segue pronta.
 - Caminhos para retomar (decisão do André): versão do complemento que trate captcha/token de sessão, login feito fora do container com o token de
   sessão copiado de arquivo para arquivo, ou ler o mapa por outra integração. Nada disso foi tentado.
+
+### 14/10/2026 · Refino dos modais de Energia e Mídia no celular (publicado)
+
+Painel `94cf233`, `12f6116`, `14b686d` (branch `fix/audit-p1-batch-01`), publicado na 3002 e conferido em 375 px e 768 px.
+- Energia: a faixa de chips cortava a 2ª linha (`overflow-y: hidden` + encolhimento do flex); agora são chips empilhados
+  (rótulo/valor) em 3 colunas, com Tomadas embaixo. O cabeçalho do histórico estava alinhado à direita (a regra genérica
+  `.popup-section-title-row` virava a linha em coluna com `flex-end`). A distribuição virou linhas no celular ("147 W (100%)"
+  precisava de 89 px em 56). Nas tomadas, o grupo de texto media o conteúdo e não o cartão (`align-items: flex-start`).
+- Mídia: fontes de entrada com `minmax(0, 1fr)` (o HDMI passava da borda); cartões de app fora da regra global de cartão
+  neutro (era a "caixa suja" atrás do texto); categoria quebra em 2 linhas.
+- `SmartTruncateText`: transborda a partir de 1 px (eram 3 px; "Tomada Cabeceira", 131 em 128 px, era cortada seco).
+- Armadilha: a regra global de cartão neutro (`:where(...)`, 27/09) pega qualquer classe listada. Antes de incluir um
+  elemento interno de cartão nela, confira se ele não é só um agrupador de texto.
