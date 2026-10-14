@@ -341,6 +341,9 @@ Toda mudança na interface do painel (`dashboard-app/app/**`, `components/**`, `
 - **Nunca remova, oculte, simplifique ou substitua funcionalidade** para resolver problema visual: corrija a causa raiz.
 - **Porteiro**: o agente **`visual-gatekeeper`** (`.claude/agents/visual-gatekeeper.md`) revisa toda mudança visual e
   devolve APROVADO ou RECUSADO. RECUSADO volta para correção; não se publica sem APROVADO.
+- **Publicar também passa pelo porteiro** (pedido do André, 14/10/2026): nenhuma mudança visual vai para a 3002 sem
+  APROVADO na versão exata que será publicada (auditada na 3010). O que já foi publicado sem APROVADO entra em revisão e
+  é corrigido até ser aprovado.
 - **Gancho**: `.claude/settings.json` roda `scripts/hooks/lembrete_revisao_visual.mjs` a cada edição de arquivo visual e
   lembra a regra no contexto.
 - **Relatório final**: o que mudou, problemas encontrados e corrigidos, testes feitos, o que **não** pôde ser verificado
@@ -361,6 +364,7 @@ Toda mudança na interface do painel (`dashboard-app/app/**`, `components/**`, `
   ```bash
   docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/g" /usr/local/lib/python3.14/site-packages/glances_api/__init__.py
   ```
+- **Publicar o painel exige APROVADO do `visual-gatekeeper`** quando a mudança é visual (§17).
 - **Publicar o painel é derrubar a porta, não subir servidor à mão.** O watchdog
   (`dashboard-app/iniciar_servidor_background.ps1`, tarefa agendada `CasaDashboardAutoStart`) só recompila
   quando a 3002 está livre. Para publicar: matar o processo **dono da porta 3002** (pela porta, nunca por

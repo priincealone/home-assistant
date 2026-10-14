@@ -108,7 +108,9 @@ offline e reconexão; conteúdo dinâmico (rótulos longos, valores alterados, i
    degradada.
 5. **Correção severa** — qualquer problema é corrigido na hora e a auditoria se repete. Nada é entregue com regressão
    conhecida.
-6. **Revisão do `visual-gatekeeper`** — só segue com **APROVADO**. RECUSADO volta ao passo 5.
+6. **Revisão do `visual-gatekeeper`** — só segue com **APROVADO**. RECUSADO volta ao passo 5. **Publicar na 3002 também
+   exige APROVADO** sobre a versão exata a publicar (auditada na 3010); mudança já publicada sem aprovação entra em
+   revisão e é corrigida até ser aprovada.
 7. **Relatório final** — o que mudou; problemas encontrados e como foram corrigidos; testes feitos; e a frase
    explícita: **"Nenhuma regressão visual ou funcional conhecida permanece."** — dita só quando for verdade.
 
