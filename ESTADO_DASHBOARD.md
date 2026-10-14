@@ -6518,3 +6518,10 @@ Verificado em produção, a 800 px, com o aspirador **de volta** (o robô recone
 - **Armadilha**: o `node_modules` no Google Drive tinha `@babel/types` e `@babel/parser` sem arquivos (`Cannot find module './generated/index.js'`) e o ESLint morria com "Oops! Something went wrong". Conserto: `rm -rf node_modules/@babel && npm install`.
 - **Verificado no navegador (dev)**: o início hidrata (10 cômodos, 5 widgets, 5 camadas de toque), `/comodo/sala_de_estar` com 8 dispositivos e `/comodo/inexistente` com "Cômodo não encontrado" sem erro de hooks.
 - **Avisos que sobram (58)**: 24 `set-state-in-effect`, 10 `refs`, 10 `any`, 7 variáveis sem uso, 4 `exhaustive-deps` (inclui `aplicarEstados` em `app/page.tsx` e o `SmartTruncateText`), 2 `static-components` (`Icon.tsx`) e 1 `purity` (`AmbientNightMode`).
+
+
+## 13/10/2026 (noite) — B-15 e B-07 publicados
+
+`test/logica-pura` e `chore/eslint` (`f89356f`, `e7af5cb`) juntadas na `fix/audit-p1-batch-01` (avanço direto), **enviadas e publicadas**: 3002 derrubada pelo PID dono 15704 (`next start`), watchdog recompilou em ~92 s (`BUILD_ID` 22:25). `tsc`, `npm run lint` (0 erros, 58 avisos) e `npm test` (81) passaram antes de publicar.
+
+Verificado em produção: `/api/state` 200; `/api/energy?hours=24` com 25 pontos (pico 161, média 97, atual 123) e `/api/weather` com a previsão (as duas rotas agora usam as funções puras de `lib/energiaHistorico.ts`); a 375 px o início hidrata (10 cômodos, cabeçalho de 244 px), a linha `123 W · Mídia em standby · Aspirador pronto`, abrir o Resumo mostra 5 cartões (energia 123 W, clima 28°) e recolher volta ao estado recolhido; sem indicador do Next e sem rolagem horizontal. Dentro da sessão, a aba de teste foi fechada pelo navegador no meio da publicação; o navegador abriu uma nova aba e a verificação foi refeita nela.
