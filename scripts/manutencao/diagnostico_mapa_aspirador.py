@@ -14,6 +14,8 @@
 #   4. OPCIONAL, só com DIAG_NUVEM=1: um (1) login na nuvem Xiaomi, igual ao do complemento. Cada tentativa errada conta contra o limite
 #      da conta; rode no máximo uma vez e só se o passo 3 passou.
 #
+# DIAG_SO_NUVEM=1 pula os passos 2 e 3 (rede e token) e vai direto ao login na nuvem, que agora mostra o CÓDIGO e a DESCRIÇÃO que a Xiaomi
+# devolve (código numérico, texto de motivo e os NOMES dos campos da resposta; nunca senha, token, URL ou valores de sessão).
 # Variáveis (vão DENTRO do docker exec, antes do nome do container): ATIVA_CHAVES (mesmo formato do ativa_mapa_aspirador.py),
 # DIAG_NUVEM=1, CONFIG_DIR (padrão /config). Exemplo do login na nuvem, UMA vez:
 #     docker exec -e DIAG_NUVEM=1 homeassistant python /tmp/d.py
@@ -48,6 +50,54 @@ def chaves():
     return mapa
 
 
+def nuvem(dados, ch):
+    """Um login na nuvem Xiaomi (passos 1 e 2 do complemento) mostrando só o diagnóstico seguro da resposta."""
+    try:
+        sys.path.insert(0, CONFIG)
+        from custom_components.xiaomi_cloud_map_extractor.common.xiaomi_cloud_connector import XiaomiCloudConnector
+    except Exception as e:
+        passo(4, False, f"não consegui carregar o conector do complemento ({type(e).__name__})")
+        return 1
+    c = XiaomiCloudConnector(str(dados[ch['usuario']]), str(dados[ch['senha']]))
+    # mesma preparação do login() do complemento
+    c._session.cookies.set('sdkVersion', 'accountsdk-18.8.15', domain='mi.com')
+    c._session.cookies.set('sdkVersion', 'accountsdk-18.8.15', domain='xiaomi.com')
+    c._session.cookies.set('deviceId', c._device_id, domain='mi.com')
+    c._session.cookies.set('deviceId', c._device_id, domain='xiaomi.com')
+    capturada = {}
+    original = c._session.post
+
+    def captura(*a, **k):
+        r = original(*a, **k)
+        try:
+            capturada['status'] = r.status_code
+            capturada['json'] = c.to_json(r.text)
+        except Exception:
+            capturada['json'] = None
+        return r
+
+    c._session.post = captura
+    if not c.login_step_1():
+        passo(4, False, "a Xiaomi nem entregou a página de login (passo 1): sem internet no container, bloqueio de DNS/rede ou a conta/IP em quarentena. Tente de outra rede mais tarde.")
+        return 1
+    ok2 = c.login_step_2()
+    resp = capturada.get('json') or {}
+    # Só campos seguros: código, texto do motivo (sem URLs) e se existem os campos que indicam captcha, 2FA ou sucesso.
+    codigo = resp.get('code')
+    motivo = re.sub(r'https?://\S+', '<url>', str(resp.get('desc', '')))[:160]
+    campos = sorted(k for k in resp.keys() if k not in ('ssecurity', 'passToken', 'location', 'nonce', 'userId', 'cUserId', 'psecurity'))
+    print(f"    resposta da Xiaomi: status HTTP {capturada.get('status')}, code={codigo}, desc='{motivo}'")
+    print('    campos da resposta (só os nomes):', ', '.join(campos))
+    print('    pede captcha:', 'captchaUrl' in resp, '| pede confirmação (2FA):', 'notificationUrl' in resp, '| devolveu credencial de sessão:', 'ssecurity' in resp)
+    if ok2:
+        passo(4, True, "o login na nuvem Xiaomi funcionou")
+    elif ok2 is None:
+        passo(4, False, "a Xiaomi pediu CONFIRMAÇÃO EM DUAS ETAPAS (a URL não é mostrada aqui): veja o atributo two_factor_auth_url da câmera no HA, abra-a na MESMA rede e espere 1 hora antes de tentar de novo")
+    else:
+        passo(4, False, "a Xiaomi recusou o login; o code e o desc acima dizem o motivo (70016 costuma ser usuário ou senha errados; um captchaUrl pede captcha)")
+    return 0 if resultado['falhas'] == 0 else 1
+
+
 def main():
     ch = chaves()
     caminho = os.path.join(CONFIG, "secrets.yaml")
@@ -74,6 +124,9 @@ def main():
         passo(1, True, "chaves presentes; token com 32 hexadecimais; IP no formato certo")
     if not ok1:
         return 1
+
+    if os.environ.get("DIAG_SO_NUVEM") == "1":
+        return nuvem(dados, ch)
 
     # 2) hello miio (rede)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -104,25 +157,9 @@ def main():
     # 4) nuvem (opcional)
     if os.environ.get("DIAG_NUVEM") != "1":
         print("[4] PULADO login na nuvem (de propósito: cada tentativa errada conta contra o limite da conta). "
-              "Para testar uma vez: docker exec -i -e DIAG_NUVEM=1 homeassistant python - < …")
+              "Para testar uma vez: docker exec -e DIAG_NUVEM=1 homeassistant python /tmp/d.py")
         return 0 if resultado["falhas"] == 0 else 1
-    try:
-        sys.path.insert(0, CONFIG)
-        from custom_components.xiaomi_cloud_map_extractor.common.xiaomi_cloud_connector import XiaomiCloudConnector
-        c = XiaomiCloudConnector(str(dados[ch["usuario"]]), str(dados[ch["senha"]]))
-        logou = bool(c.login())
-        pendente_2fa = bool(getattr(c, "two_factor_auth_url", None))
-        if logou:
-            passo(4, True, "o login na nuvem Xiaomi funcionou")
-        elif pendente_2fa:
-            passo(4, False, "a Xiaomi pediu CONFIRMAÇÃO EM DUAS ETAPAS (o URL não é mostrado aqui): abra o aviso no HA ou o e-mail da Xiaomi, "
-                            "confirme a partir da MESMA rede do HA, e espere 1 hora antes de tentar de novo")
-        else:
-            passo(4, False, "a Xiaomi recusou o login sem pedir 2FA: usuário ou senha errados, conta de outra região (troque o ATIVA_PAIS e rode o "
-                            "ativa_mapa_aspirador.py de novo), ou captcha exigido (entre uma vez no app da Xiaomi e tente mais tarde)")
-    except Exception as e:
-        passo(4, False, f"não consegui testar o login ({type(e).__name__})")
-    return 0 if resultado["falhas"] == 0 else 1
+    return nuvem(dados, ch)
 
 
 sys.exit(main())
