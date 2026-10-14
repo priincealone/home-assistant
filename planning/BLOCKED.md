@@ -66,7 +66,9 @@ apaga tudo" deixa de ser segura como está escrita.
 **Resolve de uma vez**: multicast e som multiroom, queda da casa quando o PC dorme, e a pasta do
 projeto sincronizada pelo Google Drive.
 
-### K-18 · Mapa e cômodos do aspirador: precisa da sua conta Xiaomi e do token do robô (13/10/2026)
+### K-18 · Mapa e cômodos do aspirador: login Xiaomi bloqueado por captcha (14/10/2026; era: precisa da conta e do token)
+
+> **14/10: conta principal e conta secundária deram `code=87001` + `captchaUrl`; também com credenciais falsas. Bloqueio do caminho, não da conta. Mapa desligado até haver outra abordagem (ver ESTADO_DASHBOARD.md).**
 **Destrava** (só o André; token e senha nunca passam pela conversa):
 1. Instalar o **Xiaomi Cloud Map Extractor** pelo HACS (Integrações → buscar o nome). Ler antes o código no repositório do PiotrMachowski.
 2. Obter o **token e o IP do robô**: rodar **no seu PC** o `Xiaomi Cloud Tokens Extractor` (mesmo autor; Windows: `token_extractor.exe` da página de releases;

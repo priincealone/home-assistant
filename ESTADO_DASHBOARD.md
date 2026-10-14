@@ -6616,3 +6616,14 @@ Leitura do terminal do André (nenhum valor foi repetido): usuário e senha Xiao
 - **Passo 4 (uma tentativa, `DIAG_NUVEM=1`): FALHOU.** "A Xiaomi recusou o login sem pedir 2FA": usuário ou senha errados, conta sem senha própria (conta criada entrando com Google ou Facebook), captcha ou verificação de segurança.
 - **HA reiniciado às 00:04** para recarregar o `secrets.yaml`: o complemento fez **uma** tentativa de login (falhou) e nenhuma depois. Contagem desde 23:50: **uma falha por reinício** (23:52 e 00:04) e zero entre elas em 12 minutos: ele **não martela** a conta. Pode ficar ligado sem risco crescente enquanto o André corrige; cada reinício do HA custa uma tentativa.
 - **Falta do André**: (1) entrar em `account.xiaomi.com` no navegador com o mesmo usuário e senha para ver o que a Xiaomi diz (senha errada, captcha, verificação); (2) se a conta foi criada pelo Google, ela não tem senha: definir uma ou, melhor, **criar uma conta Xiaomi secundária** (e-mail e senha) e compartilhar o robô a partir do app Mi Home, que também tira a senha da conta principal do Google Drive; (3) regravar com `GRAVA_SUBSTITUIR=usuario,senha`; (4) rodar o diagnóstico com `DIAG_NUVEM=1` **uma vez** e me avisar. Só então `ENTIDADE_MAPA`, merge e publicação do painel.
+
+### 14/10/2026 · K-18: o login Xiaomi esbarra em captcha, com qualquer conta
+
+- Sonda `diagnostico_mapa_aspirador.py` (`DIAG_SO_NUVEM=1 DIAG_NUVEM=1`) passou a mostrar `code`/`desc` e os nomes dos campos da resposta.
+- **Resultado com a conta principal e com uma conta secundária nova: `code=87001`, `captchaUrl` presente, sem 2FA, sem credencial de sessão.** O mesmo
+  resultado saiu em teste com credenciais inventadas: o captcha não depende da conta nem da senha. A Xiaomi o exige deste container/IP, e o
+  complemento v2.2.5 não resolve captcha.
+- Conclusão: sem mudar de abordagem, o login não passa. Não repetir a sonda (cada tentativa conta contra a conta). Mapa fica **desligado**
+  (`ENTIDADE_MAPA = null`); a branch `feat/mapa-aspirador` segue pronta.
+- Caminhos para retomar (decisão do André): versão do complemento que trate captcha/token de sessão, login feito fora do container com o token de
+  sessão copiado de arquivo para arquivo, ou ler o mapa por outra integração. Nada disso foi tentado.
