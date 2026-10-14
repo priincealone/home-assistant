@@ -70,7 +70,7 @@ dispositivo longos; muitos itens; poucos itens; nenhum item; dados indisponívei
 diferentes para o mesmo tipo de entidade. Quando o Home Assistant traz conteúdo novo ou alterado, o layout se reorganiza
 sozinho, sem sobrepor e sem exigir ajuste manual de CSS.
 
-## 5. Matriz obrigatória de verificação
+## 5. Matriz de verificação (completa)
 
 **Larguras**: 320, 375, 390, 430, 768, 820, 1024, 1280, 1440 e 1920 px.
 
@@ -94,6 +94,42 @@ offline e reconexão; conteúdo dinâmico (rótulos longos, valores alterados, i
 > Zoom por pinça no celular e no tablet está **bloqueado por decisão do André** (`user-scalable=no`). Não propor
 > liberar; a acessibilidade de tamanho se valida por texto grande.
 
+## 5-A. Intensidade da revisão: enxuta (padrão) ou completa
+
+Decidido pelo André em 14/10/2026, depois que a revisão completa do painel custou 600–900 mil tokens por rodada (quatro
+frentes em paralelo, dez larguras, três tamanhos de texto) e cada rodada achava menos e mais raro. A regra continua
+obrigatória, mas a **intensidade** acompanha o tamanho da mudança.
+
+| | **Rodada enxuta** (padrão) | **Rodada completa** |
+| :--- | :--- | :--- |
+| **Quando** | Mudança pequena e localizada: até 3 arquivos visuais e ~80 linhas, **sem** tocar regra global | Qualquer item do quadro "Gatilhos da completa" abaixo |
+| **Quem** | **1** `visual-gatekeeper`, chamado com `model: "sonnet"` | 1 `visual-gatekeeper` **por frente** (até 4, em paralelo), no modelo do agente (Opus) |
+| **Larguras** | 320, 375, 768, 1024, 1280 e 1920 px | As 10 do §5 |
+| **Texto grande** | 100% e 150% | 100%, 125% e 150% |
+| **Orientação** | Retrato e paisagem **só** nas larguras em que a área alterada muda de layout | Retrato e paisagem em todas |
+| **Escopo** | Só a área alterada + os vizinhos diretos (mesma classe ou componente) | Tela inteira e modais da frente |
+| **Estados** | Só os que a mudança toca (vazio, sem leitura, longo, offline) | Todos do §4 |
+| **Custo-alvo** | ~100–200 mil tokens | 600–900 mil tokens (**avisar o André antes**) |
+
+**Gatilhos da completa** (basta um):
+- Mudou regra **global** do `globals.css`: seletor genérico (`.popup-*`, `.subcard*`, `.sensor-status-chip`, `.room-card`…),
+  token (`:root`), `@media`/`@container` que vale para várias telas, conversão de unidade em massa.
+- Mudou `SmartTruncateText`, `useFocusTrap`, `ModalCloseButton` ou outro componente compartilhado.
+- **Tela nova**, modal novo ou refatoração de layout de uma tela existente.
+- Mudou o cabeçalho, a grade de cômodos ou o comportamento de rolagem do painel de parede.
+- Mais de 3 arquivos visuais ou ~80 linhas.
+
+**Duas rodadas completas recusadas seguidas** → pare e reporte ao André em vez de repetir: a partir daí os achados costumam ser de
+texto a 150% em telas muito baixas, e a decisão de insistir (ou aceitar) é dele.
+
+**O que bloqueia** (em qualquer intensidade): infração do §2 **medida** em conteúdo real ou realista, perda de funcionalidade,
+estado sem leitura mostrado como normal (§12), erro novo no console. Achado só de conteúdo inventado e extremo
+(texto de 40+ caracteres em campo que nunca o recebe) é **Baixo**: vai para o registro, não bloqueia.
+
+**Eficiência** (obrigatória em qualquer intensidade): **um** script de varredura reaproveitado em cada viewport (rolagem
+horizontal, filho fora do pai, corte seco, sobreposição, alvo < 44 px); sem inspeção manual elemento a elemento; sem captura de
+tela, salvo para confirmar um achado.
+
 ## 6. Fluxo obrigatório para cada alteração
 
 1. **Diagnóstico** — objetivo; componentes, arquivos, estados e telas afetados; impactos colaterais possíveis.
@@ -108,7 +144,7 @@ offline e reconexão; conteúdo dinâmico (rótulos longos, valores alterados, i
    degradada.
 5. **Correção severa** — qualquer problema é corrigido na hora e a auditoria se repete. Nada é entregue com regressão
    conhecida.
-6. **Revisão do `visual-gatekeeper`** — só segue com **APROVADO**. RECUSADO volta ao passo 5. **Publicar na 3002 também
+6. **Revisão do `visual-gatekeeper`** na intensidade do §5-A (enxuta por padrão, completa nos gatilhos) — só segue com **APROVADO**. RECUSADO volta ao passo 5. **Publicar na 3002 também
    exige APROVADO** sobre a versão exata a publicar (auditada na 3010); mudança já publicada sem aprovação entra em
    revisão e é corrigida até ser aprovada.
 7. **Relatório final** — o que mudou; problemas encontrados e como foram corrigidos; testes feitos; e a frase

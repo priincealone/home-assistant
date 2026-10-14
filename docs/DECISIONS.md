@@ -196,6 +196,14 @@ André achava no uso. A revisão humana passa a ser a última camada de confirma
 `.claude/settings.json` → `scripts/hooks/lembrete_revisao_visual.mjs` lembra a regra a cada edição de arquivo visual;
 `dashboard-app/AGENTS.md` §3 para o Antigravity.
 
+## D-015 · Revisão visual em duas intensidades: enxuta (padrão) e completa — 14/10/2026
+
+**Decisão** (André): a regra do D-014 continua obrigatória, mas a revisão do `visual-gatekeeper` passa a ser **enxuta por padrão** (1 porteiro, Sonnet, 6 larguras, texto a 100% e 150%, só a área alterada) e **completa** só com gatilho (regra global do `globals.css`, componente compartilhado, tela ou modal novo, cabeçalho/grade de cômodos/rolagem, mais de 3 arquivos ou ~80 linhas).
+
+**Por quê**: a revisão completa do painel custou 600–900 mil tokens por rodada (4 frentes em Opus, 10 larguras × 3 tamanhos de texto) e, a partir da 3ª rodada, os achados eram raros (texto a 150% em telas muito baixas). A 5ª rodada foi interrompida por custo e o painel foi publicado sem a reauditoria da 4ª, por decisão do André.
+
+**Como**: `docs/UI-QUALITY-POLICY.md` §5-A (quadro, gatilhos, o que bloqueia, eficiência); CLAUDE.md §17; `.claude/agents/visual-gatekeeper.md` (recebe MODO: enxuta|completa); `dashboard-app/AGENTS.md`. Rodada completa exige avisar o custo ao André antes; duas completas recusadas seguidas: parar e reportar.
+
 ---
 
 ## Decisões pendentes

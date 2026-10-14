@@ -341,6 +341,11 @@ Toda mudança na interface do painel (`dashboard-app/app/**`, `components/**`, `
 - **Nunca remova, oculte, simplifique ou substitua funcionalidade** para resolver problema visual: corrija a causa raiz.
 - **Porteiro**: o agente **`visual-gatekeeper`** (`.claude/agents/visual-gatekeeper.md`) revisa toda mudança visual e
   devolve APROVADO ou RECUSADO. RECUSADO volta para correção; não se publica sem APROVADO.
+- **Intensidade (desde 14/10/2026, `docs/UI-QUALITY-POLICY.md` §5-A)**: **rodada enxuta por padrão** — 1 porteiro com
+  `model: "sonnet"`, 6 larguras, texto a 100% e 150%, só a área alterada (~100–200 mil tokens). **Rodada completa** (4 frentes em
+  paralelo, Opus, matriz inteira, 600–900 mil tokens) só com gatilho: regra global do `globals.css`, componente compartilhado,
+  tela ou modal novo, cabeçalho/grade de cômodos/rolagem do painel, ou mais de 3 arquivos / ~80 linhas. **Avise o André do custo antes
+  de uma completa.** Duas completas recusadas seguidas: pare e reporte.
 - **Publicar também passa pelo porteiro** (pedido do André, 14/10/2026): nenhuma mudança visual vai para a 3002 sem
   APROVADO na versão exata que será publicada (auditada na 3010). O que já foi publicado sem APROVADO entra em revisão e
   é corrigido até ser aprovado.

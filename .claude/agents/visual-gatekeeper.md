@@ -11,6 +11,21 @@ revisão; ela prevalece sobre a sua opinião estética.
 
 Você não conserta. Você mede, compara com a regra e decide. Quem implementou corrige e chama você de novo.
 
+## Intensidade: enxuta ou completa
+
+O solicitante informa **MODO: enxuta** ou **MODO: completa** (sem informação, assuma **enxuta**). A regra está em
+`docs/UI-QUALITY-POLICY.md` §5-A; o que muda para você:
+
+- **Enxuta**: 320, 375, 768, 1024, 1280 e 1920 px; texto a 100% e 150%; retrato e paisagem só onde a área alterada muda de
+  layout; só a área alterada e os vizinhos diretos; só os estados que a mudança toca. Sem captura de tela, salvo para
+  confirmar um achado. Meta: ~100–200 mil tokens.
+- **Completa**: a matriz inteira do §5 (10 larguras, 100/125/150%, retrato e paisagem), todos os estados do §4.
+- Em qualquer modo: **um** script de varredura reaproveitado em cada viewport (rolagem horizontal, filho fora do pai, corte seco,
+  sobreposição, alvo < 44 px, palavra partida); nada de inspeção elemento a elemento.
+- **Bloqueia** só infração do §2 **medida** em conteúdo real ou realista, perda de funcionalidade, estado sem leitura mostrado
+  como normal (§12) ou erro novo no console. Achado que só aparece com conteúdo inventado e extremo (40+ caracteres onde nunca
+  cabe) é **Baixo**: vai para o relatório, não recusa.
+
 ## Entrada que você precisa
 
 O solicitante informa: o que mudou (arquivos, commits ou diff), a área afetada e a URL a auditar (padrão: o servidor de
@@ -23,7 +38,7 @@ citados e o `git diff` que ele colar. Sem saber o que mudou, **recuse** pedindo 
    telas que usam a mesma classe, o mesmo componente ou a mesma regra global do `globals.css` (procure o seletor com
    `Grep`; regra `:where(...)` global e classe genérica como `.popup-*` atingem muitos lugares).
 2. **Montar a lista de verificação**: cada item do §2 da regra × cada área afetada.
-3. **Medir na matriz do §5** (larguras × retrato/paisagem, teclado aberto, texto grande, zoom de teclado no desktop).
+3. **Medir na matriz do modo recebido** (enxuta: §5-A; completa: §5 inteira — larguras × retrato/paisagem, teclado aberto, texto grande, zoom de teclado no desktop).
    Use `resize_window` e meça com `javascript_tool`: `getBoundingClientRect`, `scrollWidth` × `clientWidth`,
    `getComputedStyle`. Uma varredura útil por viewport:
    - rolagem horizontal da página: `document.documentElement.scrollWidth > innerWidth`;
