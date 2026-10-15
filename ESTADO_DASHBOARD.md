@@ -6683,3 +6683,9 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Resultado**: as duas entidades voltaram com estado real (`off`/`off`). Nenhum comando enviado ao aparelho.
 - **Armadilhas**: (1) o Device ID novo tem 23 caracteres e começa com `C`; é o ID certo (conectou), o `unique_id` das entidades é `local_C…`. (2) Um `grep` do agente varreu `secrets.yaml` e imprimiu ID e chave na sessão: considerar rotacionar a chave (refazer o pareamento) se a conversa for compartilhada. (3) Reservar `192.168.31.206` para o MAC `b8-06-0d-4b-c6-45` no roteador (do André).
 - **Aberto, anterior a esta mudança**: `npm test` (contrato de entidades) falha em 25 entidades "sem área" (light.painel, banheiro, closet, quarto_luca, etc.); a falha já existia no registro de antes da edição. Investigar à parte.
+
+## 14/10/2026 (noite) — Entrada Tuya duplicada removida (áreas "perdidas")
+
+- **Causa das 25 entidades "sem área" no `npm test`**: às 21:25 foi criada uma 2ª entrada da integração Tuya oficial (mesma conta), com 24 dispositivos duplicados sem área e 219 erros "does not generate unique IDs". Meu diagnóstico inicial inverteu qual entrada era dona das entidades; as áreas já estavam corretas quando conferi de novo (teste 9/9).
+- **Feito (autorizado)**: com o HA parado, removida a entrada nova `01M4YF5G…` (config_entries, 24 devices, 4 entidades sem uso: 2 ventiladores e 2 cenas da nuvem). Backups: `backups/core.{config_entries,device_registry,entity_registry}.antes-tuya-duplicada-*`. Depois: 0 erros de ID repetido, `npm test` 9/9, ventilador/luz do quarto e `light.painel` com estado real.
+- **Não confirmado**: tomadas do Quarto Luca (`switch.tomada_inteligente_*`, `light/switch.led_tomada_*`, `sensor.tomada_inteligente_energia`) estavam `unavailable` logo após o reinício; pode ser só a nuvem Tuya ainda conectando. Conferir no painel; se persistir, investigar.
