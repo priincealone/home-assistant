@@ -1,7 +1,0 @@
-title: "Casa Inteligente"
-views:
-  - title: "Principal"
-    path: "principal"
-    panel: true
-    cards:
-      - type: custom:casa-dashboard-card

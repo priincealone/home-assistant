@@ -15,20 +15,10 @@ panel_custom:
     sidebar_title: "Casa Inteligente"
     sidebar_icon: "mdi:home-variant"
     url_path: "casa"
-    module_url: "/local/casa-panel.js?v=20261006"
+    module_url: "/local/casa-panel.js?v=20261014"
     trust_external_script: true
     require_admin: false
     handle_safe_area: true
-
-# Dashboard Lovelace Integrado (permite definir como Dashboard Padrão no perfil)
-lovelace:
-  dashboards:
-    casa-dashboard:
-      mode: yaml
-      title: "Casa Inteligente"
-      icon: "mdi:home-variant"
-      show_in_sidebar: false
-      filename: dashboards/casa.yaml
 
 automation: !include automations.yaml
 script: !include scripts.yaml
