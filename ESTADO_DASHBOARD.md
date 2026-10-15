@@ -6675,3 +6675,11 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
   deixa o 10º cômodo sozinho; zoom por pinça segue bloqueado por decisão do André.
 - **Não verificado**: estados 502/offline reais com HA parado (só simulados no navegador); animações do motion (a aba de auditoria roda em segundo plano);
   zoom de teclado real; rolagem por toque físico no descanso de tela.
+
+## 14/10/2026 (noite) — Ventilador/luz do quarto: aparelho refeito no Smart Life e recriado no LocalTuya
+
+- **Sintoma**: `fan.ventilador_quarto` e `light.luz_quarto` `unavailable` desde 08:38. Causas em sequência: IP mudou (`.207` → `.206`, DHCP) e, depois, o aparelho foi refeito no Smart Life (Device ID e Local Key novos). O dispositivo antigo foi removido pelo André no LocalTuya.
+- **Feito (autorizado pelo André)**: dispositivo recriado em `core.config_entries` (host `192.168.31.206`, protocolo 3.4, mesmas entidades: luz DP 5 e ventilador DP 1/4/101), com ID e chave lidos de `config/secrets.yaml` por script. Entidades renomeadas no `core.entity_registry` para `light.luz_quarto` e `fan.ventilador_quarto`, área `quarto` (o LocalTuya as criou como `*_luz_ventilador_quarto_*`). HA parado e religado duas vezes. Backups em `backups/`: `core.config_entries.antes-*`, `core.entity_registry.antes-quarto-*`.
+- **Resultado**: as duas entidades voltaram com estado real (`off`/`off`). Nenhum comando enviado ao aparelho.
+- **Armadilhas**: (1) o Device ID novo tem 23 caracteres e começa com `C`; é o ID certo (conectou), o `unique_id` das entidades é `local_C…`. (2) Um `grep` do agente varreu `secrets.yaml` e imprimiu ID e chave na sessão: considerar rotacionar a chave (refazer o pareamento) se a conversa for compartilhada. (3) Reservar `192.168.31.206` para o MAC `b8-06-0d-4b-c6-45` no roteador (do André).
+- **Aberto, anterior a esta mudança**: `npm test` (contrato de entidades) falha em 25 entidades "sem área" (light.painel, banheiro, closet, quarto_luca, etc.); a falha já existia no registro de antes da edição. Investigar à parte.
