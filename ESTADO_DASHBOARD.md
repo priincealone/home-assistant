@@ -6710,3 +6710,9 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Verificado**: sem erro de console; sem rolagem horizontal, texto estourando ou alvo de toque < 44 px em 320–1920 px, nos estados online, offline e carregando, texto a 100 % e 150 % (`rem`); captura das 5 fases do hero no celular.
 - **Armadilha**: o app de preview deixou o `serve.mjs` antigo vivo na 3011 depois do "stop" — o servidor guarda a lista de arquivos públicos na memória, então arquivo novo dá 404 até reiniciar. Matar pelo dono da porta 3011 e subir de novo.
 - **Não verificado**: retrato/paisagem reais, leitor de tela, porteiro `visual-gatekeeper`. O disco do sol fica atrás do texto do resumo em celular perto do meio-dia (opacidade reduzida a 50 %).
+
+### 21/10/2026 (noite) — Painel paralelo, rodada 3: modo parede e Ambientes recolhíveis
+
+- **Feito em `dashboard-lab/`**: modo parede sem rolagem (cartões de cômodo + interruptor geral + chips por aparelho), seletor recolhível de Ambientes no celular, `?modo=parede`.
+- **Verificado** (iframes no Chrome, dados simulados): em 1024×768, 1180×820, 1280×720/800, 1366×768, 1440×900, 1920×1080 e 2560×1440 a página não rola e a grade cabe, nos estados online, offline e carregando; cliques em interruptor geral, chip, cena e "abrir cômodo" funcionam; modo detalhe sem regressão em 320–1920 px (sem estouro, alvos ≥ 44 px), com o seletor do celular aberto e fechado.
+- **Não verificado**: 900×600 (a grade de cômodos rola por dentro, por falta de altura), retrato/paisagem reais, leitor de tela, porteiro `visual-gatekeeper`.

@@ -40,7 +40,10 @@
     <header class="hero" id="secao-hero">
       <div class="hero-top">
         <span class="eyebrow">Casa · André</span>
-        <span class="status" id="status"></span>
+        <div class="hero-tools">
+          <button type="button" class="pill-btn modo-btn" id="btn-modo" data-modo-btn aria-pressed="false"></button>
+          <span class="status" id="status"></span>
+        </div>
       </div>
       <p class="banner" id="banner" role="status" hidden>
         <span class="banner-ico" aria-hidden="true"></span>
@@ -61,7 +64,8 @@
 
     <main class="main">
       <nav class="rooms-nav" id="ambientes" aria-label="Ambientes">
-        <span class="eyebrow">Ambientes</span>
+        <span class="eyebrow amb-titulo">Ambientes</span>
+        <button type="button" class="amb-toggle glass" id="amb-toggle" data-amb-toggle aria-expanded="false" aria-controls="lista-ambientes"></button>
         <ul id="lista-ambientes"></ul>
       </nav>
 

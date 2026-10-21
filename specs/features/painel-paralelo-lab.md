@@ -47,6 +47,11 @@ Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control
 - **Estados de conexão** (`?net=online|carregando|sincronizando|offline`): esqueletos, selo de sem-conexão, comandos recusados com o controle desabilitado, faixa de aviso e números como "—" (nunca 0) sem leitura. Aparelho `unavailable` tem borda tracejada e texto "Indisponível": nunca parece desligado.
 - Painel "Controles de estudo" no rodapé alterna conexão e hora sem mexer na URL.
 
+## Rodada 3 — modo parede e Ambientes no celular (21/10/2026)
+- **Modo parede** (botão "Modo parede", ou `?modo=parede`; só ≥ 900 px de largura): a página não rola. Hero compacto numa linha, 5 cenas, grade 3×3 de **cartões de cômodo** (nome, "x de y ligados", interruptor geral e um botão de 44 px por aparelho) e as 2 câmeras empilhadas à direita. Tocar no nome do cômodo abre o detalhe dele. Abaixo de ~720 px de altura a grade de cômodos rola por dentro (a página continua fixa).
+- **Ambientes no celular** viram um seletor recolhível (mostra o ambiente atual e a contagem); ao escolher um, fecha.
+- Offline/carregando valem também no modo parede (controles desabilitados, esqueletos).
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.

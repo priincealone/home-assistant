@@ -334,3 +334,83 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
   *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
   .dev:active, .scene:active { transform: none; }
 }
+
+/* ================= Rodada 3: Ambientes recolhíveis (celular) e modo parede ================= */
+.hero-tools { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px 16px; }
+.modo-btn { display: none; align-items: center; gap: 8px; }
+.modo-btn[aria-pressed="true"] { border-color: rgba(251, 191, 36, 0.5); color: var(--amber); }
+.amb-toggle { display: none; }
+
+@media (min-width: 900px) { .modo-btn { display: inline-flex; } }
+
+@media (max-width: 767px) {
+  .amb-titulo { display: none; }
+  .amb-toggle {
+    width: 100%; min-height: 52px; display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+    border-radius: 16px; text-align: left; cursor: pointer; color: var(--text);
+  }
+  .amb-toggle .n { flex: 1; min-width: 0; font-weight: 600; overflow-wrap: anywhere; }
+  .amb-toggle .count { color: var(--amber); font-size: 0.75rem; }
+  .amb-toggle .ic { transition: transform var(--dur-base) var(--ease-out); color: var(--muted); }
+  .amb-toggle[aria-expanded="true"] .ic { transform: rotate(180deg); }
+  .rooms-nav[data-aberto="false"] ul { display: none; }
+  .rooms-nav[data-aberto="true"] ul { margin-top: 8px; }
+}
+
+/* cartão de cômodo (modo parede) */
+.rc { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 12px; border-radius: 20px; transition: background-color var(--dur-base), border-color var(--dur-base), box-shadow var(--dur-base); }
+.rc[data-on="true"] { border-color: rgba(251, 191, 36, 0.35); background: linear-gradient(160deg, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.03)); box-shadow: 0 0 24px rgba(251, 191, 36, 0.12); }
+.rc-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rc-name { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; justify-content: center; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.rc-name .n { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; overflow-wrap: anywhere; line-height: 1.2; }
+.rc-name .muted { font-size: 0.75rem; }
+.rc-master { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 9999px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.04); color: var(--muted); cursor: pointer; transition: background-color var(--dur-base), color var(--dur-base), border-color var(--dur-base); }
+.rc-master[aria-checked="true"] { background: var(--amber); color: var(--amber-ink); border-color: transparent; }
+.rc-master:disabled { opacity: 0.5; cursor: not-allowed; }
+.rc-devs { display: flex; flex-wrap: wrap; gap: 6px; }
+.rc-dev { position: relative; width: 44px; height: 44px; display: grid; place-items: center; padding: 0; border-radius: 14px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.04); color: var(--muted); cursor: pointer; transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-base), color var(--dur-base), border-color var(--dur-base); }
+.rc-dev:active { transform: scale(0.94); }
+.rc-dev[aria-checked="true"] { background: rgba(251, 191, 36, 0.2); border-color: rgba(251, 191, 36, 0.5); color: var(--amber); }
+.rc-dev[data-tipo="tv"][aria-checked="true"], .rc-dev[data-tipo="console"][aria-checked="true"] { background: rgba(56, 189, 248, 0.2); border-color: rgba(56, 189, 248, 0.5); color: var(--cyan); }
+.rc-ro { cursor: default; background: transparent; }
+.rc-ro:active { transform: none; }
+.rc-ro[data-alerta="true"] { color: var(--red-text); border-color: rgba(239, 68, 68, 0.4); }
+.rc-ro[data-indisp="true"] { border-style: dashed; opacity: 0.75; }
+.rc-dev[data-offline="true"] { opacity: 0.55; cursor: not-allowed; }
+.rc-dev:disabled:active { transform: none; }
+
+/* modo parede: tudo numa tela, sem rolar a página (tablet de parede, paisagem) */
+@media (min-width: 900px) {
+  body[data-modo="parede"] { height: 100dvh; overflow: hidden; }
+  body[data-modo="parede"] .hero-bg { height: 55vh; }
+  body[data-modo="parede"] .wrap { height: 100dvh; display: flex; flex-direction: column; gap: 12px; padding-top: calc(12px + env(safe-area-inset-top)); padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  body[data-modo="parede"] .hero { padding: 0; display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 4px 24px; }
+  body[data-modo="parede"] .hero-top { order: -1; width: 100%; margin: 0 0 4px; }
+  body[data-modo="parede"] #data-hoje { display: none; }
+  body[data-modo="parede"] .display { margin: 0; font-size: clamp(1.6rem, 3.2vw, 2.6rem); }
+  body[data-modo="parede"] .chips { margin: 0; }
+  body[data-modo="parede"] .banner { width: 100%; margin: 0 0 8px; padding: 8px 14px; }
+  body[data-modo="parede"] .scenes { margin: 0; }
+  body[data-modo="parede"] .scenes .sec-head { display: none; }
+  body[data-modo="parede"] .scene-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  body[data-modo="parede"] .scene { min-height: 52px; padding: 6px 12px; }
+  body[data-modo="parede"] .scene .ico { width: 36px; height: 36px; }
+  body[data-modo="parede"] .main { flex: 1; min-height: 0; grid-template-columns: minmax(0, 1fr) clamp(220px, 24vw, 300px); gap: 16px; }
+  body[data-modo="parede"] .rooms-nav, body[data-modo="parede"] .lab, body[data-modo="parede"] .proto, body[data-modo="parede"] .tabbar { display: none; }
+  body[data-modo="parede"] .rooms { height: 100%; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: minmax(min-content, 1fr); gap: 10px; align-content: stretch; scrollbar-width: thin; }
+  body[data-modo="parede"] .security { position: static; max-height: none; height: 100%; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+  body[data-modo="parede"] .security .sec-head { margin-bottom: 8px; }
+  body[data-modo="parede"] .cams { flex: 1; min-height: 0; gap: 8px; }
+  body[data-modo="parede"] .cam { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+  body[data-modo="parede"] .cam-view { flex: 1; min-height: 0; aspect-ratio: auto; }
+  body[data-modo="parede"] .cam-foot { padding: 6px 12px; }
+  body[data-modo="parede"] .note { display: none; }
+}
+
+@media (min-width: 900px) and (max-height: 820px) {
+  body[data-modo="parede"] .rc { padding: 10px; gap: 8px; }
+  body[data-modo="parede"] .rooms { gap: 8px; }
+  body[data-modo="parede"] .scene { min-height: 48px; }
+  body[data-modo="parede"] .banner { padding: 6px 12px; font-size: 0.75rem; }
+  body[data-modo="parede"] .wrap { gap: 8px; }
+}
