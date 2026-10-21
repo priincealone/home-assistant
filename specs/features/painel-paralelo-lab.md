@@ -18,7 +18,7 @@ Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control
    resumo: hora · clima · luzes acesas · aparelhos ativos · portas abertas.
 2. **Cenas**: faixa de 5 atalhos, cada um com ícone, nome e descrição curta.
 3. **Três colunas** abaixo: lista de **Ambientes** (com contagem de ligados) · **cômodos** com grade de
-   aparelhos e "Apagar tudo" por cômodo · coluna **Segurança** (câmeras ao vivo + aviso de clipes).
+   aparelhos e "Apagar tudo" por cômodo · coluna **Segurança** (câmeras ao vivo).
 4. Aparelho ligado vira cartão luminoso; sensores (porta, movimento) mostram só um ponto de estado.
 5. Celular: barra inferior com 3 abas — Casa, Cenas, Câmeras.
 
