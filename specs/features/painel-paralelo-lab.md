@@ -45,7 +45,7 @@ Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control
 - **Raio cônico** giratório (`--ray-angle`, 28 s) e luz âmbar que vaza do aparelho aceso para os vizinhos.
 - **Ícones Phosphor** (os mesmos do painel real), gerados em `icons.js` a partir do pacote já instalado em `dashboard-app` (sem `npm install` no lab). Contorno em repouso, preenchido quando ativo.
 - **Estados de conexão** (`?net=online|carregando|sincronizando|offline`): esqueletos, selo de sem-conexão, comandos recusados com o controle desabilitado, faixa de aviso e números como "—" (nunca 0) sem leitura. Aparelho `unavailable` tem borda tracejada e texto "Indisponível": nunca parece desligado.
-- Painel "Controles de estudo" no rodapé alterna conexão e hora sem mexer na URL.
+- ~~Painel "Controles de estudo"~~ removido em 21/10/2026 a pedido do André (todos os dispositivos). Os parâmetros de URL `?hora=` e `?net=` continuam para testes.
 
 ## Rodada 3 — Ambientes no celular (21/10/2026)
 - ~~Seletor recolhível de Ambientes no celular~~ — substituído na Rodada 5.

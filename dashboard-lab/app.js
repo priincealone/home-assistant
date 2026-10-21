@@ -259,36 +259,19 @@ function renderAbas() {
   document.body.dataset.tab = S.aba;
 }
 
-function renderLab() {
-  document.querySelectorAll("[data-net]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.net === S.net)));
-  const auto = S.hora === null;
-  const h = agora();
-  $("#lab-hora").value = String(h.getHours());
-  $("#lab-hora-txt").textContent = auto ? "Auto" : `${String(Math.floor(S.hora)).padStart(2, "0")}h`;
-  $("[data-hora-auto]").setAttribute("aria-pressed", String(auto));
-}
-
 function renderTudo() {
-  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); renderLab(); atualizaFolha();
+  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha();
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
 const vibrar = () => { try { navigator.vibrate && navigator.vibrate(12); } catch { /* sem suporte */ } };
 let timerNet = null;
-function definirNet(n) {
-  clearTimeout(timerNet);
-  S.net = n;
-  renderTudo();
-  if (n === "carregando") timerNet = setTimeout(() => { S.net = "online"; renderTudo(); }, 1200);
-}
 
 let bloqueioClique = false;   // depois de um toque longo bem-sucedido, o clique que o encerra não alterna o aparelho
 document.addEventListener("click", (ev) => {
   if (bloqueioClique && ev.target.closest(".dev")) { ev.preventDefault(); return; }
-  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn],[data-net],[data-hora-auto],[data-rail]");
+  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn]");
   if (!alvo) return;
-  if (alvo.dataset.net) { definirNet(alvo.dataset.net); return; }
-  if (alvo.hasAttribute("data-hora-auto")) { S.hora = null; renderTudo(); return; }
   if (alvo.dataset.dev) {
     if (travado()) return;
     const d = estado.get(alvo.dataset.dev);
@@ -495,7 +478,6 @@ document.addEventListener("keydown", (ev) => {
 });
 
 
-$("#lab-hora").addEventListener("input", (ev) => { S.hora = +ev.target.value; renderTudo(); });
 
 desenharEstrelas();
 renderTudo();

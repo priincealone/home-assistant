@@ -266,16 +266,6 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .cam-foot span:first-child { font-weight: 600; overflow-wrap: anywhere; }
 .cam-foot span:last-child { color: var(--muted); letter-spacing: 0.08em; flex: none; }
 
-.lab { margin-top: 32px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255, 255, 255, 0.03); }
-.lab summary { min-height: 44px; display: flex; align-items: center; padding: 0 16px; cursor: pointer; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
-.lab-body { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 16px; }
-.lab-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
-.lab-row .eyebrow { min-width: 96px; }
-.seg { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.seg button { min-height: 44px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-strong); background: transparent; color: var(--muted); cursor: pointer; font-size: 0.8125rem; transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast); }
-.seg button[aria-pressed="true"] { background: rgba(251, 191, 36, 0.14); border-color: rgba(251, 191, 36, 0.5); color: var(--amber); }
-.seg input[type="range"] { width: min(220px, 100%); min-height: 44px; accent-color: var(--amber); }
-.seg output { min-width: 3ch; color: var(--text); }
 
 .proto { margin-top: 40px; text-align: center; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-2); }
 

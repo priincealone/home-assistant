@@ -6735,3 +6735,5 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Rodada 6**: removido "Casa · André"; "Sistema online" ao lado da saudação; cabeçalho ~metade da altura. No tablet (768–1179 px) o rail vira coluna lateral e a Segurança fica fixa sem rolagem, com as 2 câmeras mantidas (altura limitada a (100dvh − 190 px)/2). Só o centro rola.
 - **Verificado** (iframes, online e offline): 768×1024, 820×1180, 1024×768, 1100×700, 768×560 sem rolagem em Segurança nem no rail, câmeras = 2, alvos do rail ≥ 44 px, sem estouro horizontal. 1024×500: rail rola 18 px por dentro (exceção documentada).
 - **Não verificado**: tablet real, 1179 exato (cai no layout de desktop), leitor de tela, porteiro `visual-gatekeeper`.
+
+- **Painel paralelo (21/10/2026, noite)**: removido o painel "Controles de estudo" (conexão e hora) em todos os dispositivos, com o CSS e o JS dele. `?hora=` e `?net=` seguem funcionando para teste. Verificado: toque curto, rail, abas e varredura de estouro/alvos em 10 larguras, online e offline.
