@@ -10,28 +10,42 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body data-tab="casa">
+<body data-tab="casa" data-net="carregando">
   <div class="hero-bg" aria-hidden="true">
     <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice" focusable="false">
       <defs>
         <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="#1b1830"/>
-          <stop offset=".55" stop-color="#5b3a4a"/>
-          <stop offset="1" stop-color="#c2764a"/>
+          <stop class="s0" offset="0"/>
+          <stop class="s1" offset=".55"/>
+          <stop class="s2" offset="1"/>
         </linearGradient>
+        <radialGradient id="halo">
+          <stop offset="0" stop-color="currentColor" stop-opacity=".55"/>
+          <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+        </radialGradient>
       </defs>
       <rect width="1600" height="600" fill="url(#ceu)"/>
-      <path d="M0 470 L180 400 L300 440 L470 330 L560 380 L700 270 L790 330 L900 300 L1050 420 L1220 360 L1400 430 L1600 380 L1600 600 L0 600Z" fill="#2a1f2b" opacity=".85"/>
-      <path d="M0 520 L220 470 L420 500 L640 440 L900 505 L1150 460 L1380 510 L1600 480 L1600 600 L0 600Z" fill="#12101a"/>
+      <g id="estrelas" class="estrelas" fill="#f1f5f9"></g>
+      <g class="astro">
+        <circle r="150" fill="url(#halo)"/>
+        <circle class="disco" r="26"/>
+      </g>
+      <path class="m1" d="M0 470 L180 400 L300 440 L470 330 L560 380 L700 270 L790 330 L900 300 L1050 420 L1220 360 L1400 430 L1600 380 L1600 600 L0 600Z"/>
+      <path class="m2" d="M0 520 L220 470 L420 500 L640 440 L900 505 L1150 460 L1380 510 L1600 480 L1600 600 L0 600Z"/>
     </svg>
+    <div class="ray"></div>
   </div>
 
   <div class="wrap">
     <header class="hero" id="secao-hero">
       <div class="hero-top">
         <span class="eyebrow">Casa · André</span>
-        <span class="status"><i class="dot dot-ok"></i>Sistema online</span>
+        <span class="status" id="status"></span>
       </div>
+      <p class="banner" id="banner" role="status" hidden>
+        <span class="banner-ico" aria-hidden="true"></span>
+        Sem conexão com a casa. Mostrando o último estado conhecido; comandos pausados até reconectar.
+      </p>
       <p class="eyebrow" id="data-hoje"></p>
       <h1 class="display" id="saudacao"></h1>
       <ul class="chips" id="resumo" aria-label="Resumo da casa"></ul>
@@ -66,6 +80,29 @@
       </aside>
     </main>
 
+    <details class="lab">
+      <summary>Controles de estudo</summary>
+      <div class="lab-body">
+        <div class="lab-row">
+          <span class="eyebrow">Conexão</span>
+          <div class="seg">
+            <button type="button" data-net="online" aria-pressed="false">Online</button>
+            <button type="button" data-net="carregando" aria-pressed="false">Carregando</button>
+            <button type="button" data-net="sincronizando" aria-pressed="false">Sincronizando</button>
+            <button type="button" data-net="offline" aria-pressed="false">Offline</button>
+          </div>
+        </div>
+        <div class="lab-row">
+          <label class="eyebrow" for="lab-hora">Hora do dia</label>
+          <div class="seg">
+            <input id="lab-hora" type="range" min="0" max="23" step="1" value="12">
+            <output id="lab-hora-txt" class="num">Auto</output>
+            <button type="button" data-hora-auto aria-pressed="true">Auto</button>
+          </div>
+        </div>
+      </div>
+    </details>
+
     <p class="proto">Protótipo · estados simulados · nenhum comando chega à casa</p>
   </div>
 
@@ -75,6 +112,7 @@
     <button type="button" data-tab-btn="cameras" aria-pressed="false"></button>
   </nav>
 
+  <script src="icons.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

@@ -6703,3 +6703,10 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Verificado**: console sem erros; sem rolagem horizontal nem texto estourando em 320–1920 px (medido por JS em iframes, texto a 100 % e 150 % via `font-size` raiz, abas Casa/Cenas/Câmeras no celular); captura visual em 1568 px (Chrome) e em 340/390 px.
 - **Não verificado**: retrato/paisagem reais em tablet, texto grande do sistema (só `rem` escala), leitor de tela, porteiro `visual-gatekeeper` (não é o painel publicado). Lista de Ambientes no celular ocupa ~4 linhas; candidata a faixa recolhível se o André gostar da estrutura.
 - **Para subir**: `node dashboard-lab/serve.mjs` (ou `preview_start painel-lab-3011`).
+
+### 21/10/2026 (tarde) — Painel paralelo, rodada 2: acabamento
+
+- **Feito em `dashboard-lab/`**: céu do hero por hora do dia (5 fases), raio cônico, brilho que vaza dos aparelhos acesos, ícones Phosphor (`icons.js`, gerado do pacote do painel), estados carregando/sincronizando/offline/indisponível, painel "Controles de estudo". Parâmetros de URL `?hora=` e `?net=`.
+- **Verificado**: sem erro de console; sem rolagem horizontal, texto estourando ou alvo de toque < 44 px em 320–1920 px, nos estados online, offline e carregando, texto a 100 % e 150 % (`rem`); captura das 5 fases do hero no celular.
+- **Armadilha**: o app de preview deixou o `serve.mjs` antigo vivo na 3011 depois do "stop" — o servidor guarda a lista de arquivos públicos na memória, então arquivo novo dá 404 até reiniciar. Matar pelo dono da porta 3011 e subir de novo.
+- **Não verificado**: retrato/paisagem reais, leitor de tela, porteiro `visual-gatekeeper`. O disco do sol fica atrás do texto do resumo em celular perto do meio-dia (opacidade reduzida a 50 %).

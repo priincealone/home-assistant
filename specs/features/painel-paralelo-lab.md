@@ -40,6 +40,13 @@ Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control
 - Lista de Ambientes lateral (com filtro) substitui a grade de cômodos como porta de entrada?
 - Hero com foto real da casa (Lovable usou imagem inventada) ou só o degradê?
 
+## Rodada 2 — acabamento (21/10/2026)
+- **Céu do hero reage à hora** (5 fases: madrugada, amanhecer, dia, entardecer, noite): degradê, estrelas, sol/lua num arco e montanhas mudam por variáveis CSS; `?hora=19` força a hora.
+- **Raio cônico** giratório (`--ray-angle`, 28 s) e luz âmbar que vaza do aparelho aceso para os vizinhos.
+- **Ícones Phosphor** (os mesmos do painel real), gerados em `icons.js` a partir do pacote já instalado em `dashboard-app` (sem `npm install` no lab). Contorno em repouso, preenchido quando ativo.
+- **Estados de conexão** (`?net=online|carregando|sincronizando|offline`): esqueletos, selo de sem-conexão, comandos recusados com o controle desabilitado, faixa de aviso e números como "—" (nunca 0) sem leitura. Aparelho `unavailable` tem borda tracejada e texto "Indisponível": nunca parece desligado.
+- Painel "Controles de estudo" no rodapé alterna conexão e hora sem mexer na URL.
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.

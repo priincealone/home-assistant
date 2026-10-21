@@ -21,6 +21,7 @@
   --dur-instant: 100ms;
   --dur-fast: 180ms;
   --dur-base: 240ms;
+  --dur-cinematic: 500ms;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --tabbar-h: 0px;
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -62,9 +63,24 @@ button { font: inherit; color: inherit; }
   z-index: 0;
   -webkit-mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
   mask-image: linear-gradient(to bottom, #000 35%, transparent 100%);
-  opacity: 0.55;
+  opacity: 0.72;
 }
 .hero-bg svg { width: 100%; height: 100%; display: block; }
+.hero-bg { --sky0: #1b1830; --sky1: #5b3a4a; --sky2: #c2764a; --m1: #2a1f2b; --m2: #12101a; --stars: 0; --astro: #fde68a; --ax: 1000px; --ay: 200px; }
+.hero-bg .s0 { stop-color: var(--sky0); } .hero-bg .s1 { stop-color: var(--sky1); } .hero-bg .s2 { stop-color: var(--sky2); }
+.hero-bg .s0, .hero-bg .s1, .hero-bg .s2 { transition: stop-color var(--dur-cinematic) var(--ease-out); }
+.hero-bg .m1 { fill: var(--m1); opacity: 0.9; } .hero-bg .m2 { fill: var(--m2); }
+.hero-bg .estrelas { opacity: var(--stars); transition: opacity var(--dur-cinematic); }
+.hero-bg .astro { color: var(--astro); transform: translate(var(--ax), var(--ay)); transition: transform var(--dur-cinematic) var(--ease-out); }
+.hero-bg .disco { fill: var(--astro); opacity: 0.5; }
+/* raio de luz: um feixe cônico que gira devagar (DESIGN.md, "Dynamic Ray Angle") */
+@property --ray-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
+.ray {
+  position: absolute; inset: 0; pointer-events: none;
+  background: conic-gradient(from var(--ray-angle) at 72% 12%, transparent 0deg, rgba(255, 255, 255, 0.06) 30deg, transparent 70deg, transparent 360deg);
+  animation: ray-giro 28s linear infinite;
+}
+@keyframes ray-giro { to { --ray-angle: 360deg; } }
 
 .wrap {
   position: relative;
@@ -80,6 +96,17 @@ button { font: inherit; color: inherit; }
 .status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
 .dot { display: inline-block; width: 8px; height: 8px; border-radius: 9999px; flex: none; }
 .dot-ok { background: var(--green); box-shadow: 0 0 10px rgba(16, 185, 129, 0.6); }
+.dot-warn { background: var(--amber); box-shadow: 0 0 10px rgba(251, 191, 36, 0.6); animation: pulso 1.4s ease-in-out infinite; }
+.dot-bad { background: var(--red); box-shadow: 0 0 10px rgba(239, 68, 68, 0.6); }
+@keyframes pulso { 50% { opacity: 0.35; } }
+
+.banner {
+  display: flex; align-items: flex-start; gap: 10px; margin: -16px 0 24px; padding: 12px 16px;
+  border: 1px solid rgba(239, 68, 68, 0.4); border-radius: 16px; background: rgba(239, 68, 68, 0.1);
+  color: #fecaca; font-size: 0.8125rem; line-height: 1.4; overflow-wrap: anywhere;
+}
+.banner[hidden] { display: none; }
+.banner-ico { width: 8px; height: 8px; margin-top: 6px; flex: none; border-radius: 9999px; background: var(--red); }
 .display {
   margin-top: 8px;
   font-size: clamp(2.1rem, 6vw, 4.4rem);
@@ -96,7 +123,7 @@ button { font: inherit; color: inherit; }
 .chips .warn b, .chips .warn svg { color: var(--red-text); }
 
 /* ---------- Ícones ---------- */
-.ic { width: 1em; height: 1em; flex: none; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.ic { width: 1em; height: 1em; flex: none; fill: currentColor; stroke: none; }
 .ic-16 { font-size: 16px; } .ic-20 { font-size: 20px; } .ic-24 { font-size: 24px; }
 
 /* ---------- Seções ---------- */
@@ -195,6 +222,29 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .dev[data-tipo="tv"][aria-checked="true"] .sw, .dev[data-tipo="console"][aria-checked="true"] .sw { background: rgba(56, 189, 248, 0.5); }
 .dev[data-tipo="tv"][aria-checked="true"] .sw::after, .dev[data-tipo="console"][aria-checked="true"] .sw::after { background: var(--cyan); }
 
+/* a luz de um aparelho aceso vaza para os vizinhos */
+.dev[aria-checked="true"]:not([data-tipo="tv"]):not([data-tipo="console"]) { box-shadow: var(--aura-amber), 0 10px 44px rgba(251, 191, 36, 0.10); }
+.dev { position: relative; }
+.dev .chip { position: relative; }
+.selo { position: absolute; right: -4px; bottom: -4px; width: 18px; height: 18px; display: grid; place-items: center; border-radius: 9999px; background: var(--bg); border: 1px solid var(--border-strong); color: var(--red-text); }
+.dev[data-offline="true"] { cursor: not-allowed; opacity: 0.62; }
+.dev[data-offline="true"]:active { transform: none; }
+.dev[data-offline="true"][aria-checked="true"] { box-shadow: none; }
+.dev[data-indisp="true"] { border-style: dashed; opacity: 0.75; }
+.dev[data-indisp="true"] .sub { color: var(--red-text); }
+.dev:disabled, .scene:disabled, .pill-btn:disabled { cursor: not-allowed; }
+.scene:disabled, .pill-btn:disabled { opacity: 0.55; }
+.scene:disabled:active { transform: none; }
+.live-off { color: var(--red-text); } .live-off .ic { font-size: 12px; }
+
+/* esqueletos (carregando) */
+.sk { pointer-events: none; position: relative; overflow: hidden; }
+.sk::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.07), transparent); animation: brilho 1.4s ease-in-out infinite; }
+@keyframes brilho { to { transform: translateX(100%); } }
+.sk-l { display: block; height: 10px; margin-top: 8px; border-radius: 9999px; background: rgba(255, 255, 255, 0.09); }
+.sk-l.w40 { width: 40%; } .sk-l.w60 { width: 60%; } .sk-l.w80 { width: 80%; } .sk-l.w120 { width: min(160px, 70%); height: 16px; }
+.sk .chip, .sk .ico { background: rgba(255, 255, 255, 0.07); border-color: transparent; }
+
 .dev.sensor { cursor: default; }
 .dev.sensor:active { transform: none; }
 .dev.sensor[data-alerta="true"] { border-color: rgba(239, 68, 68, 0.4); }
@@ -214,6 +264,17 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .cam-foot span:first-child { font-weight: 600; overflow-wrap: anywhere; }
 .cam-foot span:last-child { color: var(--muted); letter-spacing: 0.08em; flex: none; }
 .note { margin-top: 12px; padding: 14px; border: 1px solid var(--border); border-radius: 16px; display: flex; flex-direction: column; gap: 6px; font-size: 0.8125rem; color: var(--muted); }
+
+.lab { margin-top: 32px; border: 1px solid var(--border); border-radius: 16px; background: rgba(255, 255, 255, 0.03); }
+.lab summary { min-height: 44px; display: flex; align-items: center; padding: 0 16px; cursor: pointer; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.lab-body { display: flex; flex-direction: column; gap: 14px; padding: 4px 16px 16px; }
+.lab-row { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
+.lab-row .eyebrow { min-width: 96px; }
+.seg { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.seg button { min-height: 44px; padding: 0 14px; border-radius: 9999px; border: 1px solid var(--border-strong); background: transparent; color: var(--muted); cursor: pointer; font-size: 0.8125rem; transition: background-color var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast); }
+.seg button[aria-pressed="true"] { background: rgba(251, 191, 36, 0.14); border-color: rgba(251, 191, 36, 0.5); color: var(--amber); }
+.seg input[type="range"] { width: min(220px, 100%); min-height: 44px; accent-color: var(--amber); }
+.seg output { min-width: 3ch; color: var(--text); }
 
 .proto { margin-top: 40px; text-align: center; font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted-2); }
 
@@ -269,6 +330,7 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .ray, .sk::after, .dot-warn { animation: none; }
   *, *::before, *::after { transition-duration: 1ms !important; animation-duration: 1ms !important; }
   .dev:active, .scene:active { transform: none; }
 }
