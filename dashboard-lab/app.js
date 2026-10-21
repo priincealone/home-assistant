@@ -55,14 +55,11 @@ const CENAS = [
 const URL_P = new URLSearchParams(location.search);
 const S = {
   filtro: "todos", cena: null, aba: "casa", ambAberto: false,
-  modo: URL_P.get("modo") === "parede" ? "parede" : "detalhe",
-  wallOk: window.matchMedia("(min-width: 900px)").matches,
   net: ["online", "offline", "carregando", "sincronizando"].includes(URL_P.get("net")) ? URL_P.get("net") : "carregando",
   hora: URL_P.has("hora") && Number.isFinite(+URL_P.get("hora")) ? Math.min(23.99, Math.max(0, +URL_P.get("hora"))) : null,
 };
 const $ = (sel) => document.querySelector(sel);
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const parede = () => S.modo === "parede" && S.wallOk;
 const travado = () => S.net === "offline" || S.net === "carregando";
 
 const agora = () => {
@@ -190,38 +187,7 @@ function tileHtml(chave, d) {
     <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></button>`;
 }
 
-const MODO_ICO = { parede: ["list", "Ver detalhes"], detalhe: ["monitor", "Modo parede"] };
-function renderModo() {
-  const [ico, rot] = MODO_ICO[parede() ? "parede" : "detalhe"];
-  $("#btn-modo").innerHTML = `${ic(ico, 16)}<span>${rot}</span>`;
-  $("#btn-modo").setAttribute("aria-pressed", String(parede()));
-  document.body.dataset.modo = parede() ? "parede" : "detalhe";
-}
-
-function cartaoComodo(s) {
-  const itens = acionaveis(s.id);
-  const n = itens.filter((d) => d.on).length;
-  const off = S.net === "offline";
-  const chips = [...estado.entries()].filter(([, d]) => d.sala === s.id).map(([k, d]) => {
-    if (d.indisp) return `<span class="rc-dev rc-ro" data-indisp="true" title="${esc(d.nome)} · Indisponível">${ic(d.tipo, 20)}<span class="selo">${ic("offline", 12)}</span></span>`;
-    if (d.sensor || d.info) return `<span class="rc-dev rc-ro" data-alerta="${d.sensor && d.on}" title="${esc(d.nome)} · ${esc(subtitulo(d))}">${ic(d.tipo, 20, d.sensor && d.on)}</span>`;
-    return `<button type="button" class="rc-dev" role="switch" aria-checked="${d.on}" aria-label="${esc(d.nome)}" title="${esc(d.nome)} · ${esc(subtitulo(d))}" data-dev="${k}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ""}>${ic(d.tipo, 20, d.on)}</button>`;
-  }).join("");
-  return `<article class="rc glass" data-on="${n > 0}">
-    <div class="rc-head">
-      <button type="button" class="rc-name" data-abrir="${s.id}" aria-label="Abrir ${esc(s.nome)}"><span class="n">${esc(s.nome)}</span><span class="muted num">${n} de ${itens.length} ligados</span></button>
-      <button type="button" class="rc-master" role="switch" aria-checked="${n > 0}" aria-label="${n > 0 ? "Apagar tudo em" : "Acender tudo em"} ${esc(s.nome)}" data-todos="${s.id}" data-valor="${n > 0 ? 0 : 1}" ${travado() ? "disabled" : ""}>${ic("power", 20, n > 0)}</button>
-    </div>
-    <div class="rc-devs">${chips}</div></article>`;
-}
-
 function renderComodos() {
-  if (parede()) {
-    $("#secao-casa").innerHTML = S.net === "carregando"
-      ? Array.from({ length: 9 }, () => '<div class="rc glass sk" aria-hidden="true"><div class="sk-l w60"></div><div class="sk-l w80"></div></div>').join("")
-      : SALAS.map(cartaoComodo).join("");
-    return;
-  }
   if (S.net === "carregando") {
     $("#secao-casa").innerHTML = [0, 1].map(() => `<section aria-hidden="true">
       <div class="room-head"><div><div class="sk-l w120"></div><div class="sk-l w60"></div></div></div>
@@ -271,7 +237,7 @@ function renderLab() {
 }
 
 function renderTudo() {
-  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); renderModo(); renderLab();
+  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); renderLab();
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
@@ -285,11 +251,9 @@ function definirNet(n) {
 }
 
 document.addEventListener("click", (ev) => {
-  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-tab-btn],[data-net],[data-hora-auto],[data-abrir],[data-modo-btn],[data-amb-toggle]");
+  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-tab-btn],[data-net],[data-hora-auto],[data-amb-toggle]");
   if (!alvo) return;
-  if (alvo.hasAttribute("data-modo-btn")) { S.modo = parede() ? "detalhe" : "parede"; renderTudo(); return; }
   if (alvo.hasAttribute("data-amb-toggle")) { S.ambAberto = !S.ambAberto; renderAmbientes(); return; }
-  if (alvo.dataset.abrir) { S.filtro = alvo.dataset.abrir; S.modo = "detalhe"; window.scrollTo(0, 0); renderTudo(); return; }
   if (alvo.dataset.net) { definirNet(alvo.dataset.net); return; }
   if (alvo.hasAttribute("data-hora-auto")) { S.hora = null; renderTudo(); return; }
   if (alvo.dataset.dev) {
@@ -316,7 +280,6 @@ document.addEventListener("click", (ev) => {
   if (novo && document.activeElement === document.body) novo.focus({ preventScroll: true });
 });
 
-window.matchMedia("(min-width: 900px)").addEventListener("change", (e) => { S.wallOk = e.matches; renderTudo(); });
 $("#lab-hora").addEventListener("input", (ev) => { S.hora = +ev.target.value; renderTudo(); });
 
 desenharEstrelas();

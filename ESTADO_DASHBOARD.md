@@ -6716,3 +6716,8 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Feito em `dashboard-lab/`**: modo parede sem rolagem (cartões de cômodo + interruptor geral + chips por aparelho), seletor recolhível de Ambientes no celular, `?modo=parede`.
 - **Verificado** (iframes no Chrome, dados simulados): em 1024×768, 1180×820, 1280×720/800, 1366×768, 1440×900, 1920×1080 e 2560×1440 a página não rola e a grade cabe, nos estados online, offline e carregando; cliques em interruptor geral, chip, cena e "abrir cômodo" funcionam; modo detalhe sem regressão em 320–1920 px (sem estouro, alvos ≥ 44 px), com o seletor do celular aberto e fechado.
 - **Não verificado**: 900×600 (a grade de cômodos rola por dentro, por falta de altura), retrato/paisagem reais, leitor de tela, porteiro `visual-gatekeeper`.
+
+### 21/10/2026 (noite) — Painel paralelo: modo parede removido; clipes de movimento removidos
+
+- **Decisão do André**: o modo parede "não se faz necessário". Removidos de `dashboard-lab/` o botão, a grade de cartões de cômodo, o CSS do modo e os ícones só dele; `?modo=parede` agora é ignorado. Fica o seletor recolhível de Ambientes no celular.
+- **Clipes de movimento**: o aviso foi retirado da coluna Segurança do lab (o painel real não foi tocado).
