@@ -1,0 +1,46 @@
+# Painel paralelo (laboratório) — referência Lovable × Nocturnal Observatory
+
+**Status:** protótipo de estudo, criado em 21/10/2026. **Não substitui nem altera `dashboard-app/`.**
+
+## Objetivo
+Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control Center" aplicada à nossa estética
+(Nocturnal Observatory, `dashboard-app/DESIGN.md`). Decidir, olhando lado a lado, o que vale levar ao painel real.
+
+## Escopo e isolamento
+- Pasta própria: `dashboard-lab/` (HTML/CSS/JS sem dependências, servidor Node de 30 linhas). Sem `npm install`,
+  portanto sem risco ao `node_modules` do Google Drive.
+- Porta **3011**. Nunca a 3002 (produção) nem a 3010 (dev do painel).
+- **Dados 100% simulados.** Nenhuma chamada ao Home Assistant, nenhum token, nenhum comando físico (CLAUDE.md §11).
+- Nomes de cômodos e aparelhos vêm do protótipo Lovable (não do `lib/rooms.ts`): é maquete, não contrato.
+
+## O que se herda do Lovable (distribuição)
+1. **Hero** no topo, com paisagem ao entardecer, saudação grande ("Boa tarde, André."), data, e uma linha de
+   resumo: hora · clima · luzes acesas · aparelhos ativos · portas abertas.
+2. **Cenas**: faixa de 5 atalhos, cada um com ícone, nome e descrição curta.
+3. **Três colunas** abaixo: lista de **Ambientes** (com contagem de ligados) · **cômodos** com grade de
+   aparelhos e "Apagar tudo" por cômodo · coluna **Segurança** (câmeras ao vivo + aviso de clipes).
+4. Aparelho ligado vira cartão luminoso; sensores (porta, movimento) mostram só um ponto de estado.
+5. Celular: barra inferior com 3 abas — Casa, Cenas, Câmeras.
+
+## O que se mantém do nosso sistema
+- Paleta: fundo `#07090e`, âmbar `#fbbf24` (aceso), ciano `#38bdf8`, esmeralda `#10b981`, carmesim `#ef4444`.
+- Liquid Glass: superfícies translúcidas 4–18 %, borda `rgba(255,255,255,.10)`, brilho âmbar no ativo.
+- Inter + `tabular-nums` em todo número. Raios 28/24/20 (casca), 24 (cartão), 16 (aparelho), pílula.
+- Movimento: só `transform`/`opacity`/cor/sombra, tokens de duração do `DESIGN.md`, `prefers-reduced-motion`.
+- Alvos de toque ≥ 44 px; `env(safe-area-inset-*)`; zoom do navegador **continua bloqueado** (decisão do André).
+- Estado `unavailable` nunca aparece como "desligado" (reservado; sem dado real neste protótipo).
+
+## Diferenças deliberadas em relação ao Lovable
+- Tipografia serifada do Lovable **não** entra (regra: só Inter). O destaque do nome vira âmbar.
+- Cartão ligado do Lovable é bege opaco; aqui é vidro âmbar (opacidade ≤ 18 %).
+- Sem rolagem horizontal; texto longo quebra em até 2 linhas, nunca corta seco.
+
+## Pontos de decisão para o André
+- A coluna de Segurança fixa à direita vale mais que a faixa de energia/clima que o painel real tem hoje?
+- Lista de Ambientes lateral (com filtro) substitui a grade de cômodos como porta de entrada?
+- Hero com foto real da casa (Lovable usou imagem inventada) ou só o degradê?
+
+## Critérios de aceite
+- Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
+- Texto a 150 % sem corte ou sobreposição.
+- Nenhuma requisição de rede para o HA (verificável na aba Rede).

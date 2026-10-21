@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#07090e">
+  <title>Casa · Painel paralelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body data-tab="casa">
+  <div class="hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice" focusable="false">
+      <defs>
+        <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#1b1830"/>
+          <stop offset=".55" stop-color="#5b3a4a"/>
+          <stop offset="1" stop-color="#c2764a"/>
+        </linearGradient>
+      </defs>
+      <rect width="1600" height="600" fill="url(#ceu)"/>
+      <path d="M0 470 L180 400 L300 440 L470 330 L560 380 L700 270 L790 330 L900 300 L1050 420 L1220 360 L1400 430 L1600 380 L1600 600 L0 600Z" fill="#2a1f2b" opacity=".85"/>
+      <path d="M0 520 L220 470 L420 500 L640 440 L900 505 L1150 460 L1380 510 L1600 480 L1600 600 L0 600Z" fill="#12101a"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <header class="hero" id="secao-hero">
+      <div class="hero-top">
+        <span class="eyebrow">Casa · André</span>
+        <span class="status"><i class="dot dot-ok"></i>Sistema online</span>
+      </div>
+      <p class="eyebrow" id="data-hoje"></p>
+      <h1 class="display" id="saudacao"></h1>
+      <ul class="chips" id="resumo" aria-label="Resumo da casa"></ul>
+    </header>
+
+    <section class="scenes" id="secao-cenas" aria-labelledby="t-cenas">
+      <div class="sec-head">
+        <h2 id="t-cenas">Cenas</h2>
+        <p class="muted">Um toque, a casa inteira se ajusta.</p>
+      </div>
+      <div class="scene-grid" id="cenas"></div>
+    </section>
+
+    <main class="main">
+      <nav class="rooms-nav" id="ambientes" aria-label="Ambientes">
+        <span class="eyebrow">Ambientes</span>
+        <ul id="lista-ambientes"></ul>
+      </nav>
+
+      <section class="rooms" id="secao-casa" aria-label="Cômodos"></section>
+
+      <aside class="security" id="secao-cameras" aria-labelledby="t-seg">
+        <div class="sec-head">
+          <h2 id="t-seg">Segurança</h2>
+          <p class="muted">Câmeras da rua · DVR Intelbras</p>
+        </div>
+        <div class="cams" id="cameras"></div>
+        <div class="note">
+          <span class="eyebrow">Clipes de movimento</span>
+          <p>Cada alerta do DVR grava 30 segundos das duas câmeras e envia para o Google Drive.</p>
+        </div>
+      </aside>
+    </main>
+
+    <p class="proto">Protótipo · estados simulados · nenhum comando chega à casa</p>
+  </div>
+
+  <nav class="tabbar" aria-label="Seções">
+    <button type="button" data-tab-btn="casa" aria-pressed="true"></button>
+    <button type="button" data-tab-btn="cenas" aria-pressed="false"></button>
+    <button type="button" data-tab-btn="cameras" aria-pressed="false"></button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>

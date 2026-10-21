@@ -12,6 +12,12 @@
       "runtimeExecutable": "node",
       "runtimeArgs": ["dashboard-app/node_modules/next/dist/bin/next", "dev", "dashboard-app", "-p", "3010"],
       "port": 3010
+    },
+    {
+      "name": "painel-lab-3011",
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["dashboard-lab/serve.mjs"],
+      "port": 3011
     }
   ]
 }
