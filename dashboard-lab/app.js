@@ -39,7 +39,12 @@ const SENSORES = new Set(["door", "motion"]);
 const estado = new Map();
 for (const s of SALAS) {
   for (const [id, nome, tipo, on, sub, txtOk, txtAlerta, indisp] of s.itens) {
-    estado.set(`${s.id}.${id}`, { sala: s.id, id, nome, tipo, on: !!on, subOn: sub || null, txtOk, txtAlerta, indisp: !!indisp, sensor: SENSORES.has(tipo), info: tipo === "vacuum" });
+    estado.set(`${s.id}.${id}`, {
+      sala: s.id, id, nome, tipo, on: !!on, subOn: tipo === "tv" || tipo === "vacuum" ? null : sub || null, txtOk, txtAlerta, indisp: !!indisp,
+      sensor: SENSORES.has(tipo), info: tipo === "vacuum",
+      // ajustes simulados da folha (rodada 4)
+      bri: 100, temp: 3500, cor: null, vel: 2, osc: false, vol: 30, mudo: false, app: sub || "Netflix", suc: 2, vst: "base", bat: 100,
+    });
   }
 }
 
@@ -72,9 +77,15 @@ const ligados = (salaId) => acionaveis(salaId).filter((d) => d.on).length;
 const subtitulo = (d) => {
   if (d.indisp) return "Indisponível";
   if (d.sensor) return d.on ? d.txtAlerta : d.txtOk;
-  if (d.info) return d.subOn;
-  return d.on ? d.subOn || "Ligado" : "Desligado";
+  if (d.tipo === "vacuum") return { base: `Na base · ${d.bat}%`, limpando: `Aspirando · ${d.bat}%`, pausado: "Pausado" }[d.vst];
+  if (!d.on) return "Desligado";
+  if (d.tipo === "light" || d.tipo === "led") return d.bri < 100 ? `Ligado · ${d.bri}%` : "Ligado";
+  if (d.tipo === "fan") return `Velocidade ${d.vel}${d.osc ? " · Oscilando" : ""}`;
+  if (d.tipo === "tv") return d.app;
+  return d.subOn || "Ligado";
 };
+const temAjustes = (d) => !d.sensor && !d.indisp && ["light", "led", "fan", "tv", "vacuum"].includes(d.tipo);
+const DICA = "Segure para ajustar";
 
 /* ---------- Céu do hero: reage à hora do dia ---------- */
 const FASES = [
@@ -171,10 +182,19 @@ function tileHtml(chave, d) {
   const sub = esc(subtitulo(d) ?? "");
   const off = S.net === "offline";
   const selo = (off || d.indisp) ? `<span class="selo" title="${d.indisp ? "Indisponível" : "Sem conexão"}">${ic("offline", 12)}</span>` : "";
+  const aj = temAjustes(d) && !off;
+  const ajAttr = aj ? ` data-ajustes="true" title="${DICA}" aria-description="${DICA}. Pelo teclado: Shift+Enter."` : "";
+  const ajIco = aj ? `<span class="aj" aria-hidden="true">${ic("ajustes", 16)}</span>` : "";
   if (d.indisp) {
     return `<div class="dev sensor glass" data-tipo="${d.tipo}" data-indisp="true">
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20)}${selo}</span></div>
       <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></div>`;
+  }
+  if (d.tipo === "vacuum") {
+    const ativo = d.vst === "limpando";
+    return `<button type="button" class="dev glass" data-dev="${chave}" data-tipo="vacuum" data-ativo="${ativo}" aria-haspopup="dialog" ${off ? 'data-offline="true" disabled' : ajAttr}>
+      <div class="dev-top"><span class="chip">${ic(d.tipo, 20, ativo)}${selo}</span></div>
+      <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div>${ajIco}</button>`;
   }
   if (d.sensor || d.info) {
     const alerta = d.sensor && d.on;
@@ -182,9 +202,9 @@ function tileHtml(chave, d) {
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20, alerta)}${selo}</span>${d.sensor ? '<i class="dot-state"></i>' : ""}</div>
       <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></div>`;
   }
-  return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ""}>
+  return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ajAttr}>
     <div class="dev-top"><span class="chip">${ic(d.tipo, 20, d.on)}${selo}</span><span class="sw" aria-hidden="true"></span></div>
-    <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></button>`;
+    <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div>${ajIco}</button>`;
 }
 
 function renderComodos() {
@@ -237,7 +257,7 @@ function renderLab() {
 }
 
 function renderTudo() {
-  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); renderLab();
+  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); renderLab(); atualizaFolha();
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
@@ -250,7 +270,9 @@ function definirNet(n) {
   if (n === "carregando") timerNet = setTimeout(() => { S.net = "online"; renderTudo(); }, 1200);
 }
 
+let bloqueioClique = false;   // depois de um toque longo bem-sucedido, o clique que o encerra não alterna o aparelho
 document.addEventListener("click", (ev) => {
+  if (bloqueioClique && ev.target.closest(".dev")) { ev.preventDefault(); return; }
   const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-tab-btn],[data-net],[data-hora-auto],[data-amb-toggle]");
   if (!alvo) return;
   if (alvo.hasAttribute("data-amb-toggle")) { S.ambAberto = !S.ambAberto; renderAmbientes(); return; }
@@ -258,7 +280,9 @@ document.addEventListener("click", (ev) => {
   if (alvo.hasAttribute("data-hora-auto")) { S.hora = null; renderTudo(); return; }
   if (alvo.dataset.dev) {
     if (travado()) return;
-    const d = estado.get(alvo.dataset.dev); d.on = !d.on; S.cena = null; vibrar();
+    const d = estado.get(alvo.dataset.dev);
+    if (d.tipo === "vacuum") { abrirFolha(alvo.dataset.dev); return; }   // aspirador: toque curto abre a folha
+    d.on = !d.on; S.cena = null; vibrar();
   } else if (alvo.dataset.todos) {
     if (travado()) return;
     acionaveis(alvo.dataset.todos).forEach((d) => { d.on = alvo.dataset.valor === "1"; }); S.cena = null; vibrar();
@@ -279,6 +303,186 @@ document.addEventListener("click", (ev) => {
   const novo = document.querySelector(chave);
   if (novo && document.activeElement === document.body) novo.focus({ preventScroll: true });
 });
+
+/* ---------- Folha de ajustes (rodada 4): toque longo ≈ 450 ms, Shift+Enter, F10, botão direito ---------- */
+const CORES = [["ambar", "Âmbar", "#fbbf24"], ["vermelho", "Vermelho", "#ef4444"], ["verde", "Verde", "#10b981"], ["ciano", "Ciano", "#38bdf8"], ["violeta", "Violeta", "#a78bfa"]];
+const APPS = ["Netflix", "YouTube", "HDMI 1", "HDMI 2"];
+const SUCCAO = ["Silencioso", "Padrão", "Forte"];
+const rotTemp = (k) => (k < 3500 ? "quente" : k < 5000 ? "neutra" : "fria");
+const SLIDERS = {
+  bri: { rot: "Brilho", min: 1, max: 100, step: 1, get: (d) => d.bri, set: (d, v) => { d.bri = v; d.on = true; }, txt: (v) => `${v}%`, vt: (v) => `${v} por cento` },
+  temp: { rot: "Temperatura da cor", min: 2700, max: 6500, step: 100, get: (d) => d.temp, set: (d, v) => { d.temp = v; d.cor = null; }, txt: (v) => `${v} K · ${rotTemp(v)}`, vt: (v) => `${v} kelvin, ${rotTemp(v)}` },
+  vol: { rot: "Volume", min: 0, max: 100, step: 1, get: (d) => d.vol, set: (d, v) => { d.vol = v; if (v > 0) d.mudo = false; }, txt: (v) => `${v}%`, vt: (v) => `${v} por cento` },
+};
+const SEGS = {
+  vel: { rot: "Velocidade", valores: [1, 2, 3], rotulo: (v) => String(v), aria: (v) => `Velocidade ${v}`, get: (d) => d.vel, set: (d, v) => { d.vel = v; } },
+  suc: { rot: "Sucção", valores: [1, 2, 3], rotulo: (v) => SUCCAO[v - 1], aria: (v) => `Sucção ${SUCCAO[v - 1].toLowerCase()}`, get: (d) => d.suc, set: (d, v) => { d.suc = v; } },
+};
+const VAC = { limpando: ["play", "Iniciar"], pausado: ["pause", "Pausar"], base: ["base", "Voltar à base"] };
+
+let folhaChave = null, folhaFechando = false, folhaAbertaEm = 0, lp = null;
+const durFast = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-fast")) || 180;
+
+function montaFolha(d) {
+  const slider = (id) => `<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${id}">${SLIDERS[id].rot}</label><output class="num val" for="f-${id}" data-val="${id}"></output></div>
+    <input class="rng" type="range" id="f-${id}" data-ctl="${id}" min="${SLIDERS[id].min}" max="${SLIDERS[id].max}" step="${SLIDERS[id].step}"></div>`;
+  const sw = (id, rot) => `<button type="button" class="ctl-sw" role="switch" aria-checked="false" data-sw="${id}"><span class="rot" data-rot="${id}">${rot}</span><span class="sw" aria-hidden="true"></span></button>`;
+  const seg = (id) => `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-${id}-r">${SEGS[id].rot}</span></div>
+    <div class="segs" role="group" aria-labelledby="f-${id}-r">${SEGS[id].valores.map((v) => `<button type="button" class="segbtn" data-seg="${id}" data-v="${v}" aria-pressed="false" aria-label="${SEGS[id].aria(v)}">${SEGS[id].rotulo(v)}</button>`).join("")}</div></div>`;
+  let h = "";
+  if (d.tipo === "vacuum") {
+    h += `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-vac-r">Operação</span></div>
+      <div class="segs segs-vac" role="group" aria-labelledby="f-vac-r">${Object.entries(VAC).map(([k, [i, t]]) => `<button type="button" class="segbtn segbtn-v" data-vac="${k}" aria-pressed="false">${ic(i, 20)}<span>${t}</span></button>`).join("")}</div></div>` + seg("suc");
+  } else {
+    h += sw("on", "Ligado");
+    if (d.tipo === "light" || d.tipo === "led") h += slider("bri");
+    if (d.tipo === "led" || ["sala.painel", "luca.yeelink", "closet.led", "gourmet.led"].includes(`${d.sala}.${d.id}`)) h += slider("temp");
+    if (d.tipo === "led") h += `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-cor-r">Cor</span></div>
+      <div class="cores" role="group" aria-labelledby="f-cor-r">${CORES.map(([k, n, c]) => `<button type="button" class="cor" data-cor="${k}" style="--c:${c}" aria-pressed="false" aria-label="${n}"></button>`).join("")}</div></div>`;
+    if (d.tipo === "fan") h += seg("vel") + sw("osc", "Oscilar");
+    if (d.tipo === "tv") h += slider("vol") + sw("mudo", "Mudo") +
+      `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-app-r">Entrada</span></div>
+      <div class="segs segs-app" role="group" aria-labelledby="f-app-r">${APPS.map((a) => `<button type="button" class="segbtn" data-app="${esc(a)}" aria-pressed="false">${esc(a)}</button>`).join("")}</div></div>`;
+  }
+  const sala = SALAS.find((x) => x.id === d.sala).nome;
+  return `<div class="folha-fundo" data-folha-fechar></div>
+    <div class="folha-painel glass" role="dialog" aria-modal="true" aria-labelledby="folha-t folha-c" tabindex="-1" data-tom="${d.tipo === "tv" || d.tipo === "vacuum" ? "ciano" : "ambar"}">
+      <div class="folha-cab">
+        <div class="folha-tit"><h2 id="folha-t">${esc(d.nome)}</h2><p class="muted" id="folha-c">${esc(sala)}</p><p class="folha-sub" id="folha-s"></p></div>
+        <button type="button" class="folha-x" data-folha-fechar aria-label="Fechar ajustes">${ic("fechar", 20)}</button>
+      </div>
+      <p class="folha-aviso" id="folha-aviso" role="status" hidden></p>
+      <div class="folha-corpo">${h}</div>
+    </div>`;
+}
+
+function atualizaFolha() {
+  if (!folhaChave) return;
+  const d = estado.get(folhaChave), f = $("#folha"), bloq = travado();
+  $("#folha-s").textContent = subtitulo(d);
+  const av = $("#folha-aviso");
+  av.hidden = !bloq;
+  av.textContent = S.net === "offline" ? "Sem conexão com a casa. Ajustes pausados até reconectar." : "Conectando à casa. Ajustes pausados.";
+  f.querySelectorAll("[data-ctl]").forEach((el) => {
+    const c = SLIDERS[el.dataset.ctl], v = c.get(d);
+    if (+el.value !== v) el.value = String(v);
+    el.style.setProperty("--r", String((v - c.min) / (c.max - c.min)));
+    el.setAttribute("aria-valuetext", c.vt(v));
+    f.querySelector(`[data-val="${el.dataset.ctl}"]`).textContent = c.txt(v);
+    el.disabled = bloq;
+  });
+  f.querySelectorAll("[data-sw]").forEach((el) => {
+    const id = el.dataset.sw, v = id === "on" ? d.on : d[id];
+    el.setAttribute("aria-checked", String(v)); el.disabled = bloq;
+    if (id === "on") el.querySelector("[data-rot]").textContent = v ? "Ligado" : "Desligado";
+  });
+  f.querySelectorAll("[data-seg]").forEach((el) => { el.setAttribute("aria-pressed", String(SEGS[el.dataset.seg].get(d) === +el.dataset.v)); el.disabled = bloq; });
+  f.querySelectorAll("[data-app]").forEach((el) => { el.setAttribute("aria-pressed", String(d.app === el.dataset.app)); el.disabled = bloq; });
+  f.querySelectorAll("[data-cor]").forEach((el) => { el.setAttribute("aria-pressed", String(d.cor === el.dataset.cor)); el.disabled = bloq; });
+  f.querySelectorAll("[data-vac]").forEach((el) => { el.setAttribute("aria-pressed", String(d.vst === el.dataset.vac)); el.disabled = bloq; });
+}
+
+function abrirFolha(chave) {
+  const d = estado.get(chave);
+  if (folhaChave || folhaFechando || !d || !temAjustes(d) || travado()) return;
+  const f = $("#folha");
+  folhaChave = chave; folhaAbertaEm = performance.now();
+  f.innerHTML = montaFolha(d);
+  f.hidden = false; f.dataset.estado = "entrando";
+  document.querySelector(".wrap").inert = true; document.querySelector(".tabbar").inert = true;
+  document.body.dataset.folha = "aberta";
+  void f.offsetWidth;                       // fixa o estado inicial antes de animar
+  f.dataset.estado = "aberta";
+  atualizaFolha();
+  f.querySelector(".folha-painel").focus({ preventScroll: true });
+}
+
+function fecharFolha() {
+  if (!folhaChave || folhaFechando) return;
+  const f = $("#folha"), chave = folhaChave;
+  folhaFechando = true; f.dataset.estado = "saindo";
+  setTimeout(() => {
+    f.hidden = true; f.innerHTML = ""; f.dataset.estado = "";
+    document.querySelector(".wrap").inert = false; document.querySelector(".tabbar").inert = false;
+    delete document.body.dataset.folha;
+    folhaChave = null; folhaFechando = false;
+    const origem = document.querySelector(`[data-dev="${chave}"]`);
+    if (origem && !origem.disabled) origem.focus({ preventScroll: true });
+  }, durFast());
+}
+
+function aplicarFolha(fn) {
+  if (!folhaChave || travado()) return;
+  fn(estado.get(folhaChave)); S.cena = null;
+  renderTudo();                              // também chama atualizaFolha(); a folha em si não é recriada
+}
+
+$("#folha").addEventListener("input", (ev) => {
+  const el = ev.target.closest("[data-ctl]");
+  if (el) aplicarFolha((d) => SLIDERS[el.dataset.ctl].set(d, +el.value));
+});
+$("#folha").addEventListener("click", (ev) => {
+  const alvo = ev.target.closest("[data-folha-fechar],[data-sw],[data-seg],[data-app],[data-cor],[data-vac]");
+  if (!alvo) return;
+  if (alvo.hasAttribute("data-folha-fechar")) {
+    if (alvo.classList.contains("folha-fundo") && performance.now() - folhaAbertaEm < 300) return;
+    fecharFolha(); return;
+  }
+  const dt = alvo.dataset;
+  if (dt.sw) aplicarFolha((d) => { if (dt.sw === "on") d.on = !d.on; else d[dt.sw] = !d[dt.sw]; });
+  else if (dt.seg) aplicarFolha((d) => SEGS[dt.seg].set(d, +dt.v));
+  else if (dt.app) aplicarFolha((d) => { d.app = dt.app; });
+  else if (dt.cor) aplicarFolha((d) => { d.cor = dt.cor; d.on = true; });
+  else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; d.bat = dt.vac === "base" ? 100 : 87; });
+});
+$("#folha").addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") { ev.preventDefault(); fecharFolha(); return; }
+  if (ev.key !== "Tab") return;
+  const alvos = [...$("#folha").querySelectorAll("button:not([disabled]), input:not([disabled])")];
+  const painel = $("#folha .folha-painel");
+  if (!alvos.length) { ev.preventDefault(); painel.focus(); return; }
+  const primeiro = alvos[0], ultimo = alvos[alvos.length - 1], ativo = document.activeElement;
+  if (ev.shiftKey && (ativo === primeiro || ativo === painel)) { ev.preventDefault(); ultimo.focus(); }
+  else if (!ev.shiftKey && ativo === ultimo) { ev.preventDefault(); primeiro.focus(); }
+});
+
+/* gestos: Pointer Events; cancela se mover > 8 px ou soltar antes de 450 ms */
+const cartaoAjustes = (ev) => ev.target.closest && ev.target.closest(".dev[data-ajustes]");
+function cancelaLp() { if (lp) clearTimeout(lp.t); }
+document.addEventListener("pointerdown", (ev) => {
+  if (!ev.isPrimary || (ev.pointerType === "mouse" && ev.button !== 0)) return;
+  const card = cartaoAjustes(ev);
+  if (!card || travado() || folhaChave) return;
+  cancelaLp();
+  const atual = lp = { x: ev.clientX, y: ev.clientY, id: ev.pointerId, disparou: false, t: 0 };
+  atual.t = setTimeout(() => {
+    atual.disparou = true; bloqueioClique = true; vibrar();
+    setTimeout(() => { bloqueioClique = false; }, 3000);   // rede de segurança se o pointerup se perder
+    abrirFolha(card.dataset.dev);
+  }, 450);
+});
+document.addEventListener("pointermove", (ev) => {
+  if (lp && ev.pointerId === lp.id && !lp.disparou && Math.hypot(ev.clientX - lp.x, ev.clientY - lp.y) > 8) cancelaLp();
+});
+const fimGesto = (ev) => {
+  if (!lp || ev.pointerId !== lp.id) return;
+  const disparou = lp.disparou; cancelaLp(); lp = null;
+  if (disparou) setTimeout(() => { bloqueioClique = false; }, 400);
+};
+document.addEventListener("pointerup", fimGesto);
+document.addEventListener("pointercancel", fimGesto);
+document.addEventListener("contextmenu", (ev) => {
+  const card = cartaoAjustes(ev);
+  if (!card) return;
+  ev.preventDefault();
+  if (!travado()) abrirFolha(card.dataset.dev);
+});
+document.addEventListener("keydown", (ev) => {
+  const card = cartaoAjustes(ev);
+  if (!card || folhaChave) return;
+  if ((ev.key === "Enter" && ev.shiftKey) || ev.key === "F10") { ev.preventDefault(); abrirFolha(card.dataset.dev); }
+});
+
 
 $("#lab-hora").addEventListener("input", (ev) => { S.hora = +ev.target.value; renderTudo(); });
 

@@ -6721,3 +6721,10 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 
 - **Decisão do André**: o modo parede "não se faz necessário". Removidos de `dashboard-lab/` o botão, a grade de cartões de cômodo, o CSS do modo e os ícones só dele; `?modo=parede` agora é ignorado. Fica o seletor recolhível de Ambientes no celular.
 - **Clipes de movimento**: o aviso foi retirado da coluna Segurança do lab (o painel real não foi tocado).
+
+### 21/10/2026 (noite) — Painel paralelo, rodada 4: toque longo e folha de ajustes
+
+- **Feito em `dashboard-lab/` (agente delegado)**: toque longo (~450 ms) nos cartões com ajustes abre uma folha (bottom sheet < 768 px, diálogo acima): lâmpada (brilho), LED/luminárias (+ temperatura de cor; LED também cores prontas), ventilador (velocidade, oscilar), TV (volume, mudo, entrada), aspirador (iniciar/pausar/base, sucção). Atalhos Shift+Enter, F10/Menu e botão direito. Offline/carregando desabilitam. Spec: seção "Rodada 4".
+- **Verificado**: o agente mediu gestos, 10 larguras (320–1920) com texto a 150 %, offline e queda de conexão com a folha aberta, regressão sem folha; eu reconferi toque longo (abre sem alternar o aparelho) e Esc (fecha, foco volta ao cartão).
+- **Não verificado**: toque real em iOS/Android (contextmenu pós-toque longo, vibração, arrasto de slider com dedo), Firefox/Safari, leitor de tela, `prefers-reduced-motion` medido.
+- **Em aberto**: se a conexão cai com a folha aberta, o foco não volta ao cartão (desabilitado); todas as lâmpadas têm brilho, inclusive os interruptores do Banheiro (a simulação não distingue dimerizável); aspirador fixa 87 % ao iniciar.
