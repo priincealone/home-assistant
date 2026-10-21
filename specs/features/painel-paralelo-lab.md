@@ -48,7 +48,7 @@ Estudar a distribuição de layout do protótipo Lovable "Home Assistant Control
 - Painel "Controles de estudo" no rodapé alterna conexão e hora sem mexer na URL.
 
 ## Rodada 3 — Ambientes no celular (21/10/2026)
-- **Ambientes no celular** viram um seletor recolhível (mostra o ambiente atual e a contagem); ao escolher um, fecha.
+- ~~Seletor recolhível de Ambientes no celular~~ — substituído na Rodada 5.
 - **Modo parede: descartado pelo André** (não se faz necessário). Foi implementado, avaliado e removido; não voltar a propor sem pedido.
 
 ## Rodada 4 — toque longo e ajustes (21/10/2026)
@@ -86,3 +86,11 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.
 - Nenhuma requisição de rede para o HA (verificável na aba Rede).
+
+## Rodada 5 — rail de ambientes no celular (21/10/2026)
+- **Decisão:** o seletor recolhível de Ambientes (`#amb-toggle`, `ambAberto`) foi removido e, abaixo de 768 px, entrou um **rail vertical fixo de ícones** (um por ambiente, sempre visível, sem abrir/fechar). **Razão:** a faixa horizontal de chips quebrava linha ou rolava. **Custo:** ~52 px de largura (gutter do celular cai para 12 px abaixo de 400 px para manter 2 colunas de aparelhos a partir de 360 px).
+- Itens: "Todos" (grade) + 9 ambientes, só ícone Phosphor, sem contador nem rótulo: Sala de estar = Couch, Quarto = Bed, Quarto Luca = Baby, Closet = TShirt, Cozinha & Copa = CookingPot, Lavanderia = WashingMachine, Área Gourmet = Fire, Circulação = Footprints, Banheiro = Bathtub. (Hanger não existe no pacote.)
+- Cada botão 44×44 px, `aria-label`/`title` com o nome, `aria-current="true"` no selecionado (âmbar suave, ícone preenchido; os demais em contorno). Tocar aplica `S.filtro`, como a lista de ≥ 768 px.
+- `position: sticky` abaixo do topo, `max-height` = viewport − topo − barra de abas − safe-area; se os 10 itens não couberem (ex.: 320×480) o rail rola por dentro (vertical, scrollbar fina), nunca na horizontal.
+- O rail é criado uma vez; `renderTudo` só atualiza `aria-current` e o ícone, então rolagem e foco do rail não se perdem. Aparece só na aba Casa; em Cenas e Câmeras o conteúdo usa a largura toda.
+- Aparelhos: 2 colunas de 360 a 767 px (cartão ≥ 132 px), 1 coluna abaixo de 360 px. ≥ 768 px nada mudou (lista lateral/chips).

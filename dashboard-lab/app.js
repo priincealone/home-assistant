@@ -11,27 +11,27 @@ function ic(nome, tam = 20, ativo = false) {
 /* ---------- Dados simulados (nomes vêm do protótipo Lovable; não é o contrato lib/rooms.ts) ---------- */
 // [id, nome, tipo, ligado, subtítulo ligado, texto ok, texto alerta, indisponível]
 const SALAS = [
-  { id: "sala", nome: "Sala de estar", itens: [
+  { id: "sala", icone: "couch", nome: "Sala de estar", itens: [
     ["luz", "Luz da sala", "light", 1], ["vent", "Ventilador", "fan", 0], ["painel", "Painel", "light", 0],
     ["tv", "TV Samsung 65\"", "tv", 1, "Netflix"], ["ps5", "PlayStation 5", "console", 0], ["ventps5", "Ventilação PS5", "plug", 0]] },
-  { id: "quarto", nome: "Quarto", itens: [
+  { id: "quarto", icone: "bed", nome: "Quarto", itens: [
     ["luz", "Luz do quarto", "light", 0], ["vent", "Ventilador", "fan", 1], ["porta", "Porta", "door", 0, null, "Fechada", "Aberta"]] },
-  { id: "luca", nome: "Quarto Luca", itens: [
+  { id: "luca", icone: "baby", nome: "Quarto Luca", itens: [
     ["luz", "Luz", "light", 0], ["yeelink", "Luminária Yeelink", "light", 1], ["led", "Led", "led", 0],
     ["tledled", "Tomada do Led", "plug", 0], ["t1", "Tomada 1", "plug", 0, null, null, null, 1], ["t2", "Tomada 2", "plug", 0]] },
-  { id: "closet", nome: "Closet", itens: [
+  { id: "closet", icone: "shirt", nome: "Closet", itens: [
     ["luz", "Luz", "light", 0], ["led", "Led escritório", "led", 1], ["pc", "Computador", "plug", 1],
     ["t2", "Tomada 2", "plug", 0], ["aspirador", "Aspirador Dreame", "vacuum", null, "Na base · 100%"]] },
-  { id: "cozinha", nome: "Cozinha & Copa", itens: [
+  { id: "cozinha", icone: "pot", nome: "Cozinha & Copa", itens: [
     ["cozinha", "Cozinha", "light", 0], ["copa", "Copa", "light", 0]] },
-  { id: "lavanderia", nome: "Lavanderia", itens: [
+  { id: "lavanderia", icone: "wash", nome: "Lavanderia", itens: [
     ["luz", "Luz", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento"], ["porta", "Porta", "door", 1, null, "Fechada", "Aberta"]] },
-  { id: "gourmet", nome: "Área Gourmet", itens: [
+  { id: "gourmet", icone: "fire", nome: "Área Gourmet", itens: [
     ["plafon", "Plafon", "light", 0], ["pendente", "Pendente", "light", 0], ["led", "Led", "led", 1],
     ["spots", "Spots", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento"]] },
-  { id: "circulacao", nome: "Circulação", itens: [
+  { id: "circulacao", icone: "steps", nome: "Circulação", itens: [
     ["muro", "Muro", "light", 1], ["corredor", "Corredor", "light", 0]] },
-  { id: "banheiro", nome: "Banheiro", itens: [
+  { id: "banheiro", icone: "bath", nome: "Banheiro", itens: [
     ["i1", "Interruptor 1", "light", 0], ["i2", "Interruptor 2", "light", 0]] },
 ];
 
@@ -59,7 +59,7 @@ const CENAS = [
 /* ---------- Estado da tela ---------- */
 const URL_P = new URLSearchParams(location.search);
 const S = {
-  filtro: "todos", cena: null, aba: "casa", ambAberto: false,
+  filtro: "todos", cena: null, aba: "casa",
   net: ["online", "offline", "carregando", "sincronizando"].includes(URL_P.get("net")) ? URL_P.get("net") : "carregando",
   hora: URL_P.has("hora") && Number.isFinite(+URL_P.get("hora")) ? Math.min(23.99, Math.max(0, +URL_P.get("hora"))) : null,
 };
@@ -169,13 +169,25 @@ function renderAmbientes() {
   const item = (id, nome, icone, n) => `
     <li><button type="button" class="amb" data-amb="${id}" aria-current="${S.filtro === id}">
       ${ic(icone, 16, S.filtro === id)}<span class="n">${esc(nome)}</span><span class="count num">${car ? "" : n || ""}</span></button></li>`;
-  const atual = S.filtro === "todos" ? { nome: "Todos", n: total } : { nome: SALAS.find((s) => s.id === S.filtro).nome, n: ligados(S.filtro) };
-  const tg = $("#amb-toggle");
-  tg.setAttribute("aria-expanded", String(S.ambAberto));
-  tg.innerHTML = `<span class="eyebrow">Ambiente</span><span class="n">${esc(atual.nome)}</span><span class="count num">${car ? "" : atual.n}</span>${ic("caret", 16)}`;
-  $("#ambientes").dataset.aberto = String(S.ambAberto);
   $("#lista-ambientes").innerHTML = item("todos", "Todos", "grid", total) +
     SALAS.map((s) => item(s.id, s.nome, "room", ligados(s.id))).join("");
+  renderRail();
+}
+
+// Rail do celular: criado uma vez (preserva a rolagem e o foco); depois só atualiza aria-current e o ícone.
+const RAIL = () => [["todos", "Todos", "grid"], ...SALAS.map((s) => [s.id, s.nome, s.icone])];
+function renderRail() {
+  const ul = $("#rail");
+  if (!ul.children.length) {
+    ul.innerHTML = RAIL().map(([id, nome, icone]) => `
+      <li><button type="button" class="rail-btn" data-rail="${id}" data-icone="${icone}" aria-label="${esc(nome)}" title="${esc(nome)}" aria-current="false">${ic(icone, 24)}</button></li>`).join("");
+  }
+  ul.querySelectorAll("[data-rail]").forEach((b) => {
+    const ativo = S.filtro === b.dataset.rail;
+    b.setAttribute("aria-current", String(ativo));
+    const i = window.ICONES[b.dataset.icone] || window.ICONES.plug;
+    b.querySelector("path").setAttribute("d", ativo ? i.f : i.r);
+  });
 }
 
 function tileHtml(chave, d) {
@@ -273,9 +285,8 @@ function definirNet(n) {
 let bloqueioClique = false;   // depois de um toque longo bem-sucedido, o clique que o encerra não alterna o aparelho
 document.addEventListener("click", (ev) => {
   if (bloqueioClique && ev.target.closest(".dev")) { ev.preventDefault(); return; }
-  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-tab-btn],[data-net],[data-hora-auto],[data-amb-toggle]");
+  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn],[data-net],[data-hora-auto],[data-rail]");
   if (!alvo) return;
-  if (alvo.hasAttribute("data-amb-toggle")) { S.ambAberto = !S.ambAberto; renderAmbientes(); return; }
   if (alvo.dataset.net) { definirNet(alvo.dataset.net); return; }
   if (alvo.hasAttribute("data-hora-auto")) { S.hora = null; renderTudo(); return; }
   if (alvo.dataset.dev) {
@@ -292,8 +303,8 @@ document.addEventListener("click", (ev) => {
     estado.forEach((d) => { if (!d.sensor && !d.info && !d.indisp) d.on = false; });
     c.liga.forEach((k) => { estado.get(k).on = true; });
     S.cena = c.id; vibrar();
-  } else if (alvo.dataset.amb) {
-    S.filtro = alvo.dataset.amb; S.ambAberto = false;
+  } else if (alvo.dataset.amb || alvo.dataset.rail) {
+    S.filtro = alvo.dataset.amb || alvo.dataset.rail;
   } else if (alvo.dataset.tabBtn) {
     S.aba = alvo.dataset.tabBtn; window.scrollTo(0, 0);
   }
