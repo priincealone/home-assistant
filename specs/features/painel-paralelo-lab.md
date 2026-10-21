@@ -82,6 +82,11 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 
 **Não verificado**: toque real em celular (iOS/Android: `touch-callout`, vibração, `contextmenu` do Android após o toque longo), arrasto real do slider com dedo, Firefox/Safari (CSS do polegar com prefixo `-moz` escrito, não visto), leitor de tela, paisagem real de celular além de 320×480, `prefers-reduced-motion` na folha (regra escrita, não medida).
 
+## Rodada 6 — cabeçalho enxuto e laterais fixas no tablet (21/10/2026)
+- **Cabeçalho reduzido**: sai o rótulo "Casa · André"; o "Sistema online" vai para a lateral direita da linha da saudação (quebra para baixo só se faltar largura); margens e tamanho do título menores (≈ metade da altura anterior).
+- **Tablet (768–1179 px)**: Ambientes viram o rail de ícones (mesmo do celular) numa coluna lateral de 56 px e a Segurança numa coluna de 200–260 px. As duas ficam fixas (`position: sticky`) e **sem rolagem própria**; só o centro (cômodos e aparelhos) rola, com a página. As câmeras **continuam as duas**: a altura de cada uma é limitada a `(100dvh − 190 px) / 2`, então encolhem em vez de rolar.
+- Exceção conhecida: com altura menor que ~500 px (paisagem muito baixa) o rail ganha rolagem interna, porque 10 alvos de 44 px não cabem.
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.

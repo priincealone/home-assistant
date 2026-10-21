@@ -6728,3 +6728,10 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Verificado**: o agente mediu gestos, 10 larguras (320–1920) com texto a 150 %, offline e queda de conexão com a folha aberta, regressão sem folha; eu reconferi toque longo (abre sem alternar o aparelho) e Esc (fecha, foco volta ao cartão).
 - **Não verificado**: toque real em iOS/Android (contextmenu pós-toque longo, vibração, arrasto de slider com dedo), Firefox/Safari, leitor de tela, `prefers-reduced-motion` medido.
 - **Em aberto**: se a conexão cai com a folha aberta, o foco não volta ao cartão (desabilitado); todas as lâmpadas têm brilho, inclusive os interruptores do Banheiro (a simulação não distingue dimerizável); aspirador fixa 87 % ao iniciar.
+
+### 21/10/2026 (noite) — Painel paralelo, rodadas 5 e 6: rail no celular, cabeçalho enxuto, laterais fixas no tablet
+
+- **Rodada 5 (agente delegado)**: seletor recolhível de Ambientes substituído por rail vertical fixo de 10 ícones Phosphor no celular (< 768 px). O agente mediu 320–766 px, texto a 150 %, offline/carregando, folha de ajustes. Em exatamente 767 px o matchMedia deu falso no iframe (viewport fracionária): ficou como layout de tablet; não investigado.
+- **Rodada 6**: removido "Casa · André"; "Sistema online" ao lado da saudação; cabeçalho ~metade da altura. No tablet (768–1179 px) o rail vira coluna lateral e a Segurança fica fixa sem rolagem, com as 2 câmeras mantidas (altura limitada a (100dvh − 190 px)/2). Só o centro rola.
+- **Verificado** (iframes, online e offline): 768×1024, 820×1180, 1024×768, 1100×700, 768×560 sem rolagem em Segurança nem no rail, câmeras = 2, alvos do rail ≥ 44 px, sem estouro horizontal. 1024×500: rail rola 18 px por dentro (exceção documentada).
+- **Não verificado**: tablet real, 1179 exato (cai no layout de desktop), leitor de tela, porteiro `visual-gatekeeper`.
