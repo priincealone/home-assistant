@@ -6737,3 +6737,4 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - **Não verificado**: tablet real, 1179 exato (cai no layout de desktop), leitor de tela, porteiro `visual-gatekeeper`.
 
 - **Painel paralelo (21/10/2026, noite)**: removido o painel "Controles de estudo" (conexão e hora) em todos os dispositivos, com o CSS e o JS dele. `?hora=` e `?net=` seguem funcionando para teste. Verificado: toque curto, rail, abas e varredura de estouro/alvos em 10 larguras, online e offline.
+- **Painel paralelo (21/10/2026, noite)**: no tablet (768–1179 px) o topo foi aproveitado: margem superior de ~70 px para 12 px + área segura do aparelho (`env(safe-area-inset-top)`); celular e desktop não mudaram. Medido em 768×1024, 820×1180, 1024×768 e 1100×700: sem estouro horizontal; as cenas passam a terminar ~60 px mais acima.

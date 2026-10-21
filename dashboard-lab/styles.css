@@ -487,3 +487,9 @@ body[data-folha] { overflow: hidden; }
   .cams { gap: 8px; }
   .cam-view { max-height: calc((100dvh - 190px) / 2); }
 }
+
+/* Tablet: aproveita o topo (mínimo de 12 px + área segura do aparelho) */
+@media (min-width: 768px) and (max-width: 1179px) {
+  .wrap { padding-top: calc(12px + env(safe-area-inset-top)); }
+  .hero { padding-top: 0; padding-bottom: 12px; }
+}
