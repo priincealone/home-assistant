@@ -493,3 +493,27 @@ body[data-folha] { overflow: hidden; }
   .wrap { padding-top: calc(12px + env(safe-area-inset-top)); }
   .hero { padding-top: 0; padding-bottom: 12px; }
 }
+
+/* ---------- Tablet/laptop (768–1400 px, altura ≥ 520): a página não rola; só o centro rola ----------
+   Topo (saudação + cenas) fixo, laterais ocupam a altura que sobra e se ajustam sem barra de rolagem. */
+@media (min-width: 768px) and (max-width: 1400px) and (min-height: 520px) {
+  html, body { height: 100dvh; overflow: hidden; }
+  .wrap { height: 100dvh; display: flex; flex-direction: column; gap: 8px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .hero { flex: none; padding: 0 0 2px; }
+  .scenes { flex: none; margin: 0; }
+  .scenes .sec-head { display: none; }
+  .scene-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+  .scene { min-height: 56px; padding: 6px 10px; gap: 8px; }
+  .scene .ico { width: 36px; height: 36px; }
+  .main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
+  .rooms { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding-right: 4px; scrollbar-width: thin; }
+  .rooms-nav { position: static; height: 100%; min-height: 0; max-height: none; }
+  .rooms-nav .rail { max-height: 100%; gap: 2px; padding: 2px 5px; }
+  .security { position: static; height: 100%; min-height: 0; max-height: none; display: flex; flex-direction: column; overflow: hidden; }
+  .cams { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; gap: 8px; }
+  .cam { flex: 0 1 auto; min-height: 0; display: flex; flex-direction: column; }
+  .cam-view { flex: 1 1 auto; min-height: 48px; max-height: none; aspect-ratio: 16 / 9; }
+  .cam-foot { flex: none; padding: 6px 12px; }
+  .proto { display: none; }
+  .rooms-nav .amb-titulo { display: none; }
+}

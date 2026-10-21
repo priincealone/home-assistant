@@ -87,6 +87,11 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 - **Tablet (768–1179 px)**: Ambientes viram o rail de ícones (mesmo do celular) numa coluna lateral de 56 px e a Segurança numa coluna de 200–260 px. As duas ficam fixas (`position: sticky`) e **sem rolagem própria**; só o centro (cômodos e aparelhos) rola, com a página. As câmeras **continuam as duas**: a altura de cada uma é limitada a `(100dvh − 190 px) / 2`, então encolhem em vez de rolar.
 - Exceção conhecida: com altura menor que ~500 px (paisagem muito baixa) o rail ganha rolagem interna, porque 10 alvos de 44 px não cabem.
 
+## Rodada 7 — tablet sem rolagem de página (21/10/2026)
+- Causa do "ainda tem scroll": as laterais eram `sticky`, mas a página inteira (3.000+ px) rolava; em tablet paisagem as laterais começavam abaixo da dobra (Segurança até 825 px e rail até 878 px num 1024×768), então era preciso rolar para alcançá-las.
+- **Casca de app** entre 768 e 1400 px de largura (altura ≥ 520 px): a página não rola. Saudação, resumo e as 5 cenas ficam fixos no topo (cenas em uma linha, sem o título); abaixo, três colunas ocupam a altura que sobra. **Só a coluna central rola** (barra fina, `overscroll-behavior: contain`). Rail (≤ 1179 px) ou lista de Ambientes (1180–1400 px) e Segurança ficam fixos e se ajustam; as 2 câmeras encolhem mantendo 16:9 até o mínimo de 48 px.
+- Exceção: abaixo de ~640 px de altura com rail (ex.: 1024×600) o rail rola por dentro, pois 10 alvos de 44 px não cabem. Acima de 1400 px (desktop) e abaixo de 768 px (celular) nada mudou.
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.
