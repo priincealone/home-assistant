@@ -238,6 +238,8 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .dev[data-indisp="true"] { border-style: dashed; opacity: 0.75; }
 .dev[data-indisp="true"] .sub { color: var(--red-text); }
 .dev:disabled, .scene:disabled, .pill-btn:disabled { cursor: not-allowed; }
+.dev[data-leitura="true"] { cursor: default; }                   /* modo real, fase A: mostra o estado, não comanda */
+.dev[data-leitura="true"]:active { transform: none; }
 .scene:disabled, .pill-btn:disabled { opacity: 0.55; }
 .scene:disabled:active { transform: none; }
 .live-off { color: var(--red-text); } .live-off .ic { font-size: 12px; }

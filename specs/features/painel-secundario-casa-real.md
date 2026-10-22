@@ -1,6 +1,7 @@
 # Painel Secundário × casa real (integração com a Home Assistant)
 
 **Status:** fase A (somente leitura) autorizada pelo André em 22/10/2026 ("integre ele com a casa real"); **fase B (comandos) NÃO autorizada**: precisa de aprovação do plano abaixo (CLAUDE.md, alçada 2 + §11).
+**Fase A: IMPLEMENTADA em 22/10/2026** (somente leitura; ver §6). Fase B continua sem implementação.
 **Contexto:** o Painel Secundário (`dashboard-lab/`) roda inteiro dentro da HA (`/local/painel-secundario/`, iframe de mesma origem) com dados simulados. Esta spec o liga à casa real sem criar rota nova no Painel Primário e **sem token**.
 
 ## 1. Como o painel enxerga a HA
@@ -43,3 +44,26 @@ Proibidos: tranca, portão, aquecedor, qualquer carga de risco (§11.4). Travas 
 - O módulo é cacheado por 31 dias em `/local`: mudar o carregador exige subir o `?v=` do `module_url` e reiniciar a HA (por isso o carregador deve ficar pequeno e estável; a lógica de adaptação vive nos arquivos publicados com hash).
 - Divergência de contrato: regerar `contrato.json` ao mudar `lib/rooms.ts` (o teste acusa).
 - Câmeras e miniaturas: fora desta fase.
+
+## 6. Fase A — como ficou (22/10/2026)
+**Arquivos**: `dashboard-lab/casa-real.js` (adaptador puro + ponte), `app.js` (UI, sem rede), `contrato.json`, `index.html`/`styles.css` (ajustes mínimos); carregador `config/www/casa-painel-secundario.js` **não foi alterado**. Publicação: `node scripts/manutencao/publicar_painel_secundario.mjs` (novo arquivo `casa-real.js` entra em ARQUIVOS e em PUBLICOS do `serve.mjs`).
+
+**Mapeamento domínio → tipo de cartão**
+| Contrato | Tipo na UI | Observação |
+| :-- | :-- | :-- |
+| `light` (nome com "Led") | `led` | liga/desliga por `state`; brilho `brightness` 0–255 → %; kelvin `color_temp_kelvin` |
+| `light` | `light` | slider de brilho só depois de vista ligada com `brightness` |
+| `switch` categoria iluminação | `light` (sem dimmer) | ex.: Interruptor 1 do banheiro |
+| `switch` demais | `plug` | |
+| `fan` | `fan` | `percentage` (mostrado em %), `oscillating` |
+| `media_player` "TV" / demais | `tv` / `console` | ligado = on/playing/paused/idle; off/standby = desligado; `source`, volume, mudo |
+| `binary_sensor` door/opening/window ou categoria segurança | `door` | `on` = Aberta, "há X min" de `last_changed` |
+| `binary_sensor` motion/occupancy | `motion` | `on` = Movimento |
+| `camera` | coluna Segurança | ao vivo / sem sinal; sem miniatura (o contrato atual não tem câmeras) |
+| `unavailable`/`unknown`/`""`/`null`/ausente | "Indisponível" | tracejado, fora das contagens, vai para a lista offline |
+
+**Ficou de fora (sem cartão, de propósito)**: sensores de temperatura/umidade (entram só no cabeçalho do cômodo), energia (`Consumo Instantâneo`, `Consumo PC`), sensor de bateria avulso (entra pela bateria do aparelho dono), aspirador (não está no contrato), clima/previsão e "Ar livre" (sem fonte), miniatura/stream de câmera, cor RGB do LED, entrada/app da TV como seletor, seletor de velocidade 1–3 do ventilador (usa % real).
+
+**Como testar**: `node --test dashboard-lab/tests/*.test.mjs` (a partir da raiz; Node 22 não aceita a pasta como argumento). `contrato-registro.test.mjs` sai com código 3 sem `config/.storage` (ou `HA_STORAGE`). No navegador: abrir `/painel-secundario` na HA (somente olhar; nada de clicar em cartões) e comparar com `hass.states`; mensagens sintéticas por `iframe.contentWindow.postMessage({tipo:"casa-estados",...}, location.origin)`.
+
+**Em aberto**: aceite "≤ 2 s ao acender uma luz fisicamente" não verificado (exige acionar a casa); câmeras do DVR não estão na HA; decidir a fase B.

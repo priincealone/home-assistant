@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url";
 const RAIZ = fileURLToPath(new URL(".", import.meta.url));
 const PORTA = Number(process.env.PORT || 3011);
 const TIPOS = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".svg": "image/svg+xml", ".json": "application/json; charset=utf-8" };
-const PUBLICOS = new Set(["/index.html", "/styles.css", "/app.js", "/icons.js", "/contrato.json"]);
+const PUBLICOS = new Set(["/index.html", "/styles.css", "/app.js", "/icons.js", "/casa-real.js", "/contrato.json"]);
 
 createServer(async (req, res) => {
   const caminho = new URL(req.url, "http://x").pathname;

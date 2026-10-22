@@ -14,7 +14,7 @@ const ORIGEM = join(RAIZ, "dashboard-lab");
 const DESTINO = join(RAIZ, "config", "www", "painel-secundario");
 // Arquivos publicados (index.html é reescrito com ?v=; os demais são copiados). Novo arquivo do painel: acrescentar aqui
 // e em dashboard-lab/serve.mjs (PUBLICOS). contrato.json = lista de permissão de entidades (gerar_contrato_painel_secundario.mjs).
-const ARQUIVOS = ["index.html", "styles.css", "app.js", "icons.js", "contrato.json"];
+const ARQUIVOS = ["index.html", "styles.css", "app.js", "icons.js", "casa-real.js", "contrato.json"];
 const ESTATICOS = ARQUIVOS.filter((f) => f !== "index.html");
 const COM_VERSAO = ESTATICOS.filter((f) => f.endsWith(".css") || f.endsWith(".js")); // referenciados no index.html
 
