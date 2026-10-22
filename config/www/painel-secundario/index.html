@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#07090e">
+  <title>Casa · Painel paralelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="stylesheet" href="styles.css?v=89beb7d60e">
+</head>
+<body data-tab="casa" data-net="carregando">
+  <div class="hero-bg" aria-hidden="true">
+    <svg viewBox="0 0 1600 600" preserveAspectRatio="xMidYMax slice" focusable="false">
+      <defs>
+        <linearGradient id="ceu" x1="0" y1="0" x2="0" y2="1">
+          <stop class="s0" offset="0"/>
+          <stop class="s1" offset=".55"/>
+          <stop class="s2" offset="1"/>
+        </linearGradient>
+        <radialGradient id="halo">
+          <stop offset="0" stop-color="currentColor" stop-opacity=".55"/>
+          <stop offset="1" stop-color="currentColor" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <rect width="1600" height="600" fill="url(#ceu)"/>
+      <g id="estrelas" class="estrelas" fill="#f1f5f9"></g>
+      <g class="astro">
+        <circle r="150" fill="url(#halo)"/>
+        <circle class="disco" r="26"/>
+      </g>
+      <path class="m1" d="M0 470 L180 400 L300 440 L470 330 L560 380 L700 270 L790 330 L900 300 L1050 420 L1220 360 L1400 430 L1600 380 L1600 600 L0 600Z"/>
+      <path class="m2" d="M0 520 L220 470 L420 500 L640 440 L900 505 L1150 460 L1380 510 L1600 480 L1600 600 L0 600Z"/>
+    </svg>
+    <div class="ray"></div>
+  </div>
+
+  <div class="wrap">
+    <header class="hero" id="secao-hero">
+      <p class="banner" id="banner" role="status" hidden>
+        <span class="banner-ico" aria-hidden="true"></span>
+        Sem conexão com a casa. Mostrando o último estado conhecido; comandos pausados até reconectar.
+      </p>
+      <p class="eyebrow" id="data-hoje"></p>
+      <div class="hero-line">
+        <h1 class="display" id="saudacao"></h1>
+        <span class="status" id="status"></span>
+      </div>
+      <div class="chips">
+        <ul class="chips-dados" id="resumo" aria-label="Resumo da casa"></ul>
+        <button type="button" class="manut-chip" id="manut-chip" data-manut aria-haspopup="dialog" aria-label="Manutenção"></button>
+      </div>
+    </header>
+
+    <section class="scenes" id="secao-cenas" aria-labelledby="t-cenas">
+      <div class="sec-head">
+        <h2 id="t-cenas">Cenas</h2>
+        <p class="muted">Um toque, a casa inteira se ajusta.</p>
+      </div>
+      <div class="scene-grid" id="cenas"></div>
+    </section>
+
+    <main class="main">
+      <nav class="rooms-nav" id="ambientes" aria-label="Ambientes">
+        <span class="eyebrow amb-titulo">Ambientes</span>
+        <ul id="lista-ambientes"></ul>
+        <ul id="rail" class="rail glass"></ul>
+      </nav>
+
+      <section class="rooms" id="secao-casa" aria-label="Cômodos">
+        <div class="lista-comodos" id="lista-comodos"></div>
+      </section>
+
+      <aside class="security" id="secao-cameras" aria-labelledby="t-seg">
+        <div class="sec-head">
+          <h2 id="t-seg">Segurança</h2>
+          <p class="muted">Câmeras da rua · DVR Intelbras</p>
+        </div>
+        <div class="cams" id="cameras"></div>
+      </aside>
+    </main>
+
+    <p class="proto">Protótipo · estados simulados · nenhum comando chega à casa</p>
+  </div>
+
+  <nav class="tabbar" aria-label="Seções">
+    <button type="button" data-tab-btn="casa" aria-pressed="true"></button>
+    <button type="button" data-tab-btn="cenas" aria-pressed="false"></button>
+    <button type="button" data-tab-btn="cameras" aria-pressed="false"></button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="folha" hidden></div>
+  <div id="manutencao" hidden></div>
+
+  <script src="icons.js?v=89beb7d60e"></script>
+  <script src="app.js?v=89beb7d60e"></script>
+</body>
+</html>

@@ -111,6 +111,11 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 
 **Testes** (`node --test dashboard-lab/tests/lab.test.mjs`, Node puro, 17 verificações, sem navegador e sem rede): carrega `icons.js` e `app.js` num contexto `vm` com DOM de mentira. Cobrem resumo, estado desconhecido ≠ 0, cenas (só aparelhos existentes; Cinema; Boa noite + Desfazer), "Apagar tudo", offline/carregando recusando comando, subtítulos, indisponível ≠ desligado, busca, favoritos, folha, bateria do aspirador, contrato HTML×JS×ícones e regras do design (sem rede, sem `transition: all`, zoom bloqueado, sem barras). Mutação de teste: quebrar a trava offline e o dimmer faz 2 testes falharem.
 
+## Rodada 10 — hospedado dentro da Home Assistant (22/10/2026)
+- O Painel Secundário aparece na barra lateral da HA (`panel_custom` `casa-painel-secundario`, `/painel-secundario`) e roda **inteiro na HA**: `scripts/manutencao/publicar_painel_secundario.mjs` copia `dashboard-lab/{index.html,styles.css,app.js,icons.js}` para `config/www/painel-secundario/` (servido em `/local/painel-secundario/`), com `?v=<hash>` nos arquivos e um `versao.json`. O módulo `config/www/casa-painel-secundario.js` é um carregador estável: lê `versao.json` (com carimbo de tempo) e abre o `index.html?v=…` num iframe de **mesma origem** da HA. Sem porta 3011, sem o PC do Node, sem *mixed content*.
+- Os dados continuam **simulados**: o painel não fala com a HA nem aciona a casa. Dados reais são o passo de migração (`specs/features/migracao-painel-lab.md`), com plano próprio.
+- Atualizar: editar `dashboard-lab/`, rodar os testes e o script de publicação; não reinicia a HA.
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.

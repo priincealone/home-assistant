@@ -15,7 +15,7 @@ o raciocínio de cada decisão.
 | --- | --- |
 | Home Assistant 2026.9 | container `homeassistant`, Docker Desktop (WSL2), porta 8123, config em `config/` |
 | Painel Primário | `dashboard-app/`, porta 3002, git próprio |
-| Painel Secundário | `dashboard-lab/`, porta 3011, dados simulados (estudo/teste em aparelhos), sobe com o Windows, atalho "Painel Secundário" na barra lateral da HA |
+| Painel Secundário | `dashboard-lab/`, porta 3011, dados simulados (estudo/teste em aparelhos), sobe com o Windows, roda inteiro dentro da HA (`config/www/painel-secundario/`, atalho "Painel Secundário" na barra lateral) |
 | Acesso remoto | Tailscale |
 | IP do PC na LAN | `192.168.31.22` (DHCP — **precisa de reserva**) |
 
