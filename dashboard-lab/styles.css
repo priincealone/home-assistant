@@ -570,3 +570,10 @@ body[data-folha] { overflow: hidden; }
 
 /* contraste: o texto secundário do hero fica mais claro (o céu de dia deixava o branco a 50 % abaixo de 4,5:1) */
 .hero { --muted: rgba(241, 245, 249, 0.78); }
+
+/* recomendações do porteiro: legibilidade do resumo sobre o halo do sol e coluna da Segurança sem corte em altura baixa */
+.hero .chips li, .hero .eyebrow, .hero .status { text-shadow: 0 1px 6px rgba(7, 9, 14, 0.6); }
+.hero-bg .astro circle:first-child { opacity: 0.6; }
+@media (min-width: 768px) and (max-width: 1179px) and (max-height: 599px) {
+  .security { position: static; max-height: none; overflow: visible; }
+}
