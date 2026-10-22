@@ -47,7 +47,10 @@
         <h1 class="display" id="saudacao"></h1>
         <span class="status" id="status"></span>
       </div>
-      <ul class="chips" id="resumo" aria-label="Resumo da casa"></ul>
+      <div class="chips">
+        <ul class="chips-dados" id="resumo" aria-label="Resumo da casa"></ul>
+        <button type="button" class="manut-chip" id="manut-chip" data-manut aria-haspopup="dialog" aria-label="Manutenção"></button>
+      </div>
     </header>
 
     <section class="scenes" id="secao-cenas" aria-labelledby="t-cenas">
@@ -89,6 +92,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
   <div id="folha" hidden></div>
+  <div id="manutencao" hidden></div>
 
   <script src="icons.js"></script>
   <script src="app.js"></script>

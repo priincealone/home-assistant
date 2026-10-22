@@ -18,7 +18,7 @@ const SALAS = [
     ["luz", "Luz do quarto", "light", 0], ["vent", "Ventilador", "fan", 1], ["porta", "Porta", "door", 0, null, "Fechada", "Aberta", 0, 0, 95]] },
   { id: "luca", icone: "baby", nome: "Quarto Luca", t: 25, itens: [
     ["luz", "Luz", "light", 0], ["yeelink", "Luminária Yeelink", "light", 1], ["led", "Led", "led", 0],
-    ["tledled", "Tomada do Led", "plug", 0], ["t1", "Tomada 1", "plug", 0, null, null, null, 1], ["t2", "Tomada 2", "plug", 0]] },
+    ["tledled", "Tomada do Led", "plug", 0], ["t1", "Tomada 1", "plug", 0, null, null, null, 1, 0, 25], ["t2", "Tomada 2", "plug", 0]] },
   { id: "closet", icone: "shirt", nome: "Closet", t: 26, itens: [
     ["luz", "Luz", "light", 0], ["led", "Led escritório", "led", 1], ["pc", "Computador", "plug", 1],
     ["t2", "Tomada 2", "plug", 0], ["aspirador", "Aspirador Dreame", "vacuum", null, "Na base · 100%"]] },
@@ -36,18 +36,30 @@ const SALAS = [
 ];
 
 const SENSORES = new Set(["door", "motion"]);
+// Baterias simuladas (rodada 9). Quem não está aqui não tem bateria; o aspirador acompanha a simulação.
+const BAT_INICIAL = { "quarto.porta": 82, "lavanderia.porta": 14, "lavanderia.mov": 37, "gourmet.mov": 9, "closet.aspirador": 100 };
 const estado = new Map();
 for (const s of SALAS) {
   for (const [id, nome, tipo, on, sub, txtOk, txtAlerta, indisp, semDimmer, min] of s.itens) {
+    const chaveBat = `${s.id}.${id}`;
     estado.set(`${s.id}.${id}`, {
       sala: s.id, id, nome, tipo, on: !!on, subOn: tipo === "tv" || tipo === "vacuum" ? null : sub || null, txtOk, txtAlerta, indisp: !!indisp,
       sensor: SENSORES.has(tipo), info: tipo === "vacuum", semDimmer: !!semDimmer, fav: false,
       desde: min === undefined ? null : Date.now() - min * 60000,
       // ajustes simulados da folha (rodada 4)
-      bri: 100, temp: 3500, cor: null, vel: 2, osc: false, vol: 30, mudo: false, app: sub || "Netflix", suc: 2, vst: "base", bat: 100,
+      bri: 100, temp: 3500, cor: null, vel: 2, osc: false, vol: 30, mudo: false, app: sub || "Netflix", suc: 2, vst: "base",
+      temBat: chaveBat in BAT_INICIAL, bat: chaveBat in BAT_INICIAL ? BAT_INICIAL[chaveBat] : null,
     });
   }
 }
+
+// Itens só de manutenção (não viram cartões nos cômodos). bat: null com temBat = aparelho sem leitura de bateria.
+const MANUT_EXTRA = [
+  { id: "ctrl-tv", nome: "Controle da TV", local: "Sala de estar", tipo: "tv", temBat: true, bat: null },
+  { id: "cam4", nome: "Câmera Rua · Canal 4", local: "Rua", tipo: "camera", offline: true, desde: Date.now() - 180 * 60000, verbo: "Fora do ar", acao: "Conferir o cabo e a energia do DVR" },
+  { id: "roteador", nome: "Roteador do quarto", local: "Quarto", tipo: "roteador", offline: true, desde: Date.now() - 12 * 60000, verbo: "Sem resposta", acao: "Reiniciar o roteador" },
+];
+const ACAO_OFFLINE = { "luca.t1": "Conferir se a tomada está energizada" };
 
 const CENAS = [
   { id: "boa-noite", nome: "Boa noite", desc: "Apaga a casa inteira", icone: "moon", liga: [] },
@@ -99,6 +111,43 @@ const subtitulo = (d) => {
 const temAjustes = (d) => !d.sensor && !d.indisp;   // toda a folha tem ao menos "Ligado" e "Favorito"
 const DICA = "Segure para ajustar";
 
+/* ---------- Manutenção (rodada 9): só leitura, calculada do mesmo estado dos cartões ---------- */
+const nomeSala = (id) => (SALAS.find((s) => s.id === id) || { nome: "" }).nome;
+const faixaBat = (p) => (p == null ? "sem" : p <= 15 ? "critica" : p <= 30 ? "baixa" : "ok");   // sem leitura nunca vira 0 %
+function itensBateria() {
+  const l = [];
+  estado.forEach((d, k) => { if (d.temBat) l.push({ chave: k, nome: d.nome, local: nomeSala(d.sala), tipo: d.tipo, bat: d.bat, aspirador: d.tipo === "vacuum", naBase: d.vst === "base" }); });
+  MANUT_EXTRA.forEach((e) => { if (e.temBat) l.push({ chave: `extra.${e.id}`, nome: e.nome, local: e.local, tipo: e.tipo, bat: e.bat, aspirador: false, naBase: false }); });
+  l.forEach((i) => { i.bat = i.bat == null ? null : Math.round(i.bat); i.faixa = faixaBat(i.bat); });
+  return l.sort((a, b) => (a.bat == null) - (b.bat == null) || a.bat - b.bat || a.nome.localeCompare(b.nome, "pt-BR"));
+}
+function itensOffline() {
+  const l = [];
+  estado.forEach((d, k) => { if (d.indisp) l.push({ chave: k, nome: d.nome, local: nomeSala(d.sala), tipo: d.tipo, desde: d.desde, verbo: "Fora do ar", acao: ACAO_OFFLINE[k] || "Conferir a energia e a conexão" }); });
+  MANUT_EXTRA.forEach((e) => { if (e.offline) l.push({ chave: `extra.${e.id}`, nome: e.nome, local: e.local, tipo: e.tipo, desde: e.desde, verbo: e.verbo, acao: e.acao }); });
+  return l.sort((a, b) => (a.desde ?? Infinity) - (b.desde ?? Infinity));   // fora do ar há mais tempo primeiro
+}
+function resumoManut() {
+  const b = itensBateria(), o = itensOffline(), com = b.filter((i) => i.bat != null);
+  const n = (f) => b.filter((i) => i.faixa === f).length;
+  const r = { crit: n("critica"), baixa: n("baixa"), ok: n("ok"), sem: n("sem"), offline: o.length, total: b.length };
+  r.media = com.length ? Math.round(com.reduce((s, i) => s + i.bat, 0) / com.length) : null;
+  r.pend = r.crit + r.baixa + r.sem + r.offline;
+  r.nivel = r.crit || r.offline ? "critico" : r.baixa || r.sem ? "atencao" : "ok";   // carmesim = crítico, âmbar = atenção
+  return r;
+}
+const pl = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+const acaoBat = (i) => {
+  if (i.faixa === "sem") return "Sem leitura de bateria";
+  if (i.aspirador) return i.naBase && i.bat < 100 ? "Carregando na base" : i.faixa === "critica" ? "Recarregar agora" : i.faixa === "baixa" ? "Recarregar em breve" : "";
+  return i.faixa === "critica" ? "Trocar a pilha agora" : i.faixa === "baixa" ? "Trocar a pilha em breve" : "";
+};
+const indBat = (d) => {   // indicador discreto no cartão: não muda layout nem altura
+  if (!d.temBat || d.bat == null || d.bat > 15) return "";
+  const t = `Bateria crítica · ${Math.round(d.bat)} %`;
+  return `<span class="bat-ico" role="img" aria-label="${t}" title="${t}">${ic("bateria-baixa", 16)}</span>`;
+};
+
 /* ---------- Céu do hero: reage à hora do dia ---------- */
 const FASES = [
   { ate: 5,  id: "madrugada",  c: ["#05070d", "#0b1020", "#16162b"], m: ["#0d1018", "#07090e"], estrelas: 0.9, astro: "#cbd5e1" },
@@ -145,6 +194,19 @@ function renderResumo() {
     <li>${ic("light", 16)}${b(`${acesas}/${luzes.length}`)} Luzes</li>
     <li>${ic("bolt", 16)}${b(ativos)} Ativos</li>
     <li class="${!car && portas ? "warn" : ""}">${ic("door", 16, !car && portas > 0)}${b(portas)} ${portas === 1 ? "Porta aberta" : "Portas abertas"}</li>`;
+  renderManutChip();
+}
+
+// Chip de Manutenção: botão persistente (só o conteúdo muda; foco e clique não se perdem a cada tick).
+let chipHtml = "";
+function renderManutChip() {
+  const el = $("#manut-chip");
+  if (!el) return;
+  const car = S.net === "carregando", r = resumoManut();
+  const html = `${ic("ferramenta", 16)}<span>Manutenção</span>${car ? traco : r.pend ? `<i class="manut-dot" data-nivel="${r.nivel}" aria-hidden="true"></i><b class="num">${r.pend}</b>` : ""}`;
+  el.dataset.nivel = car ? "carregando" : r.nivel;
+  el.setAttribute("aria-label", car ? "Manutenção, carregando" : r.pend ? `Manutenção, ${pl(r.pend, "pendência", "pendências")}` : "Manutenção, tudo em ordem");
+  if (html !== chipHtml) { chipHtml = html; el.innerHTML = html; }
 }
 
 function renderSaudacao() {
@@ -210,6 +272,7 @@ function tileHtml(chave, d) {
   const sub = esc(subtitulo(d) ?? "");
   const off = S.net === "offline";
   const selo = (off || d.indisp) ? `<span class="selo" title="${d.indisp ? "Indisponível" : "Sem conexão"}">${ic("offline", 12)}</span>` : "";
+  const bat = indBat(d);
   const aj = temAjustes(d) && !off;
   const ajAttr = aj ? ` data-ajustes="true" title="${DICA}" aria-description="${DICA}. Pelo teclado: Shift+Enter."` : "";
   const ajIco = aj ? `<span class="aj" aria-hidden="true">${ic("ajustes", 16)}</span>` : "";
@@ -221,13 +284,13 @@ function tileHtml(chave, d) {
   if (d.tipo === "vacuum") {
     const ativo = d.vst === "limpando";
     return `<button type="button" class="dev glass" data-dev="${chave}" data-tipo="vacuum" data-ativo="${ativo}" aria-haspopup="dialog" ${off ? 'data-offline="true" disabled' : ajAttr}>
-      <div class="dev-top"><span class="chip">${ic(d.tipo, 20, ativo)}${selo}</span></div>
+      <div class="dev-top"><span class="chip">${ic(d.tipo, 20, ativo)}${selo}</span>${bat ? `<span class="dev-ind">${bat}</span>` : ""}</div>
       <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div>${ajIco}</button>`;
   }
   if (d.sensor || d.info) {
     const alerta = d.sensor && d.on;
     return `<div class="dev sensor glass" data-tipo="${d.tipo}" data-alerta="${alerta}" ${off ? 'data-offline="true"' : ""}>
-      <div class="dev-top"><span class="chip">${ic(d.tipo, 20, alerta)}${selo}</span>${d.sensor ? '<i class="dot-state"></i>' : ""}</div>
+      <div class="dev-top"><span class="chip">${ic(d.tipo, 20, alerta)}${selo}</span>${d.sensor ? `<span class="dev-ind">${bat}<i class="dot-state"></i></span>` : ""}</div>
       <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div></div>`;
   }
   return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ajAttr}>
@@ -284,7 +347,7 @@ function renderAbas() {
 }
 
 function renderTudo() {
-  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha(); dicasRolagem();
+  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha(); atualizaManut(); dicasRolagem();
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
@@ -311,8 +374,9 @@ function escondeToast() {
 let bloqueioClique = false;   // depois de um toque longo bem-sucedido, o clique que o encerra não alterna o aparelho
 document.addEventListener("click", (ev) => {
   if (bloqueioClique && ev.target.closest(".dev")) { ev.preventDefault(); return; }
-  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn],[data-desfazer]");
+  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn],[data-desfazer],[data-manut]");
   if (!alvo) return;
+  if ("manut" in alvo.dataset) { abrirManut(); return; }
   if (alvo.hasAttribute("data-desfazer")) { const u = toastUndo; escondeToast(); if (u) { u(); renderTudo(); } return; }
   if (alvo.dataset.dev) {
     if (travado()) return;
@@ -424,7 +488,7 @@ function atualizaFolha() {
 
 function abrirFolha(chave) {
   const d = estado.get(chave);
-  if (folhaChave || folhaFechando || !d || !temAjustes(d) || travado()) return;
+  if (folhaChave || folhaFechando || manutAberta || manutFechando || !d || !temAjustes(d) || travado()) return;
   const f = $("#folha");
   folhaChave = chave; folhaAbertaEm = performance.now();
   if (toastUndo) escondeToast();
@@ -481,15 +545,141 @@ $("#folha").addEventListener("click", (ev) => {
   else if (dt.cor) aplicarFolha((d) => { d.cor = dt.cor; d.on = true; });
   else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; });
 });
-$("#folha").addEventListener("keydown", (ev) => {
-  if (ev.key === "Escape") { ev.preventDefault(); fecharFolha(); return; }
-  if (ev.key !== "Tab") return;
-  const alvos = [...$("#folha").querySelectorAll("button:not([disabled]), input:not([disabled])")];
-  const painel = $("#folha .folha-painel");
+// Foco preso dentro de uma folha (ajustes ou manutenção): Tab/Shift+Tab circulam; sem alvos, o foco fica no painel.
+function prendeTab(ev, raiz) {
+  const alvos = [...raiz.querySelectorAll('button:not([disabled]), input:not([disabled]), [tabindex="0"]')];
+  const painel = raiz.querySelector(".folha-painel");
   if (!alvos.length) { ev.preventDefault(); painel.focus(); return; }
   const primeiro = alvos[0], ultimo = alvos[alvos.length - 1], ativo = document.activeElement;
   if (ev.shiftKey && (ativo === primeiro || ativo === painel)) { ev.preventDefault(); ultimo.focus(); }
   else if (!ev.shiftKey && ativo === ultimo) { ev.preventDefault(); primeiro.focus(); }
+}
+$("#folha").addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") { ev.preventDefault(); fecharFolha(); return; }
+  if (ev.key === "Tab") prendeTab(ev, $("#folha"));
+});
+
+/* ---------- Folha de Manutenção (rodada 9): mesmo mecanismo da folha de ajustes, só leitura ---------- */
+let manutAberta = false, manutFechando = false, manutAbertaEm = 0, manutSig = "", manutResHtml = "", manutOffHtml = "";
+const skRow = '<li class="m-row sk" aria-hidden="true"><span class="m-ico"></span><span class="m-txt"><span class="sk-l w60"></span><span class="sk-l w40"></span></span></li>';
+
+function montaManut() {
+  return `<div class="folha-fundo" data-folha-fechar></div>
+    <div class="folha-painel manut-painel glass" role="dialog" aria-modal="true" aria-labelledby="manut-t manut-c" tabindex="-1" data-tom="ambar">
+      <div class="folha-cab">
+        <div class="folha-tit"><h2 id="manut-t">Manutenção</h2><p class="muted" id="manut-c">Baterias e aparelhos fora do ar · só leitura</p></div>
+        <button type="button" class="folha-x" data-folha-fechar aria-label="Fechar manutenção">${ic("fechar", 20)}</button>
+      </div>
+      <p class="folha-aviso" id="manut-aviso" role="status" hidden></p>
+      <div class="folha-corpo manut-corpo" id="manut-corpo" data-pronto="false" tabindex="0" role="region" aria-label="Detalhes de manutenção">
+        <div id="manut-resumo"></div>
+        <section aria-labelledby="manut-h-bat"><h3 class="manut-h" id="manut-h-bat">Baterias</h3><ul class="m-lista" id="manut-bats"></ul></section>
+        <section aria-labelledby="manut-h-off"><h3 class="manut-h" id="manut-h-off">Offline e indisponíveis</h3><ul class="m-lista" id="manut-offs"></ul></section>
+      </div>
+    </div>`;
+}
+
+const rotFaixa = { critica: "crítica", baixa: "baixa", ok: "ok", sem: "sem leitura" };
+function linhaBat(i) {
+  const acao = acaoBat(i), sem = i.faixa === "sem";
+  return `<li class="m-row" data-bk="${i.chave}" data-faixa="${i.faixa}">
+    <span class="m-ico">${ic(i.tipo, 20)}</span>
+    <span class="m-txt"><span class="m-nome">${esc(i.nome)}</span><span class="m-sub">${esc(i.local)}</span><span class="m-acao" data-acao>${esc(acao)}</span></span>
+    <span class="m-val num" ${sem ? 'aria-label="sem leitura"' : `aria-label="${i.bat} por cento, bateria ${rotFaixa[i.faixa]}"`} data-pct>${sem ? "—" : `${i.bat}%`}</span>
+    ${sem ? "" : `<span class="bat-barra" aria-hidden="true"><span class="bat-fill" style="--p:${i.bat / 100}"></span></span>`}
+  </li>`;
+}
+function linhaOff(i) {
+  return `<li class="m-row" data-off="true">
+    <span class="m-ico">${ic(i.tipo, 20)}<span class="selo" aria-hidden="true">${ic("offline", 12)}</span></span>
+    <span class="m-txt"><span class="m-nome">${esc(i.nome)}</span><span class="m-sub">${esc(i.local)}</span>
+      <span class="m-acao">${i.desde ? `${i.verbo} ${tempoDesde(i.desde)}` : i.verbo}</span><span class="m-sub">${esc(i.acao)}</span></span>
+  </li>`;
+}
+
+function atualizaManut() {
+  if (!manutAberta) return;
+  const car = S.net === "carregando", off = S.net === "offline", r = resumoManut();
+  const av = $("#manut-aviso");
+  av.hidden = !(off || car);
+  av.textContent = off ? "Sem conexão com a casa. Mostrando o último estado conhecido." : "Conectando à casa. As leituras aparecem em instantes.";
+  // resumo do topo
+  const faixas = [["critica", r.crit, "crítica", "críticas"], ["baixa", r.baixa, "baixa", "baixas"], ["ok", r.ok, "ok", "ok"]]
+    .concat(r.sem ? [["sem", r.sem, "sem leitura", "sem leitura"]] : [])
+    .map(([f, n, um, varios]) => `<li data-f="${f}"><b class="num">${n}</b> ${n === 1 ? um : varios}</li>`).join("");
+  const resHtml = car
+    ? '<div class="m-resumo" aria-hidden="true"><div class="m-card sk"><span class="sk-l w60"></span><span class="sk-l w40"></span></div><div class="m-card sk"><span class="sk-l w60"></span><span class="sk-l w40"></span></div></div>'
+    : `<div class="m-resumo">
+        <div class="m-card" data-nivel="${r.crit ? "critico" : r.baixa || r.sem ? "atencao" : "ok"}"><p class="eyebrow">Índice de baterias</p>
+          <p class="m-big num" ${r.media == null ? 'aria-label="sem leitura"' : ""}>${r.media == null ? "—" : `${r.media}%`}</p>
+          <ul class="m-faixas">${faixas}</ul></div>
+        <div class="m-card" data-nivel="${r.offline ? "critico" : "ok"}"><p class="eyebrow">Offline</p>
+          <p class="m-big num">${r.offline}</p><p class="m-leg">${r.offline === 1 ? "dispositivo" : "dispositivos"}</p></div>
+      </div>${r.pend === 0 ? `<p class="m-ok" role="status">${ic("ok", 20, true)}<span>Tudo em ordem. Nenhuma pendência.</span></p>` : ""}`;
+  if (resHtml !== manutResHtml) { manutResHtml = resHtml; $("#manut-resumo").innerHTML = resHtml; }
+  // baterias: reconstrói só se a lista, a ordem ou a faixa mudou; senão atualiza no lugar (a barra anima com scaleX)
+  const bats = itensBateria(), ul = $("#manut-bats");
+  const sig = (car ? "c|" : "") + bats.map((i) => `${i.chave}:${i.faixa}:${i.naBase}`).join("|");
+  if (sig !== manutSig) {
+    manutSig = sig;
+    ul.innerHTML = car ? skRow.repeat(3) : bats.length ? bats.map(linhaBat).join("") : '<li class="m-vazio">Nenhum aparelho com bateria.</li>';
+  } else if (!car) {
+    bats.forEach((i) => {
+      const li = ul.querySelector(`[data-bk="${i.chave}"]`);
+      if (!li || i.bat == null) return;
+      const pct = li.querySelector("[data-pct]"), fill = li.querySelector(".bat-fill");
+      if (pct) { pct.textContent = `${i.bat}%`; pct.setAttribute("aria-label", `${i.bat} por cento, bateria ${rotFaixa[i.faixa]}`); }
+      if (fill) fill.style.setProperty("--p", String(i.bat / 100));
+      const ac = li.querySelector("[data-acao]"); if (ac) ac.textContent = acaoBat(i);
+    });
+  }
+  // offline: reconstrói quando o texto muda (o tempo "há X" passa)
+  const offs = itensOffline();
+  const offHtml = car ? skRow.repeat(2) : offs.length ? offs.map(linhaOff).join("") : `<li class="m-vazio">${ic("ok", 16, true)} Nenhum dispositivo fora do ar.</li>`;
+  if (offHtml !== manutOffHtml) { manutOffHtml = offHtml; $("#manut-offs").innerHTML = offHtml; }
+  dicasRolagem();
+}
+
+function abrirManut() {
+  if (manutAberta || manutFechando || folhaChave || folhaFechando) return;
+  const f = $("#manutencao");
+  manutAberta = true; manutAbertaEm = performance.now(); manutSig = manutResHtml = manutOffHtml = "";
+  if (toastUndo) escondeToast();
+  f.innerHTML = montaManut();
+  f.hidden = false; f.dataset.estado = "entrando";
+  document.querySelector(".wrap").inert = true; document.querySelector(".tabbar").inert = true;
+  document.body.dataset.folha = "manutencao";
+  atualizaManut();
+  void f.offsetWidth;                       // fixa o estado inicial (barras a zero) antes de animar
+  f.dataset.estado = "aberta";
+  $("#manut-corpo").dataset.pronto = "true";
+  dicasRolagem();
+  f.querySelector(".folha-painel").focus({ preventScroll: true });
+}
+
+function fecharManut() {
+  if (!manutAberta || manutFechando) return;
+  const f = $("#manutencao");
+  manutFechando = true; f.dataset.estado = "saindo";
+  setTimeout(() => {
+    f.hidden = true; f.innerHTML = ""; f.dataset.estado = "";
+    document.querySelector(".wrap").inert = false; document.querySelector(".tabbar").inert = false;
+    delete document.body.dataset.folha;
+    manutAberta = false; manutFechando = false;
+    const chip = $("#manut-chip");
+    if (chip) chip.focus({ preventScroll: true });   // o chip é persistente: o foco volta ao botão de origem
+  }, durFast());
+}
+
+$("#manutencao").addEventListener("click", (ev) => {
+  const alvo = ev.target.closest("[data-folha-fechar]");
+  if (!alvo) return;
+  if (alvo.classList.contains("folha-fundo") && performance.now() - manutAbertaEm < 300) return;
+  fecharManut();
+});
+$("#manutencao").addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") { ev.preventDefault(); fecharManut(); return; }
+  if (ev.key === "Tab") prendeTab(ev, $("#manutencao"));
 });
 
 /* gestos: Pointer Events; cancela se mover > 8 px ou soltar antes de 450 ms */
@@ -551,7 +741,7 @@ document.addEventListener("pointerdown", (ev) => {
 document.addEventListener("pointerup", (ev) => {
   if (!sw0 || ev.pointerId !== sw0.id) return;
   const dx = ev.clientX - sw0.x, dy = ev.clientY - sw0.y; sw0 = null;
-  if (folhaChave || bloqueioClique || window.innerWidth >= 768 || S.aba !== "casa") return;
+  if (folhaChave || manutAberta || bloqueioClique || window.innerWidth >= 768 || S.aba !== "casa") return;
   if (Math.abs(dx) < 64 || Math.abs(dx) < 1.6 * Math.abs(dy)) return;
   trocaAmbiente(dx < 0 ? 1 : -1);
 });
@@ -559,7 +749,7 @@ document.addEventListener("pointercancel", () => { sw0 = null; });
 
 /* ---------- Dica de rolagem: esmaecido na borda que tem mais conteúdo (as barras ficam ocultas) ---------- */
 function dicasRolagem() {
-  ["#lista-comodos", "#rail"].forEach((sel) => {
+  ["#lista-comodos", "#rail", "#manut-corpo"].forEach((sel) => {
     const el = $(sel);
     if (!el || !el.style) return;
     const rola = ["auto", "scroll"].includes(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1;
@@ -569,6 +759,7 @@ function dicasRolagem() {
   });
 }
 ["#lista-comodos", "#rail"].forEach((sel) => $(sel).addEventListener("scroll", dicasRolagem, { passive: true }));
+$("#manutencao").addEventListener("scroll", dicasRolagem, { passive: true, capture: true });   // scroll não borbulha: captura o do corpo da folha
 window.addEventListener("resize", dicasRolagem);
 
 /* ---------- Simulação: bateria do aspirador e tempos dos sensores (só textos; não recria botões) ---------- */
@@ -578,6 +769,7 @@ function atualizaTextos() {
     if (t != null && el.textContent !== t) el.textContent = t;
   });
   atualizaFolha();
+  renderManutChip(); atualizaManut();
 }
 function tickSimulacao() {
   let mudouEstado = false;

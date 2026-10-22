@@ -194,3 +194,125 @@ test("isolamento e regras do design: sem rede, sem transition: all, zoom bloquea
   assert.ok(/user-scalable=no/.test(HTML), "o zoom segue bloqueado por decisão do dono");
   assert.ok(/scrollbar-width:\s*none/.test(CSS) && /::-webkit-scrollbar\s*\{\s*display:\s*none/.test(CSS), "barras de rolagem ocultas");
 });
+
+/* ---------- Rodada 9: Manutenção ---------- */
+const json = (a, codigo) => JSON.parse(a.v(`JSON.stringify(${codigo})`));
+
+test("manutenção: baterias ordenadas da menor para a maior, sem leitura por último", () => {
+  const a = criaAmbiente();
+  const l = json(a, `itensBateria().map((i) => [i.nome, i.bat])`);
+  assert.deepEqual(l.map(([n]) => n), ["Movimento", "Porta", "Movimento", "Porta", "Aspirador Dreame", "Controle da TV"]);
+  assert.deepEqual(l.map(([, b]) => b), [9, 14, 37, 82, 100, null]);
+  const nums = l.map(([, b]) => b).filter((b) => b !== null);
+  assert.deepEqual(nums, [...nums].sort((x, y) => x - y));
+});
+
+test("manutenção: faixas crítica ≤ 15, baixa ≤ 30, ok acima; sem leitura é própria", () => {
+  const a = criaAmbiente();
+  const f = (p) => a.v(`faixaBat(${p})`);
+  assert.deepEqual([f(0), f(15), f(16), f(30), f(31), f(100), f("null")], ["critica", "critica", "baixa", "baixa", "ok", "ok", "sem"]);
+  assert.deepEqual(json(a, `itensBateria().map((i) => i.faixa)`), ["critica", "critica", "ok", "ok", "ok", "sem"]);
+});
+
+test("manutenção: média e contagens por faixa batem com os dados", () => {
+  const a = criaAmbiente();
+  const r = json(a, `resumoManut()`);
+  assert.equal(r.media, Math.round((9 + 14 + 37 + 82 + 100) / 5));     // o aparelho sem leitura fica fora da média
+  assert.deepEqual([r.crit, r.baixa, r.ok, r.sem, r.total], [2, 0, 3, 1, 6]);
+  assert.equal(r.offline, 3);
+  assert.equal(r.pend, 2 + 0 + 1 + 3);
+  assert.equal(r.nivel, "critico");
+});
+
+test("manutenção: sem leitura nunca vira 0 %", () => {
+  const a = criaAmbiente();
+  const html = a.v(`linhaBat(itensBateria().find((i) => i.nome === "Controle da TV"))`);
+  assert.ok(html.includes("Sem leitura de bateria"));
+  assert.ok(html.includes('aria-label="sem leitura"') && html.includes(">—<"));
+  assert.ok(!/0\s?%|bat-fill/.test(html), "sem leitura não tem barra nem porcentagem");
+  a.v(`estado.forEach((d) => { if (d.temBat) d.bat = null; }); MANUT_EXTRA.forEach((e) => { if (e.temBat) e.bat = null; })`);
+  assert.equal(a.v(`resumoManut().media`), null);                       // todos sem leitura: média sem leitura, não 0
+  assert.equal(json(a, `itensBateria().every((i) => i.bat === null && i.faixa === "sem")`), true);
+});
+
+test("manutenção: offline inclui indisponíveis e os itens extras, os mais antigos primeiro", () => {
+  const a = criaAmbiente();
+  const l = json(a, `itensOffline().map((i) => [i.nome, i.verbo])`);
+  assert.deepEqual(l, [["Câmera Rua · Canal 4", "Fora do ar"], ["Tomada 1", "Fora do ar"], ["Roteador do quarto", "Sem resposta"]]);
+  assert.match(a.v(`linhaOff(itensOffline()[0])`), /Fora do ar há 3 h/);
+  assert.match(a.v(`linhaOff(itensOffline()[2])`), /Sem resposta há 12 min/);
+  assert.ok(!a.v(`linhaOff(itensOffline()[1])`).includes("Desligado"));   // indisponível não aparenta desligado
+});
+
+test("manutenção: sem pendências a folha diz que está tudo em ordem", () => {
+  const a = criaAmbiente();
+  a.v(`estado.forEach((d) => { d.indisp = false; if (d.temBat) d.bat = 100; }); MANUT_EXTRA.forEach((e) => { e.offline = false; if (e.temBat) e.bat = 100; }); renderManutChip()`);
+  assert.equal(a.v(`resumoManut().pend`), 0);
+  a.v(`abrirManut()`);
+  assert.match(a.el("#manut-resumo").innerHTML, /Tudo em ordem/);
+  assert.match(a.el("#manut-offs").innerHTML, /Nenhum dispositivo fora do ar/);
+  assert.ok(!a.el("#manut-chip").innerHTML.includes("manut-dot"), "sem pendência o chip não mostra ponto");
+});
+
+test("manutenção: o chip mostra a contagem de pendências com o ponto de nível", () => {
+  const a = criaAmbiente();
+  const chip = a.el("#manut-chip").innerHTML;
+  assert.ok(chip.includes('data-nivel="critico"') && chip.includes('<b class="num">6</b>') && chip.includes("Manutenção"));
+  a.v(`estado.get("lavanderia.porta").bat = 90; estado.get("gourmet.mov").bat = 90; MANUT_EXTRA.forEach((e) => { if (e.offline) e.offline = false; }); estado.get("luca.t1").indisp = false; MANUT_EXTRA[0].bat = 50; estado.get("closet.aspirador").bat = 25; renderManutChip()`);
+  const c2 = a.el("#manut-chip").innerHTML;
+  assert.ok(c2.includes('data-nivel="atencao"') && c2.includes('<b class="num">1</b>'), c2);   // só o aspirador em 25 % (baixa)
+});
+
+test("manutenção: carregando mostra traço no chip e na folha (sem números inventados); offline mantém o último estado", () => {
+  const car = criaAmbiente("?net=carregando");
+  const c = car.el("#manut-chip").innerHTML;
+  assert.ok(c.includes("sem leitura") && !c.includes("manut-dot") && !/<b class="num">\d/.test(c));
+  car.v(`abrirManut()`);
+  assert.ok(car.el("#manut-resumo").innerHTML.includes("sk"));
+  assert.ok(!/m-big/.test(car.el("#manut-resumo").innerHTML));
+  const off = criaAmbiente("?net=offline");
+  assert.ok(off.el("#manut-chip").innerHTML.includes('<b class="num">6</b>'));
+  off.v(`abrirManut()`);
+  assert.match(off.el("#manut-aviso").textContent, /último estado conhecido/);
+  assert.equal(off.el("#manut-aviso").hidden, false);
+});
+
+test("manutenção: a bateria do aspirador aparece na lista e o chip acompanha tickSimulacao", () => {
+  const a = criaAmbiente();
+  assert.equal(json(a, `itensBateria().find((i) => i.aspirador).faixa`), "ok");
+  a.v(`const v = estado.get("closet.aspirador"); v.vst = "limpando"; v.bat = 31; tickSimulacao();`);
+  assert.equal(a.v(`itensBateria().find((i) => i.aspirador).bat`), 30);
+  assert.equal(a.v(`itensBateria().find((i) => i.aspirador).faixa`), "baixa");
+  const chip = a.el("#manut-chip").innerHTML;
+  assert.ok(chip.includes('<b class="num">7</b>'), chip);          // 6 pendências + o aspirador em faixa baixa
+  assert.match(a.v(`linhaBat(itensBateria().find((i) => i.aspirador))`), /Recarregar em breve/);
+});
+
+test("manutenção: cartão de sensor com bateria ≤ 15 % ganha o indicador; os demais não", () => {
+  const a = criaAmbiente();
+  const alerta = a.v(`tileHtml("gourmet.mov", estado.get("gourmet.mov"))`);
+  assert.ok(alerta.includes("Bateria crítica · 9 %") && alerta.includes("bat-ico"));
+  assert.ok(!a.v(`tileHtml("quarto.porta", estado.get("quarto.porta"))`).includes("bat-ico"));
+  assert.ok(!a.v(`tileHtml("lavanderia.mov", estado.get("lavanderia.mov"))`).includes("bat-ico"));   // 37 %
+  assert.ok(a.v(`tileHtml("lavanderia.porta", estado.get("lavanderia.porta"))`).includes("Bateria crítica · 14 %"));
+});
+
+test("manutenção: abrir a folha usa inert, bloqueia a folha de ajustes e não tem nenhum controle de comando", () => {
+  const a = criaAmbiente();
+  a.v(`abrirManut()`);
+  assert.equal(a.v(`manutAberta`), true);
+  assert.equal(a.el("#manutencao").hidden, false);
+  assert.equal(a.v(`document.querySelector(".wrap").inert`), true);
+  assert.match(a.el("#manut-bats").innerHTML, /Trocar a pilha agora/);
+  a.v(`abrirFolha("sala.luz")`);                                        // com a manutenção aberta, a folha de ajustes não abre
+  assert.equal(a.v(`folhaChave`), null);
+  assert.ok(!/data-dev|data-ctl|role="switch"|<button/.test(a.el("#manut-bats").innerHTML + a.el("#manut-offs").innerHTML), "nenhum controle de comando");
+  const fn = APP.slice(APP.indexOf("function fecharManut"), APP.indexOf("function fecharManut") + 700);
+  assert.ok(fn.includes("durFast()"), "fechar dura var(--dur-fast), lido do token");
+});
+
+test("manutenção: ícones usados existem em icons.js (inclui os dos itens extras)", () => {
+  const a = criaAmbiente();
+  for (const n of ["ferramenta", "bateria-baixa", "bateria-alerta", "ok", "offline", "fechar", "roteador", "camera"]) assert.ok(a.v(`!!window.ICONES["${n}"]`), n);
+  for (const t of json(a, `[...itensBateria(), ...itensOffline()].map((i) => i.tipo)`)) assert.ok(a.v(`!!window.ICONES["${t}"]`), t);
+});
