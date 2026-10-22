@@ -7,7 +7,7 @@ frontend:
   themes: !include_dir_merge_named themes
   extra_module_url:
     # ?v= força os aparelhos a buscar a versão nova (a HA serve /local com cache de 31 dias).
-    - /local/casa-panel.js?v=20261006
+    - /local/casa-panel.js?v=20261014
 
 # Painel Nativo do Dashboard Next.js
 panel_custom:
@@ -16,6 +16,15 @@ panel_custom:
     sidebar_icon: "mdi:home-variant"
     url_path: "casa"
     module_url: "/local/casa-panel.js?v=20261014"
+    trust_external_script: true
+    require_admin: false
+    handle_safe_area: true
+  # Painel Secundário (dashboard-lab, porta 3011, dados simulados): mesmo molde do painel acima.
+  - name: casa-painel-secundario
+    sidebar_title: "Painel Secundário"
+    sidebar_icon: "mdi:view-dashboard-outline"
+    url_path: "painel-secundario"
+    module_url: "/local/casa-painel-secundario.js?v=20261022"
     trust_external_script: true
     require_admin: false
     handle_safe_area: true

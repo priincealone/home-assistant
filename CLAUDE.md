@@ -26,7 +26,7 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
 | **Painel Primário** | `dashboard-app/` | 3002 | O painel real de hoje (Next.js, com dados reais do HA, todos os widgets). É o que comanda a casa. |
 | **Painel Secundário** | `dashboard-lab/` | 3011 | Painel paralelo de estudo (HTML/CSS/JS estático, **dados simulados**, nunca fala com o HA). Layout e comportamentos novos para testar em aparelhos reais. Spec: `specs/features/painel-paralelo-lab.md`. |
 
-Ao falar de "o painel", use sempre o nome. Regras do Painel Primário (§6–§7, §17) **não** se aplicam ao Secundário, mas a qualidade visual (`docs/UI-QUALITY-POLICY.md`) e a ausência de comandos físicos (§11) sim. O Secundário sobe sozinho com o Windows (tarefa `CasaPainelSecundarioAutoStart`, supervisor `dashboard-lab/iniciar_servidor_background.ps1`); teste: `node --test dashboard-lab/tests/lab.test.mjs`. A migração do Secundário para o Primário está em `specs/features/migracao-painel-lab.md` (rascunho; nada migrado).
+Ao falar de "o painel", use sempre o nome. Regras do Painel Primário (§6–§7, §17) **não** se aplicam ao Secundário, mas a qualidade visual (`docs/UI-QUALITY-POLICY.md`) e a ausência de comandos físicos (§11) sim. Também aparece na barra lateral da Home Assistant como "Painel Secundário" (`/painel-secundario`, `panel_custom` `casa-painel-secundario` + `config/www/casa-painel-secundario.js`, no mesmo molde do `casa-panel.js` do Primário). O Secundário sobe sozinho com o Windows (tarefa `CasaPainelSecundarioAutoStart`, supervisor `dashboard-lab/iniciar_servidor_background.ps1`); teste: `node --test dashboard-lab/tests/lab.test.mjs`. A migração do Secundário para o Primário está em `specs/features/migracao-painel-lab.md` (rascunho; nada migrado).
 
 ---
 
