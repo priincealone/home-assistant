@@ -506,14 +506,16 @@ test("ponte: sem nada em 8 s avisa 'sem dados'; contrato indisponível cai para 
 const semComentarios = (s) => s.replace(/\/\*[\s\S]*?\*\//g, "").replace(/(^|[^:])\/\/.*$/gm, "$1");
 const PROIBIDOS_CMD = /callService|callApi|callWS|callHttp|\.callWS|hass\.call|\/api\/services|\/api\/states|Authorization|Bearer|HA_TOKEN|access_token|localStorage\.setItem\(["'`]token/i;
 
-test("segurança: o carregador da HA não contém callService/callApi/callWS/callHttp e só aceita 'painel-pronto'", () => {
+test("segurança (fase B): o carregador tem UM único callService, sem callApi/callWS/callHttp/token, e só aceita 3 tipos de mensagem", () => {
   const codigo = semComentarios(CARREGADOR);
-  for (const f of ["callService", "callApi", "callWS", "callHttp"]) assert.ok(!codigo.includes(f), `o carregador não pode conter ${f}`);
+  for (const f of ["callApi", "callWS", "callHttp"]) assert.ok(!codigo.includes(f), `o carregador não pode conter ${f}`);
+  assert.equal((codigo.match(/callService/g) || []).length, 1, "callService só em _executar (depois de toda a validação)");
   assert.ok(!/Authorization|Bearer|access_token|HA_TOKEN/.test(codigo), "carregador sem token");
-  assert.ok(/ev\.data\.tipo !== "painel-pronto"\) return/.test(codigo), "só 'painel-pronto' é aceito");
   assert.ok(/ev\.source !== this\._iframe\.contentWindow \|\| ev\.origin !== window\.location\.origin/.test(codigo), "origem e janela conferidas");
-  assert.equal((codigo.match(/postMessage\(/g) || []).length, 1, "o carregador só envia estados ao iframe");
-  assert.ok(/postMessage\(\{ tipo: "casa-estados"/.test(codigo));
+  const tipos = [...codigo.matchAll(/m\.tipo === "([a-z-]+)"/g)].map((x) => x[1]).sort();
+  assert.deepEqual(tipos, ["comando", "comando-lote", "painel-pronto"], "só estes tipos de mensagem são tratados");
+  assert.equal((codigo.match(/\.postMessage\(/g) || []).length, 2, "o carregador só responde ao iframe (estados e resultados)");
+  assert.ok(/postMessage\(\{ tipo: "casa-estados"/.test(codigo) && /postMessage\(\{ tipo: "resultado"/.test(codigo));
 });
 
 test("segurança: o painel (app.js + casa-real.js) não tem caminho de comando, token nem rede além de contrato.json", () => {

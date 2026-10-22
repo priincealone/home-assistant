@@ -399,11 +399,13 @@
     "light.painel",
     "light.quarto_luca_switch_1",
     "media_player.sala_de_estar_ps5",
+    "media_player.sala_de_estar_tv",
     "media_player.tv_un65du8000gxzd",
     "script.cena_chegar",
     "script.cena_cinema",
     "script.cena_dormir",
     "script.cena_gamer",
+    "select.dreame_us_415783444_mc1808_mode_p_18_6",
     "sensor.computador_energia",
     "sensor.door_sensor_2_bateria",
     "sensor.porta_do_quarto_bateria",
@@ -422,6 +424,7 @@
     "switch.tomada_inteligente_bloqueio_para_criancas",
     "switch.tomada_inteligente_socket_1",
     "switch.tomada_inteligente_socket_2",
-    "switch.ventilacao_ps5"
+    "switch.ventilacao_ps5",
+    "vacuum.dreame_us_415783444_mc1808"
   ]
 }

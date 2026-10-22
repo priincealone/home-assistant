@@ -4,33 +4,60 @@
  * servidos pela própria HA em /local/painel-secundario/ (iframe de mesma origem; sem porta 3011, sem PC do Node,
  * sem mixed content).
  *
- * FASE A (somente leitura, specs/features/painel-secundario-casa-real.md): este carregador recebe da HA o objeto
- * `hass` (a sessão do usuário logado — não há token para guardar) e REPASSA ao painel, por postMessage, apenas os
- * estados das entidades listadas em contrato.json (gerado de dashboard-app/lib/rooms.ts), com atributos em lista
- * de permissão. NÃO existe caminho de comando: este arquivo não chama serviços da HA e ignora qualquer mensagem do
- * painel que não seja "painel-pronto". (Comandos serão a fase B, só com aprovação do André.)
+ * Este carregador é o ÚNICO lado confiável (specs/features/painel-secundario-casa-real.md):
+ *  - FASE A (leitura): recebe da HA o objeto `hass` (sessão do usuário logado — não há token para guardar) e
+ *    repassa ao painel, por postMessage, só os estados das entidades de contrato.json, com atributos em lista de
+ *    permissão.
+ *  - FASE B (comandos): o painel pede {tipo:"comando"|"comando-lote", dispositivo, acao, params}; AQUI se resolve o
+ *    entity_id **somente por comandos.json** (gerado do contrato + dashboard-lab/comandos-regras.json), se valida ação,
+ *    parâmetros (tipo, faixa, enum, campos extras proibidos) e `somenteSe` (estado atual), e só então chama
+ *    hass.callService. O painel nunca informa entity_id, domínio nem serviço. Sem fila e SEM reenvio ao reconectar
+ *    (CLAUDE.md §13): com hass.connected falso o comando é recusado. Tudo o que não está em comandos.json é recusado.
  *
  * Mantenha-o PEQUENO e ESTÁVEL: /local é cacheado por 31 dias; mudar este arquivo exige subir o ?v= do module_url
- * em configuration.yaml e reiniciar a HA. A lógica do painel vive nos arquivos publicados com hash.
+ * em configuration.yaml e reiniciar a HA. As regras vivem em comandos.json (publicado com hash), a UI no painel.
  */
 
 (function () {
   const BASE = "/local/painel-secundario/";
+  const MAX_LOTE = 24;                 // itens por "Apagar/Acender tudo"
+  const LIMITE_JANELA_MS = 2000;       // no máximo 12 comandos a cada 2 s
+  const LIMITE_COMANDOS = 12;
+  const TIMEOUT_PADRAO_MS = 20000;
   // Atributos que o painel pode ver (nada de entity_picture/tokens, nem atributos arbitrários).
   const ATRIBUTOS = [
     "friendly_name", "unit_of_measurement", "device_class", "brightness", "color_temp", "color_temp_kelvin", "rgb_color",
-    "percentage", "oscillating", "preset_mode", "battery_level", "status", "fan_speed", "battery",
-    "source", "volume_level", "is_volume_muted", "media_title", "app_name",
+    "percentage", "oscillating", "preset_mode", "direction", "battery_level", "status", "fan_speed", "battery",
+    "source", "source_list", "volume_level", "is_volume_muted", "media_title", "app_name", "options",
+    "supported_color_modes", "min_color_temp_kelvin", "max_color_temp_kelvin",
   ];
+
+  // ---- validação de parâmetros (função pura, também usada nos testes) ----
+  function validarParam(spec, v) {
+    switch (spec.tipo) {
+      case "int": return Number.isInteger(v) && v >= spec.min && v <= spec.max;
+      case "num": return typeof v === "number" && Number.isFinite(v) && v >= spec.min && v <= spec.max;
+      case "bool": return typeof v === "boolean";
+      case "enum": return Array.isArray(spec.valores) && spec.valores.includes(v);
+      case "rgb": return Array.isArray(v) && v.length === 3 && v.every((n) => Number.isInteger(n) && n >= 0 && n <= 255);
+      case "texto": {
+        if (typeof v !== "string" || v.length < 1 || v.length > (spec.max || 64)) return false;
+        return spec.padrao ? new RegExp(spec.padrao).test(v) : true;
+      }
+      default: return false;
+    }
+  }
 
   class CasaPainelSecundario extends HTMLElement {
     constructor() {
       super();
       this._permitidas = new Set();
+      this._comandos = { alvos: {}, dispositivos: {} };
       this._ultimos = new Map();   // entity_id -> assinatura do último estado enviado
       this._pronto = false;        // o painel avisou que já escuta mensagens
       this._hass = null;
       this._timer = null;
+      this._recentes = [];         // carimbos dos últimos comandos (limite de taxa)
       this._onMsg = this._onMsg.bind(this);
     }
 
@@ -79,10 +106,13 @@
         const r = await fetch(`${BASE}versao.json?t=${Date.now()}`, { cache: "no-store" });
         if (!r.ok) throw new Error(`versao.json: HTTP ${r.status}`);
         versao = (await r.json()).versao;
-        // O contrato é a lista de permissão: sem ele, nada é repassado (o painel fica no modo simulado).
+        // Contrato = quais estados repassar; comandos.json = o que pode ser comandado. Sem eles, nada é repassado/comandado.
         const c = await fetch(`${BASE}contrato.json?v=${encodeURIComponent(versao)}`, { cache: "no-store" });
         if (c.ok) this._permitidas = new Set((await c.json()).entidades || []);
         else console.warn("[Painel Secundário] contrato.json indisponível: nenhum estado será repassado");
+        const k = await fetch(`${BASE}comandos.json?v=${encodeURIComponent(versao)}`, { cache: "no-store" });
+        if (k.ok) this._comandos = await k.json();
+        else console.warn("[Painel Secundário] comandos.json indisponível: nenhum comando será aceito");
       } catch (e) {
         this._aviso("Painel Secundário não publicado. Rode: node scripts/manutencao/publicar_painel_secundario.mjs");
         console.warn("[Painel Secundário]", e);
@@ -103,13 +133,119 @@
       this.appendChild(iframe);
     }
 
-    // Só uma mensagem é aceita do painel: "painel-pronto" (pede o lote inicial). Qualquer outra é descartada.
+    // Mensagens aceitas do painel: "painel-pronto", "comando" e "comando-lote". Qualquer outra é descartada.
     _onMsg(ev) {
       if (!this._iframe || ev.source !== this._iframe.contentWindow || ev.origin !== window.location.origin) return;
-      if (!ev.data || ev.data.tipo !== "painel-pronto") return;
-      this._pronto = true;
-      this._ultimos.clear();
-      this._enviar(true);
+      const m = ev.data;
+      if (!m || typeof m !== "object") return;
+      if (m.tipo === "painel-pronto") {
+        this._pronto = true;
+        this._ultimos.clear();
+        this._enviar(true);
+      } else if (m.tipo === "comando") {
+        this._comandar(m);
+      } else if (m.tipo === "comando-lote") {
+        this._comandarLote(m);
+      }
+    }
+
+    _responder(id, corpo) {
+      if (!this._iframe || !this._iframe.contentWindow) return;
+      this._iframe.contentWindow.postMessage({ tipo: "resultado", id, ...corpo }, window.location.origin);
+    }
+
+    // Resolve e valida um item: devolve {erro} ou {dominio, servico, dados, entityId, timeoutMs}. NÃO executa.
+    _preparar(item, comConfirmacao) {
+      const h = this._hass;
+      if (!h) return { erro: "sem_hass" };
+      if (h.connected === false) return { erro: "desconectado" };
+      if (!item || typeof item.dispositivo !== "string" || typeof item.acao !== "string") return { erro: "pedido_invalido" };
+      const d = Object.prototype.hasOwnProperty.call(this._comandos.dispositivos || {}, item.dispositivo) ? this._comandos.dispositivos[item.dispositivo] : null;
+      if (!d) return { erro: "dispositivo_nao_comandavel" };
+      const a = Object.prototype.hasOwnProperty.call(d.acoes || {}, item.acao) ? d.acoes[item.acao] : null;
+      if (!a) return { erro: "acao_nao_permitida" };
+      const entityId = a.alvo ? (this._comandos.alvos || {})[a.alvo] : d.entityId;
+      if (!entityId || typeof entityId !== "string") return { erro: "alvo_desconhecido" };
+      const [dominio, servico, resto] = String(a.servico).split(".");
+      if (!dominio || !servico || resto !== undefined) return { erro: "servico_invalido" };
+
+      // parâmetros: só os declarados, cada um validado; campos extras são recusados (inclui entity_id)
+      const params = item.params === undefined || item.params === null ? {} : item.params;
+      if (typeof params !== "object" || Array.isArray(params)) return { erro: "parametros_invalidos" };
+      const spec = a.params || {};
+      for (const k of Object.keys(params)) {
+        if (!Object.prototype.hasOwnProperty.call(spec, k)) return { erro: "parametro_nao_permitido", detalhe: k };
+        if (!validarParam(spec[k], params[k])) return { erro: "parametro_invalido", detalhe: k };
+      }
+      if (Object.keys(spec).length && !Object.keys(params).length && !a.opcional) {
+        // ações com parâmetros declarados exigem ao menos um (ex.: "ajustar" sem nada é inútil e ambíguo)
+        return { erro: "parametros_ausentes" };
+      }
+
+      // condição de estado atual (ex.: TV só desliga se estiver ligada — a tecla POWER alterna, CLAUDE.md §11.3)
+      if (a.somenteSe) {
+        const s = h.states && h.states[d.entityId];
+        const estado = s ? s.state : undefined;
+        if (estado === undefined) return { erro: "estado_desconhecido" };
+        if (Array.isArray(a.somenteSe.estadoEm) && !a.somenteSe.estadoEm.includes(estado)) return { erro: "estado_nao_permite", detalhe: estado };
+        if (Array.isArray(a.somenteSe.estadoNaoEm) && a.somenteSe.estadoNaoEm.includes(estado)) return { erro: "estado_nao_permite", detalhe: estado };
+      }
+
+      // confirmação obrigatória (o painel mostra o texto e reenvia com confirmado:true)
+      if (a.confirmar && comConfirmacao !== true) return { erro: "confirmacao_necessaria", confirmar: a.confirmar };
+
+      return {
+        dominio, servico, entityId,
+        dados: { ...(a.fixos || {}), ...params, entity_id: entityId },
+        timeoutMs: Number.isFinite(a.timeoutMs) ? a.timeoutMs : TIMEOUT_PADRAO_MS,
+        lote: a.lote === true,
+      };
+    }
+
+    _taxaOk(n) {
+      const agora = Date.now();
+      this._recentes = this._recentes.filter((t) => agora - t < LIMITE_JANELA_MS);
+      if (this._recentes.length + n > LIMITE_COMANDOS && n <= LIMITE_COMANDOS) return false;
+      for (let i = 0; i < Math.min(n, LIMITE_COMANDOS); i++) this._recentes.push(agora);
+      return true;
+    }
+
+    async _executar(p) {
+      let timer;
+      const limite = new Promise((_, rej) => { timer = setTimeout(() => rej(new Error("timeout")), p.timeoutMs); });
+      try {
+        await Promise.race([this._hass.callService(p.dominio, p.servico, p.dados), limite]);
+        return { ok: true };
+      } catch (e) {
+        const msg = e && e.message ? String(e.message).slice(0, 200) : "falha";
+        // timeout = resultado desconhecido (o comando pode ter sido aplicado): o painel deve reler o estado, não presumir
+        return { ok: false, erro: msg === "timeout" ? "timeout_sem_confirmacao" : "falha_na_ha", detalhe: msg };
+      } finally { clearTimeout(timer); }
+    }
+
+    async _comandar(m) {
+      const p = this._preparar(m, m.confirmado);
+      if (p.erro) { this._responder(m.id, { ok: false, ...p }); return; }
+      if (!this._taxaOk(1)) { this._responder(m.id, { ok: false, erro: "muitos_comandos" }); return; }
+      console.info(`[Painel Secundário] comando ${m.dispositivo}.${m.acao} → ${p.dominio}.${p.servico} ${p.entityId}`);
+      this._responder(m.id, await this._executar(p));
+    }
+
+    // "Apagar/Acender tudo": só ações marcadas com lote:true nas regras; todas validadas ANTES de executar qualquer uma.
+    async _comandarLote(m) {
+      const itens = Array.isArray(m.itens) ? m.itens : null;
+      if (!itens || itens.length < 1 || itens.length > MAX_LOTE) { this._responder(m.id, { ok: false, erro: "lote_invalido" }); return; }
+      const preparados = [];
+      for (const it of itens) {
+        const p = this._preparar(it, true);
+        if (p.erro) { this._responder(m.id, { ok: false, erro: "item_recusado", detalhe: `${it && it.dispositivo}: ${p.erro}` }); return; }
+        if (!p.lote) { this._responder(m.id, { ok: false, erro: "acao_fora_do_lote", detalhe: `${it.dispositivo}.${it.acao}` }); return; }
+        preparados.push(p);
+      }
+      if (!this._taxaOk(1)) { this._responder(m.id, { ok: false, erro: "muitos_comandos" }); return; }
+      console.info(`[Painel Secundário] lote de ${preparados.length} comandos`);
+      const resultados = await Promise.all(preparados.map((p) => this._executar(p)));
+      this._responder(m.id, { ok: resultados.every((r) => r.ok), resultados });
     }
 
     _agendar() {

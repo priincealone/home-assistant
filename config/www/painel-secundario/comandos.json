@@ -1,0 +1,989 @@
+{
+  "geradoDe": "dashboard-lab/comandos-regras.json + contrato.json",
+  "alvos": {
+    "tv_nuvem": "media_player.sala_de_estar_tv",
+    "tv_remote": "remote.tv_un65du8000gxzd",
+    "aspirador": "vacuum.dreame_us_415783444_mc1808",
+    "aspirador_modo": "select.dreame_us_415783444_mc1808_mode_p_18_6"
+  },
+  "dispositivos": {
+    "luz_sala": {
+      "entityId": "light.luz_sala",
+      "dominio": "light",
+      "nome": "Luz Sala",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "painel": {
+      "entityId": "light.painel",
+      "dominio": "light",
+      "nome": "Painel",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "ventilador_sala": {
+      "entityId": "fan.ventilador_sala",
+      "dominio": "fan",
+      "nome": "Ventilador",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "fan.turn_on"
+        },
+        "desligar": {
+          "servico": "fan.turn_off"
+        },
+        "velocidade": {
+          "servico": "fan.set_percentage",
+          "params": {
+            "percentage": {
+              "tipo": "int",
+              "min": 0,
+              "max": 100
+            }
+          }
+        },
+        "oscilar": {
+          "servico": "fan.oscillate",
+          "params": {
+            "oscillating": {
+              "tipo": "bool"
+            }
+          }
+        },
+        "direcao": {
+          "servico": "fan.set_direction",
+          "params": {
+            "direction": {
+              "tipo": "enum",
+              "valores": [
+                "forward",
+                "reverse"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ventilacao_ps5": {
+      "entityId": "switch.ventilacao_ps5",
+      "dominio": "switch",
+      "nome": "Ventilação PS5",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off"
+        }
+      }
+    },
+    "tv_sala": {
+      "entityId": "media_player.tv_un65du8000gxzd",
+      "dominio": "media_player",
+      "nome": "TV Sala",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "media_player.turn_on"
+        },
+        "desligar": {
+          "servico": "media_player.turn_off",
+          "somenteSe": {
+            "estadoNaoEm": [
+              "off",
+              "standby",
+              "unavailable",
+              "unknown"
+            ]
+          }
+        },
+        "volume": {
+          "servico": "media_player.volume_set",
+          "alvo": "tv_nuvem",
+          "params": {
+            "volume_level": {
+              "tipo": "num",
+              "min": 0,
+              "max": 1
+            }
+          }
+        },
+        "mudo": {
+          "servico": "media_player.volume_mute",
+          "alvo": "tv_nuvem",
+          "params": {
+            "is_volume_muted": {
+              "tipo": "bool"
+            }
+          }
+        },
+        "fonte": {
+          "servico": "media_player.select_source",
+          "params": {
+            "source": {
+              "tipo": "texto",
+              "max": 32,
+              "padrao": "^[A-Za-z0-9 ._-]+$"
+            }
+          }
+        },
+        "abrirApp": {
+          "servico": "media_player.play_media",
+          "fixos": {
+            "media_content_type": "app"
+          },
+          "params": {
+            "media_content_id": {
+              "tipo": "texto",
+              "max": 64,
+              "padrao": "^[A-Za-z0-9._-]+$"
+            }
+          }
+        },
+        "controleRemoto": {
+          "servico": "remote.send_command",
+          "alvo": "tv_remote",
+          "params": {
+            "command": {
+              "tipo": "enum",
+              "valores": [
+                "KEY_RETURN",
+                "KEY_HOME",
+                "KEY_MENU",
+                "KEY_UP",
+                "KEY_DOWN",
+                "KEY_LEFT",
+                "KEY_RIGHT",
+                "KEY_ENTER",
+                "KEY_REWIND",
+                "KEY_PLAY",
+                "KEY_PAUSE",
+                "KEY_STOP",
+                "KEY_FF"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "ps5_sala": {
+      "entityId": "media_player.sala_de_estar_ps5",
+      "dominio": "media_player",
+      "nome": "PlayStation 5",
+      "comodo": "sala_de_estar",
+      "acoes": {
+        "ligar": {
+          "servico": "media_player.turn_on",
+          "somenteSe": {
+            "estadoEm": [
+              "off",
+              "standby",
+              "idle"
+            ]
+          },
+          "timeoutMs": 60000
+        },
+        "repouso": {
+          "servico": "media_player.turn_off",
+          "somenteSe": {
+            "estadoEm": [
+              "on",
+              "playing"
+            ]
+          },
+          "confirmar": "Colocar o PS5 em repouso? (leva alguns segundos)",
+          "timeoutMs": 60000
+        }
+      }
+    },
+    "cozinha": {
+      "entityId": "light.cozinha_copa_varanda_switch_1",
+      "dominio": "light",
+      "nome": "Luz Cozinha",
+      "comodo": "cozinha",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "copa": {
+      "entityId": "light.cozinha_copa_varanda_switch_2",
+      "dominio": "light",
+      "nome": "Luz Copa",
+      "comodo": "copa",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "lavanderia": {
+      "entityId": "light.cozinha_copa_varanda_switch_3",
+      "dominio": "light",
+      "nome": "Luz Lavanderia",
+      "comodo": "lavanderia",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "plafon": {
+      "entityId": "light.luzes_externas_switch_1",
+      "dominio": "light",
+      "nome": "Plafon Área Gourmet",
+      "comodo": "area_gourmet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "pendente": {
+      "entityId": "light.luzes_externas_switch_2",
+      "dominio": "light",
+      "nome": "Pendente",
+      "comodo": "area_gourmet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "led": {
+      "entityId": "light.luzes_externas_switch_3",
+      "dominio": "light",
+      "nome": "Led",
+      "comodo": "area_gourmet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "spots": {
+      "entityId": "light.luzes_externas_switch_4",
+      "dominio": "light",
+      "nome": "Spots",
+      "comodo": "area_gourmet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "luz_luca": {
+      "entityId": "light.quarto_luca_switch_1",
+      "dominio": "light",
+      "nome": "Luz",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "tomada_luca_1": {
+      "entityId": "switch.tomada_inteligente_socket_1",
+      "dominio": "switch",
+      "nome": "Tomada 1",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off"
+        }
+      }
+    },
+    "tomada_luca_2": {
+      "entityId": "switch.tomada_inteligente_socket_2",
+      "dominio": "switch",
+      "nome": "Tomada 2",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off"
+        }
+      }
+    },
+    "bloqueio_luca": {
+      "entityId": "switch.tomada_inteligente_bloqueio_para_criancas",
+      "dominio": "switch",
+      "nome": "Bloqueio Infantil",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on",
+          "confirmar": "Alterar o bloqueio para crianças desta tomada?"
+        },
+        "desligar": {
+          "servico": "switch.turn_off",
+          "confirmar": "Alterar o bloqueio para crianças desta tomada?"
+        }
+      }
+    },
+    "led_luca": {
+      "entityId": "light.led_tomada_switch_1",
+      "dominio": "light",
+      "nome": "Led",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "tomada_led_luca": {
+      "entityId": "switch.led_tomada_switch_2",
+      "dominio": "switch",
+      "nome": "Tomada do Led",
+      "comodo": "quarto_luca",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off"
+        }
+      }
+    },
+    "banheiro_switch_1": {
+      "entityId": "switch.banheiro_switch_1",
+      "dominio": "switch",
+      "nome": "Interruptor 1",
+      "comodo": "banheiro",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "switch.turn_off",
+          "lote": true
+        }
+      }
+    },
+    "banheiro_switch_2": {
+      "entityId": "switch.banheiro_switch_2",
+      "dominio": "switch",
+      "nome": "Tomada Banheiro",
+      "comodo": "banheiro",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off"
+        }
+      }
+    },
+    "muro": {
+      "entityId": "light.circulacao_switch_1",
+      "dominio": "light",
+      "nome": "Muro",
+      "comodo": "circulacao",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "corredor": {
+      "entityId": "light.circulacao_switch_2",
+      "dominio": "light",
+      "nome": "Corredor",
+      "comodo": "circulacao",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "closet": {
+      "entityId": "light.closet_switch_1",
+      "dominio": "light",
+      "nome": "Luz Closet",
+      "comodo": "closet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "led_escritorio": {
+      "entityId": "light.led_escritorio_sonoff_1001dff472",
+      "dominio": "light",
+      "nome": "LED Escritório",
+      "comodo": "closet",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "pc_socket_1": {
+      "entityId": "switch.computador_socket_1",
+      "dominio": "switch",
+      "nome": "Tomada PC 1",
+      "comodo": "closet",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off",
+          "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?"
+        }
+      }
+    },
+    "pc_socket_2": {
+      "entityId": "switch.computador_socket_2",
+      "dominio": "switch",
+      "nome": "Tomada PC 2",
+      "comodo": "closet",
+      "acoes": {
+        "ligar": {
+          "servico": "switch.turn_on"
+        },
+        "desligar": {
+          "servico": "switch.turn_off",
+          "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?"
+        }
+      }
+    },
+    "luz_quarto": {
+      "entityId": "light.luz_quarto",
+      "dominio": "light",
+      "nome": "Luz Quarto",
+      "comodo": "quarto",
+      "acoes": {
+        "ligar": {
+          "servico": "light.turn_on",
+          "lote": true
+        },
+        "desligar": {
+          "servico": "light.turn_off",
+          "lote": true
+        },
+        "ajustar": {
+          "servico": "light.turn_on",
+          "params": {
+            "brightness": {
+              "tipo": "int",
+              "min": 1,
+              "max": 255
+            },
+            "color_temp_kelvin": {
+              "tipo": "int",
+              "min": 1500,
+              "max": 9000
+            },
+            "rgb_color": {
+              "tipo": "rgb"
+            }
+          }
+        }
+      }
+    },
+    "ventilador_quarto": {
+      "entityId": "fan.ventilador_quarto",
+      "dominio": "fan",
+      "nome": "Ventilador Quarto",
+      "comodo": "quarto",
+      "acoes": {
+        "ligar": {
+          "servico": "fan.turn_on"
+        },
+        "desligar": {
+          "servico": "fan.turn_off"
+        },
+        "velocidade": {
+          "servico": "fan.set_percentage",
+          "params": {
+            "percentage": {
+              "tipo": "int",
+              "min": 0,
+              "max": 100
+            }
+          }
+        },
+        "oscilar": {
+          "servico": "fan.oscillate",
+          "params": {
+            "oscillating": {
+              "tipo": "bool"
+            }
+          }
+        },
+        "direcao": {
+          "servico": "fan.set_direction",
+          "params": {
+            "direction": {
+              "tipo": "enum",
+              "valores": [
+                "forward",
+                "reverse"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "aspirador": {
+      "entityId": "vacuum.dreame_us_415783444_mc1808",
+      "dominio": "vacuum",
+      "nome": "Aspirador",
+      "comodo": null,
+      "acoes": {
+        "iniciar": {
+          "servico": "vacuum.start",
+          "alvo": "aspirador"
+        },
+        "pausar": {
+          "servico": "vacuum.pause",
+          "alvo": "aspirador"
+        },
+        "base": {
+          "servico": "vacuum.return_to_base",
+          "alvo": "aspirador"
+        },
+        "parar": {
+          "servico": "vacuum.stop",
+          "alvo": "aspirador"
+        },
+        "localizar": {
+          "servico": "vacuum.locate",
+          "alvo": "aspirador"
+        },
+        "limpezaLocal": {
+          "servico": "vacuum.clean_spot",
+          "alvo": "aspirador"
+        },
+        "modo": {
+          "servico": "select.select_option",
+          "alvo": "aspirador_modo",
+          "params": {
+            "option": {
+              "tipo": "enum",
+              "valores": [
+                "安静",
+                "标准",
+                "中档",
+                "强力"
+              ]
+            }
+          }
+        }
+      }
+    },
+    "cena_cinema": {
+      "entityId": "script.cena_cinema",
+      "dominio": "script",
+      "nome": "Cena cinema",
+      "comodo": null,
+      "acoes": {
+        "executar": {
+          "servico": "script.turn_on",
+          "confirmar": "Executar esta cena agora? Ela pode mexer em vários aparelhos da casa."
+        }
+      }
+    },
+    "cena_boa_noite": {
+      "entityId": "script.cena_dormir",
+      "dominio": "script",
+      "nome": "Cena boa_noite",
+      "comodo": null,
+      "acoes": {
+        "executar": {
+          "servico": "script.turn_on",
+          "confirmar": "Executar esta cena agora? Ela pode mexer em vários aparelhos da casa."
+        }
+      }
+    },
+    "cena_boas_vindas": {
+      "entityId": "script.cena_chegar",
+      "dominio": "script",
+      "nome": "Cena boas_vindas",
+      "comodo": null,
+      "acoes": {
+        "executar": {
+          "servico": "script.turn_on",
+          "confirmar": "Executar esta cena agora? Ela pode mexer em vários aparelhos da casa."
+        }
+      }
+    },
+    "cena_gamer": {
+      "entityId": "script.cena_gamer",
+      "dominio": "script",
+      "nome": "Cena gamer",
+      "comodo": null,
+      "acoes": {
+        "executar": {
+          "servico": "script.turn_on",
+          "confirmar": "Executar esta cena agora? Ela pode mexer em vários aparelhos da casa."
+        }
+      }
+    }
+  }
+}
