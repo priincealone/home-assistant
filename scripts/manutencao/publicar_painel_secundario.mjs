@@ -12,19 +12,23 @@ import { fileURLToPath } from "node:url";
 const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ORIGEM = join(RAIZ, "dashboard-lab");
 const DESTINO = join(RAIZ, "config", "www", "painel-secundario");
-const ARQUIVOS = ["index.html", "styles.css", "app.js", "icons.js"];
+// Arquivos publicados (index.html é reescrito com ?v=; os demais são copiados). Novo arquivo do painel: acrescentar aqui
+// e em dashboard-lab/serve.mjs (PUBLICOS). contrato.json = lista de permissão de entidades (gerar_contrato_painel_secundario.mjs).
+const ARQUIVOS = ["index.html", "styles.css", "app.js", "icons.js", "contrato.json"];
+const ESTATICOS = ARQUIVOS.filter((f) => f !== "index.html");
+const COM_VERSAO = ESTATICOS.filter((f) => f.endsWith(".css") || f.endsWith(".js")); // referenciados no index.html
 
 const conteudos = Object.fromEntries(ARQUIVOS.map((f) => [f, readFileSync(join(ORIGEM, f), "utf8").replace(/\r\n/g, "\n")]));
 const hash = createHash("sha256").update(ARQUIVOS.map((f) => conteudos[f]).join("\u0000")).digest("hex").slice(0, 10);
 
 mkdirSync(DESTINO, { recursive: true });
 let html = conteudos["index.html"];
-for (const f of ["styles.css", "app.js", "icons.js"]) {
+for (const f of COM_VERSAO) {
   const antes = html;
   html = html.replace(new RegExp(`(href|src)="${f.replace(".", "\\.")}"`), `$1="${f}?v=${hash}"`);
   if (html === antes) throw new Error(`index.html não referencia ${f}; abortando sem publicar`);
 }
 writeFileSync(join(DESTINO, "index.html"), html);
-for (const f of ["styles.css", "app.js", "icons.js"]) copyFileSync(join(ORIGEM, f), join(DESTINO, f));
+for (const f of ESTATICOS) copyFileSync(join(ORIGEM, f), join(DESTINO, f));
 writeFileSync(join(DESTINO, "versao.json"), JSON.stringify({ versao: hash, publicado: new Date().toISOString() }) + "\n");
 console.log(`Painel Secundário publicado em config/www/painel-secundario (versão ${hash}); URL: /local/painel-secundario/index.html?v=${hash}`);

@@ -1,0 +1,427 @@
+{
+  "geradoDe": "dashboard-app/lib/rooms.ts + app/api/scene/route.ts",
+  "comodos": [
+    {
+      "id": "sala_de_estar",
+      "nome": "Sala de Estar",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "luz_sala",
+          "entityId": "light.luz_sala",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Sala"
+        },
+        {
+          "id": "painel",
+          "entityId": "light.painel",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Painel"
+        },
+        {
+          "id": "ventilador_sala",
+          "entityId": "fan.ventilador_sala",
+          "dominio": "fan",
+          "categoria": "clima",
+          "nome": "Ventilador"
+        },
+        {
+          "id": "ventilacao_ps5",
+          "entityId": "switch.ventilacao_ps5",
+          "dominio": "switch",
+          "categoria": "sensor",
+          "nome": "Ventilação PS5"
+        },
+        {
+          "id": "tv_sala",
+          "entityId": "media_player.tv_un65du8000gxzd",
+          "dominio": "media_player",
+          "categoria": "midia",
+          "nome": "TV Sala"
+        },
+        {
+          "id": "ps5_sala",
+          "entityId": "media_player.sala_de_estar_ps5",
+          "dominio": "media_player",
+          "categoria": "midia",
+          "nome": "PlayStation 5"
+        },
+        {
+          "id": "temp_sala",
+          "entityId": "sensor.sensor_temperatura_e_humidade_temperatura",
+          "dominio": "sensor",
+          "categoria": "sensor",
+          "nome": "Temperatura",
+          "unidade": "°C",
+          "batteryEntityId": "sensor.sensor_temperatura_e_humidade_bateria"
+        },
+        {
+          "id": "umid_sala",
+          "entityId": "sensor.sensor_temperatura_e_humidade_umidade",
+          "dominio": "sensor",
+          "categoria": "sensor",
+          "nome": "Umidade",
+          "unidade": "%"
+        },
+        {
+          "id": "porta_sala",
+          "entityId": "binary_sensor.sensor_porta_sala_porta",
+          "dominio": "binary_sensor",
+          "categoria": "seguranca",
+          "nome": "Porta da Sala",
+          "batteryEntityId": "sensor.sensor_porta_sala_bateria"
+        }
+      ]
+    },
+    {
+      "id": "cozinha",
+      "nome": "Cozinha",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "cozinha",
+          "entityId": "light.cozinha_copa_varanda_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Cozinha"
+        }
+      ]
+    },
+    {
+      "id": "copa",
+      "nome": "Copa",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "copa",
+          "entityId": "light.cozinha_copa_varanda_switch_2",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Copa"
+        }
+      ]
+    },
+    {
+      "id": "lavanderia",
+      "nome": "Lavanderia",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "lavanderia",
+          "entityId": "light.cozinha_copa_varanda_switch_3",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Lavanderia"
+        },
+        {
+          "id": "mov_lavanderia",
+          "entityId": "binary_sensor.sensor_lavanderia_movimento",
+          "dominio": "binary_sensor",
+          "categoria": "sensor",
+          "nome": "Presença / Movimento",
+          "batteryEntityId": "sensor.sensor_lavanderia_bateria"
+        },
+        {
+          "id": "porta_lavanderia",
+          "entityId": "binary_sensor.door_sensor_2_porta",
+          "dominio": "binary_sensor",
+          "categoria": "seguranca",
+          "nome": "Porta da Lavanderia",
+          "batteryEntityId": "sensor.door_sensor_2_bateria"
+        }
+      ]
+    },
+    {
+      "id": "area_gourmet",
+      "nome": "Área Gourmet",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "plafon",
+          "entityId": "light.luzes_externas_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Plafon Área Gourmet"
+        },
+        {
+          "id": "pendente",
+          "entityId": "light.luzes_externas_switch_2",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Pendente"
+        },
+        {
+          "id": "led",
+          "entityId": "light.luzes_externas_switch_3",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Led"
+        },
+        {
+          "id": "spots",
+          "entityId": "light.luzes_externas_switch_4",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Spots"
+        },
+        {
+          "id": "mov_gourmet",
+          "entityId": "binary_sensor.sensor_area_gourmet_movimento",
+          "dominio": "binary_sensor",
+          "categoria": "sensor",
+          "nome": "Presença / Movimento",
+          "batteryEntityId": "sensor.sensor_area_gourmet_bateria"
+        }
+      ]
+    },
+    {
+      "id": "quarto_luca",
+      "nome": "Quarto Luca",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "luz_luca",
+          "entityId": "light.quarto_luca_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz"
+        },
+        {
+          "id": "tomada_luca_1",
+          "entityId": "switch.tomada_inteligente_socket_1",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada 1"
+        },
+        {
+          "id": "tomada_luca_2",
+          "entityId": "switch.tomada_inteligente_socket_2",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada 2"
+        },
+        {
+          "id": "bloqueio_luca",
+          "entityId": "switch.tomada_inteligente_bloqueio_para_criancas",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Bloqueio Infantil"
+        },
+        {
+          "id": "energia_luca",
+          "entityId": "sensor.tomada_inteligente_energia",
+          "dominio": "sensor",
+          "categoria": "energia",
+          "nome": "Consumo Instantâneo",
+          "unidade": "W"
+        },
+        {
+          "id": "led_luca",
+          "entityId": "light.led_tomada_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Led"
+        },
+        {
+          "id": "tomada_led_luca",
+          "entityId": "switch.led_tomada_switch_2",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada do Led"
+        }
+      ]
+    },
+    {
+      "id": "banheiro",
+      "nome": "Banheiro",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "banheiro_switch_1",
+          "entityId": "switch.banheiro_switch_1",
+          "dominio": "switch",
+          "categoria": "iluminacao",
+          "nome": "Interruptor 1"
+        },
+        {
+          "id": "banheiro_switch_2",
+          "entityId": "switch.banheiro_switch_2",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada Banheiro"
+        }
+      ]
+    },
+    {
+      "id": "circulacao",
+      "nome": "Circulação",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "muro",
+          "entityId": "light.circulacao_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Muro"
+        },
+        {
+          "id": "corredor",
+          "entityId": "light.circulacao_switch_2",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Corredor"
+        }
+      ]
+    },
+    {
+      "id": "closet",
+      "nome": "Closet",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "closet",
+          "entityId": "light.closet_switch_1",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Closet"
+        },
+        {
+          "id": "led_escritorio",
+          "entityId": "light.led_escritorio_sonoff_1001dff472",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "LED Escritório"
+        },
+        {
+          "id": "pc_socket_1",
+          "entityId": "switch.computador_socket_1",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada PC 1"
+        },
+        {
+          "id": "pc_socket_2",
+          "entityId": "switch.computador_socket_2",
+          "dominio": "switch",
+          "categoria": "tomada",
+          "nome": "Tomada PC 2"
+        },
+        {
+          "id": "pc_energia",
+          "entityId": "sensor.computador_energia",
+          "dominio": "sensor",
+          "categoria": "energia",
+          "nome": "Consumo PC",
+          "unidade": "W"
+        }
+      ]
+    },
+    {
+      "id": "quarto",
+      "nome": "Quarto",
+      "vazio": false,
+      "dispositivos": [
+        {
+          "id": "luz_quarto",
+          "entityId": "light.luz_quarto",
+          "dominio": "light",
+          "categoria": "iluminacao",
+          "nome": "Luz Quarto"
+        },
+        {
+          "id": "ventilador_quarto",
+          "entityId": "fan.ventilador_quarto",
+          "dominio": "fan",
+          "categoria": "clima",
+          "nome": "Ventilador Quarto"
+        },
+        {
+          "id": "porta_quarto",
+          "entityId": "binary_sensor.porta_do_quarto_porta",
+          "dominio": "binary_sensor",
+          "categoria": "seguranca",
+          "nome": "Porta do Quarto",
+          "batteryEntityId": "sensor.porta_do_quarto_bateria"
+        },
+        {
+          "id": "bateria_porta_quarto",
+          "entityId": "sensor.porta_do_quarto_bateria",
+          "dominio": "sensor",
+          "categoria": "sensor",
+          "nome": "Bateria Sensor Porta",
+          "unidade": "%"
+        }
+      ]
+    }
+  ],
+  "cenas": [
+    {
+      "chave": "cinema",
+      "entityId": "script.cena_cinema"
+    },
+    {
+      "chave": "boa_noite",
+      "entityId": "script.cena_dormir"
+    },
+    {
+      "chave": "boas_vindas",
+      "entityId": "script.cena_chegar"
+    },
+    {
+      "chave": "gamer",
+      "entityId": "script.cena_gamer"
+    }
+  ],
+  "entidades": [
+    "binary_sensor.door_sensor_2_porta",
+    "binary_sensor.porta_do_quarto_porta",
+    "binary_sensor.sensor_area_gourmet_movimento",
+    "binary_sensor.sensor_lavanderia_movimento",
+    "binary_sensor.sensor_porta_sala_porta",
+    "fan.ventilador_quarto",
+    "fan.ventilador_sala",
+    "light.circulacao_switch_1",
+    "light.circulacao_switch_2",
+    "light.closet_switch_1",
+    "light.cozinha_copa_varanda_switch_1",
+    "light.cozinha_copa_varanda_switch_2",
+    "light.cozinha_copa_varanda_switch_3",
+    "light.led_escritorio_sonoff_1001dff472",
+    "light.led_tomada_switch_1",
+    "light.luz_quarto",
+    "light.luz_sala",
+    "light.luzes_externas_switch_1",
+    "light.luzes_externas_switch_2",
+    "light.luzes_externas_switch_3",
+    "light.luzes_externas_switch_4",
+    "light.painel",
+    "light.quarto_luca_switch_1",
+    "media_player.sala_de_estar_ps5",
+    "media_player.tv_un65du8000gxzd",
+    "script.cena_chegar",
+    "script.cena_cinema",
+    "script.cena_dormir",
+    "script.cena_gamer",
+    "sensor.computador_energia",
+    "sensor.door_sensor_2_bateria",
+    "sensor.porta_do_quarto_bateria",
+    "sensor.sensor_area_gourmet_bateria",
+    "sensor.sensor_lavanderia_bateria",
+    "sensor.sensor_porta_sala_bateria",
+    "sensor.sensor_temperatura_e_humidade_bateria",
+    "sensor.sensor_temperatura_e_humidade_temperatura",
+    "sensor.sensor_temperatura_e_humidade_umidade",
+    "sensor.tomada_inteligente_energia",
+    "switch.banheiro_switch_1",
+    "switch.banheiro_switch_2",
+    "switch.computador_socket_1",
+    "switch.computador_socket_2",
+    "switch.led_tomada_switch_2",
+    "switch.tomada_inteligente_bloqueio_para_criancas",
+    "switch.tomada_inteligente_socket_1",
+    "switch.tomada_inteligente_socket_2",
+    "switch.ventilacao_ps5"
+  ]
+}

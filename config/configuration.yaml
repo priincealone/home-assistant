@@ -24,7 +24,7 @@ panel_custom:
     sidebar_title: "Painel Secundário"
     sidebar_icon: "mdi:view-dashboard-outline"
     url_path: "painel-secundario"
-    module_url: "/local/casa-painel-secundario.js?v=20261022b"
+    module_url: "/local/casa-painel-secundario.js?v=20261022c"
     trust_external_script: true
     require_admin: false
     handle_safe_area: true
