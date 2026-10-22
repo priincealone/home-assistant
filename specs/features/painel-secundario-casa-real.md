@@ -27,17 +27,21 @@ Fonte única: `dashboard-app/lib/rooms.ts` (`comodosCompletos`, o contrato canô
 - **Favoritos** continuam locais ao navegador (`localStorage`); **Desfazer** fica inativo (não há o que desfazer sem comandos).
 - **Aceite**: dentro da HA o painel mostra a casa de verdade e acompanha as mudanças em tempo real (acender uma luz fisicamente ou por outra tela reflete em ≤ 2 s); fora da HA segue simulado; todos os testes passam; nenhum `POST`/chamada de serviço partiu do painel (verificado no log da HA e na rede do navegador); medidas de layout sem regressão (casca de tablet, rail, folha).
 
-## 4. Fase B — comandos (PROPOSTA, depende de aprovação do André)
-Só depois de a fase A rodar uns dias. Princípios: **lista de permissão no lado confiável (carregador)**, nunca no iframe; entity_id nunca vem do iframe — só o `id` do contrato; domínio/serviço por tabela fixa:
-| Domínio | Serviços permitidos |
-| :-- | :-- |
-| `light` | `turn_on` (brightness, color_temp, rgb), `turn_off` |
-| `switch` | `turn_on`, `turn_off` (**exceto** tomadas/cargas de risco: lista de exclusão a definir pelo André) |
-| `fan` | `turn_on`, `turn_off`, `set_percentage`, `oscillate` |
-| `media_player` (TV) | **mesmo caminho do `/api/tv`** do Painel Primário (`turn_off` é a tecla POWER e alterna: condicionar ao estado, um caminho de cada vez — CLAUDE.md §11.3); volume/entrada só se o contrato já os permite |
-| `vacuum` | `start`, `pause`, `return_to_base`, `set_fan_speed` |
-| cenas | `script.turn_on` apenas dos 4 scripts do contrato |
-Proibidos: tranca, portão, aquecedor, qualquer carga de risco (§11.4). Travas otimistas com TTL de 5 s e reversão em falha; erro visível ao usuário; **sem reenvio automático** ao reconectar (§13). "Desfazer" só reaplica o estado anterior pelas mesmas chamadas permitidas, nunca em lote cego. **Testes**: todo teste de escrita com **dublê do HA**; nenhum teste aciona a casa (§11). Quando o André aprovar: especificar caso a caso as exclusões, a TV e o aspirador.
+## 4. Fase B — comandos (PLANO PARA APROVAÇÃO, 22/10/2026; nada implementado)
+**Decisão de arquitetura:** os comandos saem pelo `hass.callService` do **carregador** (sessão e permissões do usuário logado na HA), com lista de permissão **no carregador** (lado confiável), nunca no iframe. Alternativa descartada: chamar as rotas do Painel Primário (`/api/toggle`, `/api/control`, `/api/tv`) — exigiria CORS e dependeria de uma porta sem autenticação (D-011) e do PC do Node; o Secundário rodaria menos "inteiro na HA".
+**Protocolo:** o painel envia `{tipo:"comando", id, dispositivo:"<id do contrato>", acao, params}`; o carregador resolve o `entity_id` **só pelo contrato**, valida domínio, ação e faixas, executa, e responde `{tipo:"resultado", id, ok, erro?}`. O painel nunca informa `entity_id`, domínio ou serviço. Sem fila e **sem reenvio ao reconectar** (§13); com `hass.connected` falso, o carregador recusa.
+**Tabela fixa (dispositivos do contrato; 39 hoje):**
+| Grupo | Dispositivos | Ações permitidas |
+| :-- | :-- | :-- |
+| Luzes (`light.*`: 15) | Luz Sala, Painel, Cozinha, Copa, Lavanderia, 4 da Área Gourmet, Luz Luca, LED Luca, Muro, Corredor, Closet, LED Escritório, Luz Quarto | `turn_on` (`brightness` 1–255, `color_temp_kelvin` 2000–6500, `rgb_color` só se o aparelho declara suporte), `turn_off` |
+| Interruptor de luz | `switch.banheiro_switch_1` (categoria iluminação) | `turn_on`, `turn_off` |
+| Ventiladores (`fan.*`: 2) | Sala, Quarto | `turn_on`, `turn_off`, `set_percentage` (0–100), `oscillate` se o aparelho suporta |
+| Cenas (4) | `script.cena_cinema`, `cena_dormir`, `cena_chegar`, `cena_gamer` | `script.turn_on` (nada além; lista fixa) |
+| "Apagar/Acender tudo" por cômodo | só luzes e interruptores de luz do cômodo | `turn_off`/`turn_on` em lote **somente nas luzes** |
+**Fora da fase B (continuam somente leitura):** tomadas (`tomada_luca_1/2`, `tomada_led_luca`, `banheiro_switch_2`, `ventilacao_ps5`), **tomadas do PC (`pc_socket_1/2`: cortá-las desliga o PC que hospeda a HA — bloqueadas em definitivo)**, **bloqueio para crianças (`bloqueio_luca`)**, TV Samsung e PS5 (`turn_off` da TV é a tecla POWER e alterna — §11.3; voltam em fase B2 com o mesmo cuidado do `/api/tv`), aspirador (fora do contrato), qualquer tranca, portão ou aquecedor (§11.4).
+**Comportamento:** otimista com **trava de 5 s** (estado do painel vale até o HA confirmar; se não confirmar, reverte e mostra erro visível), alvos ≥ 44 px, nunca "ligado" falso: o cartão só fica "ligado" de verdade quando `hass.states` confirma. **"Desfazer"**: só para "Apagar/Acender tudo" de luzes (reaplica o estado anterior das mesmas luzes pelas mesmas ações permitidas); **cenas não têm Desfazer** (executam scripts da HA com efeitos que o painel não conhece). Cena = confirmação antes de executar (a decidir pelo André).
+**Testes (todos sem tocar a casa):** dublê do `hass` (`callService` falso que só registra chamadas) cobrindo: cada ação permitida chama o serviço certo com os parâmetros certos; tudo que está fora da tabela é recusado (tomada PC, bloqueio, TV, `entity_id` informado pelo painel, domínio inventado, faixas inválidas, desconectado); sem reenvio ao reconectar; trava de 5 s e reversão; varredura de código: o iframe não tem `callService`. **Aceite físico** (único momento que toca a casa, §11.2): o André indica **uma luz de teste**; ligar/desligar uma vez, curto, devolvendo o estado anterior, e avisar o que foi acionado.
+**Entrega em etapas:** B1 luzes e interruptor de luz (+ "Apagar/Acender tudo") → B2 ventiladores → B3 cenas → B4 TV/PS5 (com plano próprio). Cada etapa: spec atualizada, testes, rodada enxuta do porteiro, registro; o carregador muda uma vez na B1 (sobe o `?v=` do `module_url`, 1 reinício da HA) e daí em diante só os arquivos publicados com hash.
 
 ## 5. Riscos
 - `hass` só existe dentro da HA; é a sessão do usuário (se ele sair, o painel mostra "offline").
