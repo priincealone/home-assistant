@@ -575,7 +575,7 @@ document.addEventListener("pointercancel", () => { sw0 = null; });
 
 /* ---------- Dica de rolagem: esmaecido na borda que tem mais conteúdo (as barras ficam ocultas) ---------- */
 function dicasRolagem() {
-  ["#secao-casa", "#rail"].forEach((sel) => {
+  ["#lista-comodos", "#rail"].forEach((sel) => {
     const el = $(sel);
     if (!el || !el.style) return;
     const rola = ["auto", "scroll"].includes(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1;
@@ -584,7 +584,7 @@ function dicasRolagem() {
     el.style.setProperty("--fade-b", rola && el.scrollTop + el.clientHeight < el.scrollHeight - 4 ? "28px" : "0px");
   });
 }
-["#secao-casa", "#rail"].forEach((sel) => $(sel).addEventListener("scroll", dicasRolagem, { passive: true }));
+["#lista-comodos", "#rail"].forEach((sel) => $(sel).addEventListener("scroll", dicasRolagem, { passive: true }));
 window.addEventListener("resize", dicasRolagem);
 
 /* ---------- Simulação: bateria do aspirador e tempos dos sensores (só textos; não recria botões) ---------- */

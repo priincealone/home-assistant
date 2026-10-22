@@ -497,7 +497,7 @@ body[data-folha] { overflow: hidden; }
 
 /* ---------- Tablet/laptop (768–1400 px, altura ≥ 520): a página não rola; só o centro rola ----------
    Topo (saudação + cenas) fixo, laterais ocupam a altura que sobra e se ajustam sem barra de rolagem. */
-@media (min-width: 768px) and (max-width: 1400px) and (min-height: 520px) {
+@media (min-width: 768px) and (max-width: 1400px) and (min-height: 600px) {
   html, body { height: 100dvh; overflow: hidden; }
   .wrap { height: 100dvh; display: flex; flex-direction: column; gap: 8px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
   .hero { flex: none; padding: 0 0 2px; }
@@ -507,7 +507,9 @@ body[data-folha] { overflow: hidden; }
   .scene { min-height: 56px; padding: 6px 10px; gap: 8px; }
   .scene .ico { width: 36px; height: 36px; }
   .main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
-  .rooms { height: 100%; min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+  .rooms { height: 100%; min-height: 0; overflow: hidden; }
+  .busca { position: static; flex: none; }
+  .lista-comodos { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .rooms-nav { position: static; height: 100%; min-height: 0; max-height: none; }
   .rooms-nav .rail { max-height: 100%; gap: 2px; padding: 2px 5px; }
   .security { position: static; height: 100%; min-height: 0; max-height: none; display: flex; flex-direction: column; overflow: hidden; }
@@ -544,24 +546,27 @@ body[data-folha] { overflow: hidden; }
 
 /* aviso curto com "Desfazer" */
 .toast {
-  position: fixed; z-index: 60; left: 50%; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
+  position: fixed; z-index: 60; left: 0; right: 0; margin-inline: auto; width: fit-content; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
   display: flex; align-items: center; gap: 8px 12px; max-width: min(92vw, 440px); padding: 6px 6px 6px 18px;
   border-radius: 9999px; background: rgba(17, 24, 39, 0.92); border: 1px solid var(--border-strong); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  transform: translateX(-50%) translateY(16px); opacity: 0;
+  transform: translateY(16px); opacity: 0;
   transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base);
 }
 .toast[hidden] { display: none; }
-.toast[data-estado="aberto"] { transform: translateX(-50%); opacity: 1; }
-.toast[data-estado="saindo"] { transform: translateX(-50%) translateY(16px); opacity: 0; transition-duration: var(--dur-fast); }
+.toast[data-estado="aberto"] { transform: none; opacity: 1; }
+.toast[data-estado="saindo"] { transform: translateY(16px); opacity: 0; transition-duration: var(--dur-fast); }
 .toast-t { min-width: 0; font-size: 0.875rem; font-weight: 500; overflow-wrap: anywhere; }
 .toast-b { min-height: 44px; display: inline-flex; align-items: center; gap: 6px; padding: 0 14px; border: 0; border-radius: 9999px; background: rgba(251, 191, 36, 0.16); color: var(--amber); font-weight: 600; font-size: 0.8125rem; cursor: pointer; flex: none; }
 
 /* esmaecido só nas bordas com mais conteúdo (a máscara só existe quando há rolagem, para não cortar o brilho dos cartões) */
-#secao-casa[data-rola="true"], #rail[data-rola="true"] {
+#lista-comodos[data-rola="true"], #rail[data-rola="true"] {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-t, 0px), #000 calc(100% - var(--fade-b, 0px)), transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0, #000 var(--fade-t, 0px), #000 calc(100% - var(--fade-b, 0px)), transparent 100%);
 }
 
 /* o sol não passa por trás do texto do resumo no celular */
 @media (max-width: 767px) { .hero-bg .disco { opacity: 0.3; } .hero-bg .astro circle:first-child { opacity: 0.45; } }
+
+/* contraste: o texto secundário do hero fica mais claro (o céu de dia deixava o branco a 50 % abaixo de 4,5:1) */
+.hero { --muted: rgba(241, 245, 249, 0.78); }
