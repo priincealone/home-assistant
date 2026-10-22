@@ -508,7 +508,6 @@ body[data-folha] { overflow: hidden; }
   .scene .ico { width: 36px; height: 36px; }
   .main { flex: 1 1 auto; min-height: 0; align-items: stretch; }
   .rooms { height: 100%; min-height: 0; overflow: hidden; }
-  .busca { position: static; flex: none; }
   .lista-comodos { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
   .rooms-nav { position: static; height: 100%; min-height: 0; max-height: none; }
   .rooms-nav .rail { max-height: 100%; gap: 2px; padding: 2px 5px; }
@@ -521,21 +520,10 @@ body[data-folha] { overflow: hidden; }
   .rooms-nav .amb-titulo { display: none; }
 }
 
-/* ================= Rodada 8: busca, favoritos, aviso com desfazer, dicas de rolagem ================= */
-.sr { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+/* ================= Rodada 8: favoritos, aviso com desfazer, dicas de rolagem ================= */
+
 .rooms { gap: 0; }
 .lista-comodos { display: flex; flex-direction: column; gap: 28px; touch-action: pan-y; }
-.busca { position: sticky; top: 0; z-index: 3; display: flex; align-items: center; margin-bottom: 14px; padding-top: env(safe-area-inset-top); }
-.busca-ico { position: absolute; left: 14px; display: grid; place-items: center; color: var(--muted); pointer-events: none; }
-.busca input {
-  width: 100%; min-height: 48px; padding: 0 16px 0 44px; border-radius: 9999px; color: var(--text); font: inherit; font-size: 1rem;
-  background: rgba(17, 24, 39, 0.72); border: 1px solid var(--border-strong);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-  transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
-}
-.busca input::placeholder { color: var(--muted-2); }
-.busca input:focus { outline: none; border-color: rgba(251, 191, 36, 0.55); box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.14); }
-.vazio { padding: 32px 8px; text-align: center; color: var(--muted); overflow-wrap: anywhere; }
 .fav-ico { display: inline-flex; vertical-align: -1px; margin-left: 5px; color: var(--amber); }
 .room-head h2 .ic { vertical-align: -3px; color: var(--amber); margin-right: 4px; }
 

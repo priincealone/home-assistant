@@ -1,6 +1,6 @@
 // Testes do painel paralelo (Node puro, sem navegador e sem rede). Rodar: node --test dashboard-lab/tests/
 // Carrega icons.js e app.js num contexto `vm` com um DOM de mentira e exercita a lógica de verdade:
-// resumo, cenas, desfazer, offline, busca, favoritos, subtítulos e o contrato entre HTML, CSS e JS.
+// resumo, cenas, desfazer, offline, favoritos, subtítulos e o contrato entre HTML, CSS e JS.
 import test from "node:test";
 import assert from "node:assert/strict";
 import vm from "node:vm";
@@ -12,7 +12,7 @@ const RAIZ = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ler = (f) => readFileSync(join(RAIZ, f), "utf8");
 const APP = ler("app.js"), ICONES = ler("icons.js"), HTML = ler("index.html"), CSS = ler("styles.css");
 
-function criaAmbiente(busca = "?net=online") {
+function criaAmbiente(consulta = "?net=online") {
   const els = new Map();
   const el = (sel) => {
     if (!els.has(sel)) {
@@ -29,7 +29,7 @@ function criaAmbiente(busca = "?net=online") {
   const body = el("body"), docEl = el("html");
   const ctx = {
     console, URLSearchParams, Date, Math, JSON, Map, Set, Array, Object, String, Number, Promise,
-    location: { search: busca },
+    location: { search: consulta },
     localStorage: { getItem: (k) => (armazenamento.has(k) ? armazenamento.get(k) : null), setItem: (k, v) => armazenamento.set(k, String(v)) },
     navigator: {}, performance: { now: () => 0 },
     getComputedStyle: () => ({ getPropertyValue: () => "180", overflowY: "visible" }),
@@ -148,18 +148,6 @@ test("aparelho indisponível nunca aparece como desligado, nem entra nas contage
   assert.ok(html.includes("Indisponível"));
   assert.ok(!html.includes("Desligado"));
   assert.equal(a.v(`acionaveis("luca").some((d) => d.id === "t1")`), false);
-});
-
-test("busca: ignora acentos e maiúsculas, mostra só o que casa e avisa quando não há resultado", () => {
-  const a = criaAmbiente();
-  a.v(`S.busca = "ÁREA gourmet"; renderComodos()`);
-  const html = a.el("#lista-comodos").innerHTML;
-  assert.ok(html.includes('aria-label="Área Gourmet"'));
-  assert.ok(!html.includes('aria-label="Sala de estar"'));
-  a.v(`S.busca = "xyzw"; renderComodos()`);
-  assert.match(a.el("#lista-comodos").innerHTML, /Nenhum aparelho encontrado/);
-  a.v(`S.busca = "led"; renderComodos()`);
-  assert.equal((a.el("#lista-comodos").innerHTML.match(/data-dev="/g) || []).length, 4);   // Led (Luca), Led escritório, Led (Gourmet) e Tomada do Led
 });
 
 test("favoritos: aparecem em seção própria e persistem no armazenamento local", () => {

@@ -60,13 +60,12 @@ const CENAS = [
 /* ---------- Estado da tela ---------- */
 const URL_P = new URLSearchParams(location.search);
 const S = {
-  filtro: "todos", cena: null, aba: "casa", busca: "",
+  filtro: "todos", cena: null, aba: "casa",
   net: ["online", "offline", "carregando", "sincronizando"].includes(URL_P.get("net")) ? URL_P.get("net") : "carregando",
   hora: URL_P.has("hora") && Number.isFinite(+URL_P.get("hora")) ? Math.min(23.99, Math.max(0, +URL_P.get("hora"))) : null,
 };
 const $ = (sel) => document.querySelector(sel);
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const norm = (t) => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const travado = () => S.net === "offline" || S.net === "carregando";
 
 const agora = () => {
@@ -232,13 +231,13 @@ function tileHtml(chave, d) {
     <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div>${ajIco}</button>`;
 }
 
-function secaoHtml(s, entradas, sub) {
+function secaoHtml(s, entradas) {
   const itens = acionaveis(s.id);
   const n = itens.filter((d) => d.on).length;
-  const acao = sub !== undefined || itens.length === 0 ? "" : n === 0
+  const acao = itens.length === 0 ? "" : n === 0
     ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}>Acender tudo</button>`
     : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}>Apagar tudo</button>`;
-  const resumo = sub !== undefined ? sub : `${s.t}° · ${n} de ${itens.length} ligados`;
+  const resumo = `${s.t}° · ${n} de ${itens.length} ligados`;
   return `<section aria-label="${esc(s.nome)}">
     <div class="room-head"><div><h2>${esc(s.nome)}</h2><p class="muted num">${resumo}</p></div>${acao}</div>
     <div class="devs">${entradas.map(([k, d]) => tileHtml(k, d)).join("")}</div></section>`;
@@ -250,16 +249,6 @@ function renderComodos() {
     alvo.innerHTML = [0, 1].map(() => `<section aria-hidden="true">
       <div class="room-head"><div><div class="sk-l w120"></div><div class="sk-l w60"></div></div></div>
       <div class="devs">${skTile.repeat(4)}</div></section>`).join("");
-    return;
-  }
-  const q = norm(S.busca.trim());
-  if (q) {
-    const secoes = SALAS.map((s) => {
-      const todas = [...estado.entries()].filter(([, d]) => d.sala === s.id);
-      const achadas = norm(s.nome).includes(q) ? todas : todas.filter(([, d]) => norm(d.nome).includes(q));
-      return achadas.length ? secaoHtml(s, achadas, `${achadas.length} ${achadas.length === 1 ? "resultado" : "resultados"}`) : "";
-    }).join("");
-    alvo.innerHTML = secoes || `<p class="vazio" role="status">Nenhum aparelho encontrado para “${esc(S.busca.trim())}”.</p>`;
     return;
   }
   const lista = SALAS.filter((s) => S.filtro === "todos" || s.id === S.filtro);
@@ -538,14 +527,7 @@ document.addEventListener("keydown", (ev) => {
 
 
 
-/* ---------- Busca ---------- */
-$(".busca-ico").innerHTML = ic("busca", 20);
-$("#busca-in").addEventListener("input", (ev) => { S.busca = ev.target.value; renderComodos(); dicasRolagem(); });
-$("#busca-in").addEventListener("keydown", (ev) => {
-  if (ev.key === "Escape" && ev.target.value) { ev.preventDefault(); ev.target.value = ""; S.busca = ""; renderComodos(); dicasRolagem(); }
-});
-
-/* ---------- Deslizar entre ambientes (celular, só toque; a busca ativa desliga o gesto) ---------- */
+/* ---------- Deslizar entre ambientes (celular, só toque) ---------- */
 const ORDEM = () => ["todos", ...SALAS.map((s) => s.id)];
 let sw0 = null;
 function trocaAmbiente(dir) {
@@ -567,7 +549,7 @@ document.addEventListener("pointerdown", (ev) => {
 document.addEventListener("pointerup", (ev) => {
   if (!sw0 || ev.pointerId !== sw0.id) return;
   const dx = ev.clientX - sw0.x, dy = ev.clientY - sw0.y; sw0 = null;
-  if (folhaChave || bloqueioClique || S.busca || window.innerWidth >= 768 || S.aba !== "casa") return;
+  if (folhaChave || bloqueioClique || window.innerWidth >= 768 || S.aba !== "casa") return;
   if (Math.abs(dx) < 64 || Math.abs(dx) < 1.6 * Math.abs(dy)) return;
   trocaAmbiente(dx < 0 ? 1 : -1);
 });

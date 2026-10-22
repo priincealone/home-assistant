@@ -103,7 +103,7 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 
 **Experiência**
 - **Aviso com Desfazer** (5 s) ao ativar uma cena ou usar "Apagar/Acender tudo"; desfazer restaura o estado anterior exato (inclusive a cena ativa).
-- **Busca** de aparelho ou ambiente (sem acento e sem diferença de maiúsculas), fixa no topo da coluna central; sem resultado mostra mensagem; `Esc` limpa.
+- ~~Busca de aparelho ou ambiente~~ **removida a pedido do André** (21/10/2026, "não se faz necessário neste caso"). Não voltar a propor sem pedido.
 - **Favoritos**: interruptor "Favorito" na folha de **todos** os aparelhos acionáveis (a folha agora existe também para tomadas e console, com "Ligado" e "Favorito"); seção "Favoritos" no topo de "Todos"; estrela no cartão; persistido em `localStorage` (com `try/catch`).
 - **Resumo do cômodo**: temperatura simulada + "x de y ligados".
 - **Sensores com tempo**: "Aberta · há 12 min", "Sem movimento · há 41 min" (atualizam sozinhos, sem recriar botões).
