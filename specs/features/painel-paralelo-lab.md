@@ -92,6 +92,25 @@ Tudo simulado em memória (`estado`); nada fala com o HA. Toque curto continua l
 - **Casca de app** entre 768 e 1400 px de largura (altura ≥ 520 px): a página não rola. Saudação, resumo e as 5 cenas ficam fixos no topo (cenas em uma linha, sem o título); abaixo, três colunas ocupam a altura que sobra. **Só a coluna central rola** (barra fina, `overscroll-behavior: contain`). Rail (≤ 1179 px) ou lista de Ambientes (1180–1400 px) e Segurança ficam fixos e se ajustam; as 2 câmeras encolhem mantendo 16:9 até o mínimo de 48 px.
 - Exceção: abaixo de ~640 px de altura com rail (ex.: 1024×600) o rail rola por dentro, pois 10 alvos de 44 px não cabem. Acima de 1400 px (desktop) e abaixo de 768 px (celular) nada mudou.
 
+## Rodada 8 — pendências, experiência e testes (21/10/2026)
+**Pendências fechadas**
+- Interruptores do Banheiro não têm mais slider de brilho (`semDimmer`); o subtítulo deles nunca mostra "%".
+- Se a conexão cai com a folha aberta, ao fechar o foco vai para a seção do cômodo (nunca para o `body`).
+- **Dica de rolagem** sem barra: máscara de esmaecido (24 px no topo, 28 px na base) só nas bordas que têm mais conteúdo, aplicada apenas a contêineres que rolam (centro no tablet e rail), para não cortar o brilho dos cartões onde não há rolagem.
+- O disco do sol/lua fica mais fraco no celular (não compete com o texto do resumo).
+- Aspirador: a bateria desce 1 ponto a cada 5 s limpando (volta à base sozinho em ≤ 20 %) e recarrega 1 ponto a cada 5 s na base. Iniciar/Pausar não fixam mais 87 %. **Sem mapa**, por decisão do André.
+- Sobre 767/768/1179 px exatos: a falha só aparecia em iframes de teste (largura fracionária pelo zoom do navegador); não é problema de aparelho real. Mantido como nota.
+
+**Experiência**
+- **Aviso com Desfazer** (5 s) ao ativar uma cena ou usar "Apagar/Acender tudo"; desfazer restaura o estado anterior exato (inclusive a cena ativa).
+- **Busca** de aparelho ou ambiente (sem acento e sem diferença de maiúsculas), fixa no topo da coluna central; sem resultado mostra mensagem; `Esc` limpa.
+- **Favoritos**: interruptor "Favorito" na folha de **todos** os aparelhos acionáveis (a folha agora existe também para tomadas e console, com "Ligado" e "Favorito"); seção "Favoritos" no topo de "Todos"; estrela no cartão; persistido em `localStorage` (com `try/catch`).
+- **Resumo do cômodo**: temperatura simulada + "x de y ligados".
+- **Sensores com tempo**: "Aberta · há 12 min", "Sem movimento · há 41 min" (atualizam sozinhos, sem recriar botões).
+- **Deslizar entre ambientes no celular** (só toque, ≥ 64 px e predominantemente horizontal; desligado com busca ativa, folha aberta ou fora da aba Casa); o rail acompanha.
+
+**Testes** (`node --test dashboard-lab/tests/lab.test.mjs`, Node puro, 17 verificações, sem navegador e sem rede): carrega `icons.js` e `app.js` num contexto `vm` com DOM de mentira. Cobrem resumo, estado desconhecido ≠ 0, cenas (só aparelhos existentes; Cinema; Boa noite + Desfazer), "Apagar tudo", offline/carregando recusando comando, subtítulos, indisponível ≠ desligado, busca, favoritos, folha, bateria do aspirador, contrato HTML×JS×ícones e regras do design (sem rede, sem `transition: all`, zoom bloqueado, sem barras). Mutação de teste: quebrar a trava offline e o dimmer faz 2 testes falharem.
+
 ## Critérios de aceite
 - Sem rolagem horizontal de 320 a 1920 px; 3 colunas ≥ 1180 px, 2 colunas 768–1179, 1 coluna + abas < 768.
 - Texto a 150 % sem corte ou sobreposição.

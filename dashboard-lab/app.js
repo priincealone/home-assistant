@@ -9,39 +9,40 @@ function ic(nome, tam = 20, ativo = false) {
 }
 
 /* ---------- Dados simulados (nomes vêm do protótipo Lovable; não é o contrato lib/rooms.ts) ---------- */
-// [id, nome, tipo, ligado, subtítulo ligado, texto ok, texto alerta, indisponível]
+// [id, nome, tipo, ligado, subtítulo ligado, texto ok, texto alerta, indisponível, sem dimmer, minutos desde a última mudança (sensores)]
 const SALAS = [
-  { id: "sala", icone: "couch", nome: "Sala de estar", itens: [
+  { id: "sala", icone: "couch", nome: "Sala de estar", t: 26, itens: [
     ["luz", "Luz da sala", "light", 1], ["vent", "Ventilador", "fan", 0], ["painel", "Painel", "light", 0],
     ["tv", "TV Samsung 65\"", "tv", 1, "Netflix"], ["ps5", "PlayStation 5", "console", 0], ["ventps5", "Ventilação PS5", "plug", 0]] },
-  { id: "quarto", icone: "bed", nome: "Quarto", itens: [
-    ["luz", "Luz do quarto", "light", 0], ["vent", "Ventilador", "fan", 1], ["porta", "Porta", "door", 0, null, "Fechada", "Aberta"]] },
-  { id: "luca", icone: "baby", nome: "Quarto Luca", itens: [
+  { id: "quarto", icone: "bed", nome: "Quarto", t: 25, itens: [
+    ["luz", "Luz do quarto", "light", 0], ["vent", "Ventilador", "fan", 1], ["porta", "Porta", "door", 0, null, "Fechada", "Aberta", 0, 0, 95]] },
+  { id: "luca", icone: "baby", nome: "Quarto Luca", t: 25, itens: [
     ["luz", "Luz", "light", 0], ["yeelink", "Luminária Yeelink", "light", 1], ["led", "Led", "led", 0],
     ["tledled", "Tomada do Led", "plug", 0], ["t1", "Tomada 1", "plug", 0, null, null, null, 1], ["t2", "Tomada 2", "plug", 0]] },
-  { id: "closet", icone: "shirt", nome: "Closet", itens: [
+  { id: "closet", icone: "shirt", nome: "Closet", t: 26, itens: [
     ["luz", "Luz", "light", 0], ["led", "Led escritório", "led", 1], ["pc", "Computador", "plug", 1],
     ["t2", "Tomada 2", "plug", 0], ["aspirador", "Aspirador Dreame", "vacuum", null, "Na base · 100%"]] },
-  { id: "cozinha", icone: "pot", nome: "Cozinha & Copa", itens: [
+  { id: "cozinha", icone: "pot", nome: "Cozinha & Copa", t: 27, itens: [
     ["cozinha", "Cozinha", "light", 0], ["copa", "Copa", "light", 0]] },
-  { id: "lavanderia", icone: "wash", nome: "Lavanderia", itens: [
-    ["luz", "Luz", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento"], ["porta", "Porta", "door", 1, null, "Fechada", "Aberta"]] },
-  { id: "gourmet", icone: "fire", nome: "Área Gourmet", itens: [
+  { id: "lavanderia", icone: "wash", nome: "Lavanderia", t: 27, itens: [
+    ["luz", "Luz", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento", 0, 0, 8], ["porta", "Porta", "door", 1, null, "Fechada", "Aberta", 0, 0, 12]] },
+  { id: "gourmet", icone: "fire", nome: "Área Gourmet", t: 24, itens: [
     ["plafon", "Plafon", "light", 0], ["pendente", "Pendente", "light", 0], ["led", "Led", "led", 1],
-    ["spots", "Spots", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento"]] },
-  { id: "circulacao", icone: "steps", nome: "Circulação", itens: [
+    ["spots", "Spots", "light", 0], ["mov", "Movimento", "motion", 0, null, "Sem movimento", "Movimento", 0, 0, 41]] },
+  { id: "circulacao", icone: "steps", nome: "Circulação", t: 24, itens: [
     ["muro", "Muro", "light", 1], ["corredor", "Corredor", "light", 0]] },
-  { id: "banheiro", icone: "bath", nome: "Banheiro", itens: [
-    ["i1", "Interruptor 1", "light", 0], ["i2", "Interruptor 2", "light", 0]] },
+  { id: "banheiro", icone: "bath", nome: "Banheiro", t: 26, itens: [
+    ["i1", "Interruptor 1", "light", 0, null, null, null, 0, 1], ["i2", "Interruptor 2", "light", 0, null, null, null, 0, 1]] },
 ];
 
 const SENSORES = new Set(["door", "motion"]);
 const estado = new Map();
 for (const s of SALAS) {
-  for (const [id, nome, tipo, on, sub, txtOk, txtAlerta, indisp] of s.itens) {
+  for (const [id, nome, tipo, on, sub, txtOk, txtAlerta, indisp, semDimmer, min] of s.itens) {
     estado.set(`${s.id}.${id}`, {
       sala: s.id, id, nome, tipo, on: !!on, subOn: tipo === "tv" || tipo === "vacuum" ? null : sub || null, txtOk, txtAlerta, indisp: !!indisp,
-      sensor: SENSORES.has(tipo), info: tipo === "vacuum",
+      sensor: SENSORES.has(tipo), info: tipo === "vacuum", semDimmer: !!semDimmer, fav: false,
+      desde: min === undefined ? null : Date.now() - min * 60000,
       // ajustes simulados da folha (rodada 4)
       bri: 100, temp: 3500, cor: null, vel: 2, osc: false, vol: 30, mudo: false, app: sub || "Netflix", suc: 2, vst: "base", bat: 100,
     });
@@ -59,12 +60,13 @@ const CENAS = [
 /* ---------- Estado da tela ---------- */
 const URL_P = new URLSearchParams(location.search);
 const S = {
-  filtro: "todos", cena: null, aba: "casa",
+  filtro: "todos", cena: null, aba: "casa", busca: "",
   net: ["online", "offline", "carregando", "sincronizando"].includes(URL_P.get("net")) ? URL_P.get("net") : "carregando",
   hora: URL_P.has("hora") && Number.isFinite(+URL_P.get("hora")) ? Math.min(23.99, Math.max(0, +URL_P.get("hora"))) : null,
 };
 const $ = (sel) => document.querySelector(sel);
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const norm = (t) => String(t).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const travado = () => S.net === "offline" || S.net === "carregando";
 
 const agora = () => {
@@ -72,19 +74,30 @@ const agora = () => {
   if (S.hora !== null) { d.setHours(Math.floor(S.hora), Math.round((S.hora % 1) * 60), 0, 0); }
   return d;
 };
+const FAV_KEY = "lab.favoritos";
+function carregaFavs() {
+  try { const l = JSON.parse(localStorage.getItem(FAV_KEY) || "[]"); if (Array.isArray(l)) l.forEach((k) => { if (estado.has(k)) estado.get(k).fav = true; }); } catch { /* sem armazenamento */ }
+}
+function salvaFavs() {
+  try { localStorage.setItem(FAV_KEY, JSON.stringify([...estado].filter(([, d]) => d.fav).map(([k]) => k))); } catch { /* sem armazenamento */ }
+}
 const acionaveis = (salaId) => [...estado.values()].filter((d) => d.sala === salaId && !d.sensor && !d.info && !d.indisp);
 const ligados = (salaId) => acionaveis(salaId).filter((d) => d.on).length;
+const tempoDesde = (ts) => {
+  const m = Math.max(0, Math.floor((Date.now() - ts) / 60000));
+  return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`;
+};
 const subtitulo = (d) => {
   if (d.indisp) return "Indisponível";
-  if (d.sensor) return d.on ? d.txtAlerta : d.txtOk;
+  if (d.sensor) return `${d.on ? d.txtAlerta : d.txtOk}${d.desde ? ` · ${tempoDesde(d.desde)}` : ""}`;
   if (d.tipo === "vacuum") return { base: `Na base · ${d.bat}%`, limpando: `Aspirando · ${d.bat}%`, pausado: "Pausado" }[d.vst];
   if (!d.on) return "Desligado";
-  if (d.tipo === "light" || d.tipo === "led") return d.bri < 100 ? `Ligado · ${d.bri}%` : "Ligado";
+  if (d.tipo === "light" || d.tipo === "led") return !d.semDimmer && d.bri < 100 ? `Ligado · ${d.bri}%` : "Ligado";
   if (d.tipo === "fan") return `Velocidade ${d.vel}${d.osc ? " · Oscilando" : ""}`;
   if (d.tipo === "tv") return d.app;
   return d.subOn || "Ligado";
 };
-const temAjustes = (d) => !d.sensor && !d.indisp && ["light", "led", "fan", "tv", "vacuum"].includes(d.tipo);
+const temAjustes = (d) => !d.sensor && !d.indisp;   // toda a folha tem ao menos "Ligado" e "Favorito"
 const DICA = "Segure para ajustar";
 
 /* ---------- Céu do hero: reage à hora do dia ---------- */
@@ -200,44 +213,62 @@ function tileHtml(chave, d) {
   if (d.indisp) {
     return `<div class="dev sensor glass" data-tipo="${d.tipo}" data-indisp="true">
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20)}${selo}</span></div>
-      <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></div>`;
+      <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div></div>`;
   }
   if (d.tipo === "vacuum") {
     const ativo = d.vst === "limpando";
     return `<button type="button" class="dev glass" data-dev="${chave}" data-tipo="vacuum" data-ativo="${ativo}" aria-haspopup="dialog" ${off ? 'data-offline="true" disabled' : ajAttr}>
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20, ativo)}${selo}</span></div>
-      <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div>${ajIco}</button>`;
+      <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div>${ajIco}</button>`;
   }
   if (d.sensor || d.info) {
     const alerta = d.sensor && d.on;
     return `<div class="dev sensor glass" data-tipo="${d.tipo}" data-alerta="${alerta}" ${off ? 'data-offline="true"' : ""}>
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20, alerta)}${selo}</span>${d.sensor ? '<i class="dot-state"></i>' : ""}</div>
-      <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div></div>`;
+      <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div></div>`;
   }
   return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ajAttr}>
     <div class="dev-top"><span class="chip">${ic(d.tipo, 20, d.on)}${selo}</span><span class="sw" aria-hidden="true"></span></div>
-    <div><div class="name">${esc(d.nome)}</div><div class="sub">${sub}</div></div>${ajIco}</button>`;
+    <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div>${ajIco}</button>`;
+}
+
+function secaoHtml(s, entradas, sub) {
+  const itens = acionaveis(s.id);
+  const n = itens.filter((d) => d.on).length;
+  const acao = sub !== undefined || itens.length === 0 ? "" : n === 0
+    ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}>Acender tudo</button>`
+    : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}>Apagar tudo</button>`;
+  const resumo = sub !== undefined ? sub : `${s.t}° · ${n} de ${itens.length} ligados`;
+  return `<section aria-label="${esc(s.nome)}">
+    <div class="room-head"><div><h2>${esc(s.nome)}</h2><p class="muted num">${resumo}</p></div>${acao}</div>
+    <div class="devs">${entradas.map(([k, d]) => tileHtml(k, d)).join("")}</div></section>`;
 }
 
 function renderComodos() {
+  const alvo = $("#lista-comodos");
   if (S.net === "carregando") {
-    $("#secao-casa").innerHTML = [0, 1].map(() => `<section aria-hidden="true">
+    alvo.innerHTML = [0, 1].map(() => `<section aria-hidden="true">
       <div class="room-head"><div><div class="sk-l w120"></div><div class="sk-l w60"></div></div></div>
       <div class="devs">${skTile.repeat(4)}</div></section>`).join("");
     return;
   }
+  const q = norm(S.busca.trim());
+  if (q) {
+    const secoes = SALAS.map((s) => {
+      const todas = [...estado.entries()].filter(([, d]) => d.sala === s.id);
+      const achadas = norm(s.nome).includes(q) ? todas : todas.filter(([, d]) => norm(d.nome).includes(q));
+      return achadas.length ? secaoHtml(s, achadas, `${achadas.length} ${achadas.length === 1 ? "resultado" : "resultados"}`) : "";
+    }).join("");
+    alvo.innerHTML = secoes || `<p class="vazio" role="status">Nenhum aparelho encontrado para “${esc(S.busca.trim())}”.</p>`;
+    return;
+  }
   const lista = SALAS.filter((s) => S.filtro === "todos" || s.id === S.filtro);
-  $("#secao-casa").innerHTML = lista.map((s) => {
-    const itens = acionaveis(s.id);
-    const n = itens.filter((d) => d.on).length;
-    const acao = itens.length === 0 ? "" : n === 0
-      ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}>Acender tudo</button>`
-      : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}>Apagar tudo</button>`;
-    const tiles = [...estado.entries()].filter(([, d]) => d.sala === s.id).map(([k, d]) => tileHtml(k, d)).join("");
-    return `<section aria-label="${esc(s.nome)}">
-      <div class="room-head"><div><h2>${esc(s.nome)}</h2><p class="muted num">${n} de ${itens.length} ligados</p></div>${acao}</div>
-      <div class="devs">${tiles}</div></section>`;
-  }).join("");
+  const favs = [...estado.entries()].filter(([, d]) => d.fav);
+  const favAc = favs.filter(([, d]) => !d.sensor && !d.info);
+  const favHtml = S.filtro === "todos" && favs.length
+    ? `<section aria-label="Favoritos"><div class="room-head"><div><h2>${ic("star", 20, true)} Favoritos</h2><p class="muted num">${favAc.filter(([, d]) => d.on).length} de ${favAc.length} ligados</p></div></div>
+      <div class="devs">${favs.map(([k, d]) => tileHtml(k, d)).join("")}</div></section>` : "";
+  alvo.innerHTML = favHtml + lista.map((s) => secaoHtml(s, [...estado.entries()].filter(([, d]) => d.sala === s.id))).join("");
 }
 
 function renderCameras() {
@@ -260,18 +291,36 @@ function renderAbas() {
 }
 
 function renderTudo() {
-  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha();
+  renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha(); dicasRolagem();
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
 const vibrar = () => { try { navigator.vibrate && navigator.vibrate(12); } catch { /* sem suporte */ } };
 let timerNet = null;
 
+/* aviso curto com "Desfazer" (cenas e "Apagar/Acender tudo") */
+let toastT = null, toastUndo = null;
+const instantaneo = () => ({ ons: new Map([...estado].map(([k, d]) => [k, d.on])), cena: S.cena });
+const restaura = (s) => { s.ons.forEach((v, k) => { estado.get(k).on = v; }); S.cena = s.cena; };
+function mostraToast(msg, desfazer) {
+  const t = $("#toast");
+  toastUndo = desfazer || null;
+  t.innerHTML = `<span class="toast-t">${esc(msg)}</span>${desfazer ? `<button type="button" class="toast-b" data-desfazer>${ic("undo", 16)}<span>Desfazer</span></button>` : ""}`;
+  t.hidden = false; void t.offsetWidth; t.dataset.estado = "aberto";
+  clearTimeout(toastT); toastT = setTimeout(escondeToast, 5000);
+}
+function escondeToast() {
+  const t = $("#toast");
+  clearTimeout(toastT); toastUndo = null; t.dataset.estado = "saindo";
+  setTimeout(() => { if (t.dataset.estado === "saindo") { t.hidden = true; t.innerHTML = ""; t.dataset.estado = ""; } }, durFast());
+}
+
 let bloqueioClique = false;   // depois de um toque longo bem-sucedido, o clique que o encerra não alterna o aparelho
 document.addEventListener("click", (ev) => {
   if (bloqueioClique && ev.target.closest(".dev")) { ev.preventDefault(); return; }
-  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn]");
+  const alvo = ev.target.closest("[data-dev],[data-todos],[data-cena],[data-amb],[data-rail],[data-tab-btn],[data-desfazer]");
   if (!alvo) return;
+  if (alvo.hasAttribute("data-desfazer")) { const u = toastUndo; escondeToast(); if (u) { u(); renderTudo(); } return; }
   if (alvo.dataset.dev) {
     if (travado()) return;
     const d = estado.get(alvo.dataset.dev);
@@ -279,13 +328,16 @@ document.addEventListener("click", (ev) => {
     d.on = !d.on; S.cena = null; vibrar();
   } else if (alvo.dataset.todos) {
     if (travado()) return;
-    acionaveis(alvo.dataset.todos).forEach((d) => { d.on = alvo.dataset.valor === "1"; }); S.cena = null; vibrar();
+    const antes = instantaneo(), ligar = alvo.dataset.valor === "1", nomeSala = SALAS.find((s) => s.id === alvo.dataset.todos).nome;
+    acionaveis(alvo.dataset.todos).forEach((d) => { d.on = ligar; }); S.cena = null; vibrar();
+    mostraToast(`${nomeSala}: ${ligar ? "tudo aceso" : "tudo apagado"}`, () => restaura(antes));
   } else if (alvo.dataset.cena) {
     if (travado()) return;
-    const c = CENAS.find((x) => x.id === alvo.dataset.cena);
+    const c = CENAS.find((x) => x.id === alvo.dataset.cena), antes = instantaneo();
     estado.forEach((d) => { if (!d.sensor && !d.info && !d.indisp) d.on = false; });
     c.liga.forEach((k) => { estado.get(k).on = true; });
     S.cena = c.id; vibrar();
+    mostraToast(`Cena ${c.nome} ativada`, () => restaura(antes));
   } else if (alvo.dataset.amb || alvo.dataset.rail) {
     S.filtro = alvo.dataset.amb || alvo.dataset.rail;
   } else if (alvo.dataset.tabBtn) {
@@ -329,7 +381,7 @@ function montaFolha(d) {
       <div class="segs segs-vac" role="group" aria-labelledby="f-vac-r">${Object.entries(VAC).map(([k, [i, t]]) => `<button type="button" class="segbtn segbtn-v" data-vac="${k}" aria-pressed="false">${ic(i, 20)}<span>${t}</span></button>`).join("")}</div></div>` + seg("suc");
   } else {
     h += sw("on", "Ligado");
-    if (d.tipo === "light" || d.tipo === "led") h += slider("bri");
+    if ((d.tipo === "light" || d.tipo === "led") && !d.semDimmer) h += slider("bri");
     if (d.tipo === "led" || ["sala.painel", "luca.yeelink", "closet.led", "gourmet.led"].includes(`${d.sala}.${d.id}`)) h += slider("temp");
     if (d.tipo === "led") h += `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-cor-r">Cor</span></div>
       <div class="cores" role="group" aria-labelledby="f-cor-r">${CORES.map(([k, n, c]) => `<button type="button" class="cor" data-cor="${k}" style="--c:${c}" aria-pressed="false" aria-label="${n}"></button>`).join("")}</div></div>`;
@@ -338,6 +390,7 @@ function montaFolha(d) {
       `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-app-r">Entrada</span></div>
       <div class="segs segs-app" role="group" aria-labelledby="f-app-r">${APPS.map((a) => `<button type="button" class="segbtn" data-app="${esc(a)}" aria-pressed="false">${esc(a)}</button>`).join("")}</div></div>`;
   }
+  h += sw("fav", "Favorito");
   const sala = SALAS.find((x) => x.id === d.sala).nome;
   return `<div class="folha-fundo" data-folha-fechar></div>
     <div class="folha-painel glass" role="dialog" aria-modal="true" aria-labelledby="folha-t folha-c" tabindex="-1" data-tom="${d.tipo === "tv" || d.tipo === "vacuum" ? "ciano" : "ambar"}">
@@ -381,6 +434,7 @@ function abrirFolha(chave) {
   if (folhaChave || folhaFechando || !d || !temAjustes(d) || travado()) return;
   const f = $("#folha");
   folhaChave = chave; folhaAbertaEm = performance.now();
+  if (toastUndo) escondeToast();
   f.innerHTML = montaFolha(d);
   f.hidden = false; f.dataset.estado = "entrando";
   document.querySelector(".wrap").inert = true; document.querySelector(".tabbar").inert = true;
@@ -402,12 +456,17 @@ function fecharFolha() {
     folhaChave = null; folhaFechando = false;
     const origem = document.querySelector(`[data-dev="${chave}"]`);
     if (origem && !origem.disabled) origem.focus({ preventScroll: true });
+    else {   // cartão desabilitado (ex.: a conexão caiu): o foco vai para a seção do cômodo, nunca para o body
+      const nome = SALAS.find((x) => x.id === estado.get(chave).sala).nome;
+      const sec = [...document.querySelectorAll("#lista-comodos section")].find((s) => s.getAttribute("aria-label") === nome) || $("#secao-casa");
+      sec.tabIndex = -1; sec.focus({ preventScroll: true });
+    }
   }, durFast());
 }
 
 function aplicarFolha(fn) {
   if (!folhaChave || travado()) return;
-  fn(estado.get(folhaChave)); S.cena = null;
+  fn(estado.get(folhaChave)); S.cena = null; salvaFavs();
   renderTudo();                              // também chama atualizaFolha(); a folha em si não é recriada
 }
 
@@ -427,7 +486,7 @@ $("#folha").addEventListener("click", (ev) => {
   else if (dt.seg) aplicarFolha((d) => SEGS[dt.seg].set(d, +dt.v));
   else if (dt.app) aplicarFolha((d) => { d.app = dt.app; });
   else if (dt.cor) aplicarFolha((d) => { d.cor = dt.cor; d.on = true; });
-  else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; d.bat = dt.vac === "base" ? 100 : 87; });
+  else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; });
 });
 $("#folha").addEventListener("keydown", (ev) => {
   if (ev.key === "Escape") { ev.preventDefault(); fecharFolha(); return; }
@@ -479,6 +538,75 @@ document.addEventListener("keydown", (ev) => {
 
 
 
+/* ---------- Busca ---------- */
+$(".busca-ico").innerHTML = ic("busca", 20);
+$("#busca-in").addEventListener("input", (ev) => { S.busca = ev.target.value; renderComodos(); dicasRolagem(); });
+$("#busca-in").addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape" && ev.target.value) { ev.preventDefault(); ev.target.value = ""; S.busca = ""; renderComodos(); dicasRolagem(); }
+});
+
+/* ---------- Deslizar entre ambientes (celular, só toque; a busca ativa desliga o gesto) ---------- */
+const ORDEM = () => ["todos", ...SALAS.map((s) => s.id)];
+let sw0 = null;
+function trocaAmbiente(dir) {
+  const ids = ORDEM(), i = ids.indexOf(S.filtro), j = i + dir;
+  if (j < 0 || j >= ids.length) return;
+  S.filtro = ids[j];
+  const lista = $("#lista-comodos");
+  lista.dataset.slide = dir > 0 ? "proximo" : "anterior";
+  renderTudo();
+  setTimeout(() => { delete lista.dataset.slide; }, 260);
+  const btn = document.querySelector(`[data-rail="${S.filtro}"]`);
+  if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: "nearest" });
+  window.scrollTo(0, 0);
+}
+document.addEventListener("pointerdown", (ev) => {
+  if (!ev.isPrimary || ev.pointerType !== "touch" || !ev.target.closest || !ev.target.closest("#lista-comodos")) return;
+  sw0 = { x: ev.clientX, y: ev.clientY, id: ev.pointerId };
+});
+document.addEventListener("pointerup", (ev) => {
+  if (!sw0 || ev.pointerId !== sw0.id) return;
+  const dx = ev.clientX - sw0.x, dy = ev.clientY - sw0.y; sw0 = null;
+  if (folhaChave || bloqueioClique || S.busca || window.innerWidth >= 768 || S.aba !== "casa") return;
+  if (Math.abs(dx) < 64 || Math.abs(dx) < 1.6 * Math.abs(dy)) return;
+  trocaAmbiente(dx < 0 ? 1 : -1);
+});
+document.addEventListener("pointercancel", () => { sw0 = null; });
+
+/* ---------- Dica de rolagem: esmaecido na borda que tem mais conteúdo (as barras ficam ocultas) ---------- */
+function dicasRolagem() {
+  ["#secao-casa", "#rail"].forEach((sel) => {
+    const el = $(sel);
+    if (!el || !el.style) return;
+    const rola = ["auto", "scroll"].includes(getComputedStyle(el).overflowY) && el.scrollHeight > el.clientHeight + 1;
+    el.dataset.rola = String(rola);
+    el.style.setProperty("--fade-t", rola && el.scrollTop > 4 ? "24px" : "0px");
+    el.style.setProperty("--fade-b", rola && el.scrollTop + el.clientHeight < el.scrollHeight - 4 ? "28px" : "0px");
+  });
+}
+["#secao-casa", "#rail"].forEach((sel) => $(sel).addEventListener("scroll", dicasRolagem, { passive: true }));
+window.addEventListener("resize", dicasRolagem);
+
+/* ---------- Simulação: bateria do aspirador e tempos dos sensores (só textos; não recria botões) ---------- */
+function atualizaTextos() {
+  document.querySelectorAll("[data-sub]").forEach((el) => {
+    const d = estado.get(el.dataset.sub), t = d && subtitulo(d);
+    if (t != null && el.textContent !== t) el.textContent = t;
+  });
+  atualizaFolha();
+}
+function tickSimulacao() {
+  let mudouEstado = false;
+  estado.forEach((d) => {
+    if (d.tipo !== "vacuum") return;
+    if (d.vst === "limpando") { d.bat = Math.max(15, d.bat - 1); if (d.bat <= 20) { d.vst = "base"; mudouEstado = true; } }
+    else if (d.vst === "base" && d.bat < 100) d.bat = Math.min(100, d.bat + 1);
+  });
+  if (mudouEstado) renderTudo(); else atualizaTextos();
+}
+setInterval(() => { if (S.net === "online" && !lp) tickSimulacao(); }, 5000);
+
+carregaFavs();
 desenharEstrelas();
 renderTudo();
 if (S.net === "carregando") timerNet = setTimeout(() => { S.net = "online"; renderTudo(); }, 1200);
