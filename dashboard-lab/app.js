@@ -199,6 +199,10 @@ function renderRail() {
     b.setAttribute("aria-current", String(ativo));
     const i = window.ICONES[b.dataset.icone] || window.ICONES.plug;
     b.querySelector("path").setAttribute("d", ativo ? i.f : i.r);
+    if (ativo) {   // mantém o ícone ativo à vista dentro do rail, sem mover a página
+      if (b.offsetTop < ul.scrollTop) ul.scrollTop = Math.max(0, b.offsetTop - 4);
+      else if (b.offsetTop + b.offsetHeight > ul.scrollTop + ul.clientHeight) ul.scrollTop = b.offsetTop + b.offsetHeight - ul.clientHeight + 4;
+    }
   });
 }
 
@@ -538,8 +542,6 @@ function trocaAmbiente(dir) {
   lista.dataset.slide = dir > 0 ? "proximo" : "anterior";
   renderTudo();
   setTimeout(() => { delete lista.dataset.slide; }, 260);
-  const btn = document.querySelector(`[data-rail="${S.filtro}"]`);
-  if (btn && btn.scrollIntoView) btn.scrollIntoView({ block: "nearest" });
   window.scrollTo(0, 0);
 }
 document.addEventListener("pointerdown", (ev) => {
