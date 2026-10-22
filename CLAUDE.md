@@ -19,6 +19,15 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
 
 **Automação nunca depende do painel.** Se a interface cair, a casa continua automatizada.
 
+### Os dois painéis (nomes oficiais, desde 21/10/2026)
+
+| Nome | Pasta | Porta | O que é |
+| :--- | :--- | :--- | :--- |
+| **Painel Primário** | `dashboard-app/` | 3002 | O painel real de hoje (Next.js, com dados reais do HA, todos os widgets). É o que comanda a casa. |
+| **Painel Secundário** | `dashboard-lab/` | 3011 | Painel paralelo de estudo (HTML/CSS/JS estático, **dados simulados**, nunca fala com o HA). Layout e comportamentos novos para testar em aparelhos reais. Spec: `specs/features/painel-paralelo-lab.md`. |
+
+Ao falar de "o painel", use sempre o nome. Regras do Painel Primário (§6–§7, §17) **não** se aplicam ao Secundário, mas a qualidade visual (`docs/UI-QUALITY-POLICY.md`) e a ausência de comandos físicos (§11) sim. O Secundário sobe sozinho com o Windows (tarefa `CasaPainelSecundarioAutoStart`, supervisor `dashboard-lab/iniciar_servidor_background.ps1`); teste: `node --test dashboard-lab/tests/lab.test.mjs`. A migração do Secundário para o Primário está em `specs/features/migracao-painel-lab.md` (rascunho; nada migrado).
+
 ---
 
 ## 2. Comandos de desenvolvimento

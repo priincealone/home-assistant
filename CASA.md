@@ -14,7 +14,8 @@ o raciocínio de cada decisão.
 | Peça | Onde |
 | --- | --- |
 | Home Assistant 2026.9 | container `homeassistant`, Docker Desktop (WSL2), porta 8123, config em `config/` |
-| Painel | `dashboard-app/`, porta 3002, git próprio |
+| Painel Primário | `dashboard-app/`, porta 3002, git próprio |
+| Painel Secundário | `dashboard-lab/`, porta 3011, dados simulados (estudo/teste em aparelhos), sobe com o Windows |
 | Acesso remoto | Tailscale |
 | IP do PC na LAN | `192.168.31.22` (DHCP — **precisa de reserva**) |
 
