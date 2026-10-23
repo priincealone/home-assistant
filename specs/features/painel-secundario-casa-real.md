@@ -1,6 +1,6 @@
 # Painel Secundário × casa real (integração com a Home Assistant)
 
-**Status:** fase A (somente leitura) autorizada pelo André em 22/10/2026 ("integre ele com a casa real"); **fase B (comandos) NÃO autorizada**: precisa de aprovação do plano abaixo (CLAUDE.md, alçada 2 + §11).
+**Status:** fase A (somente leitura) autorizada pelo André em 22/10/2026 ("integre ele com a casa real"); **fase B (comandos) autorizada em 22/10/2026 ("todos os comandos disponíveis")**; carregador pronto e interface implementada (§7).
 **Fase A: IMPLEMENTADA em 22/10/2026** (somente leitura; ver §6). Fase B continua sem implementação.
 **Contexto:** o Painel Secundário (`dashboard-lab/`) roda inteiro dentro da HA (`/local/painel-secundario/`, iframe de mesma origem) com dados simulados. Esta spec o liga à casa real sem criar rota nova no Painel Primário e **sem token**.
 
@@ -71,3 +71,18 @@ Fonte única: `dashboard-app/lib/rooms.ts` (`comodosCompletos`, o contrato canô
 **Como testar**: `node --test dashboard-lab/tests/*.test.mjs` (a partir da raiz; Node 22 não aceita a pasta como argumento). `contrato-registro.test.mjs` sai com código 3 sem `config/.storage` (ou `HA_STORAGE`). No navegador: abrir `/painel-secundario` na HA (somente olhar; nada de clicar em cartões) e comparar com `hass.states`; mensagens sintéticas por `iframe.contentWindow.postMessage({tipo:"casa-estados",...}, location.origin)`.
 
 **Em aberto**: aceite "≤ 2 s ao acender uma luz fisicamente" não verificado (exige acionar a casa); câmeras do DVR não estão na HA; decidir a fase B.
+
+## 7. Fase B — interface (22/10/2026, autorizada: "todos os comandos disponíveis")
+**Implementada no painel** (`casa-real.js`, `app.js`, `styles.css`, `index.html`); o carregador, `comandos-regras.json` e `comandos.json` não foram tocados. Protocolo conforme §4; erros do carregador viram mensagens em português (`mensagemErro`).
+| Dispositivo | Toque curto | Folha (só se a ação existe em `comandos.json` e o atributo de suporte existe) |
+| :-- | :-- | :-- |
+| Luzes / interruptor de luz | `ligar`/`desligar` | Ligado, brilho (`ajustar{brightness}` 1-255), temperatura (kelvin entre `min/max_color_temp_kelvin`), cor RGB (5 predefinidas; só com modo de cor) |
+| Tomadas, bloqueio, PC | `ligar`/`desligar` (PC e bloqueio com confirmação) | Ligado |
+| Ventiladores | `ligar`/`desligar` | Velocidade 1-3 (`velocidade{percentage}` 33/66/100), oscilar (se o atributo existe); direção não exposta |
+| TV | `ligar`/`desligar` (só ligada) | Ligado, volume, mudo (entidade da nuvem), entrada (`source_list` filtrada pelo padrão do carregador), 13 botões de controle remoto; desabilitados com a TV apagada |
+| PS5 | `ligar` (repouso) / `repouso` (confirmação) | Ligado |
+| Aspirador (cartão no Closet) | abre a folha | iniciar, pausar, voltar à base, parar, localizar, limpeza local; sucção Silencioso/Padrão/Forte/Turbo (`select`) |
+| Cenas | confirmação -> `executar` | n/a |
+| "Apagar/Acender tudo" | `comando-lote` só luzes/interruptor de luz do cômodo; Desfazer 5 s | n/a |
+**Segurança/comportamento**: otimista com trava de 5 s; nada de fila, reenvio ou comando ao reconectar; offline/carregando/indisponível/sem regra = desabilitado; painel nunca informa entity_id/serviço. **Kill-switch**: `?leitura=1` (painel ou página hospedeira) ou `comandos.json` ausente/inválido = tudo somente leitura. Testes: `dashboard-lab/tests/comandos.test.mjs` (30) + ajustes em `real.test.mjs`.
+**Não verificado / em aberto**: aceite físico do André (uma luz de teste, latência <= 2 s); celular real; leitor de tela. Trava de 5 s é curta para ligar TV/PS5 (podem confirmar depois dela; o estado real corrige a tela, mas o aviso "não confirmou" aparece). Rótulo do botão segue "Apagar/Acender tudo" com `title`/`aria-label` dizendo que são só as luzes.

@@ -14,6 +14,7 @@ const ler = (f) => readFileSync(join(RAIZ, f), "utf8");
 const APP = ler("app.js"), ICONES = ler("icons.js"), REAL_JS = ler("casa-real.js"), HTML = ler("index.html");
 const CARREGADOR = readFileSync(join(RAIZ, "..", "config", "www", "casa-painel-secundario.js"), "utf8");
 const CONTRATO = JSON.parse(ler("contrato.json"));
+const COMANDOS = JSON.parse(ler("comandos.json"));
 const json = (o) => JSON.stringify(o);
 
 /* ---------- Dublês de estado da HA ---------- */
@@ -449,9 +450,9 @@ test("simulado intacto: sem iframe da HA (ou com ?fonte=simulado) o app não usa
 });
 
 /* ---------- Ponte (conectar) com dublês ---------- */
-function ponte({ contratoOk = true } = {}) {
+function ponte({ contratoOk = true, regrasOk = true, buscaPai = "" } = {}) {
   const enviadas = [], ouvintes = [], relogios = [];
-  const pai = { postMessage: (m, o) => enviadas.push([plano(m), o]) };
+  const pai = { postMessage: (m, o) => enviadas.push([plano(m), o]), location: { search: buscaPai } };
   const janela = {
     parent: pai, location: { search: "?v=abc123", origin: "http://ha.local:8123" },
     addEventListener: (t, f) => { if (t === "message") ouvintes.push(f); },
@@ -459,8 +460,12 @@ function ponte({ contratoOk = true } = {}) {
   const chamadas = [];
   const ctx = {
     window: janela, URLSearchParams, JSON, Promise, Math, Date, Object, Array, String, Number, Map, Set,
-    fetch: (url, op) => { chamadas.push(url); return contratoOk ? Promise.resolve({ ok: true, json: () => Promise.resolve(CONTRATO) }) : Promise.resolve({ ok: false, status: 404 }); },
-    setTimeout: (f, ms) => { relogios.push([f, ms]); return 0; },
+    fetch: (url, op) => {
+      chamadas.push(url);
+      if (url.startsWith("comandos.json")) return regrasOk ? Promise.resolve({ ok: true, json: () => Promise.resolve(COMANDOS) }) : Promise.resolve({ ok: false, status: 404 });
+      return contratoOk ? Promise.resolve({ ok: true, json: () => Promise.resolve(CONTRATO) }) : Promise.resolve({ ok: false, status: 404 });
+    },
+    setTimeout: (f, ms) => { relogios.push([f, ms]); return 0; }, clearTimeout: () => {},
   };
   janela.window = janela; ctx.globalThis = ctx;
   vm.createContext(ctx); vm.runInContext(REAL_JS, ctx);
@@ -468,14 +473,14 @@ function ponte({ contratoOk = true } = {}) {
 }
 const espera = () => new Promise((r) => setImmediate(r));
 
-test("ponte: carrega só contrato.json?v=, monta a interface, avisa 'painel-pronto' UMA vez e repassa só mensagens do pai", async () => {
+test("ponte: carrega só contrato.json?v= e comandos.json?v=, monta a interface, avisa 'painel-pronto' UMA vez e repassa só mensagens do pai", async () => {
   const p = ponte();
   const log = [];
-  p.janela.CasaReal.conectar({ aoContrato: (c) => log.push(["contrato", c.comodos.length]), aoLote: (m) => log.push(["lote", m.completo]), aoSemDados: () => log.push(["semdados"]), aoFalha: () => log.push(["falha"]) });
+  p.janela.CasaReal.conectar({ aoContrato: (c, regras, cli) => log.push(["contrato", c.comodos.length, !!regras, !!cli]), aoLote: (m) => log.push(["lote", m.completo]), aoSemDados: () => log.push(["semdados"]), aoFalha: () => log.push(["falha"]) });
   await espera(); await espera();
-  assert.deepEqual(p.chamadas, ["contrato.json?v=abc123"]);
+  assert.deepEqual(p.chamadas, ["contrato.json?v=abc123", "comandos.json?v=abc123"]);
   assert.deepEqual(p.enviadas, [[{ tipo: "painel-pronto" }, "http://ha.local:8123"]]);
-  assert.deepEqual(log[0], ["contrato", 10]);
+  assert.deepEqual(log[0], ["contrato", 10, true, true]);
   assert.equal(p.relogios[0][1], 8000);
   const ouve = p.ouvintes[0];
   ouve({ source: p.pai, origin: "http://ha.local:8123", data: { tipo: "casa-estados", completo: true, conectado: true, estados: {} } });
@@ -486,7 +491,7 @@ test("ponte: carrega só contrato.json?v=, monta a interface, avisa 'painel-pron
   assert.deepEqual(log.filter(([t]) => t === "lote"), [["lote", true]]);
   p.relogios[0][0]();                                  // depois dos 8 s já houve lote: não acusa falta de dados
   assert.ok(!log.some(([t]) => t === "semdados"));
-  assert.equal(p.enviadas.length, 1, "nenhuma outra mensagem saiu do painel");
+  assert.equal(p.enviadas.length, 1, "nenhuma outra mensagem saiu do painel (comando só quando a interface pede)");
 });
 
 test("ponte: sem nada em 8 s avisa 'sem dados'; contrato indisponível cai para o simulado (aoFalha)", async () => {
@@ -518,7 +523,7 @@ test("segurança (fase B): o carregador tem UM único callService, sem callApi/c
   assert.ok(/postMessage\(\{ tipo: "casa-estados"/.test(codigo) && /postMessage\(\{ tipo: "resultado"/.test(codigo));
 });
 
-test("segurança: o painel (app.js + casa-real.js) não tem caminho de comando, token nem rede além de contrato.json", () => {
+test("segurança: o painel (app.js + casa-real.js) só fala com o pai (painel-pronto, comando, comando-lote), sem serviço/token e sem rede além dos estáticos do painel", () => {
   const app = semComentarios(APP), ponteJs = semComentarios(REAL_JS);
   for (const [nome, codigo] of [["app.js", app], ["casa-real.js", ponteJs]]) {
     assert.ok(!PROIBIDOS_CMD.test(codigo), `${nome} contém chamada de serviço/credencial`);
@@ -526,20 +531,34 @@ test("segurança: o painel (app.js + casa-real.js) não tem caminho de comando, 
   }
   assert.ok(!/fetch\(|postMessage\(/.test(app), "app.js não faz rede nem manda mensagem: tudo passa pela ponte");
   const fetches = ponteJs.match(/\bfetch\(([^)]*)\)/g) || [];
-  assert.equal(fetches.length, 1, "um único fetch");
-  assert.ok(/^fetch\("contrato\.json"/.test(fetches[0]), fetches[0]);
+  assert.equal(fetches.length, 2, "dois fetch: contrato.json e comandos.json (arquivos estáticos do próprio painel)");
+  assert.deepEqual(fetches.map((f) => f.match(/^fetch\("([a-z]+\.json)"/)?.[1]).sort(), ["comandos.json", "contrato.json"], fetches.join(" | "));
+  // únicas saídas ao pai: "painel-pronto" e o canal `postar` do cliente (ligado a window.parent.postMessage em conectar)
   const posts = [...ponteJs.matchAll(/(\S*)\.postMessage\(([^;]*);/g)];
-  assert.equal(posts.length, 1, "uma única mensagem sai do painel");
-  assert.ok(posts[0][1] === "window.parent" && /^\{ tipo: "painel-pronto" \}, window\.location\.origin\)/.test(posts[0][2]), posts[0][0]);
+  assert.equal(posts.length, 2, "duas chamadas de postMessage: painel-pronto e o canal de comandos");
+  assert.ok(posts.every((p) => p[1] === "window.parent"), "só para window.parent");
+  assert.ok(posts.some((p) => /^\{ tipo: "painel-pronto" \}, window\.location\.origin\)/.test(p[2])));
+  assert.ok(posts.some((p) => /^m, window\.location\.origin\)/.test(p[2])), "targetOrigin = location.origin");
+  // os tipos de mensagem montados pelo cliente: só comando e comando-lote
+  assert.deepEqual([...ponteJs.matchAll(/enviar\("([a-z-]+)"/g)].map((x) => x[1]).sort(), ["comando", "comando-lote"]);
   assert.ok(/ev\.source !== window\.parent \|\| ev\.origin !== window\.location\.origin/.test(ponteJs), "só aceita mensagens do pai e da mesma origem");
+  // o painel nunca informa entity_id/serviço nos comandos: o cliente só monta {dispositivo, acao, params, confirmado}
+  assert.ok(!/entity_id|service/.test(ponteJs.slice(ponteJs.indexOf("function criarCliente"), ponteJs.indexOf("function conectar"))));
   // o único recurso externo do HTML é a fonte (já era assim no simulado); nenhum formulário
   assert.ok(!/<form|<iframe/.test(HTML));
   assert.ok(/<script src="casa-real\.js"><\/script>/.test(HTML), "index.html carrega a ponte");
 });
 
 test("segurança: o modo real nunca chama o código de comando do simulado (toque, cena, tudo, Desfazer)", () => {
-  // as ramificações de comando do clique ficam atrás de travado()/REAL: conferimos a ordem no código
-  assert.ok(/if \(semDados\(\)\) return;\n\s*if \(REAL\) \{ mostraToast\(DICA_LEITURA\); return; \}/.test(APP.replace(/\r\n/g, "\n")));
-  assert.equal((APP.match(/if \(travado\(\)\) return;/g) || []).length, 2, "'todos' e 'cena' recusam com travado() (inclui REAL)");
-  assert.ok(/function aplicarFolha\(fn, local = false\) \{\n\s*if \(!folhaChave \|\| \(local \? semDados\(\) : travado\(\)\)\) return;/.test(APP.replace(/\r\n/g, "\n")));
+  const app = APP.replace(/\r\n/g, "\n");
+  // toque: no modo real o ramo do simulado (d.on = !d.on) não é alcançado; sem comandos, toqueReal só avisa "somente leitura"
+  assert.ok(/if \(semDados\(\)\) return;\n\s*if \(REAL\) \{ toqueReal\(alvo\.dataset\.dev\); renderTudo\(\); return; \}/.test(app));
+  assert.ok(/function toqueReal\(chave\) \{\n\s*const d = estado\.get\(chave\);\n\s*if \(!comandosAtivos\(\)\) \{ mostraToast\(DICA_LEITURA\); return; \}/.test(app));
+  // "tudo" e cena: no real nunca caem no código simulado
+  assert.ok(/if \(REAL && comandosAtivos\(\)\) \{ if \(!semDados\(\)\) todosReal\(/.test(app));
+  assert.ok(/if \(REAL\) \{ if \(comandosAtivos\(\) && !semDados\(\)\) cenaReal\(/.test(app));
+  assert.ok(/const travado = \(\) => semDados\(\) \|\| \(REAL && !comandosAtivos\(\)\);/.test(app));
+  assert.ok(/function aplicarFolha\(fn, local = false\) \{\n\s*if \(!folhaChave \|\| \(local \? semDados\(\) : travado\(\)\)\) return;/.test(app));
+  // todo envio passa por enviaComando, enviaLote ou cenaReal, e os três só rodam com comandosAtivos()
+  assert.equal((app.match(/CMD\.cliente\.(comandar|comandarLote)\(/g) || []).length, 3, "só enviaComando, enviaLote e cenaReal falam com o cliente");
 });

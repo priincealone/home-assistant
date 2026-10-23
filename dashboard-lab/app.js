@@ -1,5 +1,6 @@
 // Painel paralelo: dados simulados, nenhuma chamada de rede. Tocar num aparelho só muda o estado local.
 // Parâmetros de estudo: ?hora=19 (hora do dia) e ?net=offline|carregando|sincronizando|online.
+// Modo real (dentro da HA): leitura + comandos (fase B) pela ponte casa-real.js; ?leitura=1 volta tudo para somente leitura.
 "use strict";
 
 /* ---------- Ícones: Phosphor, gerados em icons.js (r = contorno, f = preenchido) ---------- */
@@ -83,17 +84,22 @@ const DENTRO_HA = (() => { try { return !!window.parent && window.parent !== win
 const QUER_REAL = DENTRO_HA && URL_P.get("fonte") !== "simulado" && typeof fetch === "function" && !!window.CasaReal;
 let REAL = false;
 let CONTRATO = null, ESTADOS = {}, REAL_BATS = [], REAL_OFF = [], REAL_CAMS = [];
+// Comandos (fase B): regras = comandos.json (mesma lista de permissão do carregador); cliente = ponte de mensagens.
+// Qualquer um nulo (?leitura=1, comandos.json ausente/ilegível) = somente leitura, como na fase A.
+let CMD = { regras: null, cliente: null };
+const comandosAtivos = () => REAL && !!CMD.regras && !!CMD.cliente;
 const S = {
-  filtro: "todos", cena: null, aba: "casa", recebeu: false, semDados: false,
+  filtro: "todos", cena: null, aba: "casa", recebeu: false, semDados: false, loteOcupado: null, cenaOcupada: null,
   net: ["online", "offline", "carregando", "sincronizando"].includes(URL_P.get("net")) ? URL_P.get("net") : "carregando",
   hora: URL_P.has("hora") && Number.isFinite(+URL_P.get("hora")) ? Math.min(23.99, Math.max(0, +URL_P.get("hora"))) : null,
 };
 const $ = (sel) => document.querySelector(sel);
 const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
 const semDados = () => S.net === "offline" || S.net === "carregando";
-const travado = () => semDados() || REAL;   // comandos: o modo real é somente leitura na fase A
+const travado = () => semDados() || (REAL && !comandosAtivos());   // comandos recusados: offline/carregando ou modo real somente leitura
+const ctxCmd = () => ({ net: S.net, recebeu: S.recebeu });
 const esq = () => S.net === "carregando" || (REAL && !S.recebeu);   // esqueletos até chegar o primeiro lote da casa
-const DICA_LEITURA = "Somente leitura — comandos chegam na fase B";
+const DICA_LEITURA = "Somente leitura — comandos desativados";
 
 const agora = () => {
   const d = new Date();
@@ -107,15 +113,18 @@ function carregaFavs() {
 function salvaFavs() {
   try { localStorage.setItem(favKey(), JSON.stringify([...estado].filter(([, d]) => d.fav).map(([k]) => k))); } catch { /* sem armazenamento */ }
 }
+const cartoesSala = (salaId) => [...estado.values()].filter((d) => d.sala === salaId);
 const acionaveis = (salaId) => [...estado.values()].filter((d) => d.sala === salaId && !d.sensor && !d.info && !d.indisp);
 const ligados = (salaId) => acionaveis(salaId).filter((d) => d.on).length;
 const tempoDesde = (ts) => {
   const m = Math.max(0, Math.floor((Date.now() - ts) / 60000));
   return m < 1 ? "agora" : m < 60 ? `há ${m} min` : `há ${Math.floor(m / 60)} h${m % 60 ? ` ${m % 60} min` : ""}`;
 };
+const ROT_VAC = { base: "Na base", limpando: "Aspirando", pausado: "Pausado", retornando: "Voltando à base", parado: "Parado", erro: "Com erro" };
 const subtitulo = (d) => {
   if (d.indisp) return "Indisponível";
   if (d.sensor) return `${d.on ? d.txtAlerta : d.txtOk}${d.desde ? ` · ${tempoDesde(d.desde)}` : ""}`;
+  if (d.tipo === "vacuum" && d.real) return `${ROT_VAC[d.vst] || "Estado desconhecido"}${d.bat != null ? ` · ${d.bat}%` : ""}`;
   if (d.tipo === "vacuum") return { base: `Na base · ${d.bat}%`, limpando: `Aspirando · ${d.bat}%`, pausado: "Pausado" }[d.vst];
   if (!d.on) return "Desligado";
   if (d.tipo === "light" || d.tipo === "led") return !d.semDimmer && d.bri != null && d.bri < 100 ? `Ligado · ${d.bri}%` : "Ligado";
@@ -197,7 +206,9 @@ function desenharEstrelas() {
 /* ---------- Renderização ---------- */
 // Só reescreve o HTML quando mudou (a tela ao vivo não recria controles à toa e o foco não se perde).
 function setHtml(el, html) { if (el.__h === html) return; el.__h = html; el.innerHTML = html; }
-const tituloLeit = () => (REAL ? ` title="${DICA_LEITURA}"` : "");
+const tituloLeit = () => (REAL && !comandosAtivos() ? ` title="${DICA_LEITURA}"` : "");
+// cena: sem regra "executar", offline/carregando, ou uma cena/lote em andamento = desabilitada (evita toque duplo)
+const cenaBloqueada = (c) => (REAL ? !comandosAtivos() || semDados() || !!S.cenaOcupada || !window.CasaReal.acaoRegra(CMD.regras, c.disp, "executar") : travado());
 const traco = '<span class="num" aria-label="sem leitura">—</span>';
 function renderResumo() {
   const todos = [...estado.values()].filter((d) => !d.indisp);
@@ -237,11 +248,11 @@ function renderSaudacao() {
 }
 
 function renderStatus() {
-  const m = { online: ["ok", REAL ? "Ao vivo · somente leitura" : "Sistema online"], sincronizando: ["warn", "Sincronizando"], carregando: ["warn", "Conectando"], offline: ["bad", REAL && !S.recebeu ? "Sem dados da casa" : "Offline · último estado"] }[S.net];
+  const m = { online: ["ok", REAL ? (comandosAtivos() ? "Ao vivo" : "Ao vivo · somente leitura") : "Sistema online"], sincronizando: ["warn", "Sincronizando"], carregando: ["warn", "Conectando"], offline: ["bad", REAL && !S.recebeu ? "Sem dados da casa" : "Offline · último estado"] }[S.net];
   $("#status").innerHTML = `<i class="dot dot-${m[0]}"></i>${m[1]}`;
   $("#banner").hidden = S.net !== "offline";
   $("#banner-txt").textContent = !REAL ? "Sem conexão com a casa. Mostrando o último estado conhecido; comandos pausados até reconectar."
-    : S.recebeu ? "Sem conexão com a casa. Mostrando o último estado conhecido. Somente leitura."
+    : S.recebeu ? `Sem conexão com a casa. Mostrando o último estado conhecido. ${comandosAtivos() ? "Comandos pausados até reconectar." : "Somente leitura."}`
     : "Sem dados da casa. Abra o painel pela Home Assistant e aguarde a conexão; nada é simulado.";
   document.body.dataset.net = S.net;
 }
@@ -254,7 +265,7 @@ function renderCenas() {
     return;
   }
   setHtml($("#cenas"), CENAS.map((c) => `
-    <button type="button" class="scene glass" data-cena="${c.id}" aria-pressed="${S.cena === c.id}" ${travado() ? "disabled" : ""}${tituloLeit()}>
+    <button type="button" class="scene glass" data-cena="${c.id}" aria-pressed="${S.cena === c.id}" ${cenaBloqueada(c) ? "disabled" : ""}${S.cenaOcupada === c.id ? ' aria-busy="true"' : ""}${tituloLeit()}>
       <span class="ico">${ic(c.icone, 20, S.cena === c.id)}</span>
       <span class="txt"><span class="nome">${esc(c.nome)}</span><span class="desc">${esc(c.desc)}</span></span>
     </button>`).join(""));
@@ -299,9 +310,11 @@ function tileHtml(chave, d) {
   const selo = (off || d.indisp) ? `<span class="selo" title="${d.indisp ? "Indisponível" : "Sem conexão"}">${ic("offline", 12)}</span>` : "";
   const bat = indBat(d);
   const aj = temAjustes(d) && !off;
-  const dica = REAL ? `${DICA_LEITURA}. Segure para ver os detalhes` : DICA;
+  const dica = REAL ? (comandosAtivos() ? "Toque para alternar. Segure para ajustar" : `${DICA_LEITURA}. Segure para ver os detalhes`) : DICA;
   const ajAttr = aj ? ` data-ajustes="true" title="${dica}" aria-description="${dica}. Pelo teclado: Shift+Enter."` : "";
-  const leitAttr = REAL && !off ? ' aria-disabled="true" data-leitura="true"' : "";   // somente leitura: não é botão quebrado, só não comanda
+  // somente leitura (kill-switch ou aparelho sem regra de comando): não é botão quebrado, só não comanda
+  const leitAttr = REAL && !off && !podeToque(d) ? ' aria-disabled="true" data-leitura="true"' : "";
+  const pendAttr = pendente(chave) ? ' data-pendente="true" aria-busy="true"' : "";
   const ajIco = aj ? `<span class="aj" aria-hidden="true">${ic("ajustes", 16)}</span>` : "";
   if (d.indisp) {
     return `<div class="dev sensor glass" data-tipo="${d.tipo}" data-indisp="true">
@@ -320,7 +333,7 @@ function tileHtml(chave, d) {
       <div class="dev-top"><span class="chip">${ic(d.tipo, 20, alerta)}${selo}</span>${d.sensor ? `<span class="dev-ind">${bat}<i class="dot-state"></i></span>` : ""}</div>
       <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div></div>`;
   }
-  return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}" ${off ? 'data-offline="true" disabled' : ajAttr + leitAttr}>
+  return `<button type="button" class="dev glass" role="switch" aria-checked="${d.on}" data-dev="${chave}" data-tipo="${d.tipo}"${pendAttr} ${off ? 'data-offline="true" disabled' : ajAttr + leitAttr}>
     <div class="dev-top"><span class="chip">${ic(d.tipo, 20, d.on)}${selo}</span><span class="sw" aria-hidden="true"></span></div>
     <div><div class="name">${esc(d.nome)}${d.fav ? `<span class="fav-ico" title="Favorito">${ic("star", 12, true)}</span>` : ""}</div><div class="sub" data-sub="${chave}">${sub}</div></div>${ajIco}</button>`;
 }
@@ -328,9 +341,15 @@ function tileHtml(chave, d) {
 function secaoHtml(s, entradas) {
   const itens = acionaveis(s.id);
   const n = itens.filter((d) => d.on).length;
-  const acao = itens.length === 0 ? "" : n === 0
+  let acao = itens.length === 0 ? "" : n === 0
     ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}${tituloLeit()}>Acender tudo</button>`
     : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}${tituloLeit()}>Apagar tudo</button>`;
+  if (comandosAtivos()) {   // só as luzes (e o interruptor de luz) do cômodo; cômodo sem luz comandável = sem botão
+    const cs = cartoesSala(s.id), R = window.CasaReal;
+    const apagar = R.itensLote(cs, false, CMD.regras).length > 0, acender = R.itensLote(cs, true, CMD.regras).length > 0;
+    const ocupado = semDados() || !!S.loteOcupado;
+    acao = !apagar && !acender ? "" : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="${apagar ? 0 : 1}" ${ocupado ? "disabled" : ""}${S.loteOcupado === s.id ? ' aria-busy="true"' : ""} title="${apagar ? "Apaga" : "Acende"} as luzes deste cômodo" aria-label="${apagar ? "Apagar tudo: apaga as luzes de" : "Acender tudo: acende as luzes de"} ${esc(s.nome)}">${apagar ? "Apagar tudo" : "Acender tudo"}</button>`;
+  }
   const resumo = `${REAL ? (s.leitura ? s.leitura + " · " : "") : s.t + "° · "}${n} de ${itens.length} ligados`;
   return `<section aria-label="${esc(s.nome)}">
     <div class="room-head"><div><h2>${esc(s.nome)}</h2><p class="muted num">${resumo}</p></div>${acao}</div>
@@ -406,12 +425,13 @@ let timerNet = null;
 let toastT = null, toastUndo = null;
 const instantaneo = () => ({ ons: new Map([...estado].map(([k, d]) => [k, d.on])), cena: S.cena });
 const restaura = (s) => { s.ons.forEach((v, k) => { estado.get(k).on = v; }); S.cena = s.cena; };
-function mostraToast(msg, desfazer) {
+function mostraToast(msg, desfazer, tom) {
   const t = $("#toast");
   toastUndo = desfazer || null;
+  t.dataset.tom = tom || ""; t.setAttribute("role", tom === "erro" ? "alert" : "status");
   t.innerHTML = `<span class="toast-t">${esc(msg)}</span>${desfazer ? `<button type="button" class="toast-b" data-desfazer>${ic("undo", 16)}<span>Desfazer</span></button>` : ""}`;
   t.hidden = false; void t.offsetWidth; t.dataset.estado = "aberto";
-  clearTimeout(toastT); toastT = setTimeout(escondeToast, 5000);
+  clearTimeout(toastT); toastT = setTimeout(escondeToast, tom === "erro" ? 7000 : 5000);
 }
 function escondeToast() {
   const t = $("#toast");
@@ -428,16 +448,18 @@ document.addEventListener("click", (ev) => {
   if (alvo.hasAttribute("data-desfazer")) { const u = toastUndo; escondeToast(); if (u) { u(); renderTudo(); } return; }
   if (alvo.dataset.dev) {
     if (semDados()) return;
-    if (REAL) { mostraToast(DICA_LEITURA); return; }   // fase A: toque curto não comanda nada
+    if (REAL) { toqueReal(alvo.dataset.dev); renderTudo(); return; }   // só comanda com regras; senão avisa "somente leitura"
     const d = estado.get(alvo.dataset.dev);
     if (d.tipo === "vacuum") { abrirFolha(alvo.dataset.dev); return; }   // aspirador: toque curto abre a folha
     d.on = !d.on; S.cena = null; vibrar();
   } else if (alvo.dataset.todos) {
+    if (REAL && comandosAtivos()) { if (!semDados()) todosReal(alvo.dataset.todos, alvo.dataset.valor === "1"); renderTudo(); return; }
     if (travado()) return;
     const antes = instantaneo(), ligar = alvo.dataset.valor === "1", nomeSala = SALAS.find((s) => s.id === alvo.dataset.todos).nome;
     acionaveis(alvo.dataset.todos).forEach((d) => { d.on = ligar; }); S.cena = null; vibrar();
     mostraToast(`${nomeSala}: ${ligar ? "tudo aceso" : "tudo apagado"}`, () => restaura(antes));
   } else if (alvo.dataset.cena) {
+    if (REAL) { if (comandosAtivos() && !semDados()) cenaReal(alvo.dataset.cena); renderTudo(); return; }
     if (travado()) return;
     const c = CENAS.find((x) => x.id === alvo.dataset.cena), antes = instantaneo();
     estado.forEach((d) => { if (!d.sensor && !d.info && !d.indisp) d.on = false; });
@@ -477,13 +499,15 @@ let folhaChave = null, folhaFechando = false, folhaAbertaEm = 0, lp = null;
 const durFast = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-fast")) || 180;
 
 function montaFolha(d) {
-  const slider = (id) => `<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${id}">${SLIDERS[id].rot}</label><output class="num val" for="f-${id}" data-val="${id}"></output></div>
-    <input class="rng" type="range" id="f-${id}" data-ctl="${id}" min="${SLIDERS[id].min}" max="${SLIDERS[id].max}" step="${SLIDERS[id].step}"></div>`;
+  const slider = (id, mn = SLIDERS[id].min, mx = SLIDERS[id].max) => `<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${id}">${SLIDERS[id].rot}</label><output class="num val" for="f-${id}" data-val="${id}"></output></div>
+    <input class="rng" type="range" id="f-${id}" data-ctl="${id}" min="${mn}" max="${mx}" step="${SLIDERS[id].step}"></div>`;
   const sw = (id, rot) => `<button type="button" class="ctl-sw" role="switch" aria-checked="false" data-sw="${id}"><span class="rot" data-rot="${id}">${rot}</span><span class="sw" aria-hidden="true"></span></button>`;
   const seg = (id) => `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-${id}-r">${SEGS[id].rot}</span></div>
     <div class="segs" role="group" aria-labelledby="f-${id}-r">${SEGS[id].valores.map((v) => `<button type="button" class="segbtn" data-seg="${id}" data-v="${v}" aria-pressed="false" aria-label="${SEGS[id].aria(v)}">${SEGS[id].rotulo(v)}</button>`).join("")}</div></div>`;
   let h = "";
-  if (d.tipo === "vacuum") {
+  if (comandosAtivos() && d.real) {
+    h += controlesReais(d, slider, sw, seg);
+  } else if (d.tipo === "vacuum") {
     h += `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-vac-r">Operação</span></div>
       <div class="segs segs-vac" role="group" aria-labelledby="f-vac-r">${Object.entries(VAC).map(([k, [i, t]]) => `<button type="button" class="segbtn segbtn-v" data-vac="${k}" aria-pressed="false">${ic(i, 20)}<span>${t}</span></button>`).join("")}</div></div>` + seg("suc");
   } else {
@@ -514,25 +538,34 @@ function montaFolha(d) {
 function atualizaFolha() {
   if (!folhaChave) return;
   const d = estado.get(folhaChave), f = $("#folha"), bloq = travado();
+  const semTv = comandosAtivos() && d.tipo === "tv" && !d.on;   // TV apagada: volume, mudo, entrada e controle remoto não fazem sentido
   $("#folha-s").textContent = subtitulo(d);
   const av = $("#folha-aviso");
   av.hidden = !bloq;
-  av.textContent = S.net === "offline" ? "Sem conexão com a casa. Ajustes pausados até reconectar." : S.net === "carregando" ? "Conectando à casa. Ajustes pausados." : "Somente leitura. Os comandos chegam na fase B.";
+  av.textContent = S.net === "offline" ? "Sem conexão com a casa. Ajustes pausados até reconectar." : S.net === "carregando" ? "Conectando à casa. Ajustes pausados." : "Somente leitura. Comandos desativados neste painel.";
   f.querySelectorAll("[data-ctl]").forEach((el) => {
     const c = SLIDERS[el.dataset.ctl], v = c.get(d);
+    const mn = el.getAttribute("min") != null && el.getAttribute("min") !== "" ? +el.getAttribute("min") : c.min, mx = el.getAttribute("max") != null && el.getAttribute("max") !== "" ? +el.getAttribute("max") : c.max;
     if (+el.value !== v) el.value = String(v);
-    el.style.setProperty("--r", String(Math.min(1, Math.max(0, (v - c.min) / (c.max - c.min)))));
+    el.style.setProperty("--r", String(Math.min(1, Math.max(0, (v - mn) / (mx - mn)))));
     el.setAttribute("aria-valuetext", c.vt(v));
     f.querySelector(`[data-val="${el.dataset.ctl}"]`).textContent = c.txt(v);
-    el.disabled = bloq;
+    el.disabled = bloq || (semTv && el.dataset.ctl === "vol");
   });
   f.querySelectorAll("[data-sw]").forEach((el) => {
     const id = el.dataset.sw, v = id === "on" ? d.on : d[id];
-    el.setAttribute("aria-checked", String(!!v)); el.disabled = id === "fav" ? semDados() : bloq;   // Favorito é local: segue valendo no modo real
+    el.setAttribute("aria-checked", String(!!v)); el.disabled = id === "fav" ? semDados() : bloq || (semTv && id === "mudo");   // Favorito é local: segue valendo no modo real
     if (id === "on") el.querySelector("[data-rot]").textContent = v ? "Ligado" : "Desligado";
   });
   f.querySelectorAll("[data-seg]").forEach((el) => { el.setAttribute("aria-pressed", String(SEGS[el.dataset.seg].get(d) === +el.dataset.v)); el.disabled = bloq; });
-  f.querySelectorAll("[data-app]").forEach((el) => { el.setAttribute("aria-pressed", String(d.app === el.dataset.app)); el.disabled = bloq; });
+  f.querySelectorAll("[data-app]").forEach((el) => { el.setAttribute("aria-pressed", String(d.app === el.dataset.app)); el.disabled = bloq || semTv; });
+  f.querySelectorAll("[data-rem]").forEach((el) => { el.disabled = bloq || semTv; });
+  f.querySelectorAll("[data-modo]").forEach((el) => { el.setAttribute("aria-pressed", String(d.modo === el.dataset.modo)); el.disabled = bloq; });
+  f.querySelectorAll("[data-vacacao]").forEach((el) => {
+    const a = el.dataset.vacacao;
+    el.setAttribute("aria-pressed", String((a === "iniciar" && d.vst === "limpando") || (a === "pausar" && d.vst === "pausado") || (a === "base" && d.vst === "retornando")));
+    el.disabled = bloq;
+  });
   f.querySelectorAll("[data-cor]").forEach((el) => { el.setAttribute("aria-pressed", String(d.cor === el.dataset.cor)); el.disabled = bloq; });
   f.querySelectorAll("[data-vac]").forEach((el) => { el.setAttribute("aria-pressed", String(d.vst === el.dataset.vac)); el.disabled = bloq; });
 }
@@ -580,16 +613,23 @@ function aplicarFolha(fn, local = false) {
 
 $("#folha").addEventListener("input", (ev) => {
   const el = ev.target.closest("[data-ctl]");
-  if (el) aplicarFolha((d) => SLIDERS[el.dataset.ctl].set(d, +el.value));
+  if (!el) return;
+  if (comandosAtivos()) { ajusteReal(el.dataset.ctl, +el.value, false); return; }   // modo real com comandos: valor local + comando com debounce
+  aplicarFolha((d) => SLIDERS[el.dataset.ctl].set(d, +el.value));
+});
+$("#folha").addEventListener("change", (ev) => {   // soltou o deslizante: envia na hora o valor final
+  const el = ev.target.closest && ev.target.closest("[data-ctl]");
+  if (el && comandosAtivos()) ajusteReal(el.dataset.ctl, +el.value, true);
 });
 $("#folha").addEventListener("click", (ev) => {
-  const alvo = ev.target.closest("[data-folha-fechar],[data-sw],[data-seg],[data-app],[data-cor],[data-vac]");
+  const alvo = ev.target.closest("[data-folha-fechar],[data-sw],[data-seg],[data-app],[data-cor],[data-vac],[data-vacacao],[data-modo],[data-rem]");
   if (!alvo) return;
   if (alvo.hasAttribute("data-folha-fechar")) {
     if (alvo.classList.contains("folha-fundo") && performance.now() - folhaAbertaEm < 300) return;
     fecharFolha(); return;
   }
   const dt = alvo.dataset;
+  if (comandosAtivos() && dt.sw !== "fav") { folhaClickReal(dt); return; }   // só o Favorito continua local
   if (dt.sw) aplicarFolha((d) => { if (dt.sw === "on") d.on = !d.on; else d[dt.sw] = !d[dt.sw]; }, dt.sw === "fav");
   else if (dt.seg) aplicarFolha((d) => SEGS[dt.seg].set(d, +dt.v));
   else if (dt.app) aplicarFolha((d) => { d.app = dt.app; });
@@ -833,17 +873,250 @@ function tickSimulacao() {
 }
 setInterval(() => { if (S.net === "online" && !lp) tickSimulacao(); }, 5000);
 
-/* ---------- Modo real (rodada 11, fase A): contrato.json + estados da HA, SOMENTE LEITURA ---------- */
+/* ---------- Comandos (fase B): só no modo real com regras (comandos.json) e ponte; senão tudo segue somente leitura ---------- */
+// O painel só pede {dispositivo (id do contrato), ação, params}; o carregador valida e chama a HA. Nada de entity_id/serviço aqui.
+const CR = window.CasaReal;
+const TRAVA_MS = 5000, DEBOUNCE_MS = 200, BLOQUEIO_CENA_MS = 1000;
+const travas = new Map();   // `${cartão}|${campo}` -> { v, extra, t }: valor otimista até a HA confirmar (ou 5 s)
+const chaveTrava = (chave, campo) => `${chave}|${campo}`;
+const pendente = (chave) => { for (const k of travas.keys()) if (k.startsWith(chave + "|")) return true; return false; };
+const podeToque = (d) => comandosAtivos() && ["ligar", "desligar", "repouso"].some((a) => !!CR.acaoRegra(CMD.regras, d.id, a));
+function limpaTrava(k) { const t = travas.get(k); if (t) { clearTimeout(t.t); travas.delete(k); } }
+function armaTrava(chave, campo, v, extra) {
+  const k = chaveTrava(chave, campo); limpaTrava(k);
+  travas.set(k, { v, extra: extra || null, t: setTimeout(() => expiraTrava(k), TRAVA_MS) });
+  const d = estado.get(chave);
+  if (d) { d[campo] = v; if (extra) Object.assign(d, extra); }
+}
+function expiraTrava(k) {
+  if (!travas.has(k)) return;
+  travas.delete(k);   // a HA não confirmou em 5 s: volta ao estado REAL (que sempre prevalece)
+  sincronizaReal(); mostraToast("A casa não confirmou. Mostrando o estado real.", null, "erro"); renderTudo();
+}
+const valorReal = (c, campo) => (campo === "cor" ? CR.corDoRgb(c.rgbCor) : c[campo]);
+// chamado por aplicaCartao: o estado real confirma a trava (limpa) ou a trava segue valendo até expirar
+function aplicaTravas(d, c) {
+  for (const [k, t] of [...travas]) {
+    if (!k.startsWith(c.chave + "|")) continue;
+    const campo = k.slice(c.chave.length + 1);
+    if (CR.iguais(campo, valorReal(c, campo), t.v)) { limpaTrava(k); continue; }
+    d[campo] = t.v; if (t.extra) Object.assign(d, t.extra);
+  }
+}
+
+// Envia um comando (com a trava otimista); em erro/timeout reverte na hora e avisa; nunca reenvia sozinho.
+function enviaComando(chave, acao, params, info, confirmado) {
+  const d = estado.get(chave);
+  if (!d || !comandosAtivos() || semDados()) return Promise.resolve(null);
+  (info || []).forEach(([campo, v, extra]) => armaTrava(chave, campo, v, extra));
+  S.cena = null; vibrar();
+  const p = CMD.cliente.comandar(d.id, acao, params || null, { confirmado: confirmado === true }).then((r) => {
+    if (r.ok) return r;                                   // aceito: o cartão só vale de verdade quando a HA confirmar
+    (info || []).forEach(([campo]) => limpaTrava(chaveTrava(chave, campo)));
+    sincronizaReal();
+    if (r.erro === "confirmacao_necessaria" && !confirmado && r.confirmar) {
+      abrirConfirma({ titulo: d.nome, texto: r.confirmar, rotulo: "Confirmar", aoConfirmar: () => enviaComando(chave, acao, params, info, true) });
+    } else mostraToast(CR.mensagemErro(r.erro), null, "erro");
+    renderTudo();
+    return r;
+  });
+  renderTudo();
+  return p;
+}
+// Ação com confirmação (texto de comandos.json) abre o diálogo antes de enviar; sem confirmação envia direto.
+function executa(chave, acao, params, info) {
+  const d = estado.get(chave);
+  const texto = CR.textoConfirmacao(CMD.regras, d.id, acao);
+  if (texto) { abrirConfirma({ titulo: d.nome, texto, rotulo: "Confirmar", aoConfirmar: () => enviaComando(chave, acao, params, info, true) }); return null; }
+  return enviaComando(chave, acao, params, info, false);
+}
+// Toque curto no cartão (ou o interruptor "Ligado" da folha).
+function toqueReal(chave) {
+  const d = estado.get(chave);
+  if (!comandosAtivos()) { mostraToast(DICA_LEITURA); return; }
+  if (d.tipo === "vacuum") { abrirFolha(chave); return; }
+  const acao = CR.escolherAcaoToque(d, CMD.regras);
+  if (!acao || !CR.podeComandar(CMD.regras, ctxCmd(), d, acao)) { mostraToast("Este aparelho não aceita comandos agora."); return; }
+  executa(chave, acao, null, [["on", acao === "ligar"]]);
+}
+
+// "Apagar/Acender tudo": um lote só com luzes (e interruptor de luz) do cômodo; Desfazer reaplica o inverso pelas mesmas ações.
+function todosReal(salaId, ligar) {
+  if (S.loteOcupado) return;
+  const itens = CR.itensLote(cartoesSala(salaId), ligar, CMD.regras);
+  if (!itens.length) return;
+  enviaLote(salaId, itens, ligar, (SALAS.find((s) => s.id === salaId) || { nome: "" }).nome, true);
+}
+function enviaLote(salaId, itens, ligar, nome, comDesfazer) {
+  const chaves = itens.map((i) => `${salaId}.${i.dispositivo}`);
+  chaves.forEach((ch) => armaTrava(ch, "on", ligar));
+  S.loteOcupado = salaId; S.cena = null; vibrar();
+  const p = CMD.cliente.comandarLote(itens).then((r) => {
+    S.loteOcupado = null;
+    if (r.ok) {
+      if (comDesfazer) mostraToast(`${nome}: ${ligar ? "luzes acesas" : "luzes apagadas"}`, () => enviaLote(salaId, CR.loteInverso(itens), !ligar, nome, false));
+      else mostraToast(`${nome}: desfeito`);
+    } else {
+      const parcial = Array.isArray(r.resultados) && r.resultados.length === itens.length;
+      chaves.forEach((ch, i) => { if (!parcial || !r.resultados[i] || !r.resultados[i].ok) limpaTrava(chaveTrava(ch, "on")); });
+      sincronizaReal();
+      mostraToast(parcial ? "Algumas luzes não responderam. Confira o estado." : CR.mensagemErro(r.erro), null, "erro");
+    }
+    renderTudo();
+    return r;
+  });
+  renderTudo();
+  return p;
+}
+
+// Cena: SEMPRE com confirmação, sem Desfazer; aviso de sucesso só depois do resultado; botões travados por ≥ 1 s (toque duplo).
+function cenaReal(id) {
+  const c = CENAS.find((x) => x.id === id);
+  if (!c || S.cenaOcupada || cenaBloqueada(c)) return;
+  const texto = CR.textoConfirmacao(CMD.regras, c.disp, "executar") || "Executar esta cena agora?";
+  abrirConfirma({
+    titulo: `Cena ${c.nome}`, texto, rotulo: "Executar", aoConfirmar: () => {
+      const t0 = performance.now();
+      S.cenaOcupada = c.id; S.cena = null; vibrar(); renderTudo();
+      CMD.cliente.comandar(c.disp, "executar", null, { confirmado: true }).then((r) => {
+        if (r.ok) mostraToast(`Cena ${c.nome} executada`); else mostraToast(CR.mensagemErro(r.erro), null, "erro");
+        setTimeout(() => { S.cenaOcupada = null; renderTudo(); }, Math.max(0, BLOQUEIO_CENA_MS - (performance.now() - t0)));
+        renderTudo();
+      });
+    },
+  });
+}
+
+// Ajuste da folha (brilho, temperatura, cor, velocidade, oscilar, volume, mudo, entrada, modo): valor local na hora + comando.
+// Deslizantes enviam com debounce de 200 ms e ao soltar (imediato = true).
+const debAjuste = new Map();
+function infoAjuste(d, campo, valor) {
+  const info = [[campo, valor, campo === "vel" ? { pct: CR.velParaPct(valor) } : null]];
+  if (["bri", "temp", "cor", "vel"].includes(campo) && !d.on) info.push(["on", true, null]);   // "ajustar"/"velocidade" também ligam
+  return info;
+}
+function ajusteReal(campo, valor, imediato) {
+  if (!folhaChave || !comandosAtivos() || semDados()) return;
+  const chave = folhaChave, d = estado.get(chave), cmd = CR.comandoDoCampo(campo, valor);
+  if (!d || !cmd || !CR.acaoRegra(CMD.regras, d.id, cmd.acao)) return;
+  const info = infoAjuste(d, campo, valor), k = chave + "|" + campo;
+  info.forEach(([c, v, e]) => armaTrava(chave, c, v, e));
+  clearTimeout(debAjuste.get(k)); debAjuste.delete(k);
+  const enviar = () => { debAjuste.delete(k); executa(chave, cmd.acao, cmd.params, info); };
+  if (imediato) enviar(); else { debAjuste.set(k, setTimeout(enviar, DEBOUNCE_MS)); renderTudo(); }
+}
+function folhaClickReal(dt) {
+  if (!folhaChave || semDados()) return;
+  const chave = folhaChave, d = estado.get(chave);
+  if (dt.sw === "on") toqueReal(chave);
+  else if (dt.sw === "osc") ajusteReal("osc", !d.osc, true);
+  else if (dt.sw === "mudo") ajusteReal("mudo", !d.mudo, true);
+  else if (dt.seg === "vel") ajusteReal("vel", +dt.v, true);
+  else if (dt.app) ajusteReal("app", dt.app, true);
+  else if (dt.cor) ajusteReal("cor", dt.cor, true);
+  else if (dt.modo) ajusteReal("modo", dt.modo, true);
+  else if (dt.vacacao) executa(chave, dt.vacacao, null, []);
+  else if (dt.rem) executa(chave, "controleRemoto", { command: dt.rem }, []);
+}
+
+// Controles da folha no modo real com comandos: só o que tem ação em comandos.json E atributo de suporte no estado real.
+function controlesReais(d, slider, sw, seg) {
+  const tem = (a) => !!CR.acaoRegra(CMD.regras, d.id, a);
+  const grupo = (idr, rot, cls, corpo) => `<div class="ctl"><div class="ctl-linha"><span class="rot" id="${idr}">${rot}</span></div><div class="${cls}" role="group" aria-labelledby="${idr}">${corpo}</div></div>`;
+  let h = "";
+  if (d.tipo === "vacuum") {
+    const ops = [["iniciar", "play", "Iniciar"], ["pausar", "pause", "Pausar"], ["base", "base", "Voltar à base"], ["parar", null, "Parar"], ["localizar", null, "Localizar"], ["limpezaLocal", null, "Limpeza local"]].filter(([a]) => tem(a));
+    h += grupo("f-vac-r", "Operação", "segs segs-vac", ops.map(([a, i, t]) => `<button type="button" class="segbtn segbtn-v" data-vacacao="${a}" aria-pressed="false">${i ? ic(i, 20) : ""}<span>${t}</span></button>`).join(""));
+    const ms = CR.MODOS_ASPIRADOR.filter(([v]) => !d.modoOpcoes || d.modoOpcoes.includes(v));
+    if (tem("modo") && ms.length) h += grupo("f-modo-r", "Sucção", "segs segs-app", ms.map(([v, t]) => `<button type="button" class="segbtn" data-modo="${esc(v)}" aria-pressed="false">${t}</button>`).join(""));
+    return h;
+  }
+  if (tem("ligar") || tem("desligar") || tem("repouso")) h += sw("on", "Ligado");
+  if ((d.tipo === "light" || d.tipo === "led") && tem("ajustar")) {
+    if (!d.semDimmer) h += slider("bri");
+    if (d.temp != null) h += slider("temp", Math.max(1500, d.kmin ?? 2700), Math.min(9000, d.kmax ?? 6500));
+    if (d.rgb) h += grupo("f-cor-r", "Cor", "cores", CORES.map(([k, n, c]) => `<button type="button" class="cor" data-cor="${k}" style="--c:${c}" aria-pressed="false" aria-label="${n}"></button>`).join(""));
+  }
+  if (d.tipo === "fan") {
+    if (tem("velocidade")) h += seg("vel");
+    if (d.osc != null && tem("oscilar")) h += sw("osc", "Oscilar");
+  }
+  if (d.tipo === "tv") {
+    if (d.vol != null && tem("volume")) h += slider("vol");
+    if (d.mudo != null && tem("mudo")) h += sw("mudo", "Mudo");
+    const fs = (d.fontes || []).filter((f) => CR.FONTE_OK.test(f));
+    if (tem("fonte") && fs.length) h += grupo("f-app-r", "Entrada", "segs segs-app", fs.map((a) => `<button type="button" class="segbtn" data-app="${esc(a)}" aria-pressed="false">${esc(a)}</button>`).join(""));
+    if (tem("controleRemoto")) h += grupo("f-rem-r", "Controle remoto", "segs segs-rem", CR.BOTOES_REMOTO.map(([c, t, a]) => `<button type="button" class="segbtn" data-rem="${c}"${a ? ` aria-label="${a}"` : ""}>${t}</button>`).join(""));
+  }
+  return h;
+}
+
+/* ---------- Confirmação (mesma casca da folha): diálogo curto, foco preso, Esc cancela ---------- */
+let confirmaEstado = null, confirmaAbertaEm = 0;
+const aliviaInert = () => {   // devolve o "inert" ao que valia antes do diálogo (folha/manutenção abertas mantêm a página inerte)
+  const algum = !!folhaChave || manutAberta;
+  document.querySelector(".wrap").inert = algum; document.querySelector(".tabbar").inert = algum;
+  $("#folha").inert = false; $("#manutencao").inert = false;
+};
+function abrirConfirma(o) {
+  if (confirmaEstado) return;
+  const el = $("#confirma");
+  confirmaEstado = { aoConfirmar: o.aoConfirmar, aoCancelar: o.aoCancelar, voltar: document.activeElement, setouBody: !document.body.dataset.folha };
+  confirmaAbertaEm = performance.now();
+  if (toastUndo) escondeToast();
+  el.innerHTML = `<div class="folha-fundo" data-confirma-fechar></div>
+    <div class="folha-painel confirma-painel glass" role="alertdialog" aria-modal="true" aria-labelledby="conf-t conf-d" tabindex="-1" data-tom="ambar">
+      <div class="folha-cab"><div class="folha-tit"><h2 id="conf-t">${esc(o.titulo)}</h2></div></div>
+      <div class="folha-corpo"><p class="conf-txt" id="conf-d">${esc(o.texto)}</p>
+        <div class="conf-acoes"><button type="button" class="conf-b" data-confirma="nao">Cancelar</button><button type="button" class="conf-b conf-ok" data-confirma="sim">${esc(o.rotulo || "Confirmar")}</button></div></div>
+    </div>`;
+  el.hidden = false; el.dataset.estado = "entrando";
+  document.querySelector(".wrap").inert = true; document.querySelector(".tabbar").inert = true; $("#folha").inert = true; $("#manutencao").inert = true;
+  if (confirmaEstado.setouBody) document.body.dataset.folha = "confirma";
+  void el.offsetWidth; el.dataset.estado = "aberta";
+  const nao = el.querySelector('[data-confirma="nao"]');   // o foco começa no lado seguro (Cancelar)
+  (nao || el.querySelector(".folha-painel")).focus({ preventScroll: true });
+}
+function fecharConfirma(confirmou) {
+  const c = confirmaEstado; if (!c) return;
+  confirmaEstado = null;
+  const el = $("#confirma");
+  el.dataset.estado = "saindo";
+  setTimeout(() => {
+    el.hidden = true; el.innerHTML = ""; el.dataset.estado = "";
+    aliviaInert();
+    if (c.setouBody) delete document.body.dataset.folha;
+    const v = c.voltar;
+    if (v && v !== document.body && document.contains(v) && !v.disabled) v.focus({ preventScroll: true });
+    else if (folhaChave) { const p = document.querySelector("#folha .folha-painel"); if (p) p.focus({ preventScroll: true }); }
+  }, durFast());
+  if (confirmou) { if (c.aoConfirmar) c.aoConfirmar(); } else if (c.aoCancelar) c.aoCancelar();
+}
+$("#confirma").addEventListener("click", (ev) => {
+  const alvo = ev.target.closest("[data-confirma],[data-confirma-fechar]");
+  if (!alvo) return;
+  if (alvo.dataset.confirma === "sim") { fecharConfirma(true); return; }
+  if (alvo.hasAttribute("data-confirma-fechar") && performance.now() - confirmaAbertaEm < 300) return;
+  fecharConfirma(false);
+});
+$("#confirma").addEventListener("keydown", (ev) => {
+  if (ev.key === "Escape") { ev.preventDefault(); fecharConfirma(false); return; }
+  if (ev.key === "Tab") prendeTab(ev, $("#confirma"));
+});
+
+/* ---------- Modo real (rodada 11 leitura + rodada 12 comandos): contrato.json, comandos.json e estados da HA ---------- */
 // Campos de ajuste que sobrevivem enquanto o aparelho está desligado (a HA zera brilho/temperatura de cor ao apagar).
 const CAMPOS_AJUSTE = ["bri", "temp", "vel", "pct", "osc", "vol", "mudo", "app", "subOn"];
 function aplicaCartao(d, c) {
-  ["sala", "id", "entityId", "nome", "tipo", "indisp", "on", "sensor", "info", "txtOk", "txtAlerta", "desde", "temBat", "batEntityId", "bat"].forEach((k) => { d[k] = c[k]; });
-  d.real = true;
+  ["sala", "id", "entityId", "nome", "tipo", "indisp", "on", "sensor", "info", "txtOk", "txtAlerta", "desde", "temBat", "batEntityId", "bat",
+    "estado", "dominio", "vst", "modo", "modoOpcoes", "rgb", "kmin", "kmax", "fontes"].forEach((k) => { d[k] = c[k]; });
+  d.real = true; d.cor = c.on ? window.CasaReal.corDoRgb(c.rgbCor) : null;
   CAMPOS_AJUSTE.forEach((k) => { if (c[k] != null) d[k] = c[k]; else if (c.on || !(k in d)) d[k] = null; });
   if (c.dimmer === true) d.semDimmer = false; else if (c.dimmer === false) d.semDimmer = true; else if (!("semDimmer" in d)) d.semDimmer = true;
+  aplicaTravas(d, c);   // valor otimista (comandos) vale até a HA confirmar ou a trava de 5 s expirar
 }
 function sincronizaReal() {
-  const m = window.CasaReal.estadoReal(CONTRATO, ESTADOS);
+  const m = window.CasaReal.estadoReal(CONTRATO, ESTADOS, CMD.regras);
   m.salas.forEach((s) => {
     const sala = SALAS.find((x) => x.id === s.id);
     if (sala) sala.leitura = s.leitura;
@@ -852,9 +1125,11 @@ function sincronizaReal() {
   REAL_BATS = m.baterias; REAL_OFF = m.offline; REAL_CAMS = m.cameras;
   return m;
 }
-function iniciaReal(contrato) {
+function iniciaReal(contrato, regras, cliente) {
   REAL = true; CONTRATO = contrato; ESTADOS = {}; MANUT_EXTRA = []; estado.clear();
-  const m = window.CasaReal.estadoReal(contrato, ESTADOS);
+  travas.forEach((t) => clearTimeout(t.t)); travas.clear();
+  CMD = regras && cliente ? { regras, cliente } : { regras: null, cliente: null };   // sem os dois = somente leitura
+  const m = window.CasaReal.estadoReal(contrato, ESTADOS, CMD.regras);
   SALAS = m.salas.map((s) => ({ id: s.id, icone: s.icone, nome: s.nome, leitura: "", t: null }));
   CENAS = m.cenas;
   m.salas.forEach((s) => s.cartoes.forEach((c) => {
@@ -862,7 +1137,7 @@ function iniciaReal(contrato) {
     aplicaCartao(d, c); estado.set(c.chave, d);
   }));
   carregaFavs(); sincronizaReal();
-  document.querySelector(".proto").textContent = "Casa real · somente leitura · nenhum comando chega à casa";
+  document.querySelector(".proto").textContent = comandosAtivos() ? "Casa real · comandos ativos · cada toque aciona a casa" : "Casa real · somente leitura · nenhum comando chega à casa";
   document.querySelector("#secao-cameras .muted").textContent = "Câmeras da Home Assistant";
   S.net = "carregando"; S.recebeu = false; S.semDados = false;
   renderTudo();

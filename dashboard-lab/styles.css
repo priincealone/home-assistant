@@ -653,3 +653,43 @@ body[data-folha] { overflow: hidden; }
 @media (min-width: 768px) {
   .folha-painel.manut-painel { width: min(560px, calc(100% - 2 * var(--gutter))); }
 }
+
+/* ---------- Rodada 12: comandos no modo real ---------- */
+/* cartão com comando em andamento (otimista até a HA confirmar): sutil, sem mudar tamanho nem posição */
+.dev[data-pendente="true"] .sw, .dev[data-pendente="true"] .sub { opacity: 0.6; }
+.dev[data-pendente="true"] .chip { outline: 1px dashed var(--border-strong); outline-offset: 2px; }
+.dev .sw, .dev .sub { transition: opacity var(--dur-fast); }
+.scene[aria-busy="true"], .pill-btn[aria-busy="true"] { opacity: 0.7; }
+.toast[data-tom="erro"] { border-color: rgba(239, 68, 68, 0.55); }
+
+/* confirmação: mesma casca da folha, acima dela */
+#confirma {
+  position: fixed; inset: 0; z-index: 70; display: grid; align-items: end; justify-items: center;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) 0 env(safe-area-inset-left);
+}
+#confirma[hidden] { display: none; }
+#confirma[data-estado="aberta"] .folha-fundo, #confirma[data-estado="aberta"] .folha-painel { opacity: 1; transform: none; }
+#confirma[data-estado="saindo"] .folha-fundo { opacity: 0; }
+#confirma[data-estado="saindo"] .folha-painel { opacity: 0; transform: translateY(24px); }
+.conf-txt { font-size: 0.9375rem; line-height: 1.5; overflow-wrap: anywhere; }
+.conf-acoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.conf-b {
+  flex: 1 1 120px; min-height: 48px; padding: 8px 16px; cursor: pointer; font-weight: 600; font-size: 0.9375rem; overflow-wrap: anywhere;
+  border-radius: 14px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.05); color: var(--text);
+  transition: background-color var(--dur-fast), border-color var(--dur-fast);
+}
+.conf-b:hover { background: rgba(255, 255, 255, 0.1); }
+.conf-ok { border-color: rgba(251, 191, 36, 0.55); background: rgba(251, 191, 36, 0.16); color: var(--amber); }
+.conf-ok:hover { background: rgba(251, 191, 36, 0.26); }
+@media (min-width: 768px) {
+  #confirma { align-items: center; padding-bottom: env(safe-area-inset-bottom); }
+  #confirma .folha-painel { width: min(440px, calc(100% - 2 * var(--gutter))); border-radius: 24px; padding-bottom: 0; transform: translateY(12px); }
+  #confirma[data-estado="saindo"] .folha-painel { transform: translateY(12px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #confirma .folha-painel, #confirma .folha-fundo, .dev .sw, .dev .sub { transition-duration: 1ms !important; }
+}
+
+/* controle remoto da TV: 3 colunas; o último botão ímpar ocupa a linha */
+.segs-rem { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.segs-rem .segbtn:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
