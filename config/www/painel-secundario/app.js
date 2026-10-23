@@ -342,13 +342,13 @@ function secaoHtml(s, entradas) {
   const itens = acionaveis(s.id);
   const n = itens.filter((d) => d.on).length;
   let acao = itens.length === 0 ? "" : n === 0
-    ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}${tituloLeit()}>Acender tudo</button>`
-    : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}${tituloLeit()}>Apagar tudo</button>`;
+    ? `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="1" ${travado() ? "disabled" : ""}${tituloLeit()}>${REAL ? "Acender luzes" : "Acender tudo"}</button>`
+    : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="0" ${travado() ? "disabled" : ""}${tituloLeit()}>${REAL ? "Apagar luzes" : "Apagar tudo"}</button>`;
   if (comandosAtivos()) {   // só as luzes (e o interruptor de luz) do cômodo; cômodo sem luz comandável = sem botão
     const cs = cartoesSala(s.id), R = window.CasaReal;
     const apagar = R.itensLote(cs, false, CMD.regras).length > 0, acender = R.itensLote(cs, true, CMD.regras).length > 0;
     const ocupado = semDados() || !!S.loteOcupado;
-    acao = !apagar && !acender ? "" : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="${apagar ? 0 : 1}" ${ocupado ? "disabled" : ""}${S.loteOcupado === s.id ? ' aria-busy="true"' : ""} title="${apagar ? "Apaga" : "Acende"} as luzes deste cômodo" aria-label="${apagar ? "Apagar tudo: apaga as luzes de" : "Acender tudo: acende as luzes de"} ${esc(s.nome)}">${apagar ? "Apagar tudo" : "Acender tudo"}</button>`;
+    acao = !apagar && !acender ? "" : `<button type="button" class="pill-btn" data-todos="${s.id}" data-valor="${apagar ? 0 : 1}" ${ocupado ? "disabled" : ""}${S.loteOcupado === s.id ? ' aria-busy="true"' : ""} title="${apagar ? "Apaga" : "Acende"} as luzes deste cômodo" aria-label="${apagar ? "Apagar luzes: apaga as luzes de" : "Acender luzes: acende as luzes de"} ${esc(s.nome)}">${apagar ? "Apagar luzes" : "Acender luzes"}</button>`;
   }
   const resumo = `${REAL ? (s.leitura ? s.leitura + " · " : "") : s.t + "° · "}${n} de ${itens.length} ligados`;
   return `<section aria-label="${esc(s.nome)}">
@@ -421,7 +421,7 @@ function renderTudo() {
 const vibrar = () => { try { navigator.vibrate && navigator.vibrate(12); } catch { /* sem suporte */ } };
 let timerNet = null;
 
-/* aviso curto com "Desfazer" (cenas e "Apagar/Acender tudo") */
+/* aviso curto com "Desfazer" (cenas e "Apagar/Acender luzes"; no simulado "Apagar/Acender tudo") */
 let toastT = null, toastUndo = null;
 const instantaneo = () => ({ ons: new Map([...estado].map(([k, d]) => [k, d.on])), cena: S.cena });
 const restaura = (s) => { s.ons.forEach((v, k) => { estado.get(k).on = v; }); S.cena = s.cena; };
@@ -489,8 +489,10 @@ const SLIDERS = {
   pct: { rot: "Velocidade", min: 0, max: 100, step: 1, get: (d) => d.pct ?? 0, set: () => {}, txt: (v) => `${v}%`, vt: (v) => `${v} por cento` },   // só modo real (percentage do ventilador)
   vol: { rot: "Volume", min: 0, max: 100, step: 1, get: (d) => d.vol, set: (d, v) => { d.vol = v; if (v > 0) d.mudo = false; }, txt: (v) => `${v}%`, vt: (v) => `${v} por cento` },
 };
+const DIRECOES = { forward: "Ventilador (descer ar)", reverse: "Exaustor (subir ar)" };
 const SEGS = {
   vel: { rot: "Velocidade", valores: [1, 2, 3], rotulo: (v) => String(v), aria: (v) => `Velocidade ${v}`, get: (d) => d.vel, set: (d, v) => { d.vel = v; } },
+  dir: { rot: "Modo", valores: ["forward", "reverse"], rotulo: (v) => DIRECOES[v], aria: (v) => `Modo ${DIRECOES[v]}`, get: (d) => d.dir, set: () => {} },   // só modo real; nomes do Painel Primário (FanControlCard)
   suc: { rot: "Sucção", valores: [1, 2, 3], rotulo: (v) => SUCCAO[v - 1], aria: (v) => `Sucção ${SUCCAO[v - 1].toLowerCase()}`, get: (d) => d.suc, set: (d, v) => { d.suc = v; } },
 };
 const VAC = { limpando: ["play", "Iniciar"], pausado: ["pause", "Pausar"], base: ["base", "Voltar à base"] };
@@ -503,7 +505,7 @@ function montaFolha(d) {
     <input class="rng" type="range" id="f-${id}" data-ctl="${id}" min="${mn}" max="${mx}" step="${SLIDERS[id].step}"></div>`;
   const sw = (id, rot) => `<button type="button" class="ctl-sw" role="switch" aria-checked="false" data-sw="${id}"><span class="rot" data-rot="${id}">${rot}</span><span class="sw" aria-hidden="true"></span></button>`;
   const seg = (id) => `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-${id}-r">${SEGS[id].rot}</span></div>
-    <div class="segs" role="group" aria-labelledby="f-${id}-r">${SEGS[id].valores.map((v) => `<button type="button" class="segbtn" data-seg="${id}" data-v="${v}" aria-pressed="false" aria-label="${SEGS[id].aria(v)}">${SEGS[id].rotulo(v)}</button>`).join("")}</div></div>`;
+    <div class="${id === "dir" ? "segs segs-app" : "segs"}" role="group" aria-labelledby="f-${id}-r">${SEGS[id].valores.map((v) => `<button type="button" class="segbtn" data-seg="${id}" data-v="${v}" aria-pressed="false" aria-label="${SEGS[id].aria(v)}">${SEGS[id].rotulo(v)}</button>`).join("")}</div></div>`;
   let h = "";
   if (comandosAtivos() && d.real) {
     h += controlesReais(d, slider, sw, seg);
@@ -557,7 +559,7 @@ function atualizaFolha() {
     el.setAttribute("aria-checked", String(!!v)); el.disabled = id === "fav" ? semDados() : bloq || (semTv && id === "mudo");   // Favorito é local: segue valendo no modo real
     if (id === "on") el.querySelector("[data-rot]").textContent = v ? "Ligado" : "Desligado";
   });
-  f.querySelectorAll("[data-seg]").forEach((el) => { el.setAttribute("aria-pressed", String(SEGS[el.dataset.seg].get(d) === +el.dataset.v)); el.disabled = bloq; });
+  f.querySelectorAll("[data-seg]").forEach((el) => { el.setAttribute("aria-pressed", String(String(SEGS[el.dataset.seg].get(d)) === el.dataset.v)); el.disabled = bloq || (el.dataset.seg === "dir" && !d.on); });
   f.querySelectorAll("[data-app]").forEach((el) => { el.setAttribute("aria-pressed", String(d.app === el.dataset.app)); el.disabled = bloq || semTv; });
   f.querySelectorAll("[data-rem]").forEach((el) => { el.disabled = bloq || semTv; });
   f.querySelectorAll("[data-modo]").forEach((el) => { el.setAttribute("aria-pressed", String(d.modo === el.dataset.modo)); el.disabled = bloq; });
@@ -631,7 +633,7 @@ $("#folha").addEventListener("click", (ev) => {
   const dt = alvo.dataset;
   if (comandosAtivos() && dt.sw !== "fav") { folhaClickReal(dt); return; }   // só o Favorito continua local
   if (dt.sw) aplicarFolha((d) => { if (dt.sw === "on") d.on = !d.on; else d[dt.sw] = !d[dt.sw]; }, dt.sw === "fav");
-  else if (dt.seg) aplicarFolha((d) => SEGS[dt.seg].set(d, +dt.v));
+  else if (dt.seg && dt.seg !== "dir") aplicarFolha((d) => SEGS[dt.seg].set(d, +dt.v));
   else if (dt.app) aplicarFolha((d) => { d.app = dt.app; });
   else if (dt.cor) aplicarFolha((d) => { d.cor = dt.cor; d.on = true; });
   else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; });
@@ -940,7 +942,7 @@ function toqueReal(chave) {
   executa(chave, acao, null, [["on", acao === "ligar"]]);
 }
 
-// "Apagar/Acender tudo": um lote só com luzes (e interruptor de luz) do cômodo; Desfazer reaplica o inverso pelas mesmas ações.
+// "Apagar/Acender luzes": um lote só com luzes (e interruptor de luz) do cômodo; Desfazer reaplica o inverso pelas mesmas ações.
 function todosReal(salaId, ligar) {
   if (S.loteOcupado) return;
   const itens = CR.itensLote(cartoesSala(salaId), ligar, CMD.regras);
@@ -954,8 +956,8 @@ function enviaLote(salaId, itens, ligar, nome, comDesfazer) {
   const p = CMD.cliente.comandarLote(itens).then((r) => {
     S.loteOcupado = null;
     if (r.ok) {
-      if (comDesfazer) mostraToast(`${nome}: ${ligar ? "luzes acesas" : "luzes apagadas"}`, () => enviaLote(salaId, CR.loteInverso(itens), !ligar, nome, false));
-      else mostraToast(`${nome}: desfeito`);
+      if (comDesfazer) mostraToast(`Luzes de ${nome} ${ligar ? "acesas" : "apagadas"}`, () => enviaLote(salaId, CR.loteInverso(itens), !ligar, nome, false));
+      else mostraToast(`Luzes de ${nome}: desfeito`);
     } else {
       const parcial = Array.isArray(r.resultados) && r.resultados.length === itens.length;
       chaves.forEach((ch, i) => { if (!parcial || !r.resultados[i] || !r.resultados[i].ok) limpaTrava(chaveTrava(ch, "on")); });
@@ -1012,6 +1014,7 @@ function folhaClickReal(dt) {
   else if (dt.sw === "osc") ajusteReal("osc", !d.osc, true);
   else if (dt.sw === "mudo") ajusteReal("mudo", !d.mudo, true);
   else if (dt.seg === "vel") ajusteReal("vel", +dt.v, true);
+  else if (dt.seg === "dir") { if (d.on && CR.DIRECOES_OK.includes(dt.v)) ajusteReal("dir", dt.v, true); }
   else if (dt.app) ajusteReal("app", dt.app, true);
   else if (dt.cor) ajusteReal("cor", dt.cor, true);
   else if (dt.modo) ajusteReal("modo", dt.modo, true);
@@ -1040,6 +1043,7 @@ function controlesReais(d, slider, sw, seg) {
   if (d.tipo === "fan") {
     if (tem("velocidade")) h += seg("vel");
     if (d.osc != null && tem("oscilar")) h += sw("osc", "Oscilar");
+    if (d.dir != null && tem("direcao")) h += seg("dir");   // só se o estado real traz o atributo direction
   }
   if (d.tipo === "tv") {
     if (d.vol != null && tem("volume")) h += slider("vol");
@@ -1058,10 +1062,17 @@ const aliviaInert = () => {   // devolve o "inert" ao que valia antes do diálog
   document.querySelector(".wrap").inert = algum; document.querySelector(".tabbar").inert = algum;
   $("#folha").inert = false; $("#manutencao").inert = false;
 };
+// o cartão é recriado a cada renderização: o foco volta ao controle de origem achado por seletor, não pelo nó antigo
+function seletorDe(el) {
+  const e = el && el.closest ? el.closest("[data-dev],[data-todos],[data-cena]") : null;
+  if (!e) return null;
+  const a = e.hasAttribute("data-dev") ? "data-dev" : e.hasAttribute("data-todos") ? "data-todos" : "data-cena";
+  return `[${a}="${e.getAttribute(a).replace(/["\\]/g, "\\$&")}"]`;
+}
 function abrirConfirma(o) {
   if (confirmaEstado) return;
   const el = $("#confirma");
-  confirmaEstado = { aoConfirmar: o.aoConfirmar, aoCancelar: o.aoCancelar, voltar: document.activeElement, setouBody: !document.body.dataset.folha };
+  confirmaEstado = { aoConfirmar: o.aoConfirmar, aoCancelar: o.aoCancelar, voltar: document.activeElement, voltarSel: seletorDe(document.activeElement), setouBody: !document.body.dataset.folha };
   confirmaAbertaEm = performance.now();
   if (toastUndo) escondeToast();
   el.innerHTML = `<div class="folha-fundo" data-confirma-fechar></div>
@@ -1086,7 +1097,8 @@ function fecharConfirma(confirmou) {
     el.hidden = true; el.innerHTML = ""; el.dataset.estado = "";
     aliviaInert();
     if (c.setouBody) delete document.body.dataset.folha;
-    const v = c.voltar;
+    const origem = c.voltarSel ? document.querySelector(c.voltarSel) : null;
+    const v = origem || c.voltar;
     if (v && v !== document.body && document.contains(v) && !v.disabled) v.focus({ preventScroll: true });
     else if (folhaChave) { const p = document.querySelector("#folha .folha-painel"); if (p) p.focus({ preventScroll: true }); }
   }, durFast());
@@ -1106,7 +1118,7 @@ $("#confirma").addEventListener("keydown", (ev) => {
 
 /* ---------- Modo real (rodada 11 leitura + rodada 12 comandos): contrato.json, comandos.json e estados da HA ---------- */
 // Campos de ajuste que sobrevivem enquanto o aparelho está desligado (a HA zera brilho/temperatura de cor ao apagar).
-const CAMPOS_AJUSTE = ["bri", "temp", "vel", "pct", "osc", "vol", "mudo", "app", "subOn"];
+const CAMPOS_AJUSTE = ["bri", "temp", "vel", "pct", "osc", "dir", "vol", "mudo", "app", "subOn"];
 function aplicaCartao(d, c) {
   ["sala", "id", "entityId", "nome", "tipo", "indisp", "on", "sensor", "info", "txtOk", "txtAlerta", "desde", "temBat", "batEntityId", "bat",
     "estado", "dominio", "vst", "modo", "modoOpcoes", "rgb", "kmin", "kmax", "fontes"].forEach((k) => { d[k] = c[k]; });

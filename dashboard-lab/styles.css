@@ -656,7 +656,7 @@ body[data-folha] { overflow: hidden; }
 
 /* ---------- Rodada 12: comandos no modo real ---------- */
 /* cartão com comando em andamento (otimista até a HA confirmar): sutil, sem mudar tamanho nem posição */
-.dev[data-pendente="true"] .sw, .dev[data-pendente="true"] .sub { opacity: 0.6; }
+.dev[data-pendente="true"] .sw { opacity: 0.6; }   /* o .sub mantém o contraste (≥ 4,5:1); "pendente" = contorno tracejado + aria-busy */
 .dev[data-pendente="true"] .chip { outline: 1px dashed var(--border-strong); outline-offset: 2px; }
 .dev .sw, .dev .sub { transition: opacity var(--dur-fast); }
 .scene[aria-busy="true"], .pill-btn[aria-busy="true"] { opacity: 0.7; }
@@ -672,7 +672,7 @@ body[data-folha] { overflow: hidden; }
 #confirma[data-estado="saindo"] .folha-fundo { opacity: 0; }
 #confirma[data-estado="saindo"] .folha-painel { opacity: 0; transform: translateY(24px); }
 .conf-txt { font-size: 0.9375rem; line-height: 1.5; overflow-wrap: anywhere; }
-.conf-acoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.conf-acoes { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; position: sticky; bottom: 0; padding: 10px 0 2px; background: #111827; }   /* texto longo rola; os botões ficam à vista */
 .conf-b {
   flex: 1 1 120px; min-height: 48px; padding: 8px 16px; cursor: pointer; font-weight: 600; font-size: 0.9375rem; overflow-wrap: anywhere;
   border-radius: 14px; border: 1px solid var(--border-strong); background: rgba(255, 255, 255, 0.05); color: var(--text);
@@ -687,7 +687,7 @@ body[data-folha] { overflow: hidden; }
   #confirma[data-estado="saindo"] .folha-painel { transform: translateY(12px); }
 }
 @media (prefers-reduced-motion: reduce) {
-  #confirma .folha-painel, #confirma .folha-fundo, .dev .sw, .dev .sub { transition-duration: 1ms !important; }
+  #confirma .folha-painel, #confirma .folha-fundo, .toast, .dev .sw, .dev .sub { transition-duration: 1ms !important; animation-duration: 1ms !important; }
 }
 
 /* controle remoto da TV: 3 colunas; o último botão ímpar ocupa a linha */

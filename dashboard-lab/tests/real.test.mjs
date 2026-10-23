@@ -266,7 +266,7 @@ test("real: indisponível = cartão tracejado 'Indisponível', nunca 'Desligado'
   assert.ok(a.el("#lista-comodos").innerHTML.includes("26,3° · 55% · 1 de 4 ligados"), "cabeçalho da sala");
 });
 
-test("real: SOMENTE LEITURA - toque, cena, Apagar/Acender tudo e Desfazer não mudam nada e avisam", () => {
+test("real: SOMENTE LEITURA - toque, cena, Apagar/Acender luzes e Desfazer não mudam nada e avisam", () => {
   const e = casaBase();
   e[porId("luz_sala")] = est("on");
   const a = real(e);
@@ -289,7 +289,7 @@ test("real: SOMENTE LEITURA - toque, cena, Apagar/Acender tudo e Desfazer não m
   assert.equal((cenas.match(/ disabled/g) || []).length, 4);
   const sec = a.el("#lista-comodos").innerHTML;
   assert.ok(/data-todos="[^"]+" data-valor="[01]" disabled/.test(sec));
-  assert.ok(!/data-todos="[^"]+" data-valor="[01]" (?!disabled)/.test(sec), "todo 'Apagar/Acender tudo' está desabilitado");
+  assert.ok(!/data-todos="[^"]+" data-valor="[01]" (?!disabled)/.test(sec), "todo 'Apagar/Acender luzes' está desabilitado");
 });
 
 test("real: a folha abre para ler o estado real; comandos recusados, só o Favorito (local) funciona", () => {

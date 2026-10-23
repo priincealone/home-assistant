@@ -205,7 +205,7 @@ test("aspirador: ações e modos do Painel Primário; modo inválido recusado", 
   assert.deepEqual([a.chamadas.at(-1).dominio, a.chamadas.at(-1).servico, a.chamadas.at(-1).dados.entity_id], ["select", "select_option", "select.dreame_us_415783444_mc1808_mode_p_18_6"]);
 });
 
-test("lote (Apagar/Acender tudo): só ações marcadas como lote; tudo é validado antes de executar qualquer uma", async () => {
+test("lote (Apagar/Acender luzes): só ações marcadas como lote; tudo é validado antes de executar qualquer uma", async () => {
   const a = criar();
   const luzes = (acao) => ["luz_sala", "painel", "cozinha", "banheiro_switch_1"].map((dispositivo) => ({ dispositivo, acao }));
   await a.enviar({ tipo: "comando-lote", id: 1, itens: luzes("desligar") });

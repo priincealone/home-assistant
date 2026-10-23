@@ -494,13 +494,13 @@ test("confirmação pedida pelo carregador (confirmacao_necessaria): reverte, mo
   assert.equal(cmds(b).length, 1);
 });
 
-test("'Apagar tudo': um lote só com as luzes ligadas do cômodo (nunca tomada, TV, ventilador); Desfazer reaplica o inverso pelas mesmas ações", async () => {
+test("'Apagar luzes': um lote só com as luzes ligadas do cômodo (nunca tomada, TV, ventilador); Desfazer reaplica o inverso pelas mesmas ações", async () => {
   const E = casaBase();
   E[porId("luz_sala")] = est("on"); E[porId("painel")] = est("on"); E[porId("tv_sala")] = est("on"); E[porId("ventilador_sala")] = est("on", { percentage: 33 }); E[porId("ventilacao_ps5")] = est("on"); E[porId("ps5_sala")] = est("playing");
   const a = criaAmbiente({ estados: E });
   const html = a.v(`secaoHtml(SALAS.find((s) => s.id === "${SALA}"), [...estado.entries()].filter(([, d]) => d.sala === "${SALA}"))`);
-  assert.match(html, /data-todos="sala_de_estar" data-valor="0"[^>]*>Apagar tudo</);
-  assert.match(html, /aria-label="Apagar tudo: apaga as luzes de/);
+  assert.match(html, /data-todos="sala_de_estar" data-valor="0"[^>]*>Apagar luzes</);
+  assert.match(html, /aria-label="Apagar luzes: apaga as luzes de/);
   a.clica({ todos: SALA, valor: "0" });
   assert.deepEqual(cmds(a), [{ tipo: "comando-lote", id: 1, itens: [{ dispositivo: "luz_sala", acao: "desligar" }, { dispositivo: "painel", acao: "desligar" }] }]);
   assert.equal(a.v(`estado.get("${K(SALA, "luz_sala")}").on`), false, "otimista");
@@ -509,17 +509,18 @@ test("'Apagar tudo': um lote só com as luzes ligadas do cômodo (nunca tomada, 
   assert.equal(a.v("S.loteOcupado"), SALA, "botão travado enquanto o lote não responde");
   a.responde(cmds(a)[0], { ok: true, resultados: [{ ok: true }, { ok: true }] }); await espera();
   assert.equal(a.v("S.loteOcupado"), null);
-  assert.match(a.el("#toast").innerHTML, /Sala de Estar: luzes apagadas/); assert.match(a.el("#toast").innerHTML, /data-desfazer/);
+  assert.match(a.el("#toast").innerHTML, /Luzes de Sala de Estar apagadas/); assert.match(a.el("#toast").innerHTML, /data-desfazer/);
   a.lote({ [porId("luz_sala")]: est("off", {}, 0), [porId("painel")]: est("off", {}, 0) });
   a.clica({ desfazer: "" });
   assert.deepEqual(cmds(a)[1], { tipo: "comando-lote", id: 2, itens: [{ dispositivo: "luz_sala", acao: "ligar" }, { dispositivo: "painel", acao: "ligar" }] });
   assert.equal(a.v(`estado.get("${K(SALA, "luz_sala")}").on`), true);
   a.responde(cmds(a)[1], { ok: true }); await espera();
   assert.doesNotMatch(a.el("#toast").innerHTML, /data-desfazer/, "desfazer não tem Desfazer");
-  // com tudo apagado o botão vira 'Acender tudo' e acende só luzes
+  // com tudo apagado o botão vira 'Acender luzes' e acende só luzes
   const b = criaAmbiente();
   b.clica({ todos: SALA, valor: "1" });
   assert.deepEqual(cmds(b)[0].itens, [{ dispositivo: "luz_sala", acao: "ligar" }, { dispositivo: "painel", acao: "ligar" }]);
+  assert.match(criaAmbiente().v(`secaoHtml(SALAS.find((s) => s.id === "${SALA}"), [])`), /Acender luzes</);
   // lote com falha parcial: reverte só o item que falhou e avisa
   b.responde(cmds(b)[0], { ok: false, resultados: [{ ok: true }, { ok: false, erro: "falha_na_ha" }] }); await espera();
   assert.equal(b.v(`pendente("${K(SALA, "painel")}")`), false); assert.equal(b.v(`estado.get("${K(SALA, "painel")}").on`), false);
@@ -531,7 +532,7 @@ test("'Apagar tudo': um lote só com as luzes ligadas do cômodo (nunca tomada, 
   assert.equal(c.v(`estado.get("${K(SALA, "luz_sala")}").on`), false); assert.match(c.el("#toast").innerHTML, /recusou um dos itens/);
 });
 
-test("'Apagar tudo' só existe onde há luz comandável; cômodo sem regra de lote não mostra o botão; offline desabilita", () => {
+test("'Apagar luzes' só existe onde há luz comandável; cômodo sem regra de lote não mostra o botão; offline desabilita", () => {
   const a = criaAmbiente();
   const sec = (id, ar = a) => ar.v(`secaoHtml(SALAS.find((s) => s.id === "${id}"), [...estado.entries()].filter(([, d]) => d.sala === "${id}"))`);
   for (const id of ["sala_de_estar", "cozinha", "banheiro", "quarto"]) assert.match(sec(id), /data-todos=/, id);
@@ -661,6 +662,7 @@ test("folha: controles por família (só o que tem ação em comandos.json E atr
   assert.equal((fan.match(/data-seg="vel"/g) || []).length, 3); assert.ok(fan.includes('data-sw="osc"') && !fan.includes('data-ctl="pct"'));
   const fanOff = folha("quarto", "ventilador_quarto");
   assert.ok(fanOff.includes('data-seg="vel"') && !fanOff.includes('data-sw="osc"'), "oscilar só se o atributo existe");
+  assert.ok(!fan.includes('data-seg="dir"') && !fanOff.includes('data-seg="dir"'), "direção só se o estado real traz o atributo direction");
   const tv = folha(SALA, "tv_sala");
   assert.ok(tv.includes('data-ctl="vol"') && tv.includes('data-sw="mudo"'));
   assert.equal((tv.match(/data-rem="/g) || []).length, 13, "13 botões de controle remoto");
@@ -765,4 +767,81 @@ test("regras: toda ação de lote:true é de luz ou interruptor de luz; nenhuma 
     }
   }
   for (const id of ["pc_socket_1", "pc_socket_2", "bloqueio_luca", "tv_sala", "ps5_sala", "ventilador_sala", "ventilador_quarto", "aspirador"]) for (const r of Object.values(COMANDOS.dispositivos[id].acoes)) assert.notEqual(r.lote, true, id);
+});
+
+/* ---------- Rodada 13: direção do ventilador, rótulo "luzes" e achados do porteiro ---------- */
+test("direção do ventilador: nomes do Painel Primário; valor vem do estado real; toque manda direcao/direction; só com o ventilador ligado", async () => {
+  const E = casaBase();
+  E[porId("ventilador_sala")] = est("on", { percentage: 66, direction: "forward" });
+  E[porId("ventilador_quarto")] = est("off", { direction: "reverse" });
+  const a = criaAmbiente({ estados: E });
+  const k = K(SALA, "ventilador_sala");
+  const h = a.v(`montaFolha(estado.get("${k}"))`);
+  assert.equal((h.match(/data-seg="dir"/g) || []).length, 2);
+  assert.ok(h.includes('data-v="forward"') && h.includes('data-v="reverse"') && h.includes("Ventilador (descer ar)") && h.includes("Exaustor (subir ar)"));
+  assert.equal(a.v(`estado.get("${k}").dir`), "forward"); assert.equal(a.v(`estado.get("${K("quarto", "ventilador_quarto")}").dir`), "reverse");
+  a.v(`abrirFolha("${k}")`);
+  a.dispara("#folha", "click", { seg: "dir", v: "reverse" });
+  assert.deepEqual(plano(cmds(a).at(-1)), { tipo: "comando", id: 1, dispositivo: "ventilador_sala", acao: "direcao", params: { direction: "reverse" } });
+  assert.equal(a.v(`estado.get("${k}").dir`), "reverse", "otimista");
+  assert.equal(a.v(`pendente("${k}")`), true);
+  // erro do carregador: reverte na hora ao valor real
+  a.responde(cmds(a)[0], { ok: false, erro: "falha_na_ha" }); await espera();
+  assert.equal(a.v(`estado.get("${k}").dir`), "forward"); assert.equal(a.v(`pendente("${k}")`), false);
+  // a HA confirma: trava sai sem erro
+  a.dispara("#folha", "click", { seg: "dir", v: "reverse" });
+  a.responde(cmds(a)[1], { ok: true }); await espera();
+  a.lote({ [porId("ventilador_sala")]: est("on", { percentage: 66, direction: "reverse" }, 0) });
+  assert.equal(a.v(`pendente("${k}")`), false); assert.equal(a.v(`estado.get("${k}").dir`), "reverse");
+  // valor inválido nunca vira comando
+  assert.equal(CR.comandoDoCampo("dir", "sideways"), null);
+  assert.deepEqual(plano(CR.comandoDoCampo("dir", "forward")), { acao: "direcao", params: { direction: "forward" } });
+  const antes = cmds(a).length; a.dispara("#folha", "click", { seg: "dir", v: "sideways" }); assert.equal(cmds(a).length, antes);
+  // desligado: o controle aparece (há atributo) mas não comanda
+  a.v("fecharFolha()"); a.rel.avanca(500);
+  const q = K("quarto", "ventilador_quarto");
+  a.v(`abrirFolha("${q}")`);
+  const n = cmds(a).length; a.dispara("#folha", "click", { seg: "dir", v: "forward" });
+  assert.equal(cmds(a).length, n, "ventilador desligado não recebe direção");
+  assert.match(APP, /\[data-seg\]"\)\.forEach[^\n]*dataset\.seg === "dir" && !d\.on/, "botões desabilitados com o ventilador desligado");
+});
+
+test("direção do ventilador: sem o atributo direction (ou sem regra 'direcao', ou somente leitura) o controle não aparece e nada sai", () => {
+  const E = casaBase(); E[porId("ventilador_sala")] = est("on", { percentage: 66 });
+  const a = criaAmbiente({ estados: E });
+  assert.ok(!a.v(`montaFolha(estado.get("${K(SALA, "ventilador_sala")}"))`).includes('data-seg="dir"'));
+  assert.equal(a.v(`estado.get("${K(SALA, "ventilador_sala")}").dir`), null);
+  const E2 = casaBase(); E2[porId("ventilador_sala")] = est("on", { percentage: 66, direction: "forward" });
+  const semRegra = plano(COMANDOS); delete semRegra.dispositivos.ventilador_sala.acoes.direcao;
+  assert.ok(!criaAmbiente({ estados: E2, regras: semRegra }).v(`montaFolha(estado.get("${K(SALA, "ventilador_sala")}"))`).includes('data-seg="dir"'));
+  // valor estranho no atributo não vira estado
+  const E3 = casaBase(); E3[porId("ventilador_sala")] = est("on", { direction: "diagonal" });
+  assert.equal(criaAmbiente({ estados: E3 }).v(`estado.get("${K(SALA, "ventilador_sala")}").dir`), null);
+  // kill-switch: nada comanda
+  const k = criaAmbiente({ estados: E2, regras: null });
+  k.v(`abrirFolha("${K(SALA, "ventilador_sala")}")`); k.dispara("#folha", "click", { seg: "dir", v: "reverse" });
+  assert.equal(k.saiu.length, 0);
+});
+
+test("rótulo 'luzes' (real) e achados do porteiro: B-1 contraste do .sub, B-2 ações da confirmação à vista, B-3 foco por seletor, B-4 sem movimento", () => {
+  const CSS = ler("styles.css");
+  const a = criaAmbiente();
+  const sec = a.v(`secaoHtml(SALAS.find((s) => s.id === "${SALA}"), [])`);
+  assert.match(sec, /Acender luzes</); assert.doesNotMatch(sec, /tudo/i);
+  const ro = criaAmbiente({ regras: null });   // somente leitura (real): também fala de luzes
+  assert.match(ro.v(`secaoHtml(SALAS.find((s) => s.id === "${SALA}"), [])`), /(Acender|Apagar) luzes</);
+  assert.doesNotMatch(APP + REAL_JS, /Apagar\/Acender tudo\./);
+  // B-1
+  assert.match(CSS, /\.dev\[data-pendente="true"\] \.sw \{ opacity: 0\.6; \}/); assert.doesNotMatch(CSS, /data-pendente="true"\] \.sub/);
+  assert.match(CSS, /\.dev\[data-pendente="true"\] \.chip \{ outline: 1px dashed/);
+  // B-2
+  assert.match(CSS, /\.conf-acoes \{[^}]*position: sticky; bottom: 0;[^}]*background: #111827/);
+  // B-3
+  assert.match(APP, /voltarSel: seletorDe\(document\.activeElement\)/); assert.match(APP, /document\.querySelector\(c\.voltarSel\)/);
+  for (const at of ["data-dev", "data-todos", "data-cena"]) assert.ok(APP.includes(`"${at}"`), at);
+  // B-4
+  const rm = CSS.slice(CSS.lastIndexOf("@media (prefers-reduced-motion: reduce)"));
+  assert.match(CSS, /\*, \*::before, \*::after \{ transition-duration: 1ms !important; animation-duration: 1ms !important; \}/);
+  assert.match(CSS, /#confirma \.folha-painel, #confirma \.folha-fundo, \.toast,/); assert.ok(rm.length > 0);
+  assert.ok(!/transition:\s*all/.test(CSS));
 });

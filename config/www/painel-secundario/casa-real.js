@@ -86,6 +86,7 @@
       temp: on ? kelvin(at) : null,
       pct: tipo === "fan" && on && pct != null ? Math.round(pct) : null,
       vel: tipo === "fan" && on && pct != null ? (pct <= 34 ? 1 : pct <= 67 ? 2 : 3) : null,
+      dir: tipo === "fan" && (at.direction === "forward" || at.direction === "reverse") ? at.direction : null,
       osc: tipo === "fan" && typeof at.oscillating === "boolean" ? at.oscillating : null,
       vol: tipo === "tv" && vol != null ? Math.round(vol * 100) : null,
       mudo: tipo === "tv" && typeof at.is_volume_muted === "boolean" ? at.is_volume_muted : null,
@@ -239,6 +240,7 @@
     ["KEY_LEFT", "◀", "Esquerda"], ["KEY_ENTER", "OK", null], ["KEY_RIGHT", "▶", "Direita"],
     ["KEY_MENU", "Menu", null], ["KEY_DOWN", "▼", "Baixo"], ["KEY_STOP", "Parar", null],
     ["KEY_REWIND", "⏪", "Retroceder"], ["KEY_PLAY", "Play", null], ["KEY_FF", "⏩", "Avançar"], ["KEY_PAUSE", "Pausa", null]];
+  const DIRECOES_OK = ["forward", "reverse"];
   const FONTE_OK = /^[A-Za-z0-9 ._-]{1,32}$/;   // mesmo padrão do carregador para "fonte"
   // campo da folha -> {acao, params} (ou null se o campo não comanda)
   function comandoDoCampo(campo, valor) {
@@ -247,6 +249,7 @@
       case "temp": return { acao: "ajustar", params: { color_temp_kelvin: Math.round(lerNumero(valor) ?? 0) } };
       case "cor": return TEM(COR_RGB, valor) ? { acao: "ajustar", params: { rgb_color: COR_RGB[valor].slice() } } : null;
       case "vel": return { acao: "velocidade", params: { percentage: velParaPct(valor) } };
+      case "dir": return DIRECOES_OK.includes(valor) ? { acao: "direcao", params: { direction: valor } } : null;
       case "osc": return { acao: "oscilar", params: { oscillating: !!valor } };
       case "vol": return { acao: "volume", params: { volume_level: volumeParaHa(valor) } };
       case "mudo": return { acao: "mudo", params: { is_volume_muted: !!valor } };
@@ -272,7 +275,7 @@
     return null;
   };
 
-  // "Apagar/Acender tudo": só ações marcadas lote:true nas regras (luzes e interruptor de luz), do cômodo, que precisam mudar.
+  // "Apagar/Acender luzes": só ações marcadas lote:true nas regras (luzes e interruptor de luz), do cômodo, que precisam mudar.
   const MAX_LOTE = 24;
   function itensLote(cartoes, ligar, regras) {
     const acao = ligar ? "ligar" : "desligar";
@@ -296,7 +299,7 @@
     parametro_nao_permitido: "Este ajuste não é permitido.", parametro_invalido: "Valor fora do permitido para este ajuste.", parametros_ausentes: "Faltou o valor do ajuste.",
     estado_nao_permite: "O aparelho não está num estado que permita isto agora.", estado_desconhecido: "Estado do aparelho desconhecido. Aguarde e tente de novo.",
     muitos_comandos: "Comandos demais em pouco tempo. Aguarde um instante.", lote_invalido: "Lote de comandos inválido.", item_recusado: "A casa recusou um dos itens. Nada foi enviado.",
-    acao_fora_do_lote: "Só luzes entram em Apagar/Acender tudo.", falha_na_ha: "A casa não executou o comando.", timeout_sem_confirmacao: "Sem confirmação da casa — confira o estado.",
+    acao_fora_do_lote: "Só luzes entram em Apagar/Acender luzes.", falha_na_ha: "A casa não executou o comando.", timeout_sem_confirmacao: "Sem confirmação da casa — confira o estado.",
     pedido_invalido: "Pedido inválido.", alvo_desconhecido: "Aparelho sem destino configurado.", servico_invalido: "Ação inválida.", parametros_invalidos: "Ajuste inválido.",
   };
   const mensagemErro = (codigo) => (TEM(ERROS, codigo) ? ERROS[codigo] : "Não foi possível executar o comando.");
@@ -377,6 +380,6 @@
   g.CasaReal = {
     indisponivel, lerNumero, lerBateria, tipoCartao, estadoReal, conectar, ESPERA_SEM_DADOS_MS,
     validaRegras, acaoRegra, somenteSeOk, escolherAcaoToque, podeComandar, textoConfirmacao, brilhoParaHa, volumeParaHa, velParaPct, comandoDoCampo,
-    iguais, corDoRgb, itensLote, loteInverso, temLote, mensagemErro, criarCliente, modoLeitura, COR_RGB, VEL_PCT, MODOS_ASPIRADOR, BOTOES_REMOTO, FONTE_OK,
+    iguais, corDoRgb, itensLote, loteInverso, temLote, mensagemErro, criarCliente, modoLeitura, COR_RGB, VEL_PCT, MODOS_ASPIRADOR, BOTOES_REMOTO, FONTE_OK, DIRECOES_OK,
   };
 })(typeof window !== "undefined" ? window : globalThis);
