@@ -15,7 +15,7 @@
   --red-text: #f87171;
   --glass: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
   --aura-amber: 0 0 24px rgba(251, 191, 36, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.25);
-  --gutter: clamp(16px, 3vw, 40px);
+  --gutter: clamp(16px, 2vw, 28px);
   --col-nav: 200px;
   --col-side: 320px;
   --dur-instant: 100ms;
@@ -94,7 +94,16 @@ button { font: inherit; color: inherit; }
 }
 
 /* ---------- Hero ---------- */
-.hero { padding: clamp(24px, 6vh, 56px) 0 clamp(12px, 2.5vh, 24px); }
+.hero { padding: clamp(8px, 3vh, 32px) 0 clamp(12px, 2.5vh, 24px); }
+/* Celular: topo enxuto (só a área segura do aparelho + 8 px), bordas laterais e de baixo na mesma régua */
+@media (max-width: 767px) {
+  .wrap { padding-top: calc(8px + env(safe-area-inset-top)); padding-bottom: 24px; }
+  .hero { padding-top: 4px; padding-bottom: 12px; }
+}
+/* Laptop (1180–1400 px): o topo acompanha as demais bordas (12 px) */
+@media (min-width: 1180px) and (max-width: 1400px) and (min-height: 600px) {
+  .wrap { padding-top: calc(12px + env(safe-area-inset-top)); }
+}
 .hero-line { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 16px; }
 .hero-line .display { flex: 1 1 auto; min-width: 0; }
 .hero-line .status { flex: none; }

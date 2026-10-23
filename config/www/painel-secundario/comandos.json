@@ -140,7 +140,9 @@
       "comodo": "sala_de_estar",
       "acoes": {
         "ligar": {
-          "servico": "media_player.turn_on"
+          "servico": "media_player.turn_on",
+          "confirmaMs": 30000,
+          "timeoutMs": 45000
         },
         "desligar": {
           "servico": "media_player.turn_off",
@@ -151,7 +153,9 @@
               "unavailable",
               "unknown"
             ]
-          }
+          },
+          "confirmaMs": 20000,
+          "timeoutMs": 30000
         },
         "volume": {
           "servico": "media_player.volume_set",
@@ -237,7 +241,8 @@
               "idle"
             ]
           },
-          "timeoutMs": 60000
+          "timeoutMs": 60000,
+          "confirmaMs": 45000
         },
         "repouso": {
           "servico": "media_player.turn_off",
@@ -248,7 +253,8 @@
             ]
           },
           "confirmar": "Colocar o PS5 em repouso? (leva alguns segundos)",
-          "timeoutMs": 60000
+          "timeoutMs": 60000,
+          "confirmaMs": 45000
         }
       }
     },

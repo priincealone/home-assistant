@@ -884,15 +884,15 @@ const chaveTrava = (chave, campo) => `${chave}|${campo}`;
 const pendente = (chave) => { for (const k of travas.keys()) if (k.startsWith(chave + "|")) return true; return false; };
 const podeToque = (d) => comandosAtivos() && ["ligar", "desligar", "repouso"].some((a) => !!CR.acaoRegra(CMD.regras, d.id, a));
 function limpaTrava(k) { const t = travas.get(k); if (t) { clearTimeout(t.t); travas.delete(k); } }
-function armaTrava(chave, campo, v, extra) {
+function armaTrava(chave, campo, v, extra, ms) {
   const k = chaveTrava(chave, campo); limpaTrava(k);
-  travas.set(k, { v, extra: extra || null, t: setTimeout(() => expiraTrava(k), TRAVA_MS) });
+  travas.set(k, { v, extra: extra || null, t: setTimeout(() => expiraTrava(k), ms || TRAVA_MS) });
   const d = estado.get(chave);
   if (d) { d[campo] = v; if (extra) Object.assign(d, extra); }
 }
 function expiraTrava(k) {
   if (!travas.has(k)) return;
-  travas.delete(k);   // a HA não confirmou em 5 s: volta ao estado REAL (que sempre prevalece)
+  travas.delete(k);   // a HA não confirmou no prazo da ação (5 s; TV/PS5 mais): volta ao estado REAL (que sempre prevalece)
   sincronizaReal(); mostraToast("A casa não confirmou. Mostrando o estado real.", null, "erro"); renderTudo();
 }
 const valorReal = (c, campo) => (campo === "cor" ? CR.corDoRgb(c.rgbCor) : c[campo]);
@@ -910,7 +910,8 @@ function aplicaTravas(d, c) {
 function enviaComando(chave, acao, params, info, confirmado) {
   const d = estado.get(chave);
   if (!d || !comandosAtivos() || semDados()) return Promise.resolve(null);
-  (info || []).forEach(([campo, v, extra]) => armaTrava(chave, campo, v, extra));
+  const espera = CR.confirmaMsDaAcao(CMD.regras, d.id, acao);   // 5 s; TV e PS5 esperam mais (comandos.json)
+  (info || []).forEach(([campo, v, extra]) => armaTrava(chave, campo, v, extra, espera));
   S.cena = null; vibrar();
   const p = CMD.cliente.comandar(d.id, acao, params || null, { confirmado: confirmado === true }).then((r) => {
     if (r.ok) return r;                                   // aceito: o cartão só vale de verdade quando a HA confirmar

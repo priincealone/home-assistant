@@ -225,6 +225,14 @@
     if (!card || card.indisp || card.sensor) return false;
     return !!acaoRegra(regras, card.id, acao);
   }
+  // Quanto o painel espera o estado REAL confirmar antes de reverter o valor otimista. Padrão 5 s; aparelhos lentos (TV, PS5)
+  // declaram mais em comandos.json (`confirmaMs`), sempre limitado a 60 s. Valor inválido = padrão.
+  const TRAVA_PADRAO_MS = 5000, TRAVA_MAX_MS = 60000;
+  function confirmaMsDaAcao(regras, dispositivo, acao) {
+    const r = acaoRegra(regras, dispositivo, acao);
+    const v = r && r.confirmaMs;
+    return typeof v === "number" && Number.isFinite(v) && v > TRAVA_PADRAO_MS ? Math.min(v, TRAVA_MAX_MS) : TRAVA_PADRAO_MS;
+  }
   const textoConfirmacao = (regras, dispositivo, acao) => { const r = acaoRegra(regras, dispositivo, acao); return r && typeof r.confirmar === "string" ? r.confirmar : null; };
 
   // Conversões UI -> parâmetros da HA
@@ -379,7 +387,7 @@
 
   g.CasaReal = {
     indisponivel, lerNumero, lerBateria, tipoCartao, estadoReal, conectar, ESPERA_SEM_DADOS_MS,
-    validaRegras, acaoRegra, somenteSeOk, escolherAcaoToque, podeComandar, textoConfirmacao, brilhoParaHa, volumeParaHa, velParaPct, comandoDoCampo,
+    validaRegras, acaoRegra, confirmaMsDaAcao, somenteSeOk, escolherAcaoToque, podeComandar, textoConfirmacao, brilhoParaHa, volumeParaHa, velParaPct, comandoDoCampo,
     iguais, corDoRgb, itensLote, loteInverso, temLote, mensagemErro, criarCliente, modoLeitura, COR_RGB, VEL_PCT, MODOS_ASPIRADOR, BOTOES_REMOTO, FONTE_OK, DIRECOES_OK,
   };
 })(typeof window !== "undefined" ? window : globalThis);

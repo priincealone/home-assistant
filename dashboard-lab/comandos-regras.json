@@ -1,57 +1,166 @@
 {
-  "_leia": "Regras de COMANDO do Painel Secundário (fase B). Fonte editável e revisável; scripts/manutencao/gerar_contrato_painel_secundario.mjs a combina com o contrato (rooms.ts) e gera comandos.json, que o carregador da HA usa como lista de permissão. Nada fora daqui pode ser comandado. Resolução por dispositivo: porId > 'dominio:categoria' > dominio. 'servico' = 'dominio.servico'. 'alvo' = chave de alvosExtras (entidade fora do contrato, só quando listada aqui). 'somenteSe' confere o estado atual da entidade do dispositivo (estadoEm / estadoNaoEm). 'confirmar' obriga o painel a pedir confirmação. 'lote' permite o uso em Apagar/Acender tudo.",
+  "_leia": "Regras de COMANDO do Painel Secundário (fase B). Fonte editável e revisável; scripts/manutencao/gerar_contrato_painel_secundario.mjs a combina com o contrato (rooms.ts) e gera comandos.json, que o carregador da HA usa como lista de permissão. Nada fora daqui pode ser comandado. Resolução por dispositivo: porId > 'dominio:categoria' > dominio. 'servico' = 'dominio.servico'. 'alvo' = chave de alvosExtras (entidade fora do contrato, só quando listada aqui). 'somenteSe' confere o estado atual da entidade do dispositivo (estadoEm / estadoNaoEm). 'confirmar' obriga o painel a pedir confirmação. 'lote' permite o uso em Apagar/Acender tudo. 'confirmaMs' = quanto o painel espera o ESTADO REAL confirmar antes de reverter (padrão 5000, máx. 60000; só aparelhos lentos). 'timeoutMs' = quanto o carregador espera a HA responder ao serviço.",
   "alvosExtras": {
     "tv_nuvem": "media_player.sala_de_estar_tv",
     "tv_remote": "remote.tv_un65du8000gxzd",
     "aspirador": "vacuum.dreame_us_415783444_mc1808",
     "aspirador_modo": "select.dreame_us_415783444_mc1808_mode_p_18_6"
   },
-  "estadosExtras": ["tv_nuvem", "aspirador", "aspirador_modo"],
+  "estadosExtras": [
+    "tv_nuvem",
+    "aspirador",
+    "aspirador_modo"
+  ],
   "porDominio": {
     "light": {
-      "ligar": { "servico": "light.turn_on", "lote": true },
-      "desligar": { "servico": "light.turn_off", "lote": true },
+      "ligar": {
+        "servico": "light.turn_on",
+        "lote": true
+      },
+      "desligar": {
+        "servico": "light.turn_off",
+        "lote": true
+      },
       "ajustar": {
         "servico": "light.turn_on",
         "params": {
-          "brightness": { "tipo": "int", "min": 1, "max": 255 },
-          "color_temp_kelvin": { "tipo": "int", "min": 1500, "max": 9000 },
-          "rgb_color": { "tipo": "rgb" }
+          "brightness": {
+            "tipo": "int",
+            "min": 1,
+            "max": 255
+          },
+          "color_temp_kelvin": {
+            "tipo": "int",
+            "min": 1500,
+            "max": 9000
+          },
+          "rgb_color": {
+            "tipo": "rgb"
+          }
         }
       }
     },
     "switch": {
-      "ligar": { "servico": "switch.turn_on" },
-      "desligar": { "servico": "switch.turn_off" }
+      "ligar": {
+        "servico": "switch.turn_on"
+      },
+      "desligar": {
+        "servico": "switch.turn_off"
+      }
     },
     "fan": {
-      "ligar": { "servico": "fan.turn_on" },
-      "desligar": { "servico": "fan.turn_off" },
-      "velocidade": { "servico": "fan.set_percentage", "params": { "percentage": { "tipo": "int", "min": 0, "max": 100 } } },
-      "oscilar": { "servico": "fan.oscillate", "params": { "oscillating": { "tipo": "bool" } } },
-      "direcao": { "servico": "fan.set_direction", "params": { "direction": { "tipo": "enum", "valores": ["forward", "reverse"] } } }
+      "ligar": {
+        "servico": "fan.turn_on"
+      },
+      "desligar": {
+        "servico": "fan.turn_off"
+      },
+      "velocidade": {
+        "servico": "fan.set_percentage",
+        "params": {
+          "percentage": {
+            "tipo": "int",
+            "min": 0,
+            "max": 100
+          }
+        }
+      },
+      "oscilar": {
+        "servico": "fan.oscillate",
+        "params": {
+          "oscillating": {
+            "tipo": "bool"
+          }
+        }
+      },
+      "direcao": {
+        "servico": "fan.set_direction",
+        "params": {
+          "direction": {
+            "tipo": "enum",
+            "valores": [
+              "forward",
+              "reverse"
+            ]
+          }
+        }
+      }
     }
   },
   "porDominioCategoria": {
     "switch:iluminacao": {
-      "ligar": { "servico": "switch.turn_on", "lote": true },
-      "desligar": { "servico": "switch.turn_off", "lote": true }
+      "ligar": {
+        "servico": "switch.turn_on",
+        "lote": true
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "lote": true
+      }
     }
   },
   "porId": {
     "tv_sala": {
-      "ligar": { "servico": "media_player.turn_on" },
+      "ligar": {
+        "servico": "media_player.turn_on",
+        "confirmaMs": 30000,
+        "timeoutMs": 45000
+      },
       "desligar": {
         "servico": "media_player.turn_off",
-        "somenteSe": { "estadoNaoEm": ["off", "standby", "unavailable", "unknown"] }
+        "somenteSe": {
+          "estadoNaoEm": [
+            "off",
+            "standby",
+            "unavailable",
+            "unknown"
+          ]
+        },
+        "confirmaMs": 20000,
+        "timeoutMs": 30000
       },
-      "volume": { "servico": "media_player.volume_set", "alvo": "tv_nuvem", "params": { "volume_level": { "tipo": "num", "min": 0, "max": 1 } } },
-      "mudo": { "servico": "media_player.volume_mute", "alvo": "tv_nuvem", "params": { "is_volume_muted": { "tipo": "bool" } } },
-      "fonte": { "servico": "media_player.select_source", "params": { "source": { "tipo": "texto", "max": 32, "padrao": "^[A-Za-z0-9 ._-]+$" } } },
+      "volume": {
+        "servico": "media_player.volume_set",
+        "alvo": "tv_nuvem",
+        "params": {
+          "volume_level": {
+            "tipo": "num",
+            "min": 0,
+            "max": 1
+          }
+        }
+      },
+      "mudo": {
+        "servico": "media_player.volume_mute",
+        "alvo": "tv_nuvem",
+        "params": {
+          "is_volume_muted": {
+            "tipo": "bool"
+          }
+        }
+      },
+      "fonte": {
+        "servico": "media_player.select_source",
+        "params": {
+          "source": {
+            "tipo": "texto",
+            "max": 32,
+            "padrao": "^[A-Za-z0-9 ._-]+$"
+          }
+        }
+      },
       "abrirApp": {
         "servico": "media_player.play_media",
-        "fixos": { "media_content_type": "app" },
-        "params": { "media_content_id": { "tipo": "texto", "max": 64, "padrao": "^[A-Za-z0-9._-]+$" } }
+        "fixos": {
+          "media_content_type": "app"
+        },
+        "params": {
+          "media_content_id": {
+            "tipo": "texto",
+            "max": 64,
+            "padrao": "^[A-Za-z0-9._-]+$"
+          }
+        }
       },
       "controleRemoto": {
         "servico": "remote.send_command",
@@ -59,31 +168,78 @@
         "params": {
           "command": {
             "tipo": "enum",
-            "valores": ["KEY_RETURN", "KEY_HOME", "KEY_MENU", "KEY_UP", "KEY_DOWN", "KEY_LEFT", "KEY_RIGHT", "KEY_ENTER", "KEY_REWIND", "KEY_PLAY", "KEY_PAUSE", "KEY_STOP", "KEY_FF"]
+            "valores": [
+              "KEY_RETURN",
+              "KEY_HOME",
+              "KEY_MENU",
+              "KEY_UP",
+              "KEY_DOWN",
+              "KEY_LEFT",
+              "KEY_RIGHT",
+              "KEY_ENTER",
+              "KEY_REWIND",
+              "KEY_PLAY",
+              "KEY_PAUSE",
+              "KEY_STOP",
+              "KEY_FF"
+            ]
           }
         }
       }
     },
     "ps5_sala": {
-      "ligar": { "servico": "media_player.turn_on", "somenteSe": { "estadoEm": ["off", "standby", "idle"] }, "timeoutMs": 60000 },
+      "ligar": {
+        "servico": "media_player.turn_on",
+        "somenteSe": {
+          "estadoEm": [
+            "off",
+            "standby",
+            "idle"
+          ]
+        },
+        "timeoutMs": 60000,
+        "confirmaMs": 45000
+      },
       "repouso": {
         "servico": "media_player.turn_off",
-        "somenteSe": { "estadoEm": ["on", "playing"] },
+        "somenteSe": {
+          "estadoEm": [
+            "on",
+            "playing"
+          ]
+        },
         "confirmar": "Colocar o PS5 em repouso? (leva alguns segundos)",
-        "timeoutMs": 60000
+        "timeoutMs": 60000,
+        "confirmaMs": 45000
       }
     },
     "pc_socket_1": {
-      "ligar": { "servico": "switch.turn_on" },
-      "desligar": { "servico": "switch.turn_off", "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?" }
+      "ligar": {
+        "servico": "switch.turn_on"
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?"
+      }
     },
     "pc_socket_2": {
-      "ligar": { "servico": "switch.turn_on" },
-      "desligar": { "servico": "switch.turn_off", "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?" }
+      "ligar": {
+        "servico": "switch.turn_on"
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "confirmar": "Isto corta a energia do computador que hospeda a Home Assistant e os painéis. Continuar?"
+      }
     },
     "bloqueio_luca": {
-      "ligar": { "servico": "switch.turn_on", "confirmar": "Alterar o bloqueio para crianças desta tomada?" },
-      "desligar": { "servico": "switch.turn_off", "confirmar": "Alterar o bloqueio para crianças desta tomada?" }
+      "ligar": {
+        "servico": "switch.turn_on",
+        "confirmar": "Alterar o bloqueio para crianças desta tomada?"
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "confirmar": "Alterar o bloqueio para crianças desta tomada?"
+      }
     }
   },
   "extras": {
@@ -92,22 +248,48 @@
       "dominio": "vacuum",
       "alvo": "aspirador",
       "acoes": {
-        "iniciar": { "servico": "vacuum.start" },
-        "pausar": { "servico": "vacuum.pause" },
-        "base": { "servico": "vacuum.return_to_base" },
-        "parar": { "servico": "vacuum.stop" },
-        "localizar": { "servico": "vacuum.locate" },
-        "limpezaLocal": { "servico": "vacuum.clean_spot" },
+        "iniciar": {
+          "servico": "vacuum.start"
+        },
+        "pausar": {
+          "servico": "vacuum.pause"
+        },
+        "base": {
+          "servico": "vacuum.return_to_base"
+        },
+        "parar": {
+          "servico": "vacuum.stop"
+        },
+        "localizar": {
+          "servico": "vacuum.locate"
+        },
+        "limpezaLocal": {
+          "servico": "vacuum.clean_spot"
+        },
         "modo": {
           "servico": "select.select_option",
           "alvo": "aspirador_modo",
-          "params": { "option": { "tipo": "enum", "valores": ["安静", "标准", "中档", "强力"] } }
+          "params": {
+            "option": {
+              "tipo": "enum",
+              "valores": [
+                "安静",
+                "标准",
+                "中档",
+                "强力"
+              ]
+            }
+          }
         }
       }
     }
   },
   "cenas": {
     "confirmar": "Executar esta cena agora? Ela pode mexer em vários aparelhos da casa.",
-    "acoes": { "executar": { "servico": "script.turn_on" } }
+    "acoes": {
+      "executar": {
+        "servico": "script.turn_on"
+      }
+    }
   }
 }

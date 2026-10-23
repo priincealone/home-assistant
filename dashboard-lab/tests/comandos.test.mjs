@@ -845,3 +845,74 @@ test("rótulo 'luzes' (real) e achados do porteiro: B-1 contraste do .sub, B-2 a
   assert.match(CSS, /#confirma \.folha-painel, #confirma \.folha-fundo, \.toast,/); assert.ok(rm.length > 0);
   assert.ok(!/transition:\s*all/.test(CSS));
 });
+
+/* ---------- tempo de confirmação por ação (TV e PS5 esperam mais que 5 s) ---------- */
+test("tempo de espera da confirmação: padrão 5 s; TV e PS5 mais; limitado a 60 s; valor inválido volta ao padrão", () => {
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "luz_sala", "ligar"), 5000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "ventilador_sala", "ligar"), 5000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "tv_sala", "ligar"), 30000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "tv_sala", "desligar"), 20000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "ps5_sala", "ligar"), 45000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "ps5_sala", "repouso"), 45000);
+  assert.equal(CR.confirmaMsDaAcao(COMANDOS, "nao_existe", "ligar"), 5000);
+  const com = (confirmaMs) => ({ dispositivos: { x: { acoes: { a: { servico: "light.turn_on", confirmaMs } } } } });
+  assert.equal(CR.confirmaMsDaAcao(com(120000), "x", "a"), 60000, "teto de 60 s");
+  for (const ruim of [100, 0, -1, NaN, Infinity, "30000", null, undefined, {}]) assert.equal(CR.confirmaMsDaAcao(com(ruim), "x", "a"), 5000, String(ruim));
+});
+
+test("regras reais: só TV e PS5 passam de 5 s; o carregador espera a HA por mais tempo que o painel espera o estado", () => {
+  for (const [id, d] of Object.entries(COMANDOS.dispositivos)) for (const [nome, a] of Object.entries(d.acoes)) {
+    const c = CR.confirmaMsDaAcao(COMANDOS, id, nome);
+    if (!["tv_sala", "ps5_sala"].includes(id) || !["ligar", "desligar", "repouso"].includes(nome)) assert.equal(c, 5000, `${id}.${nome} não deveria esperar mais`);
+    assert.ok(c <= 60000);
+    // se a HA ainda está processando o serviço quando o painel desiste, o resultado "timeout" chegaria depois da reversão
+    if (a.confirmaMs) assert.ok((a.timeoutMs || 20000) >= a.confirmaMs, `${id}.${nome}: timeoutMs menor que confirmaMs`);
+  }
+});
+
+test("TV: ligar espera até 30 s pelo estado real (não reverte aos 5 s); ao passar de 30 s volta ao real e avisa", async () => {
+  const a = criaAmbiente();                       // TV começa desligada
+  const k = K(SALA, "tv_sala");
+  a.clica({ dev: k });
+  assert.deepEqual(cmds(a).map((m) => [m.dispositivo, m.acao]), [["tv_sala", "ligar"]]);
+  a.responde(cmds(a)[0], { ok: true }); await espera();
+  a.rel.avanca(5000);
+  assert.equal(a.v(`estado.get("${k}").on`), true, "aos 5 s ainda aguarda a TV");
+  assert.equal(a.v(`pendente("${k}")`), true);
+  assert.doesNotMatch(a.el("#toast").innerHTML, /não confirmou/);
+  a.rel.avanca(24999);
+  assert.equal(a.v(`estado.get("${k}").on`), true, "até 30 s vale o otimista");
+  a.rel.avanca(1);
+  assert.equal(a.v(`estado.get("${k}").on`), false, "passou de 30 s: estado real");
+  assert.match(a.el("#toast").innerHTML, /A casa não confirmou/);
+});
+
+test("TV: a TV que liga aos 20 s limpa a trava sem aviso de erro", async () => {
+  const a = criaAmbiente();
+  const k = K(SALA, "tv_sala");
+  a.clica({ dev: k });
+  a.responde(cmds(a)[0], { ok: true }); await espera();
+  a.rel.avanca(20000);
+  a.lote({ [porId("tv_sala")]: est("on", {}, 0) });
+  assert.equal(a.v(`pendente("${k}")`), false, "o estado real confirmou");
+  a.rel.avanca(60000);
+  assert.doesNotMatch(a.el("#toast").innerHTML, /não confirmou/);
+  assert.equal(a.v(`estado.get("${k}").on`), true);
+});
+
+test("PS5: ligar espera até 45 s; luz continua com 5 s (um comando lento não afeta os rápidos)", async () => {
+  const E = casaBase(); E[porId("ps5_sala")] = { ...est("standby"), attributes: {} };
+  const a = criaAmbiente({ estados: E });
+  const kp = K(SALA, "ps5_sala"), kl = K(SALA, "luz_sala");
+  a.clica({ dev: kp }); a.clica({ dev: kl });
+  const [mp, ml] = cmds(a);
+  assert.deepEqual([mp.dispositivo, mp.acao, ml.dispositivo, ml.acao], ["ps5_sala", "ligar", "luz_sala", "ligar"]);
+  a.responde(mp, { ok: true }); a.responde(ml, { ok: true }); await espera();
+  a.rel.avanca(5000);
+  assert.equal(a.v(`pendente("${kl}")`), false, "a luz volta ao real aos 5 s");
+  assert.equal(a.v(`pendente("${kp}")`), true, "o PS5 segue aguardando");
+  a.rel.avanca(39999);
+  assert.equal(a.v(`pendente("${kp}")`), true);
+  a.rel.avanca(1);
+  assert.equal(a.v(`pendente("${kp}")`), false, "aos 45 s desiste");
+});
