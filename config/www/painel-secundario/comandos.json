@@ -652,42 +652,8 @@
         }
       }
     },
-    "muro": {
-      "entityId": "light.circulacao_switch_1",
-      "dominio": "light",
-      "nome": "Muro",
-      "comodo": "circulacao",
-      "acoes": {
-        "ligar": {
-          "servico": "light.turn_on",
-          "lote": true
-        },
-        "desligar": {
-          "servico": "light.turn_off",
-          "lote": true
-        },
-        "ajustar": {
-          "servico": "light.turn_on",
-          "params": {
-            "brightness": {
-              "tipo": "int",
-              "min": 1,
-              "max": 255
-            },
-            "color_temp_kelvin": {
-              "tipo": "int",
-              "min": 1500,
-              "max": 9000
-            },
-            "rgb_color": {
-              "tipo": "rgb"
-            }
-          }
-        }
-      }
-    },
     "corredor": {
-      "entityId": "light.circulacao_switch_2",
+      "entityId": "light.corredor",
       "dominio": "light",
       "nome": "Corredor",
       "comodo": "circulacao",

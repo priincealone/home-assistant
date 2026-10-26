@@ -537,7 +537,7 @@ test("'Apagar luzes' só existe onde há luz comandável; cômodo sem regra de l
   const sec = (id, ar = a) => ar.v(`secaoHtml(SALAS.find((s) => s.id === "${id}"), [...estado.entries()].filter(([, d]) => d.sala === "${id}"))`);
   for (const id of ["sala_de_estar", "cozinha", "banheiro", "quarto"]) assert.match(sec(id), /data-todos=/, id);
   // regras sem nenhuma ação de lote na circulação: sem botão
-  const semLote = plano(COMANDOS); for (const id of ["muro", "corredor"]) for (const ac of ["ligar", "desligar"]) delete semLote.dispositivos[id].acoes[ac].lote;
+  const semLote = plano(COMANDOS); for (const id of ["corredor"]) for (const ac of ["ligar", "desligar"]) delete semLote.dispositivos[id].acoes[ac].lote;
   const b = criaAmbiente({ regras: semLote });
   assert.doesNotMatch(sec("circulacao", b), /data-todos=/);
   assert.match(sec("cozinha", b), /data-todos=/);

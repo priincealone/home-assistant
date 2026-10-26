@@ -30,8 +30,7 @@ cena_chegar:
     - action: light.turn_on
       target:
         entity_id:
-          - light.circulacao_switch_1
-          - light.circulacao_switch_2
+          - light.corredor
           - light.luz_sala
     - action: light.turn_on
       target:
@@ -42,7 +41,7 @@ cena_chegar:
 cena_dormir:
   alias: "Cena: Dormir"
   description: >-
-    Apaga as luzes da casa (as mesmas 11 da cena "boa_noite" do painel). O
+    Apaga as luzes da casa (as mesmas 10 da cena "boa_noite" do painel). O
     painel exige segurar o botão por 800 ms antes de chamar.
   icon: mdi:weather-night
   mode: single
@@ -59,8 +58,7 @@ cena_dormir:
           - light.luzes_externas_switch_2
           - light.luzes_externas_switch_3
           - light.luzes_externas_switch_4
-          - light.circulacao_switch_1
-          - light.circulacao_switch_2
+          - light.corredor
 
 cena_gamer:
   alias: "Cena: Gamer"

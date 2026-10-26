@@ -49,7 +49,7 @@
     - name: "Luzes Circulacao"
       unique_id: luzes_circulacao_count
       state: >
-        {{ ['light.circulacao_switch_1', 'light.circulacao_switch_2']
+        {{ ['light.corredor']
            | map('states') | select('eq', 'on') | list | count }}
 
     - name: "Luzes Closet"
@@ -74,7 +74,7 @@
             'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
             'light.quarto_luca_switch_1',
             'switch.banheiro_switch_1', 'switch.banheiro_switch_2',
-            'light.circulacao_switch_1', 'light.circulacao_switch_2',
+            'light.corredor',
             'light.closet_switch_1', 'light.led_escritorio_sonoff_1001dff472']
            | map('states') | select('eq', 'on') | list | count }}
 
@@ -300,7 +300,7 @@
       # aposentado (bslamp2), que vive `unavailable`.
       state: >
         {% set luzes = [
-          'light.banheiro_luz_de_fundo', 'light.circulacao_switch_1', 'light.circulacao_switch_2',
+          'light.banheiro_luz_de_fundo', 'light.corredor',
           'light.closet_switch_1', 'light.cozinha_copa_varanda_switch_1',
           'light.cozinha_copa_varanda_switch_2', 'light.cozinha_copa_varanda_switch_3',
           'light.entrada_luz_de_fundo', 'light.led_escritorio_sonoff_1001dff472',
@@ -312,7 +312,7 @@
       attributes:
         entidades: >
           {% set luzes = [
-            'light.banheiro_luz_de_fundo', 'light.circulacao_switch_1', 'light.circulacao_switch_2',
+            'light.banheiro_luz_de_fundo', 'light.corredor',
             'light.closet_switch_1', 'light.cozinha_copa_varanda_switch_1',
             'light.cozinha_copa_varanda_switch_2', 'light.cozinha_copa_varanda_switch_3',
             'light.entrada_luz_de_fundo', 'light.led_escritorio_sonoff_1001dff472',
@@ -323,13 +323,31 @@
           {{ luzes | select('is_state', 'unavailable')
                    | map('state_attr', 'friendly_name') | list | join(', ') }}
 
-# Luz do Quarto do Luca: o interruptor Tuya (switch.quarto_luca_switch_1) voltou ao HA como `switch`
-# ao refazer a adição em 29/09. Este wrapper o expõe como `light` com o entity_id de antes
-# (light.quarto_luca_switch_1), porque painel, contadores acima e rooms.ts dependem dele.
-# Não decide nada: só repassa liga/desliga e estado ao interruptor (um atuador, um dono).
+# Luz do Quarto do Luca: expõe como `light` a tecla 1 do interruptor de 2 teclas "Circulação"
+# (switch.circulacao_switch_1), mantendo o entity_id de antes (light.quarto_luca_switch_1), porque painel e
+# contadores acima dependem dele.
+# Em 26/10/2026 o interruptor "Circulação" (2 teclas) foi para o Quarto Luca (tecla 1 = luz, tecla 2 = LED da
+# cabeceira); o "Entrada" (2 teclas) deixou de existir; o de 1 tecla (switch.quarto_luca_switch_1) segue só
+# no Corredor; o Muro ficou com interruptor manual, sem automação. Não decide nada: só repassa liga/desliga e
+# estado ao interruptor (um atuador, um dono).
 - light:
     - name: "Quarto Luca Switch 1"
       unique_id: quarto_luca_luz_wrapper
+      state: "{{ is_state('switch.circulacao_switch_1', 'on') }}"
+      availability: "{{ states('switch.circulacao_switch_1') not in ['unavailable', 'unknown'] }}"
+      turn_on:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.circulacao_switch_1
+      turn_off:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.circulacao_switch_1
+
+    # Luz do Corredor: o interruptor de 1 tecla (switch.quarto_luca_switch_1, dispositivo "Quarto Luca") é o
+    # único que a comanda desde 26/10/2026. Só repassa liga/desliga e estado.
+    - name: "Corredor"
+      unique_id: corredor_luz_wrapper
       state: "{{ is_state('switch.quarto_luca_switch_1', 'on') }}"
       availability: "{{ states('switch.quarto_luca_switch_1') not in ['unavailable', 'unknown'] }}"
       turn_on:

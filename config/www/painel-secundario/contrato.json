@@ -260,15 +260,8 @@
       "vazio": false,
       "dispositivos": [
         {
-          "id": "muro",
-          "entityId": "light.circulacao_switch_1",
-          "dominio": "light",
-          "categoria": "iluminacao",
-          "nome": "Muro"
-        },
-        {
           "id": "corredor",
-          "entityId": "light.circulacao_switch_2",
+          "entityId": "light.corredor",
           "dominio": "light",
           "categoria": "iluminacao",
           "nome": "Corredor"
@@ -382,9 +375,8 @@
     "binary_sensor.sensor_porta_sala_porta",
     "fan.ventilador_quarto",
     "fan.ventilador_sala",
-    "light.circulacao_switch_1",
-    "light.circulacao_switch_2",
     "light.closet_switch_1",
+    "light.corredor",
     "light.cozinha_copa_varanda_switch_1",
     "light.cozinha_copa_varanda_switch_2",
     "light.cozinha_copa_varanda_switch_3",

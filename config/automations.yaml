@@ -286,9 +286,10 @@
         target:
           entity_id: *id001
 - id: '1758240000000'
-  alias: Muro e Painel acesos do pôr do sol à meia-noite
-  description: 'Todo dia, no pôr do sol, acende o Muro (light.circulacao_switch_1)
-    e o Painel da TV (light.painel); à meia-noite apaga os dois. Especificação: specs/automations/luzes-muro-painel-noite.md.
+  alias: Painel aceso do pôr do sol à meia-noite
+  description: 'Todo dia, no pôr do sol, acende o Painel da TV (light.painel);
+    à meia-noite apaga. Desde 26/10/2026 o Muro não entra: está com interruptor manual,
+    sem automação. Especificação: specs/automations/luzes-muro-painel-noite.md.
 
     "Ou quando forem apagadas manualmente" não precisa de lógica: o acender é de borda,
     dispara uma única vez no evento de pôr do sol e nunca reacende. Por isso também
@@ -300,8 +301,8 @@
     pode ter sido aceso de propósito pela automação da porta do quarto, que é dona
     dele entre 22h e 6h e tem precedência.
 
-    Donos dos atuadores: as duas automações da porta do quarto também tocam estas
-    luzes (a de fechar apaga ambas, a de abrir acende o Painel). Não há conflito —
+    Donos dos atuadores: as duas automações da porta do quarto também tocam o Painel
+    (a de fechar apaga, a de abrir acende). Não há conflito —
     nenhuma desfaz a outra dentro da mesma janela.'
   mode: single
   triggers:
@@ -317,16 +318,14 @@
   conditions: []
   actions:
   - choose:
-    - alias: Pôr do sol — acende Muro e Painel
+    - alias: Pôr do sol — acende o Painel
       conditions:
       - condition: trigger
         id: acender
       sequence:
       - action: light.turn_on
         target:
-          entity_id:
-          - light.circulacao_switch_1
-          - light.painel
+          entity_id: light.painel
     - alias: Meia-noite (ou partida até 00:30) — apaga o que estiver aceso
       conditions:
       - condition: or

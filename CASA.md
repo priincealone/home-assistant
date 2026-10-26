@@ -60,7 +60,7 @@ acesso da conta Amazon).
 | **Copa** | `light.cozinha_copa_varanda_switch_2` |
 | **Lavanderia** | `light.cozinha_copa_varanda_switch_3` · `binary_sensor.sensor_lavanderia_movimento` · `binary_sensor.door_sensor_2_porta` (porta, só estado) |
 | **Área Gourmet** | `light.luzes_externas_switch_1` Plafon Área Gourmet · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` |
-| **Circulação** | `light.circulacao_switch_1` Muro · `light.circulacao_switch_2` Corredor |
+| **Circulação** | `light.corredor` (template sobre `switch.quarto_luca_switch_1`, o interruptor de 1 tecla, único dono do Corredor) · **Muro**: interruptor manual, sem automação e sem entidade (desde 26/10/2026) |
 | **Banheiro** | `switch.banheiro_switch_1` e `_2` |
 
 ⚠️ O interruptor de três teclas da Cozinha/Copa/Lavanderia chama-se
