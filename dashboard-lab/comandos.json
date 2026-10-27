@@ -497,7 +497,7 @@
       }
     },
     "luz_luca": {
-      "entityId": "light.quarto_luca_switch_1",
+      "entityId": "light.circulacao_switch_1",
       "dominio": "light",
       "nome": "Luz",
       "comodo": "quarto_luca",
@@ -575,7 +575,7 @@
       }
     },
     "led_luca": {
-      "entityId": "light.led_tomada_switch_1",
+      "entityId": "light.circulacao_switch_2",
       "dominio": "light",
       "nome": "Led",
       "comodo": "quarto_luca",

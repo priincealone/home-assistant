@@ -37,7 +37,7 @@
     - name: "Luzes Quarto do Luca"
       unique_id: luzes_quarto_luca_count
       state: >
-        {{ ['light.quarto_luca_switch_1']
+        {{ ['light.circulacao_switch_1']
            | map('states') | select('eq', 'on') | list | count }}
 
     - name: "Luzes Banheiro"
@@ -72,7 +72,7 @@
             'light.cozinha_copa_varanda_switch_1',
             'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
             'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
-            'light.quarto_luca_switch_1',
+            'light.circulacao_switch_1',
             'switch.banheiro_switch_1', 'switch.banheiro_switch_2',
             'light.corredor',
             'light.closet_switch_1', 'light.led_escritorio_sonoff_1001dff472']
@@ -307,7 +307,7 @@
           'light.luz_quarto', 'light.luz_sala', 'light.luzes_externas_luz_de_fundo',
           'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
           'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
-          'light.painel', 'light.quarto_luca_switch_1'] %}
+          'light.painel', 'light.circulacao_switch_1'] %}
         {{ luzes | select('is_state', 'unavailable') | list | count }}
       attributes:
         entidades: >
@@ -319,13 +319,14 @@
             'light.luz_quarto', 'light.luz_sala', 'light.luzes_externas_luz_de_fundo',
             'light.luzes_externas_switch_1', 'light.luzes_externas_switch_2',
             'light.luzes_externas_switch_3', 'light.luzes_externas_switch_4',
-            'light.painel', 'light.quarto_luca_switch_1'] %}
+            'light.painel', 'light.circulacao_switch_1'] %}
           {{ luzes | select('is_state', 'unavailable')
                    | map('state_attr', 'friendly_name') | list | join(', ') }}
 
 # Luz do Quarto do Luca: expõe como `light` a tecla 1 do interruptor de 2 teclas "Circulação"
-# (switch.circulacao_switch_1), mantendo o entity_id de antes (light.quarto_luca_switch_1), porque painel e
-# contadores acima dependem dele.
+# (switch.circulacao_switch_1), com o entity_id antigo (light.quarto_luca_switch_1). Desde 26/10/2026 o painel
+# e os contadores usam direto light.circulacao_switch_1 ("Luz Quarto Luca", switch_as_x) e este wrapper ficou
+# oculto, sem uso; pode ser removido.
 # Em 26/10/2026 o interruptor "Circulação" (2 teclas) foi para o Quarto Luca (tecla 1 = luz, tecla 2 = LED da
 # cabeceira); o "Entrada" (2 teclas) deixou de existir; o de 1 tecla (switch.quarto_luca_switch_1) segue só
 # no Corredor; o Muro ficou com interruptor manual, sem automação. Não decide nada: só repassa liga/desliga e

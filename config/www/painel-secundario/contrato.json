@@ -183,7 +183,7 @@
       "dispositivos": [
         {
           "id": "luz_luca",
-          "entityId": "light.quarto_luca_switch_1",
+          "entityId": "light.circulacao_switch_1",
           "dominio": "light",
           "categoria": "iluminacao",
           "nome": "Luz"
@@ -219,7 +219,7 @@
         },
         {
           "id": "led_luca",
-          "entityId": "light.led_tomada_switch_1",
+          "entityId": "light.circulacao_switch_2",
           "dominio": "light",
           "categoria": "iluminacao",
           "nome": "Led"
@@ -375,13 +375,14 @@
     "binary_sensor.sensor_porta_sala_porta",
     "fan.ventilador_quarto",
     "fan.ventilador_sala",
+    "light.circulacao_switch_1",
+    "light.circulacao_switch_2",
     "light.closet_switch_1",
     "light.corredor",
     "light.cozinha_copa_varanda_switch_1",
     "light.cozinha_copa_varanda_switch_2",
     "light.cozinha_copa_varanda_switch_3",
     "light.led_escritorio_sonoff_1001dff472",
-    "light.led_tomada_switch_1",
     "light.luz_quarto",
     "light.luz_sala",
     "light.luzes_externas_switch_1",
@@ -389,7 +390,6 @@
     "light.luzes_externas_switch_3",
     "light.luzes_externas_switch_4",
     "light.painel",
-    "light.quarto_luca_switch_1",
     "media_player.sala_de_estar_ps5",
     "media_player.sala_de_estar_tv",
     "media_player.tv_un65du8000gxzd",
