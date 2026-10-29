@@ -175,32 +175,74 @@ const indBat = (d) => {   // indicador discreto no cartão: não muda layout nem
 };
 
 /* ---------- Céu do hero: reage à hora do dia ---------- */
-const FASES = [
-  { ate: 5,  id: "madrugada",  c: ["#05070d", "#0b1020", "#16162b"], m: ["#0d1018", "#07090e"], estrelas: 0.9, astro: "#cbd5e1" },
-  { ate: 8,  id: "amanhecer",  c: ["#1b2447", "#7a5a7a", "#e0956a"], m: ["#2a2233", "#12101a"], estrelas: 0.2, astro: "#fde68a" },
-  { ate: 16, id: "dia",        c: ["#16324d", "#2b5d82", "#6aa3c4"], m: ["#1c2b3a", "#0d141c"], estrelas: 0,   astro: "#fef3c7" },
-  { ate: 19, id: "entardecer", c: ["#1b1830", "#5b3a4a", "#c2764a"], m: ["#2a1f2b", "#12101a"], estrelas: 0.1, astro: "#fde68a" },
-  { ate: 24, id: "noite",      c: ["#070a14", "#101830", "#1d2342"], m: ["#0d1119", "#07090e"], estrelas: 0.85, astro: "#cbd5e1" },
+// Pontos-chave do dia (hora, 4 cores do céu do zênite ao horizonte, serra distante / média / próxima, estrelas, astro, nuvem).
+// O céu NÃO salta de fase em fase: as cores são interpoladas entre o ponto anterior e o seguinte, minuto a minuto.
+const CEU = [
+  { h: 0,    c: ["#03050c", "#0a1226", "#141c3a", "#1d2750"], m: ["#111a2e", "#0b1120", "#060810"], est: 0.95, astro: "#dbe4f0", nuv: ["#1d2644", 0.30] },
+  { h: 4.6,  c: ["#04060e", "#0b1229", "#17204a", "#263262"], m: ["#131c32", "#0c1222", "#070911"], est: 0.9,  astro: "#dbe4f0", nuv: ["#222c52", 0.30] },
+  { h: 5.7,  c: ["#0e1838", "#2a3068", "#7b4f80", "#d9826a"], m: ["#2c2742", "#1d1a30", "#0d0b16"], est: 0.3,  astro: "#fde7b0", nuv: ["#7a5078", 0.42] },
+  { h: 6.7,  c: ["#223f7a", "#587aae", "#e0a07e", "#ffc98a"], m: ["#4b4864", "#2c2a40", "#14111c"], est: 0,    astro: "#ffe6a8", nuv: ["#f4b999", 0.50] },
+  { h: 8.8,  c: ["#163d6c", "#2a6396", "#5f9cc4", "#9cc4de"], m: ["#3d5877", "#243a52", "#101c2a"], est: 0,    astro: "#fff1c4", nuv: ["#e8f1fa", 0.38] },
+  { h: 12.5, c: ["#11345a", "#215c8c", "#4f93bf", "#86b6d6"], m: ["#35506d", "#1f3448", "#0e1824"], est: 0,    astro: "#fff6d6", nuv: ["#f1f6fc", 0.40] },
+  { h: 16.4, c: ["#143a66", "#2a6190", "#5a95bb", "#a7c4d2"], m: ["#3a5069", "#233649", "#101b27"], est: 0,    astro: "#ffeab8", nuv: ["#f7ecd8", 0.40] },
+  { h: 18.0, c: ["#1f2e66", "#5e5a98", "#d98a6c", "#ffb069"], m: ["#4b3d5e", "#2b2140", "#140f1e"], est: 0.05, astro: "#ffc078", nuv: ["#ffb28a", 0.52] },
+  { h: 19.2, c: ["#121842", "#41376f", "#a8536a", "#e0795a"], m: ["#2e2545", "#1c1630", "#0d0a16"], est: 0.3,  astro: "#ffd9a0", nuv: ["#9a5b7c", 0.42] },
+  { h: 20.6, c: ["#070b1e", "#131b40", "#262c58", "#363a68"], m: ["#171d33", "#0f1424", "#070911"], est: 0.8,  astro: "#dbe4f0", nuv: ["#2a3158", 0.32] },
+  { h: 24,   c: ["#03050c", "#0a1226", "#141c3a", "#1d2750"], m: ["#111a2e", "#0b1120", "#060810"], est: 0.95, astro: "#dbe4f0", nuv: ["#1d2644", 0.30] },
 ];
+const hex2 = (x) => [1, 3, 5].map((k) => parseInt(x.slice(k, k + 2), 16));
+const mistura = (a, b, t) => "#" + hex2(a).map((v, k) => Math.round(v + (hex2(b)[k] - v) * t).toString(16).padStart(2, "0")).join("");
+const mix = (a, b, t) => a + (b - a) * t;
+const suave = (t) => t * t * (3 - 2 * t);
+function ceuEm(h) {
+  let k = CEU.findIndex((x) => h < x.h) - 1; if (k < 0) k = CEU.length - 2;
+  const A = CEU[k], B = CEU[k + 1], t = suave((h - A.h) / (B.h - A.h));
+  return {
+    c: A.c.map((x, n) => mistura(x, B.c[n], t)), m: A.m.map((x, n) => mistura(x, B.m[n], t)),
+    est: mix(A.est, B.est, t), astro: mistura(A.astro, B.astro, t), nuv: mistura(A.nuv[0], B.nuv[0], t), nuvo: mix(A.nuv[1], B.nuv[1], t),
+  };
+}
+function nomeFase(h) { return h < 5 ? "madrugada" : h < 8 ? "amanhecer" : h < 16 ? "dia" : h < 19 ? "entardecer" : "noite"; }
 function renderCeu() {
   const d = agora();
   const h = d.getHours() + d.getMinutes() / 60;
-  const f = FASES.find((x) => h < x.ate);
+  const f = ceuEm(h);
   const sol = h >= 6 && h < 18;
   const t = sol ? (h - 6) / 12 : ((h + 6) % 24) / 12;           // 0..1 ao longo do arco do astro
   const bg = $(".hero-bg");
   const v = bg.style;
-  v.setProperty("--sky0", f.c[0]); v.setProperty("--sky1", f.c[1]); v.setProperty("--sky2", f.c[2]);
-  v.setProperty("--m1", f.m[0]); v.setProperty("--m2", f.m[1]);
-  v.setProperty("--stars", f.estrelas); v.setProperty("--astro", f.astro);
+  f.c.forEach((x, n) => v.setProperty(`--sky${n}`, x));
+  v.setProperty("--mf", f.m[0]); v.setProperty("--m1c", f.m[1]); v.setProperty("--m2", f.m[2]);
+  v.setProperty("--stars", f.est.toFixed(2)); v.setProperty("--astro", f.astro);
+  v.setProperty("--cloud", f.nuv); v.setProperty("--cloudo", f.nuvo.toFixed(2));
   v.setProperty("--ax", `${Math.round(200 + 1200 * t)}px`);
   v.setProperty("--ay", `${Math.round(470 - 240 * Math.sin(Math.PI * t))}px`);
-  bg.dataset.fase = f.id; bg.dataset.astro = sol ? "sol" : "lua";
+  bg.dataset.fase = nomeFase(h); bg.dataset.astro = sol ? "sol" : "lua";
 }
+// Estrelas (algumas maiores e cintilantes) e serras de relevo natural (deslocamento do ponto médio, semente fixa: sempre o mesmo desenho).
 function desenharEstrelas() {
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-  $("#estrelas").innerHTML = Array.from({ length: 46 }, () =>
-    `<circle cx="${Math.round(rnd() * 1600)}" cy="${Math.round(rnd() * 300)}" r="${(0.8 + rnd() * 1.4).toFixed(1)}" opacity="${(0.4 + rnd() * 0.6).toFixed(2)}"/>`).join("");
+  $("#estrelas").innerHTML = Array.from({ length: 96 }, (_, n) => {
+    const grande = n % 9 === 0, o = (0.4 + rnd() * 0.6).toFixed(2);
+    const cx = Math.round(rnd() * 1600), cy = Math.round(rnd() * rnd() * 330 + 6), r = grande ? (1.6 + rnd() * 0.9).toFixed(1) : (0.6 + rnd() * 1.1).toFixed(1);
+    return n % 3 === 0 ? `<circle class="tw" cx="${cx}" cy="${cy}" r="${r}" opacity="${o}" style="--tw-o:${o};--tw-d:${(3 + rnd() * 5).toFixed(1)}s;--tw-a:-${(rnd() * 6).toFixed(1)}s"/>`
+      : `<circle cx="${cx}" cy="${cy}" r="${r}" opacity="${o}"/>`;
+  }).join("");
+  const serra = (base, amp, rug, sem) => {
+    let sd = (sem * 48271 + 1013904223) % 2147483647; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+    for (let b = 0; b < 8; b++) r();   // descarta as primeiras (semente pequena dá sequência quase constante)
+    let pts = [base + (r() - 0.5) * amp, base + (r() - 0.5) * amp];
+    for (let n = 0, desl = amp; n < 7; n++, desl *= rug) {
+      const novo = [];
+      for (let k = 0; k < pts.length - 1; k++) { novo.push(pts[k], (pts[k] + pts[k + 1]) / 2 + (r() - 0.5) * desl); }
+      novo.push(pts[pts.length - 1]); pts = novo;
+    }
+    const passo = 1600 / (pts.length - 1);
+    return "M0 600V" + pts[0].toFixed(1) + pts.map((y, k) => "L" + (k * passo).toFixed(1) + " " + y.toFixed(1)).join("") + "V600Z";
+  };
+  $("#serra0").setAttribute("d", serra(400, 150, 0.52, 11));
+  $("#serra1").setAttribute("d", serra(450, 150, 0.55, 29));
+  $("#serra2").setAttribute("d", serra(512, 100, 0.55, 47));
 }
 
 /* ---------- Renderização ---------- */

@@ -72,13 +72,30 @@ button { font: inherit; color: inherit; }
   opacity: 0.72;
 }
 .hero-bg svg { width: 100%; height: 100%; display: block; }
-.hero-bg { --sky0: #1b1830; --sky1: #5b3a4a; --sky2: #c2764a; --m1: #2a1f2b; --m2: #12101a; --stars: 0; --astro: #fde68a; --ax: 1000px; --ay: 200px; }
-.hero-bg .s0 { stop-color: var(--sky0); } .hero-bg .s1 { stop-color: var(--sky1); } .hero-bg .s2 { stop-color: var(--sky2); }
-.hero-bg .s0, .hero-bg .s1, .hero-bg .s2 { transition: stop-color var(--dur-cinematic) var(--ease-out); }
-.hero-bg .m1 { fill: var(--m1); opacity: 0.9; } .hero-bg .m2 { fill: var(--m2); }
-.hero-bg .estrelas { opacity: var(--stars); transition: opacity var(--dur-cinematic); }
+.hero-bg { --sky0: #1b1830; --sky1: #5b3a4a; --sky2: #c2764a; --sky3: #c2764a; --mf: #2a1f2b; --m1c: #1c1626; --m2: #12101a; --stars: 0; --astro: #fde68a; --cloud: #ffb08a; --cloudo: 0.4; --via: 0; --ax: 1000px; --ay: 200px; }
+.hero-bg .s0 { stop-color: var(--sky0); } .hero-bg .s1 { stop-color: var(--sky1); } .hero-bg .s2 { stop-color: var(--sky2); } .hero-bg .s3 { stop-color: var(--sky3); }
+.hero-bg .mf { stop-color: var(--mf); } .hero-bg .m1c { stop-color: var(--m1c); }
+.hero-bg .m2 { fill: var(--m2); }
+.hero-bg .bruma { pointer-events: none; }
+.hero-bg .estrelas { opacity: var(--stars); }
+.hero-bg .estrelas circle { transform-box: fill-box; transform-origin: center; }
+.hero-bg .estrelas .tw { animation: cintila var(--tw-d, 5s) ease-in-out var(--tw-a, 0s) infinite; }
+@keyframes cintila { 0%, 100% { opacity: var(--tw-o, 0.9); } 50% { opacity: calc(var(--tw-o, 0.9) * 0.25); } }
+.hero-bg .via { opacity: calc(var(--stars) * 0.10); }                                   /* faixa difusa da Via Láctea, só de noite */
+.hero-bg .s0, .hero-bg .s1, .hero-bg .s2, .hero-bg .s3 { transition: stop-color var(--dur-cinematic) var(--ease-out); }
 .hero-bg .astro { color: var(--astro); transform: translate(var(--ax), var(--ay)); transition: transform var(--dur-cinematic) var(--ease-out); }
 .hero-bg .disco { fill: var(--astro); opacity: 0.5; }
+.hero-bg .atm { opacity: 0.9; }
+.hero-bg .crateras { fill: rgba(30, 41, 59, 0.22); opacity: 0; }
+.hero-bg[data-astro="lua"] .crateras { opacity: 1; }
+.hero-bg[data-astro="lua"] .disco { opacity: 0.78; }
+.hero-bg[data-astro="lua"] .atm { opacity: 0.55; }
+.hero-bg .nuvens { fill: var(--cloud); opacity: var(--cloudo); }
+.hero-bg .nv { animation: deriva var(--nv-d, 160s) ease-in-out infinite alternate; }
+.hero-bg .nv1 { --nv-d: 190s; --nv-x: 90px; } .hero-bg .nv2 { --nv-d: 150s; --nv-x: -70px; }
+.hero-bg .nv3 { --nv-d: 220s; --nv-x: -110px; } .hero-bg .nv4 { --nv-d: 170s; --nv-x: 60px; }
+@keyframes deriva { from { transform: translateX(0); } to { transform: translateX(var(--nv-x, 80px)); } }
+@media (prefers-reduced-motion: reduce) { .hero-bg .nv, .hero-bg .estrelas .tw { animation: none; } }
 /* raio de luz: um feixe cônico que gira devagar (DESIGN.md, "Dynamic Ray Angle") */
 @property --ray-angle { syntax: "<angle>"; inherits: false; initial-value: 0deg; }
 .ray {
