@@ -6887,3 +6887,11 @@ Anel de 3 velocidades em volta de um ventilador central que gira (duração 2,6 
 abaixo. O dial aciona os botões de velocidade já existentes (nenhum comando novo). Corrigido junto: o tamanho dos ícones do centro dos dials (`.dial-ico .ic`)
 e a escolha de velocidade com o ventilador desligado (no simulado liga; no dial, "mesmo nível" só ignora se já estiver ligado). 116 testes.
 **Não verificado**: o dial do ventilador no modo real dentro da HA e no tablet (o giro é só `transform`, mas não foi medido).
+
+## 29/10/2026 — Painel Principal: ventilador com velocidade contínua 0–100 e ventilador grande
+
+Verificado no HA: os dois ventiladores têm `percentage_step: 1.0` (0 a 100, passo 1); os 3 níveis eram do painel. Agora o popup tem o anel de 0 a 100 e um ventilador
+grande de 5 pás (desenho próprio, referência visual do vídeo do HomeView) que gira proporcional à velocidade (Web Animations); `fan.set_percentage` leva o valor exato,
+0 desliga. Novo campo `pctOk` (aceita velocidade em %, mesmo desligado). O ventilador real não tem oscilar (supported_features 53), então o botão só aparece se o
+estado trouxer o atributo. No simulado o subtítulo virou "Ligado · N %". 117 testes. **Não verificado**: comando de velocidade no ventilador real (não acionei a casa);
+giro no tablet.

@@ -137,7 +137,7 @@ test("subtítulos: dimmer só onde existe, ventilador, sensor com tempo", () => 
   a.v(`estado.get("sala.luz").bri = 60; estado.get("banheiro.i1").on = true; estado.get("banheiro.i1").bri = 40;`);
   assert.equal(a.v(`subtitulo(estado.get("sala.luz"))`), "Ligado · 60%");
   assert.equal(a.v(`subtitulo(estado.get("banheiro.i1"))`), "Ligado");     // interruptor não é dimerizável
-  assert.equal(a.v(`subtitulo(estado.get("quarto.vent"))`), "Velocidade 2");
+  assert.equal(a.v(`subtitulo(estado.get("quarto.vent"))`), "Ligado · 67%");
   assert.match(a.v(`subtitulo(estado.get("lavanderia.porta"))`), /^Aberta · há \d+ min$/);
   assert.match(a.v(`subtitulo(estado.get("quarto.porta"))`), /^Fechada · há 1 h/);
 });

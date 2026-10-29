@@ -85,6 +85,7 @@
       bri: on && (tipo === "light" || tipo === "led") ? pct255(at.brightness) : null,
       temp: on ? kelvin(at) : null,
       pct: tipo === "fan" && on && pct != null ? Math.round(pct) : null,
+      pctOk: tipo === "fan" && (pct != null || (Number(at.supported_features) & 1) === 1),   // o ventilador aceita velocidade em % (0 a 100), mesmo desligado
       vel: tipo === "fan" && on && pct != null ? (pct <= 34 ? 1 : pct <= 67 ? 2 : 3) : null,
       dir: tipo === "fan" && (at.direction === "forward" || at.direction === "reverse") ? at.direction : null,
       osc: tipo === "fan" && typeof at.oscillating === "boolean" ? at.oscillating : null,
@@ -257,6 +258,7 @@
       case "temp": return { acao: "ajustar", params: { color_temp_kelvin: Math.round(lerNumero(valor) ?? 0) } };
       case "cor": return TEM(COR_RGB, valor) ? { acao: "ajustar", params: { rgb_color: COR_RGB[valor].slice() } } : null;
       case "vel": return { acao: "velocidade", params: { percentage: velParaPct(valor) } };
+      case "pct": return { acao: "velocidade", params: { percentage: clamp(Math.round(lerNumero(valor) ?? 0), 0, 100) } };   // ventilador: 0 a 100, passo 1 (0 desliga)
       case "dir": return DIRECOES_OK.includes(valor) ? { acao: "direcao", params: { direction: valor } } : null;
       case "osc": return { acao: "oscilar", params: { oscillating: !!valor } };
       case "vol": return { acao: "volume", params: { volume_level: volumeParaHa(valor) } };
@@ -271,7 +273,7 @@
     if (real == null || esperado == null) return false;
     switch (campo) {
       case "on": case "osc": case "mudo": return !!real === !!esperado;
-      case "bri": case "vol": return Math.abs(real - esperado) <= 2;
+      case "bri": case "vol": case "pct": return Math.abs(real - esperado) <= 2;
       case "temp": return Math.abs(real - esperado) <= 150;
       default: return real === esperado;
     }

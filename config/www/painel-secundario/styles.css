@@ -864,17 +864,15 @@ body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] 
 }
 body[data-folha] .hero-bg .nv, body[data-folha] .hero-bg .estrelas .tw, body[data-folha] .ray { animation-play-state: paused; }
 
-/* ---------- Dial do ventilador: 3 marcas no anel; o ventilador gira mais rápido a cada nível ---------- */
-.dial-svg .dial-tick { fill: rgba(255, 255, 255, 0.28); transform: none; transition: fill var(--dur-base); }
-.dial-svg .dial-tick[data-on="true"] { fill: #fff; }
-.dial-vent .dial-ico { color: rgb(var(--tom-rgb)); }
-.dial-vent .dial-ico .ic { animation: vent-gira var(--giro, 2.4s) linear infinite; animation-play-state: paused; will-change: transform; }
-.dial-vent[data-vel="1"] { --giro: 2.6s; } .dial-vent[data-vel="2"] { --giro: 1.2s; } .dial-vent[data-vel="3"] { --giro: 0.55s; }
-.dial-vent:not([data-vel="0"]) .dial-ico .ic { animation-play-state: running; }
-.dial-vent .dial-val { font-size: 1.125rem; }
-@keyframes vent-gira { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .dial-vent .dial-ico .ic { animation: none; } }
-
 /* ícone do centro do dial: o tamanho pedido ao desenhar (34/56) não tem classe própria, então fixa aqui; encolhe em tela baixa */
 .dial-ico .ic { font-size: 30px; }
-.dial-vent .dial-ico .ic { font-size: min(52px, 9dvh); }
+
+/* ---------- Dial do ventilador: ventilador grande que gira (taxa pela velocidade, via Web Animations) e anel de 0 a 100 ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.dial-vent .dial-power { inset: 14%; border: 0; background: transparent; box-shadow: none; padding: 0; }
+.dial-vent .dial-power[aria-checked="true"] { background: rgba(var(--tom-rgb), 0.07); }
+.dial-vent .fan-svg { width: 100%; height: 100%; display: block; color: rgb(var(--tom-rgb)); will-change: transform; }
+.dial-vent .dial-power[aria-checked="false"] .fan-svg, .dial-vent div.dial-power .fan-svg { opacity: 0.45; }
+.dial-info { position: absolute; left: 0; right: 0; bottom: 1%; display: flex; flex-direction: column; align-items: center; pointer-events: none; }
+.dial-info .dial-val { font-size: 1.375rem; }
+@media (prefers-reduced-motion: reduce) { .dial-vent .fan-svg { will-change: auto; } }

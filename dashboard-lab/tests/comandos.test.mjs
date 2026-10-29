@@ -667,7 +667,7 @@ test("folha: controles por família (só o que tem ação em comandos.json E atr
   const led = folha("area_gourmet", "led");
   assert.equal((led.match(/data-cor="/g) || []).length, 5, "LED RGB: 5 cores");
   const fan = folha(SALA, "ventilador_sala");
-  assert.equal((fan.match(/data-seg="vel"/g) || []).length, 3); assert.ok(fan.includes('data-sw="osc"') && !fan.includes('data-ctl="pct"'));
+  assert.ok(fan.includes('data-ctl="pct"') && !fan.includes('data-seg="vel"'), "ventilador com percentage: velocidade contínua 0-100, sem os 3 níveis"); assert.ok(fan.includes('data-sw="osc"'));
   const fanOff = folha("quarto", "ventilador_quarto");
   assert.ok(fanOff.includes('data-seg="vel"') && !fanOff.includes('data-sw="osc"'), "oscilar só se o atributo existe");
   assert.ok(!fan.includes('data-seg="dir"') && !fanOff.includes('data-seg="dir"'), "direção só se o estado real traz o atributo direction");
@@ -958,16 +958,30 @@ test("popup: toque no corpo do cartão de luz/ventilador/TV abre a folha com dia
   assert.ok(cmds(a).length >= n, "tomada alterna no toque");
 });
 
-test("popup do ventilador: anel de 3 velocidades com ventilador central; os botões de velocidade seguem no DOM; um só liga/desliga; oscilar continua", () => {
-  const E = casaBase(); E[porId("ventilador_sala")] = est("on", { percentage: 66, oscillating: false, preset_modes: [] });
+test("popup do ventilador: anel contínuo de 0 a 100 com ventilador grande no centro; um só liga/desliga; sem percentage cai nos 3 níveis", () => {
+  const E = casaBase(); E[porId("ventilador_sala")] = est("on", { percentage: 66, oscillating: false, supported_features: 53 });
+  E[porId("ventilador_quarto")] = est("off", { percentage: 100, supported_features: 53 });   // desligado, mas aceita velocidade em %
   const a = criaAmbiente({ estados: E });
-  const k = K(SALA, "ventilador_sala");
-  a.v(`abrirFolha("${k}")`);
+  a.v(`abrirFolha("${K(SALA, "ventilador_sala")}")`);
   const h = a.el("#folha").innerHTML;
-  assert.match(h, /class="dial dial-vent" data-dial-vel="1"/);
-  assert.equal((h.match(/class="dial-tick"/g) || []).length, 3, "3 marcas: velocidades 1, 2 e 3");
-  assert.match(h, /class="ctl ctl-dial"[\s\S]*data-seg="vel" data-v="3"/, "os botões de velocidade seguem no DOM, escondidos só visualmente");
+  assert.match(h, /class="dial dial-vent" data-dial="pct"/);
+  assert.match(h, /class="fan-svg"/, "ventilador grande no centro");
+  assert.equal((h.match(/<use href="#fan-pa"/g) || []).length, 5, "5 pás");
+  assert.match(h, /class="ctl ctl-dial"[\s\S]*data-ctl="pct"[^>]*min="0" max="100"/, "o input range 0-100 segue no DOM");
+  assert.ok(!h.includes('data-seg="vel"'), "sem os botões de 3 níveis");
   assert.equal((h.match(/data-sw="on"/g) || []).length, 1, "um só botão de ligar/desliga (o ventilador do centro)");
-  assert.match(h, /data-sw="osc"/, "oscilar continua disponível");
-  assert.match(h, /data-dialval="vel"/);
+  a.v("fecharFolha()"); a.v("folhaFechando = false; folhaChave = null");
+  a.v(`abrirFolha("${K("quarto", "ventilador_quarto")}")`);
+  assert.match(a.el("#folha").innerHTML, /data-dial="pct"/, "desligado mas com suporte a velocidade: também tem o dial");
+});
+
+test("ventilador: velocidade em % vai direto como percentage (0 a 100, 0 desliga); sem arredondar para 33/67/100", () => {
+  const E = casaBase(); E[porId("ventilador_sala")] = est("on", { percentage: 66, supported_features: 53 });
+  const a = criaAmbiente({ estados: E });
+  a.v(`abrirFolha("${K(SALA, "ventilador_sala")}")`);
+  a.v(`ajusteReal("pct", 47, true)`);
+  const m = cmds(a).at(-1);
+  assert.deepEqual([m.dispositivo, m.acao, m.params.percentage], ["ventilador_sala", "velocidade", 47]);
+  a.v(`ajusteReal("pct", 0, true)`);
+  assert.equal(cmds(a).at(-1).params.percentage, 0);
 });

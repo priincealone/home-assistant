@@ -37,8 +37,11 @@ Nada muda: o popup só lê o estado e manda comandos pelo mesmo caminho de antes
 
 ## Adendo (29/10/2026): ventilador
 
-O popup do ventilador (toque no corpo do card) tem um **dial de 3 velocidades**: anel de 270° com 3 marcas (níveis 1, 2 e 3) em volta de um **ventilador
-que gira** (mais rápido a cada nível; parado quando desligado; sem giro com "reduzir movimento"). Arrastar ou tocar no anel escolhe o nível, que só é
-enviado **ao soltar**; no modo simulado, escolher uma velocidade liga o ventilador (como o brilho liga a luz). O centro liga/desliga. Os botões de
-velocidade (`data-seg="vel"`) seguem no DOM, escondidos só visualmente, e o dial os aciona: nenhum comando novo. Oscilar e Modo (direção, modo real)
-continuam abaixo do dial. Sem velocidade disponível (regra ou atributo ausente), o popup abre sem dial.
+Confirmado no HA (`core.restore_state`): `fan.ventilador_sala` e `fan.ventilador_quarto` têm `percentage_step: 1.0` e `supported_features: 53`
+(velocidade, direção, ligar e desligar; **sem oscilar**). A velocidade é **contínua, 0 a 100, passo 1**, como no Smart Life; os 3 níveis eram do painel.
+
+O popup do ventilador tem um **ventilador grande no centro** (desenho próprio, 5 pás, tom ciano) e o **anel de 0 a 100** em volta. Arrastar o anel envia
+`fan.set_percentage` com o valor exato (debounce de 200 ms, valor final ao soltar); **0 desliga**. O ventilador gira em proporção à velocidade (0,3 a 2,4
+voltas/s, via Web Animations, que muda a taxa sem pular o ângulo; parado em 0 e com "reduzir movimento"). Tocar no ventilador do centro liga/desliga.
+Valor e estado ("Ligado"/"Desligado") ficam no vão de baixo do anel. O `input[type=range]` 0-100 segue no DOM. Modo (direção) e Oscilar só aparecem
+quando o estado real os traz. Sem suporte a velocidade em %, o popup cai nos 3 botões de nível. A confirmação do estado aceita ±2 % de diferença.
