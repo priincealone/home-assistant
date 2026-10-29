@@ -6863,3 +6863,12 @@ pressão assimétrica (afunda em 80 ms, volta em 460 ms); interruptor estica ao 
 entrada dos cartões em cascata uma única vez (`body[data-entrada]` por 1,5 s depois do primeiro dado). `prefers-reduced-motion` desliga cascatas,
 elevação no hover e translação do popup. Detector da skill impeccable: só resta o aviso da fonte Inter (identidade do painel). 115 testes.
 **Não verificado**: desempenho do `backdrop-filter` em tablet de parede real e o modo real dentro da HA; sem auditoria completa de viewports nem porteiro.
+
+## 29/10/2026 — Painel Principal: correção de engasgo ao abrir o popup (desempenho)
+
+Relato do André: engasgo ao tocar nos cards e ao abrir o popup (poucos fps). Causas prováveis, corrigidas sem medir FPS (o painel de navegador do Claude
+não gera quadros de animação sem foco): animar `backdrop-filter` e a opacidade do painel com vidro; ~30 cartões com `backdrop-filter` próprio recalculados
+por baixo do popup e a cada toque (escala); borda de luz com máscara em cada cartão; `drop-shadow` no arco do dial repintando junto com a subida do painel.
+Agora: ao abrir só `transform` (painel) e `opacity` (fundo) animam; vidro do painel estático; cartões e cenas sem `backdrop-filter` (o vidro vem do reflexo,
+da borda em sombras internas e da tinta); com a folha aberta o vidro dos elementos de baixo é desligado; arco do dial começa a se desenhar depois do painel assentar.
+**Pendente**: o André confirmar a fluidez no aparelho real. Se ainda engasgar: reduzir o blur das câmeras/menu e desligar a luz que segue o toque.

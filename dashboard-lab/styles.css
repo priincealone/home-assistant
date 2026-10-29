@@ -164,20 +164,15 @@ button { font: inherit; color: inherit; }
 .sec-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
 h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing: -0.01em; }
 
-/* Vidro líquido: reflexo suave no canto, borda de luz (::before, mais clara na quina de cima e na de baixo), sombra com profundidade e fundo mais saturado. */
+/* Vidro líquido: reflexo suave no canto, borda de luz (sombras internas, sem máscara: barato), sombra com profundidade e fundo saturado. */
 :where(.glass) { position: relative; }
 .glass {
   background: radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.12), transparent 52%), var(--glass);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -14px 24px -16px rgba(0, 0, 0, 0.4), 0 10px 30px -14px rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(24px) saturate(185%) brightness(1.05);
-  backdrop-filter: blur(24px) saturate(185%) brightness(1.05);
-}
-.glass::before {
-  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
-  background: linear-gradient(155deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.08) 28%, rgba(255, 255, 255, 0.02) 56%, rgba(255, 255, 255, 0.22) 100%);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.26), inset 1px 0 0 rgba(255, 255, 255, 0.08), inset 0 -1px 0 rgba(255, 255, 255, 0.09),
+    inset 0 -14px 24px -16px rgba(0, 0, 0, 0.4), 0 10px 30px -14px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(20px) saturate(170%);
+  backdrop-filter: blur(20px) saturate(170%);
 }
 
 /* ---------- Cenas ---------- */
@@ -448,11 +443,11 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .dial-trilha { stroke: rgba(255, 255, 255, 0.10); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 270 360; }
 .dial-prog {
   stroke: rgb(var(--tom-rgb)); stroke-width: 14; stroke-linecap: round; stroke-dasharray: calc(var(--r) * 270) 360;
-  filter: drop-shadow(0 0 8px rgba(var(--tom-rgb), 0.55)); transition: stroke-dasharray var(--dur-fast) var(--ease-out);
+  transition: stroke-dasharray var(--dur-fast) var(--ease-out);
 }
 .dial-svg .dial-pino {
   fill: #fff; stroke: rgba(var(--tom-rgb), 0.9); stroke-width: 3; transform: rotate(calc(135deg + var(--r) * 270deg));
-  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)); transition: transform var(--dur-fast) var(--ease-out);
+  transition: transform var(--dur-fast) var(--ease-out);
 }
 .dial-power {
   position: absolute; inset: 21%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px;
@@ -465,7 +460,7 @@ button.dial-power { cursor: pointer; }
 .dial-ico { display: grid; place-items: center; color: rgb(var(--tom-rgb)); }
 .dial-val { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
 .dial-rot { font-size: 0.75rem; color: var(--muted); max-width: 100%; overflow-wrap: anywhere; }
-.dial:has(.dial-power[aria-checked="false"]) .dial-prog { opacity: 0.35; filter: none; }
+.dial:has(.dial-power[aria-checked="false"]) .dial-prog { opacity: 0.35; }
 .dial[data-bloq="true"] { cursor: not-allowed; }
 .dial[data-bloq="true"] .dial-svg { opacity: 0.45; }
 .folha-corpo:has(.ctl-dial input:focus-visible) .dial-svg { filter: drop-shadow(0 0 6px rgba(var(--tom-rgb), 0.9)); }
@@ -803,21 +798,20 @@ body[data-folha] { overflow: hidden; }
 .rng:active::-moz-range-thumb { transform: scale(1.12); }
 
 /* popup (folha): sobe, ganha foco (o vidro desfoca de 0 a 30 px) e o conteúdo entra em cascata curta; sai mais rápido do que entra */
-.folha-fundo { -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px); transition: opacity 360ms var(--ease-out), backdrop-filter 480ms var(--ease-out), -webkit-backdrop-filter 480ms var(--ease-out); }
-#folha[data-estado="aberta"] .folha-fundo, #manutencao[data-estado="aberta"] .folha-fundo, #confirma[data-estado="aberta"] .folha-fundo { -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+/* Desempenho: ao abrir só `transform` e a opacidade do fundo animam (compositor); o vidro do painel é ESTÁTICO (animar backdrop-filter, ou a opacidade
+   de um elemento com backdrop-filter, refaz o desfoque a cada quadro). Com a folha aberta, o vidro dos cartões de baixo é desligado (ficam sob o fundo escuro). */
+.folha-fundo { transition: opacity 300ms var(--ease-out); will-change: opacity; }
 .folha-painel {
-  background: radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, 0.14), transparent 55%), var(--glass), rgba(12, 17, 28, 0.66);
-  -webkit-backdrop-filter: blur(8px) saturate(120%); backdrop-filter: blur(8px) saturate(120%);
-  transform: translateY(28px) scale(0.965); transform-origin: 50% 100%;
-  transition: transform 520ms var(--ease-out), opacity 300ms var(--ease-out), backdrop-filter 520ms var(--ease-out), -webkit-backdrop-filter 520ms var(--ease-out);
-}
-#folha[data-estado="aberta"] .folha-painel, #manutencao[data-estado="aberta"] .folha-painel, #confirma[data-estado="aberta"] .folha-painel {
-  -webkit-backdrop-filter: blur(34px) saturate(190%) brightness(1.04); backdrop-filter: blur(34px) saturate(190%) brightness(1.04);
+  background: radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, 0.14), transparent 55%), var(--glass), rgba(12, 17, 28, 0.7);
+  -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%);
+  opacity: 1; transform: translateY(26px) scale(0.97); transform-origin: 50% 100%; will-change: transform;
+  transition: transform 460ms var(--ease-out);
 }
 #folha[data-estado="saindo"] .folha-painel, #manutencao[data-estado="saindo"] .folha-painel, #confirma[data-estado="saindo"] .folha-painel {
-  opacity: 0; transform: translateY(14px) scale(0.985); transition-duration: 200ms;
+  opacity: 0; transform: translateY(12px) scale(0.99); transition: transform 160ms var(--ease-out), opacity 140ms linear;
 }
-#folha[data-estado="saindo"] .folha-fundo, #manutencao[data-estado="saindo"] .folha-fundo, #confirma[data-estado="saindo"] .folha-fundo { transition-duration: 200ms; }
+#folha[data-estado="saindo"] .folha-fundo, #manutencao[data-estado="saindo"] .folha-fundo, #confirma[data-estado="saindo"] .folha-fundo { transition-duration: 160ms; }
+body[data-folha] .wrap .glass, body[data-folha] .tabbar { -webkit-backdrop-filter: none; backdrop-filter: none; }
 @keyframes sobe-conteudo { from { opacity: 0; transform: translateY(10px); } }
 #folha[data-estado="aberta"] .folha-cab, #folha[data-estado="aberta"] .folha-corpo > * { animation: sobe-conteudo 460ms var(--ease-out) backwards; }
 #folha[data-estado="aberta"] .folha-cab { animation-delay: 60ms; }
@@ -831,8 +825,8 @@ body[data-folha] { overflow: hidden; }
 @keyframes dial-arco { from { stroke-dasharray: 0 360; } }
 @keyframes dial-pino { from { transform: rotate(135deg); opacity: 0; } }
 @keyframes dial-centro { from { opacity: 0; transform: scale(0.88); } }
-#folha[data-estado="aberta"] .dial-prog { animation: dial-arco 820ms var(--ease-out) 140ms backwards; }
-#folha[data-estado="aberta"] .dial-pino { animation: dial-pino 820ms var(--ease-out) 140ms backwards; }
+#folha[data-estado="aberta"] .dial-prog { animation: dial-arco 700ms var(--ease-out) 300ms backwards; }
+#folha[data-estado="aberta"] .dial-pino { animation: dial-pino 700ms var(--ease-out) 300ms backwards; }
 #folha[data-estado="aberta"] .dial-power { animation: dial-centro 560ms var(--ease-out) 100ms backwards; }
 .dial-svg .dial-pino { transition: transform var(--dur-fast) var(--ease-out), r 200ms var(--ease-out); }
 .dial[data-arrasta] .dial-prog, .dial[data-arrasta] .dial-pino { transition: r 200ms var(--ease-out); }
@@ -859,3 +853,6 @@ body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] 
   .dev:not(.sk):hover, .scene:hover { transform: none; }
   .folha-painel { transform: none; }
 }
+
+/* Desempenho nos cartões: são dezenas e se mexem ao toque; o desfoque fica só nas superfícies grandes (menu, câmeras, popup, barra de abas, avisos). */
+.dev.glass, .scene.glass { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: rgba(14, 19, 31, 0.36); }
