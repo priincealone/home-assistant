@@ -6831,3 +6831,15 @@ dentro do cabeçalho, sem rolagem horizontal, nenhum comando enviado).
 - Painel atualizado no mesmo dia: `lib/rooms.ts` (Muro saiu; Corredor = `light.corredor`; LED do Luca com alias `switch.circulacao_switch_2`), `app/page.tsx` (LUZES_DORMIR e cena boas-vindas usam `light.corredor`), `dashboard-lab/contrato.json` e `comandos.json` regenerados e o teste de lote do lab ajustado (só Corredor). `npm test` 9/9, `tsc` ok, lab 113/113. Ainda não publicado: a 3002 roda o build antigo (derrubar a porta para recompilar) e o Painel Secundário na HA precisa de `publicar_painel_secundario.mjs`. A simulação do lab (`app.js`) segue com "Muro" de mentira; só afeta o modo simulado.
 - Armadilha: o dispositivo "Entrada" segue no registro da Tuya (entidades `switch.entrada_switch_*`); remover pelo app Smart Life/HA. O `core.entity_registry` não é reescrito pelo HA ao parar quando está sem alteração: rodar o script de edição duas vezes duplica entradas. Backup: `backups/troca_circulacao_luca_20261026_2040/`.
 
+
+## 29/10/2026 — Painel Primário (`dashboard-app/`) apagado
+
+Decisão do André: o Painel Secundário passa a ser o painel oficial. Feito: pasta `dashboard-app/` apagada (árvore limpa e sem
+commits sem push; histórico fica em `priincealone/casa-dashboard` no GitHub); tarefa agendada `CasaDashboardAutoStart`
+removida e watchdog/Next parados; painel "Casa Inteligente" (`casa-panel`) retirado do `configuration.yaml` e
+`config/www/casa-panel.js` apagado; `.claude/launch.json` só com o Secundário; gancho `lembrete_revisao_visual.mjs` agora
+vigia `dashboard-lab/` e `config/www/painel-secundario/`; gerador `gerar_contrato_painel_secundario.mjs` apagado
+(`dashboard-lab/contrato.json` é a fonte). **Pendências**: o painel "Casa Inteligente" some da barra lateral só no próximo
+restart da HA (não feito); `check_config` não rodou (o container enxerga `/config` quase vazio — investigar antes de qualquer
+restart); a documentação histórica (`docs/`, `specs/`, `artifacts/`) ainda cita o Primário e vale como arquivo; `CLAUDE.md` §2–§17
+têm trechos obsoletos sobre o Primário (aviso no §1).

@@ -2,18 +2,6 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "dashboard-app",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--prefix", "dashboard-app"],
-      "port": 3002
-    },
-    {
-      "name": "painel-dev-3010",
-      "runtimeExecutable": "node",
-      "runtimeArgs": ["dashboard-app/node_modules/next/dist/bin/next", "dev", "dashboard-app", "-p", "3010"],
-      "port": 3010
-    },
-    {
       "name": "painel-lab-3011",
       "runtimeExecutable": "node",
       "runtimeArgs": ["dashboard-lab/serve.mjs"],

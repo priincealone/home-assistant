@@ -5,20 +5,9 @@ default_config:
 # Load frontend themes from the themes folder
 frontend:
   themes: !include_dir_merge_named themes
-  extra_module_url:
-    # ?v= força os aparelhos a buscar a versão nova (a HA serve /local com cache de 31 dias).
-    - /local/casa-panel.js?v=20261014
 
-# Painel Nativo do Dashboard Next.js
+# O Painel Primário (Next.js, porta 3002) foi apagado em 29/10/2026; o Painel Secundário é agora o painel da casa.
 panel_custom:
-  - name: casa-panel
-    sidebar_title: "Casa Inteligente"
-    sidebar_icon: "mdi:home-variant"
-    url_path: "casa"
-    module_url: "/local/casa-panel.js?v=20261014"
-    trust_external_script: true
-    require_admin: false
-    handle_safe_area: true
   # Painel Secundário (dashboard-lab, dados simulados): roda inteiro na HA, servido de /local/painel-secundario/ (ver scripts/manutencao/publicar_painel_secundario.mjs).
   - name: casa-painel-secundario
     sidebar_title: "Painel Secundário"

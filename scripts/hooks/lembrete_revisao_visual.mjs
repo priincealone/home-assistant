@@ -14,12 +14,11 @@ process.stdin.on("end", () => {
   }
   const p = caminho.replace(/\\/g, "/");
   const visual =
-    /dashboard-app\/(app|components)\//.test(p) && !/dashboard-app\/app\/api\//.test(p)
-      ? true
-      : /dashboard-app\/(DESIGN|PRODUCT)\.md$/.test(p);
+    /\/(dashboard-lab|config\/www\/painel-secundario)\/(?!tests\/)[^/]+\.(css|html|js)$/.test(p) &&
+    !/\/dashboard-lab\/(serve|contrato)/.test(p);
   if (!visual) process.exit(0);
   const aviso =
-    "Mudança VISUAL no painel (" + p.split("dashboard-app/")[1] + "). Regra obrigatória: docs/UI-QUALITY-POLICY.md. " +
+    "Mudança VISUAL no painel (" + p.split("/").slice(-2).join("/") + "). Regra obrigatória: docs/UI-QUALITY-POLICY.md. " +
     "Antes de declarar pronto ou publicar: auditar a área e as adjacentes na matriz de viewports, corrigir tudo e " +
     "obter APROVADO do agente visual-gatekeeper (somente leitura; nunca aciona a casa). Nunca remover funcionalidade " +
     "para resolver visual. O relatório final só diz \"Nenhuma regressão visual ou funcional conhecida permanece.\" se for verdade.";

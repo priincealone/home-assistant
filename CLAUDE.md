@@ -14,8 +14,12 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
 
 - **A base** — Home Assistant 2026.9 em container, com integrações, dispositivos, áreas, automações e
   sensores derivados. Funciona sozinha.
-- **O painel** — `dashboard-app/`, Next.js 16 + React 19, consome a API do HA. É a interface desde
-  15/09/2026; a dashboard Lovelace foi retirada e **não deve ser recriada**.
+- **O painel** — o **Painel Secundário** (`dashboard-lab/`, publicado em `config/www/painel-secundario/`), a interface
+  oficial desde **29/10/2026**. O antigo Painel Primário (`dashboard-app/`, Next.js) foi **apagado** nessa data (histórico
+  preservado só no GitHub `priincealone/casa-dashboard`); a Lovelace foi retirada antes e **nenhuma das duas deve ser recriada**.
+  Onde este documento ainda cita `dashboard-app`, `lib/rooms.ts`, porta 3002/3010, `npm test` do painel ou watchdog, trate como
+  **obsoleto** (a tarefa `CasaDashboardAutoStart`, o painel "Casa Inteligente" da HA e `casa-panel.js` também foram removidos).
+  `dashboard-lab/contrato.json` passou a ser a fonte das entidades (o gerador foi aposentado).
 
 **Automação nunca depende do painel.** Se a interface cair, a casa continua automatizada.
 

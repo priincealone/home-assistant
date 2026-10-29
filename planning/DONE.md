@@ -259,3 +259,5 @@ que deixou os nomes `switch.*` para trás, o que confundiu a auditoria seis dias
 vinculada** nas duas regiões, trazendo a luminária e o aspirador.
 
 **Duplicatas de nuvem desativadas**, áreas acertadas, entidades órfãs resolvidas.
+
+**Painel Primário (`dashboard-app/`) apagado em 29/10/2026**; Painel Secundário é o painel oficial. Ver `ESTADO_DASHBOARD.md`.
