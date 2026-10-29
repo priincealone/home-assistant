@@ -384,8 +384,15 @@ test("toque: cada família manda a ação certa (luz, interruptor de luz, tomada
   E[porId("ventilador_sala")] = est("on", { percentage: 66 }); E[porId("tv_sala")] = est("on"); E[porId("ps5_sala")] = est("playing");
   E[porId("banheiro_switch_2")] = est("on");
   const a = criaAmbiente({ estados: E });
-  const casos = [[SALA, "luz_sala", "ligar"], [SALA, "ventilador_sala", "desligar"], [SALA, "tv_sala", "desligar"], ["banheiro", "banheiro_switch_1", "ligar"], ["banheiro", "banheiro_switch_2", "desligar"], [SALA, "ventilacao_ps5", "ligar"]];
+  const casos = [[SALA, "luz_sala", "ligar"], [SALA, "ventilador_sala", "desligar"], [SALA, "tv_sala", "desligar"], ["banheiro", "banheiro_switch_1", "ligar"], [SALA, "ventilacao_ps5", "ligar"]];
   for (const [c, id, acao] of casos) { a.clica({ dev: K(c, id) }); const m = cmds(a).at(-1); assert.deepEqual([m.dispositivo, m.acao], [id, acao], id); }
+  // tomada ligada -> desligar exige confirmação: nada sai até confirmar
+  const nt = cmds(a).length;
+  a.clica({ dev: K("banheiro", "banheiro_switch_2") });
+  assert.equal(cmds(a).length, nt, "desligar tomada espera a confirmação");
+  assert.match(a.el("#confirma").innerHTML, /corta a energia/);
+  a.dispara("#confirma", "click", { confirma: "sim" });
+  assert.deepEqual([cmds(a).at(-1).dispositivo, cmds(a).at(-1).acao, cmds(a).at(-1).confirmado], ["banheiro_switch_2", "desligar", true]);
   // PS5 ligado -> repouso exige confirmação: nada sai até confirmar
   const n = cmds(a).length;
   a.clica({ dev: K(SALA, "ps5_sala") });
@@ -915,4 +922,15 @@ test("PS5: ligar espera até 45 s; luz continua com 5 s (um comando lento não a
   assert.equal(a.v(`pendente("${kp}")`), true);
   a.rel.avanca(1);
   assert.equal(a.v(`pendente("${kp}")`), false, "aos 45 s desiste");
+});
+
+test("segurança: desligar QUALQUER tomada pede confirmação; ligar não; lotes de luz continuam sem tomadas", () => {
+  const tomadas = Object.entries(COMANDOS.dispositivos).filter(([id, d]) => d.dominio === "switch" && !/^banheiro_switch_1$/.test(id) && d.acoes.desligar && !d.acoes.desligar.lote);
+  assert.ok(tomadas.length >= 7, `poucas tomadas: ${tomadas.map(([id]) => id)}`);
+  for (const [id, d] of tomadas) {
+    if (id === "bloqueio_luca") continue;   // tem confirmação própria nas duas direções
+    assert.ok(CR.textoConfirmacao(COMANDOS, id, "desligar"), `${id}: desligar sem confirmação`);
+    assert.equal(CR.textoConfirmacao(COMANDOS, id, "ligar"), null, `${id}: ligar não deve pedir confirmação`);
+  }
+  for (const id of ["tomada_luca_1", "tomada_luca_2", "tomada_led_luca", "banheiro_switch_2", "pc_socket_1", "pc_socket_2", "ventilacao_ps5"]) assert.ok(CR.textoConfirmacao(COMANDOS, id, "desligar"), id);
 });

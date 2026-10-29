@@ -177,8 +177,16 @@ test("tomadas do PC e bloqueio infantil exigem confirmação explícita (o coman
   assert.equal(ultimo(a).erro, "confirmacao_necessaria");
   await a.enviar({ tipo: "comando", id: "b2", dispositivo: "bloqueio_luca", acao: "ligar", confirmado: true });
   assert.equal(a.chamadas.at(-1).dados.entity_id, "switch.tomada_inteligente_bloqueio_para_criancas");
-  await a.enviar({ tipo: "comando", id: "t", dispositivo: "tomada_luca_1", acao: "desligar" });   // tomada comum: direto
-  assert.equal(ultimo(a).ok, true);
+  // qualquer outra tomada também: desligar pede confirmação (corta a energia do que está ligado nela); ligar segue direto
+  for (const d of ["tomada_luca_1", "tomada_luca_2", "tomada_led_luca", "banheiro_switch_2", "ventilacao_ps5"]) {
+    const a = criar();   // um carregador por tomada: o limite de comandos por janela não é o assunto aqui
+    await a.enviar({ tipo: "comando", id: "t" + d, dispositivo: d, acao: "desligar" });
+    assert.equal(ultimo(a).erro, "confirmacao_necessaria", d);
+    await a.enviar({ tipo: "comando", id: "tc" + d, dispositivo: d, acao: "desligar", confirmado: true });
+    assert.equal(ultimo(a).ok, true, d);
+    await a.enviar({ tipo: "comando", id: "tl" + d, dispositivo: d, acao: "ligar" });
+    assert.equal(ultimo(a).ok, true, d);
+  }
 });
 
 test("cenas: só os 4 scripts do contrato, sempre com confirmação", async () => {

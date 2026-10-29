@@ -97,6 +97,15 @@
         "servico": "switch.turn_off",
         "lote": true
       }
+    },
+    "switch:tomada": {
+      "ligar": {
+        "servico": "switch.turn_on"
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "confirmar": "Desligar esta tomada corta a energia de tudo o que estiver ligado nela. Continuar?"
+      }
     }
   },
   "porId": {
@@ -239,6 +248,15 @@
       "desligar": {
         "servico": "switch.turn_off",
         "confirmar": "Alterar o bloqueio para crianças desta tomada?"
+      }
+    },
+    "ventilacao_ps5": {
+      "ligar": {
+        "servico": "switch.turn_on"
+      },
+      "desligar": {
+        "servico": "switch.turn_off",
+        "confirmar": "Desligar a ventilação do PS5 pode superaquecer o console. Continuar?"
       }
     }
   },

@@ -129,7 +129,8 @@
           "servico": "switch.turn_on"
         },
         "desligar": {
-          "servico": "switch.turn_off"
+          "servico": "switch.turn_off",
+          "confirmar": "Desligar a ventilação do PS5 pode superaquecer o console. Continuar?"
         }
       }
     },
@@ -540,7 +541,8 @@
           "servico": "switch.turn_on"
         },
         "desligar": {
-          "servico": "switch.turn_off"
+          "servico": "switch.turn_off",
+          "confirmar": "Desligar esta tomada corta a energia de tudo o que estiver ligado nela. Continuar?"
         }
       }
     },
@@ -554,7 +556,8 @@
           "servico": "switch.turn_on"
         },
         "desligar": {
-          "servico": "switch.turn_off"
+          "servico": "switch.turn_off",
+          "confirmar": "Desligar esta tomada corta a energia de tudo o que estiver ligado nela. Continuar?"
         }
       }
     },
@@ -618,7 +621,8 @@
           "servico": "switch.turn_on"
         },
         "desligar": {
-          "servico": "switch.turn_off"
+          "servico": "switch.turn_off",
+          "confirmar": "Desligar esta tomada corta a energia de tudo o que estiver ligado nela. Continuar?"
         }
       }
     },
@@ -648,7 +652,8 @@
           "servico": "switch.turn_on"
         },
         "desligar": {
-          "servico": "switch.turn_off"
+          "servico": "switch.turn_off",
+          "confirmar": "Desligar esta tomada corta a energia de tudo o que estiver ligado nela. Continuar?"
         }
       }
     },
