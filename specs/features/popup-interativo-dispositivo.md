@@ -34,3 +34,11 @@ Nada muda: o popup só lê o estado e manda comandos pelo mesmo caminho de antes
 ## Verificação
 
 `node --test dashboard-lab/tests/*.test.mjs`; auditoria no navegador em 320, 390, 768, 1024 e 1440 px; arraste do dial por ponteiro.
+
+## Adendo (29/10/2026): ventilador
+
+O popup do ventilador (toque no corpo do card) tem um **dial de 3 velocidades**: anel de 270° com 3 marcas (níveis 1, 2 e 3) em volta de um **ventilador
+que gira** (mais rápido a cada nível; parado quando desligado; sem giro com "reduzir movimento"). Arrastar ou tocar no anel escolhe o nível, que só é
+enviado **ao soltar**; no modo simulado, escolher uma velocidade liga o ventilador (como o brilho liga a luz). O centro liga/desliga. Os botões de
+velocidade (`data-seg="vel"`) seguem no DOM, escondidos só visualmente, e o dial os aciona: nenhum comando novo. Oscilar e Modo (direção, modo real)
+continuam abaixo do dial. Sem velocidade disponível (regra ou atributo ausente), o popup abre sem dial.

@@ -463,7 +463,7 @@ button.dial-power { cursor: pointer; }
 .dial:has(.dial-power[aria-checked="false"]) .dial-prog { opacity: 0.35; }
 .dial[data-bloq="true"] { cursor: not-allowed; }
 .dial[data-bloq="true"] .dial-svg { opacity: 0.45; }
-.folha-corpo:has(.ctl-dial input:focus-visible) .dial-svg { filter: drop-shadow(0 0 6px rgba(var(--tom-rgb), 0.9)); }
+.folha-corpo:has(.ctl-dial :focus-visible) .dial-svg { filter: drop-shadow(0 0 6px rgba(var(--tom-rgb), 0.9)); }
 button.dial-power:focus-visible { outline: 2px solid rgb(var(--tom-rgb)); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .dial-prog, .dial-svg .dial-pino { transition: none; } }
 body[data-folha] { overflow: hidden; }
@@ -863,3 +863,18 @@ body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] 
   .hero-bg .nv, .hero-bg .estrelas .tw, .ray { animation: none; }
 }
 body[data-folha] .hero-bg .nv, body[data-folha] .hero-bg .estrelas .tw, body[data-folha] .ray { animation-play-state: paused; }
+
+/* ---------- Dial do ventilador: 3 marcas no anel; o ventilador gira mais rápido a cada nível ---------- */
+.dial-svg .dial-tick { fill: rgba(255, 255, 255, 0.28); transform: none; transition: fill var(--dur-base); }
+.dial-svg .dial-tick[data-on="true"] { fill: #fff; }
+.dial-vent .dial-ico { color: rgb(var(--tom-rgb)); }
+.dial-vent .dial-ico .ic { animation: vent-gira var(--giro, 2.4s) linear infinite; animation-play-state: paused; will-change: transform; }
+.dial-vent[data-vel="1"] { --giro: 2.6s; } .dial-vent[data-vel="2"] { --giro: 1.2s; } .dial-vent[data-vel="3"] { --giro: 0.55s; }
+.dial-vent:not([data-vel="0"]) .dial-ico .ic { animation-play-state: running; }
+.dial-vent .dial-val { font-size: 1.125rem; }
+@keyframes vent-gira { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .dial-vent .dial-ico .ic { animation: none; } }
+
+/* ícone do centro do dial: o tamanho pedido ao desenhar (34/56) não tem classe própria, então fixa aqui; encolhe em tela baixa */
+.dial-ico .ic { font-size: 30px; }
+.dial-vent .dial-ico .ic { font-size: min(52px, 9dvh); }

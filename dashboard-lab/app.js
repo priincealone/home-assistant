@@ -553,7 +553,7 @@ const SLIDERS = {
 };
 const DIRECOES = { forward: "Ventilador (descer ar)", reverse: "Exaustor (subir ar)" };
 const SEGS = {
-  vel: { rot: "Velocidade", valores: [1, 2, 3], rotulo: (v) => String(v), aria: (v) => `Velocidade ${v}`, get: (d) => d.vel, set: (d, v) => { d.vel = v; } },
+  vel: { rot: "Velocidade", valores: [1, 2, 3], rotulo: (v) => String(v), aria: (v) => `Velocidade ${v}`, get: (d) => d.vel, set: (d, v) => { d.vel = v; d.on = true; } },   // escolher velocidade liga o ventilador (como o brilho liga a luz)
   dir: { rot: "Modo", valores: ["forward", "reverse"], rotulo: (v) => DIRECOES[v], aria: (v) => `Modo ${DIRECOES[v]}`, get: (d) => d.dir, set: () => {} },   // só modo real; nomes do Painel Primário (FanControlCard)
   suc: { rot: "Sucção", valores: [1, 2, 3], rotulo: (v) => SUCCAO[v - 1], aria: (v) => `Sucção ${SUCCAO[v - 1].toLowerCase()}`, get: (d) => d.suc, set: (d, v) => { d.suc = v; } },
 };
@@ -569,6 +569,21 @@ function dialHtml(d, id, temOn) {
     <svg class="dial-svg" viewBox="0 0 220 220" focusable="false" aria-hidden="true">
       <circle class="dial-trilha" cx="110" cy="110" r="88" pathLength="360"/>
       <circle class="dial-prog" cx="110" cy="110" r="88" pathLength="360"/>
+      <circle class="dial-pino" cx="198" cy="110" r="10"/>
+    </svg>
+    ${temOn ? `<button type="button" class="dial-power" role="switch" aria-checked="false" data-sw="on">${centro}</button>` : `<div class="dial-power">${centro}</div>`}
+  </div>`;
+}
+// Dial do ventilador: 3 marcas (velocidades 1, 2 e 3) no anel de 270°; o ventilador do centro gira mais rápido a cada nível e liga/desliga ao toque.
+// Os botões de velocidade (data-seg="vel") seguem no DOM, escondidos só visualmente: o dial os aciona, então todo o caminho de comando é o de antes.
+function dialVentHtml(d, temOn) {
+  const marca = (f) => { const a = ((135 + f * 270) * Math.PI) / 180; return `<circle class="dial-tick" cx="${(110 + 88 * Math.cos(a)).toFixed(1)}" cy="${(110 + 88 * Math.sin(a)).toFixed(1)}" r="6"/>`; };
+  const centro = `<span class="dial-ico" aria-hidden="true">${ic("fan", 56, true)}</span><span class="dial-val num" data-dialval="vel"></span><span class="dial-rot" data-rot="on">Ligado</span>`;
+  return `<div class="dial dial-vent" data-dial-vel="1" data-vel="0" style="--r:0">
+    <svg class="dial-svg" viewBox="0 0 220 220" focusable="false" aria-hidden="true">
+      <circle class="dial-trilha" cx="110" cy="110" r="88" pathLength="360"/>
+      <circle class="dial-prog" cx="110" cy="110" r="88" pathLength="360"/>
+      ${marca(1 / 3)}${marca(2 / 3)}${marca(1)}
       <circle class="dial-pino" cx="198" cy="110" r="10"/>
     </svg>
     ${temOn ? `<button type="button" class="dial-power" role="switch" aria-checked="false" data-sw="on">${centro}</button>` : `<div class="dial-power">${centro}</div>`}
@@ -604,6 +619,12 @@ function montaFolha(d) {
     const temOn = reOn.test(h);
     h = h.replace(reOn, "").replace(`<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${prim}"`, `<div class="ctl ctl-dial"><div class="ctl-linha"><label class="rot" for="f-${prim}"`);
     h = dialHtml(d, prim, temOn) + h;
+  }
+  if (!prim && d.tipo === "fan" && h.includes('data-seg="vel"')) {   // ventilador: anel de 3 velocidades em volta de um ventilador que gira
+    const reOn = /<button type="button" class="ctl-sw"[^>]*data-sw="on">[\s\S]*?<\/button>/;
+    const temOn = reOn.test(h);
+    h = h.replace(reOn, "").replace('<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-vel-r">', '<div class="ctl ctl-dial"><div class="ctl-linha"><span class="rot" id="f-vel-r">');
+    h = dialVentHtml(d, temOn) + h;
   }
   h += sw("fav", "Favorito");
   const sala = SALAS.find((x) => x.id === d.sala).nome;
@@ -645,6 +666,12 @@ function atualizaFolha() {
     const id = el.dataset.sw, v = id === "on" ? d.on : d[id];
     el.setAttribute("aria-checked", String(!!v)); el.disabled = id === "fav" ? semDados() : bloq || (semTv && id === "mudo");   // Favorito é local: segue valendo no modo real
     if (id === "on") el.querySelector("[data-rot]").textContent = v ? "Ligado" : "Desligado";
+  });
+  f.querySelectorAll(".dial-vent").forEach((dial) => {
+    const v = SEGS.vel.get(d), n = d.on && v ? +v : 0, bt = f.querySelector('[data-seg="vel"]');
+    dial.style.setProperty("--r", String(n / 3)); dial.dataset.vel = String(n); dial.dataset.bloq = String(!bt || bt.disabled);
+    dial.querySelector("[data-dialval]").textContent = n ? `Vel. ${n}` : "—";
+    dial.querySelectorAll(".dial-tick").forEach((t, i) => { t.dataset.on = String(n > i); });
   });
   f.querySelectorAll("[data-seg]").forEach((el) => { el.setAttribute("aria-pressed", String(String(SEGS[el.dataset.seg].get(d)) === el.dataset.v)); el.disabled = bloq || (el.dataset.seg === "dir" && !d.on); });
   f.querySelectorAll("[data-app]").forEach((el) => { el.setAttribute("aria-pressed", String(d.app === el.dataset.app)); el.disabled = bloq || semTv; });
@@ -741,7 +768,14 @@ document.addEventListener("pointermove", (ev) => {
   quadroLuz = requestAnimationFrame(() => { quadroLuz = 0; luzNoPonteiro(ev); });
 }, { passive: true });
 function moverDial(ev) {
-  const { dial, el } = dialAtivo, r = dial.querySelector("svg").getBoundingClientRect();
+  const { dial, el, vent } = dialAtivo, r = dial.querySelector("svg").getBoundingClientRect();
+  if (vent) {   // ventilador: só pré-visualiza o nível (1 a 3); o comando sai ao soltar
+    const rel = ((Math.atan2(ev.clientY - (r.top + r.height / 2), ev.clientX - (r.left + r.width / 2)) * 180) / Math.PI - 135 + 720) % 360;
+    const f = rel <= 270 ? rel / 270 : rel - 270 < 45 ? 1 : 0;
+    dialAtivo.nivel = Math.min(3, Math.max(1, Math.round(f * 3)));
+    dial.style.setProperty("--r", String(dialAtivo.nivel / 3)); dial.dataset.vel = String(dialAtivo.nivel);
+    return;
+  }
   const rel = ((Math.atan2(ev.clientY - (r.top + r.height / 2), ev.clientX - (r.left + r.width / 2)) * 180) / Math.PI - 135 + 720) % 360;
   let f = rel <= 270 ? rel / 270 : rel - 270 < 45 ? 1 : 0;           // a abertura de baixo gruda no fim mais próximo
   if (dialAtivo.f > 0.75 && f < 0.25) f = 1; else if (dialAtivo.f < 0.25 && f > 0.75) f = 0;   // não dá a volta de um fim ao outro
@@ -754,6 +788,14 @@ function moverDial(ev) {
 $("#folha").addEventListener("pointerdown", (ev) => {
   const dial = ev.target.closest && ev.target.closest(".dial");
   if (!dial || ev.target.closest(".dial-power") || (ev.pointerType === "mouse" && ev.button !== 0)) return;
+  if (dial.dataset.dialVel) {
+    const bt = $("#folha").querySelector('[data-seg="vel"]');
+    if (!bt || bt.disabled) return;
+    ev.preventDefault(); dial.setPointerCapture(ev.pointerId); dial.dataset.arrasta = "1";
+    dialAtivo = { dial, vent: true, nivel: 0 };
+    moverDial(ev);
+    return;
+  }
   const el = $("#folha").querySelector(`[data-ctl="${dial.dataset.dial}"]`);
   if (!el || el.disabled) return;
   ev.preventDefault(); dial.setPointerCapture(ev.pointerId); dial.dataset.arrasta = "1";
@@ -761,7 +803,16 @@ $("#folha").addEventListener("pointerdown", (ev) => {
   moverDial(ev);
 });
 $("#folha").addEventListener("pointermove", (ev) => { if (dialAtivo) moverDial(ev); });
-const fimDial = () => { if (!dialAtivo) return; const { el, dial } = dialAtivo; dialAtivo = null; delete dial.dataset.arrasta; el.dispatchEvent(new Event("change", { bubbles: true })); };
+const fimDial = () => {
+  if (!dialAtivo) return;
+  if (dialAtivo.vent) {
+    const { dial, nivel } = dialAtivo; dialAtivo = null; delete dial.dataset.arrasta;
+    const bt = $("#folha").querySelector(`[data-seg="vel"][data-v="${nivel}"]`);
+    const dv = estado.get(folhaChave);
+    if (bt && !bt.disabled && (bt.getAttribute("aria-pressed") !== "true" || !(dv && dv.on))) bt.click(); else atualizaFolha();   // mesmo nível E já ligado: só devolve o anel ao estado real
+    return;
+  }
+  const { el, dial } = dialAtivo; dialAtivo = null; delete dial.dataset.arrasta; el.dispatchEvent(new Event("change", { bubbles: true })); };
 $("#folha").addEventListener("pointerup", fimDial);
 $("#folha").addEventListener("pointercancel", fimDial);
 // Foco preso dentro de uma folha (ajustes ou manutenção): Tab/Shift+Tab circulam; sem alvos, o foco fica no painel.

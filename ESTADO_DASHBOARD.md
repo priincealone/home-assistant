@@ -6880,3 +6880,10 @@ câmeras…); agora `renderLeve()` atualiza só a folha e refaz a tela uma vez, 
 (2) animações de fundo contínuas em SVG com desfoque (deriva das nuvens, cintilar das estrelas) e o feixe de luz girando repintavam o céu o tempo todo:
 desligadas em aparelho de toque (`hover: none`/`pointer: coarse`) e pausadas com a folha aberta; (3) o painel do popup ficou sem `backdrop-filter`
 (fundo quase opaco, 0,93). **Pendente**: o André confirmar no tablet. Se ainda engasgar: desligar o vidro das câmeras/menu e a luz que segue o toque.
+
+## 29/10/2026 — Painel Principal: popup do ventilador com dial giratório
+
+Anel de 3 velocidades em volta de um ventilador central que gira (duração 2,6 s/1,2 s/0,55 s por volta nos níveis 1/2/3), liga/desliga no centro, Oscilar e Modo
+abaixo. O dial aciona os botões de velocidade já existentes (nenhum comando novo). Corrigido junto: o tamanho dos ícones do centro dos dials (`.dial-ico .ic`)
+e a escolha de velocidade com o ventilador desligado (no simulado liga; no dial, "mesmo nível" só ignora se já estiver ligado). 116 testes.
+**Não verificado**: o dial do ventilador no modo real dentro da HA e no tablet (o giro é só `transform`, mas não foi medido).

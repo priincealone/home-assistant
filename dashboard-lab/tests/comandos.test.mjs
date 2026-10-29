@@ -957,3 +957,17 @@ test("popup: toque no corpo do cartão de luz/ventilador/TV abre a folha com dia
   assert.equal(a.v("folhaChave"), null);
   assert.ok(cmds(a).length >= n, "tomada alterna no toque");
 });
+
+test("popup do ventilador: anel de 3 velocidades com ventilador central; os botões de velocidade seguem no DOM; um só liga/desliga; oscilar continua", () => {
+  const E = casaBase(); E[porId("ventilador_sala")] = est("on", { percentage: 66, oscillating: false, preset_modes: [] });
+  const a = criaAmbiente({ estados: E });
+  const k = K(SALA, "ventilador_sala");
+  a.v(`abrirFolha("${k}")`);
+  const h = a.el("#folha").innerHTML;
+  assert.match(h, /class="dial dial-vent" data-dial-vel="1"/);
+  assert.equal((h.match(/class="dial-tick"/g) || []).length, 3, "3 marcas: velocidades 1, 2 e 3");
+  assert.match(h, /class="ctl ctl-dial"[\s\S]*data-seg="vel" data-v="3"/, "os botões de velocidade seguem no DOM, escondidos só visualmente");
+  assert.equal((h.match(/data-sw="on"/g) || []).length, 1, "um só botão de ligar/desliga (o ventilador do centro)");
+  assert.match(h, /data-sw="osc"/, "oscilar continua disponível");
+  assert.match(h, /data-dialval="vel"/);
+});
