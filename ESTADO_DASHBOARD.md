@@ -6853,3 +6853,13 @@ PS5 e sensores seguem como antes (tomadas com confirmação ao desligar). O `inp
 dial move-o e dispara os mesmos `input`/`change`, então comando, debounce e reversão em erro não mudaram. Toque longo, Shift+Enter, F10 e botão
 direito abrem a mesma folha. Testes: 115. **Não verificado**: o popup no modo real (dentro da HA, com comandos) e em aparelho de toque.
 Acessibilidade: o card segue `role="switch"` com `aria-haspopup="dialog"`; quem usa teclado liga/desliga pelo botão central do popup.
+
+## 29/10/2026 — Painel Principal: suavidade e vidro líquido (rodada 15)
+
+Vidro: reflexo no canto, borda de luz em `::before` (máscara), sombra com profundidade, blur 24 px com saturação 185 %; o popup (folha) é translúcido
+(blur de 8 a 34 px ao abrir) sobre um fundo que desfoca. Movimento: tinta de ligado/desligado dos cartões e cenas anima via `@property --on`;
+pressão assimétrica (afunda em 80 ms, volta em 460 ms); interruptor estica ao toque (`scaleX`); luz que segue o ponteiro/dedo nos cartões
+(`--mx/--my`, JS só escreve as variáveis); popup sobe com cascata curta do conteúdo; o arco do dial se desenha ao abrir e não tem atraso no arrasto;
+entrada dos cartões em cascata uma única vez (`body[data-entrada]` por 1,5 s depois do primeiro dado). `prefers-reduced-motion` desliga cascatas,
+elevação no hover e translação do popup. Detector da skill impeccable: só resta o aviso da fonte Inter (identidade do painel). 115 testes.
+**Não verificado**: desempenho do `backdrop-filter` em tablet de parede real e o modo real dentro da HA; sem auditoria completa de viewports nem porteiro.

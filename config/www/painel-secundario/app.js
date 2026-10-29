@@ -459,8 +459,13 @@ function renderAbas() {
   document.body.dataset.tab = S.aba;
 }
 
+let entradaFeita = false;
 function renderTudo() {
   renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha(); atualizaManut(); dicasRolagem();
+  if (!entradaFeita && !esq()) {   // cascata de entrada dos cartões: só na primeira vez que o dado chega
+    entradaFeita = true;
+    try { document.body.dataset.entrada = "1"; setTimeout(() => { delete document.body.dataset.entrada; }, 1500); } catch { /* sem DOM completo */ }
+  }
 }
 
 /* ---------- Interação (otimista: muda na hora; offline e carregando recusam comando, sem trava fantasma) ---------- */
@@ -713,6 +718,19 @@ $("#folha").addEventListener("click", (ev) => {
 });
 // Arrasto do dial: converte o ângulo do ponteiro em valor, move o input[type=range] e dispara os MESMOS eventos input/change de antes.
 let dialAtivo = null;
+// luz que acompanha o ponteiro nos cartões e cenas (só escreve --mx/--my; o brilho é CSS)
+let quadroLuz = 0;
+function luzNoPonteiro(ev) {
+  const t = ev.target && ev.target.closest && ev.target.closest(".dev,.scene");
+  if (!t) return;
+  const r = t.getBoundingClientRect();
+  t.style.setProperty("--mx", `${Math.round(ev.clientX - r.left)}px`); t.style.setProperty("--my", `${Math.round(ev.clientY - r.top)}px`);
+}
+document.addEventListener("pointerdown", luzNoPonteiro, { passive: true });
+document.addEventListener("pointermove", (ev) => {
+  if (quadroLuz || ev.pointerType === "touch") return;
+  quadroLuz = requestAnimationFrame(() => { quadroLuz = 0; luzNoPonteiro(ev); });
+}, { passive: true });
 function moverDial(ev) {
   const { dial, el } = dialAtivo, r = dial.querySelector("svg").getBoundingClientRect();
   const rel = ((Math.atan2(ev.clientY - (r.top + r.height / 2), ev.clientX - (r.left + r.width / 2)) * 180) / Math.PI - 135 + 720) % 360;
@@ -729,12 +747,12 @@ $("#folha").addEventListener("pointerdown", (ev) => {
   if (!dial || ev.target.closest(".dial-power") || (ev.pointerType === "mouse" && ev.button !== 0)) return;
   const el = $("#folha").querySelector(`[data-ctl="${dial.dataset.dial}"]`);
   if (!el || el.disabled) return;
-  ev.preventDefault(); dial.setPointerCapture(ev.pointerId);
+  ev.preventDefault(); dial.setPointerCapture(ev.pointerId); dial.dataset.arrasta = "1";
   dialAtivo = { dial, el, f: (+el.value - +el.min) / (+el.max - +el.min) };
   moverDial(ev);
 });
 $("#folha").addEventListener("pointermove", (ev) => { if (dialAtivo) moverDial(ev); });
-const fimDial = () => { if (!dialAtivo) return; const { el } = dialAtivo; dialAtivo = null; el.dispatchEvent(new Event("change", { bubbles: true })); };
+const fimDial = () => { if (!dialAtivo) return; const { el, dial } = dialAtivo; dialAtivo = null; delete dial.dataset.arrasta; el.dispatchEvent(new Event("change", { bubbles: true })); };
 $("#folha").addEventListener("pointerup", fimDial);
 $("#folha").addEventListener("pointercancel", fimDial);
 // Foco preso dentro de uma folha (ajustes ou manutenção): Tab/Shift+Tab circulam; sem alvos, o foco fica no painel.

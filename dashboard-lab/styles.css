@@ -164,12 +164,20 @@ button { font: inherit; color: inherit; }
 .sec-head { display: flex; flex-direction: column; gap: 2px; margin-bottom: 14px; }
 h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing: -0.01em; }
 
+/* Vidro líquido: reflexo suave no canto, borda de luz (::before, mais clara na quina de cima e na de baixo), sombra com profundidade e fundo mais saturado. */
+:where(.glass) { position: relative; }
 .glass {
-  background: var(--glass);
-  border: 1px solid var(--border);
-  box-shadow: inset 0 1px 1.5px rgba(255, 255, 255, 0.12);
-  -webkit-backdrop-filter: blur(20px) saturate(160%);
-  backdrop-filter: blur(20px) saturate(160%);
+  background: radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.12), transparent 52%), var(--glass);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), inset 0 -14px 24px -16px rgba(0, 0, 0, 0.4), 0 10px 30px -14px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(24px) saturate(185%) brightness(1.05);
+  backdrop-filter: blur(24px) saturate(185%) brightness(1.05);
+}
+.glass::before {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  background: linear-gradient(155deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.08) 28%, rgba(255, 255, 255, 0.02) 56%, rgba(255, 255, 255, 0.22) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
 }
 
 /* ---------- Cenas ---------- */
@@ -180,14 +188,17 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
   min-height: 64px; padding: 12px 16px;
   text-align: left; cursor: pointer;
   border-radius: 24px;
-  transition: transform var(--dur-fast) var(--ease-out), border-color var(--dur-fast), background-color var(--dur-fast), box-shadow var(--dur-fast);
+  --tint: 251, 191, 36; --on: 0;
+  background: linear-gradient(135deg, rgba(var(--tint), calc(var(--on) * 0.16)), rgba(var(--tint), calc(var(--on) * 0.04))),
+    radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.12), transparent 52%), var(--glass);
+  transition: transform 460ms var(--ease-out), --on 460ms var(--ease-out), border-color var(--dur-fast), box-shadow 460ms var(--ease-out);
 }
-.scene:active { transform: scale(0.98); }
+.scene:active { transform: scale(0.978); transition-duration: 80ms; }
 .scene .ico { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 9999px; border: 1px solid var(--border-strong); color: var(--amber); }
 .scene .txt { min-width: 0; display: flex; flex-direction: column; }
 .scene .nome { font-weight: 600; font-size: 0.9375rem; overflow-wrap: anywhere; }
 .scene .desc { font-size: 0.75rem; color: var(--muted); overflow-wrap: anywhere; }
-.scene[aria-pressed="true"] { border-color: rgba(251, 191, 36, 0.5); box-shadow: var(--aura-amber); background: linear-gradient(135deg, rgba(251, 191, 36, 0.16), rgba(251, 191, 36, 0.04)); }
+.scene[aria-pressed="true"] { --on: 1; border-color: rgba(251, 191, 36, 0.5); box-shadow: var(--aura-amber); }
 
 /* ---------- Colunas ---------- */
 .main {
@@ -228,19 +239,25 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
   position: relative; min-height: 116px; padding: 14px;
   display: flex; flex-direction: column; justify-content: space-between; gap: 12px;
   border-radius: 16px; text-align: left; cursor: pointer;
-  transition: transform var(--dur-fast) var(--ease-out), background-color var(--dur-base), border-color var(--dur-base), box-shadow var(--dur-base);
+  --tint: 251, 191, 36; --on: 0;
+  background: linear-gradient(160deg, rgba(var(--tint), calc(var(--on) * 0.18)), rgba(var(--tint), calc(var(--on) * 0.05))),
+    radial-gradient(130% 90% at 0% 0%, rgba(255, 255, 255, 0.12), transparent 52%), var(--glass);
+  transition: transform 460ms var(--ease-out), --on 460ms var(--ease-out), border-color var(--dur-base), box-shadow 460ms var(--ease-out);
 }
-.dev:active { transform: scale(0.97); }
+.dev:active { transform: scale(0.972); transition-duration: 80ms; }
 .dev-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .dev .chip { width: 36px; height: 36px; display: grid; place-items: center; flex: none; border-radius: 9999px; border: 1px solid var(--border); color: var(--muted); transition: background-color var(--dur-base), color var(--dur-base), border-color var(--dur-base); }
 .dev .name { font-weight: 600; font-size: 0.875rem; overflow-wrap: anywhere; line-height: 1.25; }
 .dev .sub { font-size: 0.75rem; color: var(--muted); overflow-wrap: anywhere; }
 
 .sw { position: relative; width: 36px; height: 20px; flex: none; border-radius: 9999px; background: rgba(255, 255, 255, 0.12); transition: background-color var(--dur-base); }
-.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 9999px; background: var(--text); transform: translateX(0); transition: transform var(--dur-base) var(--ease-out), background-color var(--dur-base); }
+.sw::after { content: ""; position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; border-radius: 9999px; background: var(--text); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); transform: translateX(0); transform-origin: left center; transition: transform 380ms var(--ease-out), background-color var(--dur-base); }
+.dev:active .sw::after, .ctl-sw:active .sw::after { transform: translateX(0) scaleX(1.3); }   /* a peça se estica ao toque, sem animar largura */
+.dev[aria-checked="true"] .sw::after, .ctl-sw[aria-checked="true"] .sw::after { transform-origin: right center; }
+.dev[aria-checked="true"]:active .sw::after, .ctl-sw[aria-checked="true"]:active .sw::after { transform: translateX(16px) scaleX(1.3); }
 
 .dev[aria-checked="true"] {
-  background: linear-gradient(160deg, rgba(251, 191, 36, 0.18), rgba(251, 191, 36, 0.05));
+  --on: 1;
   border-color: rgba(251, 191, 36, 0.45); box-shadow: var(--aura-amber);
 }
 .dev[aria-checked="true"] .chip { background: var(--amber); color: var(--amber-ink); border-color: transparent; }
@@ -248,7 +265,7 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 .dev[aria-checked="true"] .sw { background: rgba(251, 191, 36, 0.5); }
 .dev[aria-checked="true"] .sw::after { transform: translateX(16px); background: var(--amber); }
 .dev[data-tipo="tv"][aria-checked="true"], .dev[data-tipo="console"][aria-checked="true"] {
-  background: linear-gradient(160deg, rgba(56, 189, 248, 0.18), rgba(56, 189, 248, 0.05));
+  --tint: 56, 189, 248;
   border-color: rgba(56, 189, 248, 0.45); box-shadow: 0 0 20px rgba(56, 189, 248, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.2);
 }
 .dev[data-tipo="tv"][aria-checked="true"] .chip, .dev[data-tipo="console"][aria-checked="true"] .chip { background: var(--cyan); color: #082f49; }
@@ -600,8 +617,8 @@ body[data-folha] { overflow: hidden; }
 .toast {
   position: fixed; z-index: 60; left: 0; right: 0; margin-inline: auto; width: fit-content; bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom) + 14px);
   display: flex; align-items: center; gap: 8px 12px; max-width: min(92vw, 440px); padding: 6px 6px 6px 18px;
-  border-radius: 9999px; background: rgba(17, 24, 39, 0.92); border: 1px solid var(--border-strong); box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+  border-radius: 9999px; background: radial-gradient(130% 120% at 0% 0%, rgba(255, 255, 255, 0.1), transparent 55%), rgba(17, 24, 39, 0.74); border: 1px solid rgba(255, 255, 255, 0.14); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 14px 40px -12px rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(24px) saturate(185%); backdrop-filter: blur(24px) saturate(185%);
   transform: translateY(16px); opacity: 0;
   transition: transform var(--dur-base) var(--ease-out), opacity var(--dur-base);
 }
@@ -754,3 +771,91 @@ body[data-folha] { overflow: hidden; }
 /* controle remoto da TV: 3 colunas; o último botão ímpar ocupa a linha */
 .segs-rem { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .segs-rem .segbtn:last-child:nth-child(3n + 1) { grid-column: 1 / -1; }
+
+
+/* ================= Rodada 15: suavidade (animar + polir) e vidro líquido ================= */
+@property --on { syntax: "<number>"; inherits: false; initial-value: 0; }
+
+/* luz que acompanha o dedo/ponteiro: um reflexo que floresce onde se toca (JS só escreve --mx/--my) */
+.dev:not(.sk)::after, .scene::after {
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; opacity: 0;
+  background: radial-gradient(170px circle at var(--mx, 50%) var(--my, 25%), rgba(255, 255, 255, 0.13), transparent 65%);
+  transition: opacity 420ms var(--ease-out);
+}
+.dev:not(.sk):active::after, .scene:active::after { opacity: 1; transition-duration: 60ms; }
+@media (hover: hover) and (pointer: fine) {
+  .dev:not(.sk):hover::after, .scene:hover::after { opacity: 1; }
+  .dev:not(.sk):hover { transform: translateY(-2px); }
+  .scene:hover { transform: translateY(-1px); }
+  .dev:not(.sk):active { transform: scale(0.972); }
+  .scene:active { transform: scale(0.978); }
+}
+
+/* demais controles: mesma resposta (sobe devagar, afunda rápido) */
+.segbtn, .ctl-sw, .cor, .folha-x, .pill-btn, .toast-b, .amb, .manut-chip {
+  transition-property: background-color, border-color, color, box-shadow, transform;
+  transition-duration: 380ms; transition-timing-function: var(--ease-out);
+}
+.segbtn:active, .ctl-sw:active, .cor:active, .folha-x:active, .pill-btn:active, .toast-b:active, .amb:active { transform: scale(0.97); transition-duration: 80ms; }
+.rng::-webkit-slider-thumb { transition: transform 260ms var(--ease-out); filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.45)); }
+.rng:active::-webkit-slider-thumb { transform: scale(1.12); }
+.rng::-moz-range-thumb { transition: transform 260ms var(--ease-out); }
+.rng:active::-moz-range-thumb { transform: scale(1.12); }
+
+/* popup (folha): sobe, ganha foco (o vidro desfoca de 0 a 30 px) e o conteúdo entra em cascata curta; sai mais rápido do que entra */
+.folha-fundo { -webkit-backdrop-filter: blur(0px); backdrop-filter: blur(0px); transition: opacity 360ms var(--ease-out), backdrop-filter 480ms var(--ease-out), -webkit-backdrop-filter 480ms var(--ease-out); }
+#folha[data-estado="aberta"] .folha-fundo, #manutencao[data-estado="aberta"] .folha-fundo, #confirma[data-estado="aberta"] .folha-fundo { -webkit-backdrop-filter: blur(7px); backdrop-filter: blur(7px); }
+.folha-painel {
+  background: radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, 0.14), transparent 55%), var(--glass), rgba(12, 17, 28, 0.66);
+  -webkit-backdrop-filter: blur(8px) saturate(120%); backdrop-filter: blur(8px) saturate(120%);
+  transform: translateY(28px) scale(0.965); transform-origin: 50% 100%;
+  transition: transform 520ms var(--ease-out), opacity 300ms var(--ease-out), backdrop-filter 520ms var(--ease-out), -webkit-backdrop-filter 520ms var(--ease-out);
+}
+#folha[data-estado="aberta"] .folha-painel, #manutencao[data-estado="aberta"] .folha-painel, #confirma[data-estado="aberta"] .folha-painel {
+  -webkit-backdrop-filter: blur(34px) saturate(190%) brightness(1.04); backdrop-filter: blur(34px) saturate(190%) brightness(1.04);
+}
+#folha[data-estado="saindo"] .folha-painel, #manutencao[data-estado="saindo"] .folha-painel, #confirma[data-estado="saindo"] .folha-painel {
+  opacity: 0; transform: translateY(14px) scale(0.985); transition-duration: 200ms;
+}
+#folha[data-estado="saindo"] .folha-fundo, #manutencao[data-estado="saindo"] .folha-fundo, #confirma[data-estado="saindo"] .folha-fundo { transition-duration: 200ms; }
+@keyframes sobe-conteudo { from { opacity: 0; transform: translateY(10px); } }
+#folha[data-estado="aberta"] .folha-cab, #folha[data-estado="aberta"] .folha-corpo > * { animation: sobe-conteudo 460ms var(--ease-out) backwards; }
+#folha[data-estado="aberta"] .folha-cab { animation-delay: 60ms; }
+#folha[data-estado="aberta"] .folha-corpo > :nth-child(1) { animation-delay: 110ms; }
+#folha[data-estado="aberta"] .folha-corpo > :nth-child(2) { animation-delay: 150ms; }
+#folha[data-estado="aberta"] .folha-corpo > :nth-child(3) { animation-delay: 190ms; }
+#folha[data-estado="aberta"] .folha-corpo > :nth-child(4) { animation-delay: 230ms; }
+#folha[data-estado="aberta"] .folha-corpo > :nth-child(n+5) { animation-delay: 270ms; }
+
+/* dial: o arco se desenha ao abrir; no arrasto não há atraso nenhum (o dedo manda) e o pino cresce */
+@keyframes dial-arco { from { stroke-dasharray: 0 360; } }
+@keyframes dial-pino { from { transform: rotate(135deg); opacity: 0; } }
+@keyframes dial-centro { from { opacity: 0; transform: scale(0.88); } }
+#folha[data-estado="aberta"] .dial-prog { animation: dial-arco 820ms var(--ease-out) 140ms backwards; }
+#folha[data-estado="aberta"] .dial-pino { animation: dial-pino 820ms var(--ease-out) 140ms backwards; }
+#folha[data-estado="aberta"] .dial-power { animation: dial-centro 560ms var(--ease-out) 100ms backwards; }
+.dial-svg .dial-pino { transition: transform var(--dur-fast) var(--ease-out), r 200ms var(--ease-out); }
+.dial[data-arrasta] .dial-prog, .dial[data-arrasta] .dial-pino { transition: r 200ms var(--ease-out); }
+.dial[data-arrasta] .dial-pino { r: 12px; }
+.dial-power { box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 20px -8px rgba(0, 0, 0, 0.5); }
+.dial-power:active { transform: scale(0.97); transition-duration: 80ms; }
+
+/* entrada da tela: os cartões chegam em cascata curta, UMA vez (o JS liga body[data-entrada] por ~1,4 s depois do primeiro dado) */
+@keyframes entra-cartao { from { opacity: 0; transform: translateY(14px) scale(0.98); } }
+body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] .security .cam {
+  animation: entra-cartao 600ms var(--ease-out) backwards;
+  animation-delay: calc(var(--s, 0) * 70ms + var(--i, 0) * 34ms);
+}
+.scene-grid > :nth-child(1), .devs > :nth-child(1) { --i: 0; } .scene-grid > :nth-child(2), .devs > :nth-child(2) { --i: 1; }
+.scene-grid > :nth-child(3), .devs > :nth-child(3) { --i: 2; } .scene-grid > :nth-child(4), .devs > :nth-child(4) { --i: 3; }
+.devs > :nth-child(5) { --i: 4; } .devs > :nth-child(6) { --i: 5; } .devs > :nth-child(7) { --i: 6; } .devs > :nth-child(n+8) { --i: 7; }
+#lista-comodos > :nth-child(2) { --s: 1; } #lista-comodos > :nth-child(3) { --s: 2; } #lista-comodos > :nth-child(n+4) { --s: 3; }
+.security .cam:nth-child(2) { --i: 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] .security .cam,
+  #folha[data-estado="aberta"] .folha-cab, #folha[data-estado="aberta"] .folha-corpo > *, #folha[data-estado="aberta"] .dial-prog,
+  #folha[data-estado="aberta"] .dial-pino, #folha[data-estado="aberta"] .dial-power { animation: none; }
+  .dev:not(.sk):hover, .scene:hover { transform: none; }
+  .folha-painel { transform: none; }
+}
