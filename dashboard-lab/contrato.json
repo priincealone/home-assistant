@@ -173,6 +173,20 @@
           "categoria": "sensor",
           "nome": "Presença / Movimento",
           "batteryEntityId": "sensor.sensor_area_gourmet_bateria"
+        },
+        {
+          "id": "cam_rua_2",
+          "entityId": "camera.rua_canal_2",
+          "dominio": "camera",
+          "categoria": "seguranca",
+          "nome": "Rua · Canal 2"
+        },
+        {
+          "id": "cam_rua_4",
+          "entityId": "camera.rua_canal_4",
+          "dominio": "camera",
+          "categoria": "seguranca",
+          "nome": "Rua · Canal 4"
         }
       ]
     },
@@ -373,6 +387,8 @@
     "binary_sensor.sensor_area_gourmet_movimento",
     "binary_sensor.sensor_lavanderia_movimento",
     "binary_sensor.sensor_porta_sala_porta",
+    "camera.rua_canal_2",
+    "camera.rua_canal_4",
     "fan.ventilador_quarto",
     "fan.ventilador_sala",
     "light.circulacao_switch_1",

@@ -1,5 +1,5 @@
 /**
- * Painel Secundário — Bridge WebComponent para Home Assistant
+ * Painel Principal — Bridge WebComponent para Home Assistant
  * Roda INTEIRO dentro da HA: os arquivos do painel (dashboard-lab) ficam em /config/www/painel-secundario e são
  * servidos pela própria HA em /local/painel-secundario/ (iframe de mesma origem; sem porta 3011, sem PC do Node,
  * sem mixed content).
@@ -109,13 +109,13 @@
         // Contrato = quais estados repassar; comandos.json = o que pode ser comandado. Sem eles, nada é repassado/comandado.
         const c = await fetch(`${BASE}contrato.json?v=${encodeURIComponent(versao)}`, { cache: "no-store" });
         if (c.ok) this._permitidas = new Set((await c.json()).entidades || []);
-        else console.warn("[Painel Secundário] contrato.json indisponível: nenhum estado será repassado");
+        else console.warn("[Painel Principal] contrato.json indisponível: nenhum estado será repassado");
         const k = await fetch(`${BASE}comandos.json?v=${encodeURIComponent(versao)}`, { cache: "no-store" });
         if (k.ok) this._comandos = await k.json();
-        else console.warn("[Painel Secundário] comandos.json indisponível: nenhum comando será aceito");
+        else console.warn("[Painel Principal] comandos.json indisponível: nenhum comando será aceito");
       } catch (e) {
-        this._aviso("Painel Secundário não publicado. Rode: node scripts/manutencao/publicar_painel_secundario.mjs");
-        console.warn("[Painel Secundário]", e);
+        this._aviso("Painel Principal não publicado. Rode: node scripts/manutencao/publicar_painel_secundario.mjs");
+        console.warn("[Painel Principal]", e);
         return;
       }
 
@@ -126,7 +126,7 @@
       iframe.style.height = "100%";
       iframe.style.display = "block";
       iframe.setAttribute("allow", "fullscreen; clipboard-read; clipboard-write");
-      iframe.setAttribute("title", "Painel Secundário");
+      iframe.setAttribute("title", "Painel Principal");
       this._iframe = iframe;
 
       this.innerHTML = "";
@@ -227,7 +227,7 @@
       const p = this._preparar(m, m.confirmado);
       if (p.erro) { this._responder(m.id, { ok: false, ...p }); return; }
       if (!this._taxaOk(1)) { this._responder(m.id, { ok: false, erro: "muitos_comandos" }); return; }
-      console.info(`[Painel Secundário] comando ${m.dispositivo}.${m.acao} → ${p.dominio}.${p.servico} ${p.entityId}`);
+      console.info(`[Painel Principal] comando ${m.dispositivo}.${m.acao} → ${p.dominio}.${p.servico} ${p.entityId}`);
       this._responder(m.id, await this._executar(p));
     }
 
@@ -243,7 +243,7 @@
         preparados.push(p);
       }
       if (!this._taxaOk(1)) { this._responder(m.id, { ok: false, erro: "muitos_comandos" }); return; }
-      console.info(`[Painel Secundário] lote de ${preparados.length} comandos`);
+      console.info(`[Painel Principal] lote de ${preparados.length} comandos`);
       const resultados = await Promise.all(preparados.map((p) => this._executar(p)));
       this._responder(m.id, { ok: resultados.every((r) => r.ok), resultados });
     }

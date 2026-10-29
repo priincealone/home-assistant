@@ -10,10 +10,10 @@ frontend:
 panel_custom:
   # Painel Secundário (dashboard-lab, dados simulados): roda inteiro na HA, servido de /local/painel-secundario/ (ver scripts/manutencao/publicar_painel_secundario.mjs).
   - name: casa-painel-secundario
-    sidebar_title: "Painel Secundário"
+    sidebar_title: "Painel Principal"
     sidebar_icon: "mdi:view-dashboard-outline"
     url_path: "painel-secundario"
-    module_url: "/local/casa-painel-secundario.js?v=20261022d"
+    module_url: "/local/casa-painel-secundario.js?v=20261029"
     trust_external_script: true
     require_admin: false
     handle_safe_area: true

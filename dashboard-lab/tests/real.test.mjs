@@ -31,6 +31,7 @@ function casaBase() {
     const dom = d.dominio;
     if (dom === "light" || dom === "switch" || dom === "fan") e[d.entityId] = est("off");
     else if (dom === "media_player") e[d.entityId] = est("off");
+    else if (dom === "camera") e[d.entityId] = est("idle");
     else if (dom === "binary_sensor") e[d.entityId] = est("off", { device_class: /porta/.test(d.entityId) ? "door" : "motion" });
     else if (dom === "sensor") e[d.entityId] = est(d.unidade === "°C" ? "26.34" : d.unidade === "%" && /umid/i.test(d.nome) ? "55" : d.unidade === "%" ? "80" : "12", { unit_of_measurement: d.unidade || "" });
     if (d.batteryEntityId) e[d.batteryEntityId] = est("80", { unit_of_measurement: "%", device_class: "battery" });
@@ -427,17 +428,21 @@ test("real: Manutenção sem pendências diz 'Tudo em ordem' e a folha continua 
   assert.ok(!/data-dev|data-ctl|role="switch"|<button/.test(a.el("#manut-bats").innerHTML + a.el("#manut-offs").innerHTML));
 });
 
-test("real: câmeras - sem câmera no contrato, uma mensagem honesta; com câmera, ao vivo / sem sinal", () => {
+test("real: câmeras - o contrato traz os dois canais da rua; sem câmera no contrato, uma mensagem honesta; ao vivo / sem sinal", () => {
   const a = real(casaBase());
-  assert.match(a.el("#cameras").innerHTML, /Nenhuma câmera no contrato/);
-  assert.ok(!a.el("#cameras").innerHTML.includes("Canal"));
+  const html = a.el("#cameras").innerHTML;
+  assert.equal((html.match(/class="cam glass"/g) || []).length, 2);
+  assert.ok(html.includes("Rua · Canal 2") && html.includes("Rua · Canal 4"));
+  assert.ok(!html.includes("Nenhuma câmera no contrato"));
+  a.v(`recebeLote(${json({ tipo: "casa-estados", completo: false, conectado: true, estados: { "camera.rua_canal_4": est("unavailable") } })})`);
+  const apos = a.el("#cameras").innerHTML;
+  assert.equal((apos.match(/Ao vivo/g) || []).length, 1);
+  assert.equal((apos.match(/Sem sinal/g) || []).length, 1);
   const c = JSON.parse(json(CONTRATO));
-  c.comodos[0].dispositivos.push({ id: "cam1", entityId: "camera.rua", dominio: "camera", categoria: "seguranca", nome: "Rua" });
+  c.comodos.forEach((m) => { m.dispositivos = m.dispositivos.filter((d) => d.dominio !== "camera"); });
   const b = criaAmbiente(); b.v(`iniciaReal(${json(c)})`);
-  b.v(`recebeLote(${json({ tipo: "casa-estados", completo: true, conectado: true, estados: { ...casaBase(), "camera.rua": est("idle") } })})`);
-  assert.match(b.el("#cameras").innerHTML, /Ao vivo/);
-  b.v(`recebeLote(${json({ tipo: "casa-estados", completo: false, conectado: true, estados: { "camera.rua": est("unavailable") } })})`);
-  assert.match(b.el("#cameras").innerHTML, /Sem sinal/);
+  b.v(`recebeLote(${json({ tipo: "casa-estados", completo: true, conectado: true, estados: casaBase() })})`);
+  assert.match(b.el("#cameras").innerHTML, /Nenhuma câmera no contrato/);
 });
 
 test("simulado intacto: sem iframe da HA (ou com ?fonte=simulado) o app não usa a ponte e mantém os dados do protótipo", () => {
