@@ -563,7 +563,7 @@ test("segurança: o modo real nunca chama o código de comando do simulado (toqu
   assert.ok(/if \(REAL && comandosAtivos\(\)\) \{ if \(!semDados\(\)\) todosReal\(/.test(app));
   assert.ok(/if \(REAL\) \{ if \(comandosAtivos\(\) && !semDados\(\)\) cenaReal\(/.test(app));
   assert.ok(/const travado = \(\) => semDados\(\) \|\| \(REAL && !comandosAtivos\(\)\);/.test(app));
-  assert.ok(/function aplicarFolha\(fn, local = false\) \{\n\s*if \(!folhaChave \|\| \(local \? semDados\(\) : travado\(\)\)\) return;/.test(app));
+  assert.ok(/function aplicarFolha\(fn, local = false(?:, leve = false)?\) \{\n\s*if \(!folhaChave \|\| \(local \? semDados\(\) : travado\(\)\)\) return;/.test(app));
   // todo envio passa por enviaComando, enviaLote ou cenaReal, e os três só rodam com comandosAtivos()
   assert.equal((app.match(/CMD\.cliente\.(comandar|comandarLote)\(/g) || []).length, 3, "só enviaComando, enviaLote e cenaReal falam com o cliente");
 });

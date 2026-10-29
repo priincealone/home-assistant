@@ -6872,3 +6872,11 @@ por baixo do popup e a cada toque (escala); borda de luz com máscara em cada ca
 Agora: ao abrir só `transform` (painel) e `opacity` (fundo) animam; vidro do painel estático; cartões e cenas sem `backdrop-filter` (o vidro vem do reflexo,
 da borda em sombras internas e da tinta); com a folha aberta o vidro dos elementos de baixo é desligado; arco do dial começa a se desenhar depois do painel assentar.
 **Pendente**: o André confirmar a fluidez no aparelho real. Se ainda engasgar: reduzir o blur das câmeras/menu e desligar a luz que segue o toque.
+
+## 29/10/2026 — Painel Principal: engasgo no tablet (arrasto do dial e abertura do popup), 2ª correção
+
+Relato do André (tablet): pouco fps ao abrir o popup e ao girar o dial. Causas achadas: (1) cada movimento do dial chamava `renderTudo()` (céu, cartões,
+câmeras…); agora `renderLeve()` atualiza só a folha e refaz a tela uma vez, 220 ms depois de parar (`aplicarFolha(..., leve)` e `ajusteReal`);
+(2) animações de fundo contínuas em SVG com desfoque (deriva das nuvens, cintilar das estrelas) e o feixe de luz girando repintavam o céu o tempo todo:
+desligadas em aparelho de toque (`hover: none`/`pointer: coarse`) e pausadas com a folha aberta; (3) o painel do popup ficou sem `backdrop-filter`
+(fundo quase opaco, 0,93). **Pendente**: o André confirmar no tablet. Se ainda engasgar: desligar o vidro das câmeras/menu e a luz que segue o toque.

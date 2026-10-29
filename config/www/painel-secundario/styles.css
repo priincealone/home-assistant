@@ -802,8 +802,8 @@ body[data-folha] { overflow: hidden; }
    de um elemento com backdrop-filter, refaz o desfoque a cada quadro). Com a folha aberta, o vidro dos cartões de baixo é desligado (ficam sob o fundo escuro). */
 .folha-fundo { transition: opacity 300ms var(--ease-out); will-change: opacity; }
 .folha-painel {
-  background: radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, 0.14), transparent 55%), var(--glass), rgba(12, 17, 28, 0.7);
-  -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%);
+  background: radial-gradient(120% 70% at 0% 0%, rgba(255, 255, 255, 0.14), transparent 55%), var(--glass), rgba(14, 19, 31, 0.93);
+  -webkit-backdrop-filter: none; backdrop-filter: none;   /* painel opaco o bastante: desfoque em tela grande engasgava no tablet */
   opacity: 1; transform: translateY(26px) scale(0.97); transform-origin: 50% 100%; will-change: transform;
   transition: transform 460ms var(--ease-out);
 }
@@ -856,3 +856,10 @@ body[data-entrada] .scene, body[data-entrada] .dev:not(.sk), body[data-entrada] 
 
 /* Desempenho nos cartões: são dezenas e se mexem ao toque; o desfoque fica só nas superfícies grandes (menu, câmeras, popup, barra de abas, avisos). */
 .dev.glass, .scene.glass { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: rgba(14, 19, 31, 0.36); }
+
+/* Animações de fundo (nuvens e estrelas em SVG com desfoque, feixe girando) repintam o céu o tempo todo e disputam quadros com o toque:
+   ficam desligadas em aparelho de toque e sempre que a folha está aberta. O céu continua mudando com a hora. */
+@media (hover: none), (pointer: coarse) {
+  .hero-bg .nv, .hero-bg .estrelas .tw, .ray { animation: none; }
+}
+body[data-folha] .hero-bg .nv, body[data-folha] .hero-bg .estrelas .tw, body[data-folha] .ray { animation-play-state: paused; }

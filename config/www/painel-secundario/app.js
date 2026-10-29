@@ -459,6 +459,15 @@ function renderAbas() {
   document.body.dataset.tab = S.aba;
 }
 
+// Durante o arrasto do dial/deslizante só a folha precisa acompanhar o dedo: refazer a tela inteira (céu, cartões, câmeras…) a cada movimento
+// engasgava no tablet. A tela por baixo é refeita uma vez, quando o movimento para.
+let renderAdiado = 0;
+function renderLeve() {
+  if (!folhaChave) { renderTudo(); return; }
+  atualizaFolha();
+  clearTimeout(renderAdiado);
+  renderAdiado = setTimeout(() => { renderAdiado = 0; renderTudo(); }, 220);
+}
 let entradaFeita = false;
 function renderTudo() {
   renderStatus(); renderCeu(); renderSaudacao(); renderResumo(); renderCenas(); renderAmbientes(); renderComodos(); renderCameras(); renderAbas(); atualizaFolha(); atualizaManut(); dicasRolagem();
@@ -685,17 +694,17 @@ function fecharFolha() {
   }, durFast());
 }
 
-function aplicarFolha(fn, local = false) {
+function aplicarFolha(fn, local = false, leve = false) {
   if (!folhaChave || (local ? semDados() : travado())) return;   // só o Favorito (local) escapa do modo somente leitura
   fn(estado.get(folhaChave)); S.cena = null; salvaFavs();
-  renderTudo();                              // também chama atualizaFolha(); a folha em si não é recriada
+  if (leve) renderLeve(); else renderTudo();   // também chama atualizaFolha(); a folha em si não é recriada
 }
 
 $("#folha").addEventListener("input", (ev) => {
   const el = ev.target.closest("[data-ctl]");
   if (!el) return;
   if (comandosAtivos()) { ajusteReal(el.dataset.ctl, +el.value, false); return; }   // modo real com comandos: valor local + comando com debounce
-  aplicarFolha((d) => SLIDERS[el.dataset.ctl].set(d, +el.value));
+  aplicarFolha((d) => SLIDERS[el.dataset.ctl].set(d, +el.value), false, true);
 });
 $("#folha").addEventListener("change", (ev) => {   // soltou o deslizante: envia na hora o valor final
   const el = ev.target.closest && ev.target.closest("[data-ctl]");
@@ -1125,7 +1134,7 @@ function ajusteReal(campo, valor, imediato) {
   info.forEach(([c, v, e]) => armaTrava(chave, c, v, e));
   clearTimeout(debAjuste.get(k)); debAjuste.delete(k);
   const enviar = () => { debAjuste.delete(k); executa(chave, cmd.acao, cmd.params, info); };
-  if (imediato) enviar(); else { debAjuste.set(k, setTimeout(enviar, DEBOUNCE_MS)); renderTudo(); }
+  if (imediato) enviar(); else { debAjuste.set(k, setTimeout(enviar, DEBOUNCE_MS)); renderLeve(); }
 }
 function folhaClickReal(dt) {
   if (!folhaChave || semDados()) return;
