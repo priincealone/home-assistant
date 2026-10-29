@@ -557,7 +557,7 @@ test("segurança: o painel (app.js + casa-real.js) só fala com o pai (painel-pr
 test("segurança: o modo real nunca chama o código de comando do simulado (toque, cena, tudo, Desfazer)", () => {
   const app = APP.replace(/\r\n/g, "\n");
   // toque: no modo real o ramo do simulado (d.on = !d.on) não é alcançado; sem comandos, toqueReal só avisa "somente leitura"
-  assert.ok(/if \(semDados\(\)\) return;\n\s*if \(REAL\) \{ toqueReal\(alvo\.dataset\.dev\); renderTudo\(\); return; \}/.test(app));
+  assert.ok(/if \(semDados\(\)\) return;\n(\s*const dd = [^\n]*\n\s*if \(dd && abrePopup\(dd\)[^\n]*\n)?\s*if \(REAL\) \{ toqueReal\(alvo\.dataset\.dev\); renderTudo\(\); return; \}/.test(app));
   assert.ok(/function toqueReal\(chave\) \{\n\s*const d = estado\.get\(chave\);\n\s*if \(!comandosAtivos\(\)\) \{ mostraToast\(DICA_LEITURA\); return; \}/.test(app));
   // "tudo" e cena: no real nunca caem no código simulado
   assert.ok(/if \(REAL && comandosAtivos\(\)\) \{ if \(!semDados\(\)\) todosReal\(/.test(app));

@@ -132,7 +132,9 @@ const subtitulo = (d) => {
   if (d.tipo === "tv") return d.app || "Ligado";
   return d.subOn || "Ligado";
 };
-const temAjustes = (d) => !d.sensor && !d.indisp;   // toda a folha tem ao menos "Ligado" e "Favorito"
+const temAjustes = (d) => !d.sensor && !d.indisp;
+// Toque simples abre o popup (folha com dial) só onde há o que ajustar; tomadas, interruptores, PS5 etc. seguem alternando no toque.
+const abrePopup = (d) => temAjustes(d) && (d.tipo === "light" || d.tipo === "led" ? !d.semDimmer || d.temp != null : d.tipo === "fan" || d.tipo === "tv");   // toda a folha tem ao menos "Ligado" e "Favorito"
 const DICA = "Segure para ajustar";
 
 /* ---------- Manutenção (rodada 9): só leitura, calculada do mesmo estado dos cartões ---------- */
@@ -352,8 +354,10 @@ function tileHtml(chave, d) {
   const selo = (off || d.indisp) ? `<span class="selo" title="${d.indisp ? "Indisponível" : "Sem conexão"}">${ic("offline", 12)}</span>` : "";
   const bat = indBat(d);
   const aj = temAjustes(d) && !off;
-  const dica = REAL ? (comandosAtivos() ? "Toque para alternar. Segure para ajustar" : `${DICA_LEITURA}. Segure para ver os detalhes`) : DICA;
-  const ajAttr = aj ? ` data-ajustes="true" title="${dica}" aria-description="${dica}. Pelo teclado: Shift+Enter."` : "";
+  const pop = aj && abrePopup(d);
+  const dica = pop ? "Toque para abrir os controles. Use o interruptor do cartão para ligar ou desligar"
+    : REAL ? (comandosAtivos() ? "Toque para alternar. Segure para ajustar" : `${DICA_LEITURA}. Segure para ver os detalhes`) : DICA;
+  const ajAttr = aj ? ` data-ajustes="true"${pop ? ' data-popup="true" aria-haspopup="dialog"' : ""} title="${dica}" aria-description="${dica}. Pelo teclado: Shift+Enter."` : "";
   // somente leitura (kill-switch ou aparelho sem regra de comando): não é botão quebrado, só não comanda
   const leitAttr = REAL && !off && !podeToque(d) ? ' aria-disabled="true" data-leitura="true"' : "";
   const pendAttr = pendente(chave) ? ' data-pendente="true" aria-busy="true"' : "";
@@ -490,6 +494,8 @@ document.addEventListener("click", (ev) => {
   if (alvo.hasAttribute("data-desfazer")) { const u = toastUndo; escondeToast(); if (u) { u(); renderTudo(); } return; }
   if (alvo.dataset.dev) {
     if (semDados()) return;
+    const dd = estado.get(alvo.dataset.dev);
+    if (dd && abrePopup(dd) && !ev.target.closest(".sw")) { abrirFolha(alvo.dataset.dev); return; }   // popup; o interruptor do cartão é que liga/desliga
     if (REAL) { toqueReal(alvo.dataset.dev); renderTudo(); return; }   // só comanda com regras; senão avisa "somente leitura"
     const d = estado.get(alvo.dataset.dev);
     if (d.tipo === "vacuum") { abrirFolha(alvo.dataset.dev); return; }   // aspirador: toque curto abre a folha
@@ -542,6 +548,18 @@ const VAC = { limpando: ["play", "Iniciar"], pausado: ["pause", "Pausar"], base:
 let folhaChave = null, folhaFechando = false, folhaAbertaEm = 0, lp = null;
 const durFast = () => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--dur-fast")) || 180;
 
+// Dial do popup: anel de 270° (abertura embaixo). O valor vem do input[type=range] correspondente (atualizaFolha escreve --r e o número).
+function dialHtml(d, id, temOn) {
+  const centro = `<span class="dial-ico" aria-hidden="true">${ic(d.tipo, 34, true)}</span><span class="dial-val num" data-dialval="${id}"></span><span class="dial-rot" data-rot="on">Ligado</span>`;
+  return `<div class="dial" data-dial="${id}" style="--r:0">
+    <svg class="dial-svg" viewBox="0 0 220 220" focusable="false" aria-hidden="true">
+      <circle class="dial-trilha" cx="110" cy="110" r="88" pathLength="360"/>
+      <circle class="dial-prog" cx="110" cy="110" r="88" pathLength="360"/>
+      <circle class="dial-pino" cx="198" cy="110" r="10"/>
+    </svg>
+    ${temOn ? `<button type="button" class="dial-power" role="switch" aria-checked="false" data-sw="on">${centro}</button>` : `<div class="dial-power">${centro}</div>`}
+  </div>`;
+}
 function montaFolha(d) {
   const slider = (id, mn = SLIDERS[id].min, mx = SLIDERS[id].max) => `<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${id}">${SLIDERS[id].rot}</label><output class="num val" for="f-${id}" data-val="${id}"></output></div>
     <input class="rng" type="range" id="f-${id}" data-ctl="${id}" min="${mn}" max="${mx}" step="${SLIDERS[id].step}"></div>`;
@@ -565,6 +583,13 @@ function montaFolha(d) {
     else if (d.tipo === "tv") h += slider("vol") + sw("mudo", "Mudo") +
       `<div class="ctl"><div class="ctl-linha"><span class="rot" id="f-app-r">Entrada</span></div>
       <div class="segs segs-app" role="group" aria-labelledby="f-app-r">${APPS.map((a) => `<button type="button" class="segbtn" data-app="${esc(a)}" aria-pressed="false">${esc(a)}</button>`).join("")}</div></div>`;
+  }
+  const prim = d.tipo === "vacuum" ? null : ["bri", "pct", "vol"].find((id) => h.includes(`data-ctl="${id}"`));
+  if (prim) {   // dial circular no topo; o input[type=range] segue no DOM (teclado, leitor de tela), só escondido
+    const reOn = /<button type="button" class="ctl-sw"[^>]*data-sw="on">[\s\S]*?<\/button>/;
+    const temOn = reOn.test(h);
+    h = h.replace(reOn, "").replace(`<div class="ctl"><div class="ctl-linha"><label class="rot" for="f-${prim}"`, `<div class="ctl ctl-dial"><div class="ctl-linha"><label class="rot" for="f-${prim}"`);
+    h = dialHtml(d, prim, temOn) + h;
   }
   h += sw("fav", "Favorito");
   const sala = SALAS.find((x) => x.id === d.sala).nome;
@@ -595,6 +620,12 @@ function atualizaFolha() {
     el.setAttribute("aria-valuetext", c.vt(v));
     f.querySelector(`[data-val="${el.dataset.ctl}"]`).textContent = c.txt(v);
     el.disabled = bloq || (semTv && el.dataset.ctl === "vol");
+    const dial = f.querySelector(`.dial[data-dial="${el.dataset.ctl}"]`);
+    if (dial) {
+      dial.style.setProperty("--r", String(Math.min(1, Math.max(0, (v - mn) / (mx - mn)))));
+      dial.dataset.bloq = String(el.disabled);
+      dial.querySelector("[data-dialval]").textContent = c.txt(v);
+    }
   });
   f.querySelectorAll("[data-sw]").forEach((el) => {
     const id = el.dataset.sw, v = id === "on" ? d.on : d[id];
@@ -680,6 +711,32 @@ $("#folha").addEventListener("click", (ev) => {
   else if (dt.cor) aplicarFolha((d) => { d.cor = dt.cor; d.on = true; });
   else if (dt.vac) aplicarFolha((d) => { d.vst = dt.vac; });
 });
+// Arrasto do dial: converte o ângulo do ponteiro em valor, move o input[type=range] e dispara os MESMOS eventos input/change de antes.
+let dialAtivo = null;
+function moverDial(ev) {
+  const { dial, el } = dialAtivo, r = dial.querySelector("svg").getBoundingClientRect();
+  const rel = ((Math.atan2(ev.clientY - (r.top + r.height / 2), ev.clientX - (r.left + r.width / 2)) * 180) / Math.PI - 135 + 720) % 360;
+  let f = rel <= 270 ? rel / 270 : rel - 270 < 45 ? 1 : 0;           // a abertura de baixo gruda no fim mais próximo
+  if (dialAtivo.f > 0.75 && f < 0.25) f = 1; else if (dialAtivo.f < 0.25 && f > 0.75) f = 0;   // não dá a volta de um fim ao outro
+  dialAtivo.f = f;
+  const mn = +el.min, mx = +el.max, passo = +el.step || 1;
+  const v = Math.min(mx, Math.max(mn, Math.round((mn + f * (mx - mn)) / passo) * passo));
+  if (String(v) === el.value) return;
+  el.value = String(v); el.dispatchEvent(new Event("input", { bubbles: true }));
+}
+$("#folha").addEventListener("pointerdown", (ev) => {
+  const dial = ev.target.closest && ev.target.closest(".dial");
+  if (!dial || ev.target.closest(".dial-power") || (ev.pointerType === "mouse" && ev.button !== 0)) return;
+  const el = $("#folha").querySelector(`[data-ctl="${dial.dataset.dial}"]`);
+  if (!el || el.disabled) return;
+  ev.preventDefault(); dial.setPointerCapture(ev.pointerId);
+  dialAtivo = { dial, el, f: (+el.value - +el.min) / (+el.max - +el.min) };
+  moverDial(ev);
+});
+$("#folha").addEventListener("pointermove", (ev) => { if (dialAtivo) moverDial(ev); });
+const fimDial = () => { if (!dialAtivo) return; const { el } = dialAtivo; dialAtivo = null; el.dispatchEvent(new Event("change", { bubbles: true })); };
+$("#folha").addEventListener("pointerup", fimDial);
+$("#folha").addEventListener("pointercancel", fimDial);
 // Foco preso dentro de uma folha (ajustes ou manutenção): Tab/Shift+Tab circulam; sem alvos, o foco fica no painel.
 function prendeTab(ev, raiz) {
   const alvos = [...raiz.querySelectorAll('button:not([disabled]), input:not([disabled]), [tabindex="0"]')];

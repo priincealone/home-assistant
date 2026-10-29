@@ -341,9 +341,10 @@ function criaAmbiente({ regras = COMANDOS, estados = null, conectado = true, sem
   v(`iniciaReal(${json(CONTRATO)}, __regras, __cli)`);
   const lote = (e, extra = {}) => v(`recebeLote(${json({ tipo: "casa-estados", completo: false, conectado: true, estados: e, ...extra })})`);
   if (!semLote) v(`recebeLote(${json({ tipo: "casa-estados", completo: true, conectado, estados: estados || casaBase() })})`);
-  const clica = (data) => {
+  // corpo=true: toque no corpo do cartão (fora do interruptor .sw); padrão: toque no interruptor/controle
+  const clica = (data, corpo = false) => {
     const alvo = { dataset: data, hasAttribute: (n) => n.startsWith("data-") && Object.keys(data).some((k) => "data-" + k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase()) === n) };
-    for (const f of ouvintes.click) f({ target: { closest: (s) => (s === ".dev" ? null : alvo) }, preventDefault() {} });
+    for (const f of ouvintes.click) f({ target: { closest: (s) => (s === ".dev" || (corpo && s === ".sw") ? null : alvo) }, preventDefault() {} });
   };
   // eventos nos elementos de diálogo (#confirma, #folha)
   const dispara = (sel, tipo, data) => {
@@ -933,4 +934,26 @@ test("segurança: desligar QUALQUER tomada pede confirmação; ligar não; lotes
     assert.equal(CR.textoConfirmacao(COMANDOS, id, "ligar"), null, `${id}: ligar não deve pedir confirmação`);
   }
   for (const id of ["tomada_luca_1", "tomada_luca_2", "tomada_led_luca", "banheiro_switch_2", "pc_socket_1", "pc_socket_2", "ventilacao_ps5"]) assert.ok(CR.textoConfirmacao(COMANDOS, id, "desligar"), id);
+});
+
+test("popup: toque no corpo do cartão de luz/ventilador/TV abre a folha com dial e NÃO comanda; o interruptor liga/desliga; tomada continua alternando", () => {
+  const E = casaBase(); E[porId("luz_sala")] = est("on", { brightness: 180, color_temp_kelvin: 3000, min_color_temp_kelvin: 2000, max_color_temp_kelvin: 6500, supported_color_modes: ["color_temp"] });
+  const a = criaAmbiente({ estados: E });
+  for (const [c, id] of [[SALA, "luz_sala"], [SALA, "ventilador_sala"], [SALA, "tv_sala"]]) {
+    const n = cmds(a).length;
+    a.clica({ dev: K(c, id) }, true);
+    assert.equal(cmds(a).length, n, `${id}: o toque no corpo não pode comandar`);
+    assert.equal(a.v("folhaChave"), K(c, id), `${id}: a folha não abriu`);
+    a.v("fecharFolha()"); a.v("folhaFechando = false; folhaChave = null");
+  }
+  a.clica({ dev: K(SALA, "luz_sala") }, true);
+  assert.match(a.el("#folha").innerHTML, /class="dial" data-dial="bri"/, "dial de brilho no popup da luz");
+  assert.match(a.el("#folha").innerHTML, /class="ctl ctl-dial"/, "o input range segue no DOM");
+  assert.equal((a.el("#folha").innerHTML.match(/data-sw="on"/g) || []).length, 1, "um só botão de ligar/desligar (no centro do dial)");
+  a.v("fecharFolha()"); a.v("folhaFechando = false; folhaChave = null");
+  // tomada: sem ajustes de verdade, o toque segue alternando (e a confirmação ao desligar continua nas regras)
+  const n = cmds(a).length;
+  a.clica({ dev: K("banheiro", "banheiro_switch_2") }, true);
+  assert.equal(a.v("folhaChave"), null);
+  assert.ok(cmds(a).length >= n, "tomada alterna no toque");
 });

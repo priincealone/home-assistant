@@ -6843,3 +6843,13 @@ vigia `dashboard-lab/` e `config/www/painel-secundario/`; gerador `gerar_contrat
 restart da HA (não feito); `check_config` não rodou (o container enxerga `/config` quase vazio — investigar antes de qualquer
 restart); a documentação histórica (`docs/`, `specs/`, `artifacts/`) ainda cita o Primário e vale como arquivo; `CLAUDE.md` §2–§17
 têm trechos obsoletos sobre o Primário (aviso no §1).
+
+## 29/10/2026 — Painel Principal: popup interativo com dial (toque no card)
+
+Inspirado no comportamento visto no app HomeView (só o comportamento; nada copiado). Spec: `specs/features/popup-interativo-dispositivo.md`.
+Toque no corpo do card de luz/LED com dimmer ou temperatura de cor, ventilador e TV abre a folha de ajustes com um **dial** de 270°
+(brilho, velocidade ou volume) e o botão de liga/desliga no centro; o **interruptor do card** é que liga/desliga. Tomadas, interruptores,
+PS5 e sensores seguem como antes (tomadas com confirmação ao desligar). O `input[type=range]` continua no DOM (escondido só visualmente) e o
+dial move-o e dispara os mesmos `input`/`change`, então comando, debounce e reversão em erro não mudaram. Toque longo, Shift+Enter, F10 e botão
+direito abrem a mesma folha. Testes: 115. **Não verificado**: o popup no modo real (dentro da HA, com comandos) e em aparelho de toque.
+Acessibilidade: o card segue `role="switch"` com `aria-haspopup="dialog"`; quem usa teclado liga/desliga pelo botão central do popup.

@@ -422,6 +422,38 @@ h2 { font-size: clamp(1.15rem, 1.5vw, 1.35rem); font-weight: 600; letter-spacing
 #manutencao[data-estado="aberta"] .folha-fundo, #manutencao[data-estado="aberta"] .folha-painel { opacity: 1; transform: none; }
 #folha[data-estado="saindo"] .folha-fundo, #manutencao[data-estado="saindo"] .folha-fundo { opacity: 0; }
 #folha[data-estado="saindo"] .folha-painel, #manutencao[data-estado="saindo"] .folha-painel { opacity: 0; transform: translateY(24px); }
+/* ---------- Popup do aparelho: dial circular (toque simples no cartão abre a folha) ---------- */
+.dev[data-popup] .sw::before { content: ""; position: absolute; inset: -14px -10px; }   /* área de toque do interruptor do cartão */
+.ctl-dial { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.dial { position: relative; flex: none; width: min(100%, 248px, max(156px, 38dvh)); aspect-ratio: 1; margin: 2px auto 6px; touch-action: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+.dial-svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.dial-svg circle { fill: none; transform: rotate(135deg); transform-origin: 110px 110px; }
+.dial-trilha { stroke: rgba(255, 255, 255, 0.10); stroke-width: 14; stroke-linecap: round; stroke-dasharray: 270 360; }
+.dial-prog {
+  stroke: rgb(var(--tom-rgb)); stroke-width: 14; stroke-linecap: round; stroke-dasharray: calc(var(--r) * 270) 360;
+  filter: drop-shadow(0 0 8px rgba(var(--tom-rgb), 0.55)); transition: stroke-dasharray var(--dur-fast) var(--ease-out);
+}
+.dial-svg .dial-pino {
+  fill: #fff; stroke: rgba(var(--tom-rgb), 0.9); stroke-width: 3; transform: rotate(calc(135deg + var(--r) * 270deg));
+  filter: drop-shadow(0 1px 4px rgba(0, 0, 0, 0.5)); transition: transform var(--dur-fast) var(--ease-out);
+}
+.dial-power {
+  position: absolute; inset: 21%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 4px;
+  border-radius: 9999px; border: 1px solid var(--border); background: rgba(255, 255, 255, 0.05); color: var(--text); cursor: default; text-align: center; min-width: 0;
+  transition: background-color var(--dur-base), border-color var(--dur-base);
+}
+button.dial-power { cursor: pointer; }
+.dial-power[aria-checked="true"] { background: rgba(var(--tom-rgb), 0.14); border-color: rgba(var(--tom-rgb), 0.5); }
+.dial-power[aria-checked="false"] .dial-ico { opacity: 0.5; }
+.dial-ico { display: grid; place-items: center; color: rgb(var(--tom-rgb)); }
+.dial-val { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; max-width: 100%; overflow-wrap: anywhere; }
+.dial-rot { font-size: 0.75rem; color: var(--muted); max-width: 100%; overflow-wrap: anywhere; }
+.dial:has(.dial-power[aria-checked="false"]) .dial-prog { opacity: 0.35; filter: none; }
+.dial[data-bloq="true"] { cursor: not-allowed; }
+.dial[data-bloq="true"] .dial-svg { opacity: 0.45; }
+.folha-corpo:has(.ctl-dial input:focus-visible) .dial-svg { filter: drop-shadow(0 0 6px rgba(var(--tom-rgb), 0.9)); }
+button.dial-power:focus-visible { outline: 2px solid rgb(var(--tom-rgb)); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .dial-prog, .dial-svg .dial-pino { transition: none; } }
 body[data-folha] { overflow: hidden; }
 
 .folha-cab { flex: none; display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 18px 20px 10px; }
