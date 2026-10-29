@@ -800,10 +800,12 @@ const fimGesto = (ev) => {
 };
 document.addEventListener("pointerup", fimGesto);
 document.addEventListener("pointercancel", fimGesto);
+document.addEventListener("selectstart", (ev) => ev.preventDefault());   // sem seleção de texto/conteúdo
+document.addEventListener("dragstart", (ev) => ev.preventDefault());
 document.addEventListener("contextmenu", (ev) => {
+  ev.preventDefault();   // nenhum menu do navegador (copiar, salvar imagem…); o toque longo em cartão abre a folha abaixo
   const card = cartaoAjustes(ev);
   if (!card) return;
-  ev.preventDefault();
   if (!semDados()) abrirFolha(card.dataset.dev);
 });
 document.addEventListener("keydown", (ev) => {
