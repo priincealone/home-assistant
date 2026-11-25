@@ -17,7 +17,7 @@ está errado até prova em contrário — foi assim que a inversão foi resolvid
 | **Cozinha** | `light.cozinha_copa_varanda_switch_1` | switch_as_x sobre Tuya |
 | **Copa** | `light.cozinha_copa_varanda_switch_2` | switch_as_x sobre Tuya |
 | **Lavanderia** | `light.cozinha_copa_varanda_switch_3` · `binary_sensor.sensor_lavanderia_movimento` | switch_as_x, Tuya |
-| **Área Gourmet** | `light.luzes_externas_switch_1` Plafon · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` | switch_as_x, Tuya |
+| **Área Gourmet** | `light.luzes_externas_switch_1` Plafon · `_2` Pendente · `_3` Led · `_4` Spots · `binary_sensor.sensor_area_gourmet_movimento` · Roteador Gourmet | switch_as_x, Tuya, Xiaomi Home |
 | **Circulação** | `light.circulacao_switch_1` Muro · `light.circulacao_switch_2` Corredor | switch_as_x sobre Tuya |
 | **Banheiro** | `switch.banheiro_switch_1` e `_2` | Tuya |
 
