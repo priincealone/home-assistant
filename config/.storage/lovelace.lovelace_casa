@@ -27,6 +27,13 @@
             },
             {
               "type": "entity",
+              "entity": "weather.forecast_casa",
+              "name": "Lá fora",
+              "show_name": true,
+              "state_content": "temperature"
+            },
+            {
+              "type": "entity",
               "entity": "binary_sensor.internet_no_ar",
               "name": "Internet",
               "show_name": true
@@ -341,22 +348,6 @@
             {
               "type": "grid",
               "cards": [
-                {
-                  "type": "heading",
-                  "heading": "Tempo",
-                  "heading_style": "title",
-                  "icon": "mdi:weather-partly-cloudy"
-                },
-                {
-                  "type": "weather-forecast",
-                  "entity": "weather.forecast_casa",
-                  "forecast_type": "daily",
-                  "show_current": true,
-                  "show_forecast": true,
-                  "grid_options": {
-                    "columns": 12
-                  }
-                },
                 {
                   "type": "heading",
                   "heading": "Cenas",

@@ -60,40 +60,40 @@
         "aliases": [],
         "floor_id": null,
         "humidity_entity_id": null,
-        "icon": null,
+        "icon": "mdi:silverware-variant",
         "id": "copa",
         "labels": [],
         "name": "Copa",
         "picture": null,
         "temperature_entity_id": null,
         "created_at": "2026-09-04T00:04:05.532102+00:00",
-        "modified_at": "2026-09-04T00:04:05.532105+00:00"
+        "modified_at": "2026-11-25T18:33:41.106485+00:00"
       },
       {
         "aliases": [],
         "floor_id": null,
         "humidity_entity_id": null,
-        "icon": null,
+        "icon": "mdi:door-open",
         "id": "corredor",
         "labels": [],
         "name": "Circulação",
         "picture": null,
         "temperature_entity_id": null,
         "created_at": "2026-09-04T00:04:25.217071+00:00",
-        "modified_at": "2026-09-04T00:37:15.748338+00:00"
+        "modified_at": "2026-11-25T18:33:41.109658+00:00"
       },
       {
         "aliases": [],
         "floor_id": null,
         "humidity_entity_id": null,
-        "icon": null,
+        "icon": "mdi:grill",
         "id": "area_gourmet",
         "labels": [],
         "name": "Area Gourmet",
         "picture": null,
         "temperature_entity_id": null,
         "created_at": "2026-09-04T00:04:58.796755+00:00",
-        "modified_at": "2026-09-04T00:04:58.796758+00:00"
+        "modified_at": "2026-11-25T18:33:41.119003+00:00"
       },
       {
         "aliases": [],

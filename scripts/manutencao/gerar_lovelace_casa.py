@@ -138,7 +138,7 @@ def subvisao(area):
         elif dom == "camera":
             grupos["cameras"].append({"type": "picture-entity", "entity": eid, "show_state": False})
         elif dom == "weather":
-            continue  # vai para a tela inicial
+            continue  # a temperatura atual fica no topo da tela inicial
         elif dom == "sensor":
             if "roteador" in nome_dev or "speedtest" in nome_dev:
                 grupos["rede"].append(tile(eid, grid_options={"columns": 4, "rows": 2}, vertical=True))
@@ -184,6 +184,9 @@ def inicio():
             "{{ states('sensor.sensor_temperatura_e_humidade_temperatura') }} °C na sala"}},
         "badges": [
             {"type": "entity", "entity": "person.andre", "show_name": False},
+            # só a temperatura atual (o card de previsão saiu a pedido do André, 25/11/2026)
+            {"type": "entity", "entity": "weather.forecast_casa", "name": "Lá fora", "show_name": True,
+             "state_content": "temperature"},
             {"type": "entity", "entity": "binary_sensor.internet_no_ar", "name": "Internet", "show_name": True},
             {"type": "entity", "entity": "sensor.luzes_acesas_total", "name": "Luzes acesas", "show_name": True,
              "icon": "mdi:lightbulb-on"},
@@ -192,9 +195,6 @@ def inicio():
         "sections": [
             {"type": "grid", "column_span": 2, "cards": [heading("Cômodos", "mdi:floor-plan")] + areas_cards},
             {"type": "grid", "cards": [
-                heading("Tempo", "mdi:weather-partly-cloudy"),
-                {"type": "weather-forecast", "entity": "weather.forecast_casa", "forecast_type": "daily",
-                 "show_current": True, "show_forecast": True, "grid_options": {"columns": 12}},
                 heading("Cenas", "mdi:palette")] + cenas + [
                 tile("scene.ligar_tv", vertical=True, grid_options={"columns": 6, "rows": 2},
                      tap_action={"action": "more-info"}),

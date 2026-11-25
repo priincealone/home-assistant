@@ -6949,3 +6949,10 @@ gravar pela conexão da página logada (`hass.callWS({type:'lovelace/config/save
 **Armadilhas**: o `gauge` vira aviso amarelo com o PC desligado (Glances fora): por isso tiles; as baterias de iPhone/iPad e outros `diagnostic`
 ficam de fora por regra; Copa, Circulação e Área Gourmet não têm ícone no registro de áreas (aparece o ícone genérico; pôr ícone é
 editar a área na HA); dispositivo novo só aparece rodando o gerador outra vez.
+
+### 25/11/2026 — Dashboard "Casa": ícones das áreas e só a temperatura atual
+A pedido do André: ícones nas áreas sem ícone, gravados pela API de áreas da HA (`config/area_registry/update`, o mesmo que a tela
+de editar área; sem parar o container): Copa `mdi:silverware-variant`, Circulação `mdi:door-open`, Area Gourmet `mdi:grill`
+(`core.area_registry` mudou só nesses 3 ícones). O card de previsão do tempo saiu; no topo ficou um emblema "Lá fora" com a temperatura
+atual (`weather.forecast_casa`, `state_content: temperature`), ao lado da temperatura da sala na saudação. Gerador atualizado e reaplicado
+(`config/www/lovelace-casa.json` apagado em seguida). Verificado na tela: ícones novos nos cartões e emblema com 29,7 °C.
