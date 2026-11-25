@@ -16,7 +16,11 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
   sensores derivados. Funciona sozinha.
 - **O painel** — o **Painel Secundário** (`dashboard-lab/`, publicado em `config/www/painel-secundario/`), a interface
   oficial desde **29/10/2026**. O antigo Painel Primário (`dashboard-app/`, Next.js) foi **apagado** nessa data (histórico
-  preservado só no GitHub `priincealone/casa-dashboard`); a Lovelace foi retirada antes e **nenhuma das duas deve ser recriada**.
+  preservado só no GitHub `priincealone/casa-dashboard`) e **não deve ser recriado**. A Lovelace foi retirada antes, mas em
+  **25/11/2026** o André pediu de volta um dashboard Lovelace nativo: **"Casa"** (`/lovelace-casa`, barra lateral), em modo
+  **estratégia de áreas** (`strategy: type: areas`, `config/.storage/lovelace.lovelace_casa`), gerado pela própria HA a partir das
+  áreas; esconde o que tem `hidden_by` e não mostra dispositivo sem área. É um painel a mais, não substitui o Secundário; não recrie
+  os outros dashboards Lovelace antigos sem pedido.
   Onde este documento ainda cita `dashboard-app`, `lib/rooms.ts`, porta 3002/3010, `npm test` do painel ou watchdog, trate como
   **obsoleto** (a tarefa `CasaDashboardAutoStart`, o painel "Casa Inteligente" da HA e `casa-panel.js` também foram removidos).
   `dashboard-lab/contrato.json` passou a ser a fonte das entidades (o gerador foi aposentado).

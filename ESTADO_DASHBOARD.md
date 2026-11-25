@@ -6895,3 +6895,22 @@ grande de 5 pás (desenho próprio, referência visual do vídeo do HomeView) qu
 0 desliga. Novo campo `pctOk` (aceita velocidade em %, mesmo desligado). O ventilador real não tem oscilar (supported_features 53), então o botão só aparece se o
 estado trouxer o atributo. No simulado o subtítulo virou "Ligado · N %". 117 testes. **Não verificado**: comando de velocidade no ventilador real (não acionei a casa);
 giro no tablet.
+
+## 25/11/2026 — Dashboard Lovelace "Casa" (estratégia de áreas), a pedido do André
+
+O André pediu um dashboard Lovelace padrão com todos os cômodos e dispositivos, revertendo a regra do `CLAUDE.md` §1 de não recriar a
+Lovelace (frase atualizada). Perguntado entre cards fixos e a estratégia nativa, **escolheu a estratégia de áreas**.
+Criado pela interface (Configurações > Dashboards > Novo do zero; título "Casa", URL `lovelace-casa`, ícone `mdi:home-city`, na barra
+lateral) e, no editor RAW, a configuração inteira trocada por `strategy: {type: areas}`. Arquivos: `config/.storage/lovelace_dashboards`
+(entrada `lovelace_casa`) e `config/.storage/lovelace.lovelace_casa`. Sem reinício da HA; Painel Secundário, Visão geral e os demais
+dashboards intocados.
+**Verificado no navegador**: a visão inicial lista as 10 áreas; cada área abre uma subvisão com os cards por domínio (Luzes, Climatização,
+Mídia, Outros…). Nas 10 subvisões: 0 cards de erro e 0 entidades inexistentes (37 tiles conferidos contra `hass.states`). Entidades com
+`hidden_by` ficam de fora (os roteadores Xiaomi não aparecem na Área Gourmet). Nenhum botão foi tocado.
+**Armadilhas / limites**: (1) a estratégia **não mostra os 32 dispositivos sem área** (138 entidades visíveis, ex.: telemetria, rede) — para
+entrarem, é dar área a eles no HA; (2) a estratégia escolhe o que é "relevante" por área (sensores viram emblemas; muitas entidades de
+diagnóstico não aparecem) — para controle card a card, "Assumir o controle" no editor converte em cards fixos; (3) o editor RAW às vezes
+não grava se o menu abre atrasado: conferir "Salvo" antes de fechar; (4) os ícones da visão inicial são **atalhos que comandam** (acender/
+apagar a área), não decoração.
+O commit também leva a remoção, já feita antes no disco, de `lovelace.painel_de_controle` e `lovelace.area_gourmet_kiosk` (o
+`lovelace_dashboards` atual já não os listava).
