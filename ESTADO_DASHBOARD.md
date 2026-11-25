@@ -6914,3 +6914,20 @@ não grava se o menu abre atrasado: conferir "Salvo" antes de fechar; (4) os íc
 apagar a área), não decoração.
 O commit também leva a remoção, já feita antes no disco, de `lovelace.painel_de_controle` e `lovelace.area_gourmet_kiosk` (o
 `lovelace_dashboards` atual já não os listava).
+
+## 25/11/2026 — Grafite excluído por completo (Dashboard Grafite na 3003 e direção Grafite do Painel Secundário)
+
+A pedido do André, confirmado item a item antes de apagar. **Dashboard Grafite** (entradas de 31/10/2026): tarefa agendada
+`CasaGrafiteAutoStart` removida; supervisor PowerShell (pai do servidor) e o `node` dono da 3003 encerrados (identificados pela porta, não por
+`CommandLine`); pasta `dashboard-grafite/` apagada inteira (nunca esteve no git; levou junto o `.env.local`, que não foi lido); `panel_custom`
+`casa-grafite` tirado de `config/configuration.yaml` (volta a ser igual ao último commit), `config/www/casa-grafite.js` apagado, entrada
+`dashboard-grafite-3003` tirada de `.claude/launch.json` (idem) e o backup antigo `backups/configuration.yaml.antes-grafite-20261031` apagado.
+Backup novo: `backups/configuration.yaml.antes-remover-grafite-20261125`. `check_config` código 0; HA reiniciada (`panel_custom` exige).
+**Direção Grafite do Painel Secundário** (entradas de 30–31/10/2026, item P-04): também removida, a pedido do André. Era toda sem commit e
+nunca publicada na HA: `dashboard-lab/grafite.js`, `grafite.css`, `tests/grafite.test.mjs` e `specs/features/painel-secundario-grafite.md`
+apagados; `app.js`, `index.html`, `serve.mjs`, `publicar_painel_secundario.mjs` e `planning/IN_PROGRESS.md` (P-04) revertidos ao último commit.
+`node --test dashboard-lab/tests/*.test.mjs`: 117/117. P-04 cancelado (não foi para `DONE.md`).
+**Verificado**: 3003 recusa conexão; tarefa inexistente; no navegador logado, `hass.panels` sem `grafite`, `/grafite` responde 404 e a barra
+lateral não mostra "Grafite". **Pendente do André**: revogar no perfil da HA (Segurança > Tokens de acesso de longa duração) o token criado para o
+Grafite; apagar a pasta não o invalida. O handoff de design em `D:\user\Mobile app design form\design_handoff_casa_grafite` (fora do repositório)
+ficou intocado.
