@@ -6931,3 +6931,21 @@ apagados; `app.js`, `index.html`, `serve.mjs`, `publicar_painel_secundario.mjs` 
 lateral não mostra "Grafite". **Pendente do André**: revogar no perfil da HA (Segurança > Tokens de acesso de longa duração) o token criado para o
 Grafite; apagar a pasta não o invalida. O handoff de design em `D:\user\Mobile app design form\design_handoff_casa_grafite` (fora do repositório)
 ficou intocado.
+
+### 25/11/2026 — Dashboard "Casa": de estratégia para cards fixos, visual mais caprichado
+O André achou a estratégia de áreas "muito básica". Trocado por configuração própria, **só com cards nativos** (sem recurso novo do HACS),
+gerada por `scripts/manutencao/gerar_lovelace_casa.py` (somente leitura dos registros):
+- **Início**: saudação por horário com luzes acesas e temperatura da sala, emblemas (presença, internet, luzes, PC), cartões de cômodo
+  compactos (temperatura/umidade, alertas de porta/movimento, atalhos de luz/ventilador/tomada; toque abre o cômodo), previsão do tempo,
+  cenas e as duas câmeras da rua.
+- **Uma subvisão por cômodo** (abre pelo cartão, com voltar): Luzes (deslizante de brilho e de temperatura de cor onde há), Ventilação
+  (velocidade), Mídia (controle da TV), Cenas, Tomadas, Aspirador (iniciar/parar/base/localizar), manutenção do aspirador com nomes em
+  português, Sensores e Energia com nome curto, Rede (roteadores, SpeedTest).
+- **Sistema** (aba): PC André, rede, iPhone/iPad, saúde, luzes por cômodo, backup e o resto sem área.
+Aplicar: `docker cp scripts/manutencao/gerar_lovelace_casa.py homeassistant:/tmp/g.py`, `docker exec homeassistant python /tmp/g.py > config/www/lovelace-casa.json`,
+gravar pela conexão da página logada (`hass.callWS({type:'lovelace/config/save', url_path:'lovelace-casa', config})`, o mesmo que o Salvar do editor) e
+**apagar `config/www/lovelace-casa.json`** em seguida (`/local` é público). Sem reinício da HA.
+**Verificado**: 12 abas, 150 cards, 0 cards de erro, 0 avisos, 0 entidades inexistentes; olhado em 375 px e 1280 px. Nenhum botão tocado.
+**Armadilhas**: o `gauge` vira aviso amarelo com o PC desligado (Glances fora): por isso tiles; as baterias de iPhone/iPad e outros `diagnostic`
+ficam de fora por regra; Copa, Circulação e Área Gourmet não têm ícone no registro de áreas (aparece o ícone genérico; pôr ícone é
+editar a área na HA); dispositivo novo só aparece rodando o gerador outra vez.

@@ -4,9 +4,2185 @@
   "key": "lovelace.lovelace_casa",
   "data": {
     "config": {
-      "strategy": {
-        "type": "areas"
-      }
+      "title": "Casa",
+      "views": [
+        {
+          "title": "Início",
+          "path": "inicio",
+          "icon": "mdi:home",
+          "type": "sections",
+          "max_columns": 3,
+          "header": {
+            "card": {
+              "type": "markdown",
+              "text_only": true,
+              "content": "# {% set h = now().hour %}{{ 'Bom dia' if h < 12 else ('Boa tarde' if h < 18 else 'Boa noite') }}, André\n{{ states('sensor.luzes_acesas_total') }} luzes acesas · {{ states('sensor.sensor_temperatura_e_humidade_temperatura') }} °C na sala"
+            }
+          },
+          "badges": [
+            {
+              "type": "entity",
+              "entity": "person.andre",
+              "show_name": false
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.internet_no_ar",
+              "name": "Internet",
+              "show_name": true
+            },
+            {
+              "type": "entity",
+              "entity": "sensor.luzes_acesas_total",
+              "name": "Luzes acesas",
+              "show_name": true,
+              "icon": "mdi:lightbulb-on"
+            },
+            {
+              "type": "entity",
+              "entity": "binary_sensor.pc_andre",
+              "name": "PC",
+              "show_name": true
+            }
+          ],
+          "sections": [
+            {
+              "type": "grid",
+              "column_span": 2,
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Cômodos",
+                  "heading_style": "title",
+                  "icon": "mdi:floor-plan"
+                },
+                {
+                  "type": "area",
+                  "area": "sala_de_estar",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/sala_de_estar",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "cozinha",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/cozinha",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "quarto",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/quarto",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "banheiro",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/banheiro",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "copa",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/copa",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "corredor",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/corredor",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "area_gourmet",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/area_gourmet",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "quarto_luca",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/quarto_luca",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "closet",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/closet",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "area",
+                  "area": "lavanderia",
+                  "display_type": "compact",
+                  "navigation_path": "/lovelace-casa/lavanderia",
+                  "alert_classes": [
+                    "door",
+                    "motion"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "features": [
+                    {
+                      "type": "area-controls",
+                      "controls": [
+                        "light",
+                        "fan",
+                        "switch"
+                      ]
+                    }
+                  ],
+                  "features_position": "inline",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Tempo",
+                  "heading_style": "title",
+                  "icon": "mdi:weather-partly-cloudy"
+                },
+                {
+                  "type": "weather-forecast",
+                  "entity": "weather.forecast_casa",
+                  "forecast_type": "daily",
+                  "show_current": true,
+                  "show_forecast": true,
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "heading",
+                  "heading": "Cenas",
+                  "heading_style": "title",
+                  "icon": "mdi:palette"
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_chegar",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_cinema",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_gamer",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_dormir",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.ligar_tv",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_acesas_total",
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  },
+                  "vertical": true,
+                  "icon": "mdi:lightbulb-group"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Câmeras",
+                  "heading_style": "title",
+                  "icon": "mdi:cctv"
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "camera.rua_canal_2",
+                  "show_state": false,
+                  "show_name": true,
+                  "camera_view": "auto",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "picture-entity",
+                  "entity": "camera.rua_canal_4",
+                  "show_state": false,
+                  "show_name": true,
+                  "camera_view": "auto",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Sistema",
+          "path": "sistema",
+          "icon": "mdi:server",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "PC André",
+                  "heading_style": "title",
+                  "icon": "mdi:desktop-tower-monitor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.pc_andre",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_cpu_load",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_memory_usage",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_c_disk_usage",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_d_disk_usage",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_g_disk_usage",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.pc_andre_uptime",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Rede",
+                  "heading_style": "title",
+                  "icon": "mdi:router-network"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.internet_no_ar",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_gateway",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_dvr",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_no_sala_online",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_no_gourmet_online",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_internet_cloudflare",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.rede_internet_google",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.rede_diagnostico",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "iPhone e iPad",
+                  "heading_style": "title",
+                  "icon": "mdi:cellphone"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.iphone_de_andre_geocoded_location",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.iphone_de_andre_focus_name",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ipad_de_andre_geocoded_location",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.ipad_de_andre_steps",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Saúde",
+                  "heading_style": "title",
+                  "icon": "mdi:heart-pulse"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_passos",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_distancia",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_calorias",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_sono",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_fc_de_repouso",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.saude_atualizado_em",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes por cômodo",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_area_gourmet",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_banheiro",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_circulacao",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_closet",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_copa",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_cozinha",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_indisponiveis",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_lavanderia",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_quarto_do_luca",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_sala_de_estar",
+                  "grid_options": {
+                    "columns": 4
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Backup",
+                  "heading_style": "title",
+                  "icon": "mdi:backup-restore"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.backup_backup_manager_state",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.backup_last_successful_automatic_backup",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.backup_next_scheduled_automatic_backup",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Outros",
+                  "heading_style": "title",
+                  "icon": "mdi:dots-horizontal"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.ipad_de_andre_focus",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.iphone_de_andre_focus",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.pc_andre",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "person.andre",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.banheiro_em_uso",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.banheiro_vazio",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.luzes_acesas_total",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.sala_atividade",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tv_fonte",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tv_sala_estado",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Sala de estar",
+          "path": "sala_de_estar",
+          "icon": "mdi:sofa",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "sala_de_estar",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luz_sala",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.painel",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    },
+                    {
+                      "type": "light-color-temp"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Ventilação",
+                  "heading_style": "title",
+                  "icon": "mdi:fan"
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.sala_de_estar_luz_ventilador",
+                  "features": [
+                    {
+                      "type": "fan-speed"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.ventilador_sala",
+                  "features": [
+                    {
+                      "type": "fan-speed"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Mídia",
+                  "heading_style": "title",
+                  "icon": "mdi:television-play"
+                },
+                {
+                  "type": "tile",
+                  "entity": "media_player.sala_de_estar_ps5",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "media-control",
+                  "entity": "media_player.tv_un65du8000gxzd",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Tomadas",
+                  "heading_style": "title",
+                  "icon": "mdi:power-socket-de"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.smart_socket_with_usb_type_c_3_socket_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.ventilacao_ps5",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Sensores",
+                  "heading_style": "title",
+                  "icon": "mdi:motion-sensor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.sensor_porta_sala_porta",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Porta"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.sensor_temperatura_e_humidade_temperatura",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Temperatura"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.sensor_temperatura_e_humidade_umidade",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Umidade"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Energia",
+                  "heading_style": "title",
+                  "icon": "mdi:lightning-bolt"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.smart_socket_with_usb_type_c_3_corrente",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Corrente"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.smart_socket_with_usb_type_c_3_energia",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.smart_socket_with_usb_type_c_3_energia_total",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia total"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.smart_socket_with_usb_type_c_3_tensao",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Tensão"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Rede",
+                  "heading_style": "title",
+                  "icon": "mdi:router-wireless"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_863726955_rd15_connected_device_number_p_2_3",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_863726955_rd15_download_speed_p_2_1",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_863726955_rd15_upload_speed_p_2_2",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Cozinha",
+          "path": "cozinha",
+          "icon": "mdi:stove",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "cozinha",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.cozinha_copa_varanda_switch_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quarto",
+          "path": "quarto",
+          "icon": "mdi:bed",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "quarto",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luz_quarto",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Ventilação",
+                  "heading_style": "title",
+                  "icon": "mdi:fan"
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.quarto_luz_ventilador",
+                  "features": [
+                    {
+                      "type": "fan-speed"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "fan.ventilador_quarto",
+                  "features": [
+                    {
+                      "type": "fan-speed"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Sensores",
+                  "heading_style": "title",
+                  "icon": "mdi:motion-sensor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.porta_do_quarto_porta",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Porta"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Banheiro",
+          "path": "banheiro",
+          "icon": "mdi:shower",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "banheiro",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Tomadas",
+                  "heading_style": "title",
+                  "icon": "mdi:power-socket-de"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.banheiro_switch_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.banheiro_switch_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Copa",
+          "path": "copa",
+          "icon": "mdi:silverware-variant",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "copa",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.cozinha_copa_varanda_switch_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Circulação",
+          "path": "corredor",
+          "icon": "mdi:door-open",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "corredor",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.corredor",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Area Gourmet",
+          "path": "area_gourmet",
+          "icon": "mdi:grill",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "area_gourmet",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luzes_externas_switch_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luzes_externas_switch_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luzes_externas_switch_3",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.luzes_externas_switch_4",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Sensores",
+                  "heading_style": "title",
+                  "icon": "mdi:motion-sensor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.sensor_area_gourmet_movimento",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Movimento"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Rede",
+                  "heading_style": "title",
+                  "icon": "mdi:router-wireless"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_2117901312_rd15_connected_device_number_p_2_3",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_2117901312_rd15_download_speed_p_2_1",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_2117901312_rd15_upload_speed_p_2_2",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Quarto Luca",
+          "path": "quarto_luca",
+          "icon": "mdi:teddy-bear",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "quarto_luca",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.circulacao_switch_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.circulacao_switch_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Tomadas",
+                  "heading_style": "title",
+                  "icon": "mdi:power-socket-de"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.led_tomada_switch_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.tomada_inteligente_socket_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.tomada_inteligente_socket_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Energia",
+                  "heading_style": "title",
+                  "icon": "mdi:lightning-bolt"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tomada_inteligente_corrente",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Corrente"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tomada_inteligente_energia",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tomada_inteligente_energia_total",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia total"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.tomada_inteligente_tensao",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Tensão"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Closet",
+          "path": "closet",
+          "icon": "mdi:hanger",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "closet",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.closet_switch_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.led_escritorio_sonoff_1001dff472",
+                  "features": [
+                    {
+                      "type": "light-brightness"
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "vertical": false,
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Tomadas",
+                  "heading_style": "title",
+                  "icon": "mdi:power-socket-de"
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.computador_socket_1",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "switch.computador_socket_2",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Aspirador",
+                  "heading_style": "title",
+                  "icon": "mdi:robot-vacuum"
+                },
+                {
+                  "type": "tile",
+                  "entity": "vacuum.dreame_us_415783444_mc1808",
+                  "features": [
+                    {
+                      "type": "vacuum-commands",
+                      "commands": [
+                        "start_pause",
+                        "stop",
+                        "return_home",
+                        "locate"
+                      ]
+                    }
+                  ],
+                  "features_position": "bottom",
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Manutenção do aspirador",
+                  "heading_style": "title",
+                  "icon": "mdi:wrench-clock"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_battery_level_p_2_1",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Bateria"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_brush_left_time_p_26_1",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Escova principal (horas)"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_brush_left_time_p_28_1",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Escova lateral (horas)"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_brush_life_level_p_26_2",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Escova principal (vida)"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_brush_life_level_p_28_2",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Escova lateral (vida)"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_charging_state_p_2_2",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Carregamento"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_fault_p_3_1",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Falhas"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_filter_left_time_p_27_2",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Filtro (horas)"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.dreame_us_415783444_mc1808_filter_life_level_p_27_1",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Filtro (vida)"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Energia",
+                  "heading_style": "title",
+                  "icon": "mdi:lightning-bolt"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.computador_corrente",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Corrente"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.computador_energia",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.computador_energia_total",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Energia total"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.computador_tensao",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Tensão"
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Rede",
+                  "heading_style": "title",
+                  "icon": "mdi:router-wireless"
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.speedtest_download",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.speedtest_ping",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.speedtest_upload",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_771718035_rd15_connected_device_number_p_2_3",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_771718035_rd15_download_speed_p_2_1",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                },
+                {
+                  "type": "tile",
+                  "entity": "sensor.xiaomi_cn_771718035_rd15_upload_speed_p_2_2",
+                  "grid_options": {
+                    "columns": 4,
+                    "rows": 2
+                  },
+                  "vertical": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Lavanderia",
+          "path": "lavanderia",
+          "icon": "mdi:tumble-dryer",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
+          "type": "sections",
+          "max_columns": 3,
+          "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "area",
+                  "area": "lavanderia",
+                  "display_type": "compact",
+                  "alert_classes": [
+                    "door",
+                    "motion",
+                    "moisture"
+                  ],
+                  "sensor_classes": [
+                    "temperature",
+                    "humidity"
+                  ],
+                  "grid_options": {
+                    "columns": "full"
+                  }
+                }
+              ],
+              "column_span": 3
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Luzes",
+                  "heading_style": "title",
+                  "icon": "mdi:lightbulb-group"
+                },
+                {
+                  "type": "tile",
+                  "entity": "light.cozinha_copa_varanda_switch_3",
+                  "grid_options": {
+                    "columns": 6
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Cenas",
+                  "heading_style": "title",
+                  "icon": "mdi:palette"
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.lavanderia_em_uso",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.lavanderia_vazia",
+                  "vertical": true,
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Sensores",
+                  "heading_style": "title",
+                  "icon": "mdi:motion-sensor"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.door_sensor_2_porta",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Porta"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.sensor_lavanderia_movimento",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Movimento"
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   }
 }
