@@ -174,6 +174,10 @@ Desvios em relação ao texto acima:
 - **Sem IP do nó da Sala.** `binary_sensor.rede_no_sala_online` usa a disponibilidade da entidade do RD15
   (só vale com o Closet disponível). **Suposição não provada**: que a entidade do Sala fica `unavailable`
   quando o nó cai. Se um dia o IP do nó for confirmado, trocar por ping.
+- **Terceiro nó (25/11/2026).** `binary_sensor.rede_no_gourmet_online` (Roteador Gourmet, did `2117901312`)
+  segue a mesma regra e a mesma suposição não provada; `sensor.rede_diagnostico` vira `no_mesh_fora` se a Sala
+  **ou** o Gourmet estiver `off` (`unavailable` não conta como fora). Consequência: com o Gourmet fora, o aviso de
+  luzes indisponíveis (condição `rede_diagnostico` = `ok`) fica suspenso, como já acontecia com a Sala.
 - **PS5 fora do R-04**, como já previsto.
 - **R-05: sem condição de "HA no ar há 5 min"**: o `for: 10 min` já cobre a subida das integrações.
 - **Notificação passiva de 23h às 7h** por template de hora, não por janela `after`/`before`.

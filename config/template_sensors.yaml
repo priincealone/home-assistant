@@ -272,6 +272,16 @@
       state: >
         {{ states('sensor.xiaomi_cn_863726955_rd15_connected_device_number_p_2_3') not in ['unavailable', 'unknown'] }}
 
+    - name: "Rede Nó Gourmet Online"
+      unique_id: rede_no_gourmet_online
+      device_class: connectivity
+      # Terceiro nó (Área Gourmet, 25/11/2026). Mesma regra do nó da Sala: sem IP confirmado, a saúde é a
+      # disponibilidade da entidade do RD15, e só vale enquanto o Closet estiver disponível.
+      availability: >
+        {{ states('sensor.xiaomi_cn_771718035_rd15_connected_device_number_p_2_3') not in ['unavailable', 'unknown'] }}
+      state: >
+        {{ states('sensor.xiaomi_cn_2117901312_rd15_connected_device_number_p_2_3') not in ['unavailable', 'unknown'] }}
+
 - sensor:
     - name: "Rede Diagnóstico"
       unique_id: rede_diagnostico
@@ -280,13 +290,14 @@
         {% set gw = states('binary_sensor.rede_gateway') %}
         {% set net = states('binary_sensor.internet_no_ar') %}
         {% set sala = states('binary_sensor.rede_no_sala_online') %}
+        {% set gourmet = states('binary_sensor.rede_no_gourmet_online') %}
         {% if gw not in ['on', 'off'] or (gw == 'on' and net not in ['on', 'off']) %}
           indeterminado
         {% elif gw == 'off' %}
           sem_gateway
         {% elif net == 'off' %}
           sem_internet
-        {% elif sala == 'off' %}
+        {% elif sala == 'off' or gourmet == 'off' %}
           no_mesh_fora
         {% else %}
           ok

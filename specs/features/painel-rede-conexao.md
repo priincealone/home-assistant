@@ -22,6 +22,7 @@ responder isso (abaixo); falta mostrá-los.
 | Sondas de internet | `binary_sensor.rede_internet_cloudflare`, `binary_sensor.rede_internet_google` | ICMP a cada ciclo do HA |
 | Gateway (roteador principal) | `binary_sensor.rede_gateway` | `192.168.31.1` |
 | Nó do mesh (Sala) | `binary_sensor.rede_no_sala_online` | |
+| Nó do mesh (Área Gourmet) | `binary_sensor.rede_no_gourmet_online` | desde 25/11/2026; mesma regra do nó da Sala |
 | DVR das câmeras | `binary_sensor.rede_dvr` | `192.168.31.216`; o último estado gravado no banco era `off` (19:21), **não conferido ao vivo** |
 | Diagnóstico combinado | `sensor.rede_diagnostico` | `ok`, `sem_internet`, `sem_gateway`, `no_mesh_fora`, `indeterminado` |
 | Velocidade do roteador principal | `sensor.xiaomi_cn_771718035_rd15_download_speed_p_2_1` / `_upload_speed_p_2_2` | valores brutos (3377 / 2723); **unidade não confirmada** |

@@ -273,7 +273,9 @@ por `command_line` (`config/rede_ping.yaml`: gateway, 1.1.1.1, 8.8.8.8 e DVR) al
 `binary_sensor.internet_no_ar`, `sensor.rede_diagnostico` (`ok`, `sem_internet`,
 `sem_gateway`, `no_mesh_fora`, `indeterminado`) e `sensor.luzes_indisponiveis`. Três
 automações avisam no iPhone: internet fora por 3 min (e o retorno), DVR fora por 10 min e
-luzes `unavailable` por 10 min. Spec: `specs/automations/rede-mesh-internet-monitoramento.md`.
+luzes `unavailable` por 10 min. `no_mesh_fora` vale para o nó da Sala ou o da Área Gourmet
+(`binary_sensor.rede_no_sala_online`, `binary_sensor.rede_no_gourmet_online`, desde 25/11/2026).
+Spec: `specs/automations/rede-mesh-internet-monitoramento.md`.
 
 ## Automações propostas, ainda não feitas
 
