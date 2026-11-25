@@ -21,7 +21,8 @@ Automatizar a casa e operá-la por um painel próprio. Duas peças:
   nativos (seções, tile, area), salvo em `config/.storage/lovelace.lovelace_casa` e **gerado** por
   `scripts/manutencao/gerar_lovelace_casa.py` a partir dos registros (deixa de fora `hidden_by`/`disabled_by`/`entity_category`;
   dispositivo sem área vai para a aba "Sistema"). Começou como estratégia de áreas e virou cards fixos no mesmo dia, para ficar mais
-  bonito: dispositivo novo **não entra sozinho**, rode o gerador de novo (como, em `ESTADO_DASHBOARD.md`). É um painel a mais, não
+  bonito: dispositivo novo **não entra sozinho**, rode o gerador de novo (como, em `ESTADO_DASHBOARD.md`). Desde 25/11/2026 o "Casa" é o
+  **dashboard padrão** da HA (abre em `/`; `default_panel` em `frontend.system_data`; o perfil do André está em "Automático"). É um painel a mais, não
   substitui o Secundário; não recrie os outros dashboards Lovelace antigos sem pedido.
   Onde este documento ainda cita `dashboard-app`, `lib/rooms.ts`, porta 3002/3010, `npm test` do painel ou watchdog, trate como
   **obsoleto** (a tarefa `CasaDashboardAutoStart`, o painel "Casa Inteligente" da HA e `casa-panel.js` também foram removidos).

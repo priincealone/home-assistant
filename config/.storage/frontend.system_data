@@ -11,7 +11,8 @@
           "date": "2026-09-08T23:47:39.104Z",
           "action": "dismissed"
         }
-      }
+      },
+      "default_panel": "lovelace-casa"
     }
   }
 }

@@ -7,27 +7,26 @@
       "theme": "default"
     },
     "core": {
-      "default_panel": "casa-dashboard",
       "apps_info_dismissed": true,
       "showEntityIdPicker": false
     },
     "sidebar": {
       "panelOrder": [
+        "painel-secundario",
         "dashboard-dispositivos",
-        "casa",
-        "painel-de-controle",
-        "map",
-        "energy",
+        "light",
+        "maintenance",
         "logbook",
+        "energy",
         "history",
-        "browser-mod",
-        "hacs",
         "media-browser",
         "todo",
-        "light",
-        "maintenance"
+        "hacs",
+        "map"
       ],
-      "hiddenPanels": []
+      "hiddenPanels": [
+        "area-gourmet"
+      ]
     }
   }
 }

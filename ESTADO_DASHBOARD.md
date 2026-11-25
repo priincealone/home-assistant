@@ -6956,3 +6956,11 @@ de editar área; sem parar o container): Copa `mdi:silverware-variant`, Circula�
 (`core.area_registry` mudou só nesses 3 ícones). O card de previsão do tempo saiu; no topo ficou um emblema "Lá fora" com a temperatura
 atual (`weather.forecast_casa`, `state_content: temperature`), ao lado da temperatura da sala na saudação. Gerador atualizado e reaplicado
 (`config/www/lovelace-casa.json` apagado em seguida). Verificado na tela: ícones novos nos cartões e emblema com 29,7 °C.
+
+### 25/11/2026 — "Casa" como dashboard padrão
+A pedido do André: Configurações > Dashboards > Casa > ⋮ > "Definir como padrão" (vale para todos os usuários; `default_panel: lovelace-casa`
+em `frontend.system_data`). **Armadilha**: o perfil do André tinha uma escolha própria, `default_panel: casa-dashboard` (painel que nem
+existe mais), que passa por cima do padrão do sistema; foi removida (`frontend/set_user_data`, mantendo as outras preferências), ou seja,
+o perfil voltou para "Automático (usar configurações do sistema)". Verificado: abrir `http://localhost:8123/` leva a `/lovelace-casa/inicio`.
+Outros aparelhos/usuários com escolha própria no perfil continuam no que escolheram. O commit leva também a ordem da barra lateral que já
+estava alterada no mesmo arquivo de preferências.
