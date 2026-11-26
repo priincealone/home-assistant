@@ -6984,3 +6984,16 @@ ramo (TV apagada), simulado local `on`/nuvem `off` → não envia, `on`/`on` →
 **Armadilhas**: o que sobra é o erro seguro — nuvem congelada em `off` com a TV ligada, ou HA reiniciando nos 10 s, deixa a TV ligada; porta
 fechada às 05:59:55 apaga as luzes mas a decisão da TV (06:00:05) cai fora da janela. **Não verificado**: uma noite real com a regra nova
 (a casa não foi acionada; a TV já estava apagada nos dois caminhos às 00:07 de 26/11).
+
+### 26/11/2026 — Dashboard "Casa" pensado para iPhone
+A pedido do André, a disposição foi revista para o iPhone (~390 px, uma coluna):
+- **Início**: só 3 emblemas (presença, "Lá fora", internet) para caber numa linha; luzes acesas ficam na saudação e o PC na aba Sistema.
+  **Cenas primeiro** (Chegar, Cinema, Gamer, Dormir numa linha, sem o estado "Desligado"; "Ligar TV" embaixo), depois os **cômodos em
+  duas colunas** com os atalhos embaixo do nome (antes eram 10 linhas de largura inteira), e as câmeras por último. Saiu o tile
+  "Luzes acesas total", repetido.
+- **Nomes curtos** onde o tile de meia largura cortava: tomadas ("Computador 1", "Tomada 1"), aspirador ("Aspirador", "Escova · vida",
+  "Filtro · horas"), roteadores ("Aparelhos", "Download", "Upload"), SpeedTest ("Teste ↓/↑", "Ping"), luz sem o nome do cômodo dentro da
+  aba dele ("Plafon"), e a aba Sistema toda em português ("Processador", "Disco C:", "Nó Sala", "Foco iPhone"…).
+**Verificado** em 390×844: 12 abas, 149 cards, 0 erros, 0 avisos, 0 entidades inexistentes, **nenhum nome cortado** (medido pelo
+`scrollWidth` de cada título) e sem rolagem lateral; conferido também em 1024×768 (cenas e cômodos lado a lado). Nenhum botão tocado.
+**Não verificado**: num iPhone de verdade (app Companion, área segura do entalhe); só emulação de largura no navegador.

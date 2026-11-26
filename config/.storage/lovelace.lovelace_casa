@@ -37,22 +37,104 @@
               "entity": "binary_sensor.internet_no_ar",
               "name": "Internet",
               "show_name": true
-            },
-            {
-              "type": "entity",
-              "entity": "sensor.luzes_acesas_total",
-              "name": "Luzes acesas",
-              "show_name": true,
-              "icon": "mdi:lightbulb-on"
-            },
-            {
-              "type": "entity",
-              "entity": "binary_sensor.pc_andre",
-              "name": "PC",
-              "show_name": true
             }
           ],
           "sections": [
+            {
+              "type": "grid",
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Cenas",
+                  "heading_style": "title",
+                  "icon": "mdi:palette"
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_chegar",
+                  "name": "Chegar",
+                  "vertical": true,
+                  "hide_state": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_cinema",
+                  "name": "Cinema",
+                  "vertical": true,
+                  "hide_state": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_gamer",
+                  "name": "Gamer",
+                  "vertical": true,
+                  "hide_state": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "script.cena_dormir",
+                  "name": "Dormir",
+                  "vertical": true,
+                  "hide_state": true,
+                  "grid_options": {
+                    "columns": 3,
+                    "rows": 2
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  }
+                },
+                {
+                  "type": "tile",
+                  "entity": "scene.ligar_tv",
+                  "name": "Ligar TV",
+                  "hide_state": true,
+                  "icon": "mdi:television",
+                  "grid_options": {
+                    "columns": 12
+                  },
+                  "tap_action": {
+                    "action": "more-info"
+                  },
+                  "icon_tap_action": {
+                    "action": "toggle"
+                  }
+                }
+              ]
+            },
             {
               "type": "grid",
               "column_span": 2,
@@ -73,8 +155,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -86,7 +167,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -101,8 +182,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -114,7 +194,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -129,8 +209,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -142,7 +221,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -157,8 +236,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -170,7 +248,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -185,8 +263,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -198,7 +275,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -213,8 +290,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -226,7 +302,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -241,8 +317,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -254,7 +329,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -269,8 +344,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -282,7 +356,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -297,8 +371,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -310,7 +383,7 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
@@ -325,8 +398,7 @@
                     "motion"
                   ],
                   "sensor_classes": [
-                    "temperature",
-                    "humidity"
+                    "temperature"
                   ],
                   "features": [
                     {
@@ -338,103 +410,10 @@
                       ]
                     }
                   ],
-                  "features_position": "inline",
+                  "features_position": "bottom",
                   "grid_options": {
                     "columns": 6
                   }
-                }
-              ]
-            },
-            {
-              "type": "grid",
-              "cards": [
-                {
-                  "type": "heading",
-                  "heading": "Cenas",
-                  "heading_style": "title",
-                  "icon": "mdi:palette"
-                },
-                {
-                  "type": "tile",
-                  "entity": "script.cena_chegar",
-                  "vertical": true,
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 2
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "script.cena_cinema",
-                  "vertical": true,
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 2
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "script.cena_gamer",
-                  "vertical": true,
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 2
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "script.cena_dormir",
-                  "vertical": true,
-                  "grid_options": {
-                    "columns": 3,
-                    "rows": 2
-                  },
-                  "icon_tap_action": {
-                    "action": "toggle"
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "scene.ligar_tv",
-                  "vertical": true,
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 2
-                  },
-                  "tap_action": {
-                    "action": "more-info"
-                  }
-                },
-                {
-                  "type": "tile",
-                  "entity": "sensor.luzes_acesas_total",
-                  "grid_options": {
-                    "columns": 6,
-                    "rows": 2
-                  },
-                  "vertical": true,
-                  "icon": "mdi:lightbulb-group"
                 }
               ]
             },
@@ -500,42 +479,48 @@
                   "entity": "sensor.pc_andre_cpu_load",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Processador"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.pc_andre_memory_usage",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Memória"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.pc_andre_c_disk_usage",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Disco C:"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.pc_andre_d_disk_usage",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Disco D:"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.pc_andre_g_disk_usage",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Disco G:"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.pc_andre_uptime",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Ligado desde"
                 }
               ]
             },
@@ -553,56 +538,64 @@
                   "entity": "binary_sensor.internet_no_ar",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Internet"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_gateway",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Roteador"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_dvr",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "DVR"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_no_sala_online",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Nó Sala"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_no_gourmet_online",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Nó Gourmet"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_internet_cloudflare",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Cloudflare"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.rede_internet_google",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Google"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.rede_diagnostico",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Diagnóstico"
                 }
               ]
             },
@@ -620,28 +613,32 @@
                   "entity": "sensor.iphone_de_andre_geocoded_location",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "iPhone · local"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.iphone_de_andre_focus_name",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "iPhone · foco"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.ipad_de_andre_geocoded_location",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "iPad · local"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.ipad_de_andre_steps",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "iPad · passos"
                 }
               ]
             },
@@ -659,42 +656,48 @@
                   "entity": "sensor.saude_passos",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Passos"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.saude_distancia",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Distância"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.saude_calorias",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Calorias"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.saude_sono",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Sono"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.saude_fc_de_repouso",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "FC de repouso"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.saude_atualizado_em",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Atualizado"
                 }
               ]
             },
@@ -712,70 +715,80 @@
                   "entity": "sensor.luzes_area_gourmet",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Gourmet"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_banheiro",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Banheiro"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_circulacao",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Circulação"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_closet",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Closet"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_copa",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Copa"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_cozinha",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Cozinha"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_indisponiveis",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Indisponíveis"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_lavanderia",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Lavanderia"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_quarto_do_luca",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Quarto Luca"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.luzes_sala_de_estar",
                   "grid_options": {
                     "columns": 4
-                  }
+                  },
+                  "name": "Sala"
                 }
               ]
             },
@@ -793,21 +806,24 @@
                   "entity": "sensor.backup_backup_manager_state",
                   "grid_options": {
                     "columns": 12
-                  }
+                  },
+                  "name": "Estado"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.backup_last_successful_automatic_backup",
                   "grid_options": {
                     "columns": 12
-                  }
+                  },
+                  "name": "Último backup"
                 },
                 {
                   "type": "tile",
                   "entity": "sensor.backup_next_scheduled_automatic_backup",
                   "grid_options": {
                     "columns": 12
-                  }
+                  },
+                  "name": "Próximo backup"
                 }
               ]
             },
@@ -825,21 +841,32 @@
                   "entity": "binary_sensor.ipad_de_andre_focus",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Foco iPad"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.iphone_de_andre_focus",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Foco iPhone"
+                },
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.iphone_de_andre_kiosk_screensaver",
+                  "grid_options": {
+                    "columns": 6
+                  },
+                  "name": "Tela iPhone"
                 },
                 {
                   "type": "tile",
                   "entity": "binary_sensor.pc_andre",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Ligado"
                 },
                 {
                   "type": "tile",
@@ -867,7 +894,8 @@
                   "entity": "sensor.luzes_acesas_total",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Luzes acesas"
                 },
                 {
                   "type": "tile",
@@ -1037,7 +1065,8 @@
                   "entity": "switch.smart_socket_with_usb_type_c_3_socket_2",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Ventilação PS5 2"
                 },
                 {
                   "type": "tile",
@@ -1142,7 +1171,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Aparelhos"
                 },
                 {
                   "type": "tile",
@@ -1151,7 +1181,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Download"
                 },
                 {
                   "type": "tile",
@@ -1160,7 +1191,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Upload"
                 }
               ]
             }
@@ -1264,7 +1296,8 @@
                   "entity": "light.luz_quarto",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Luz"
                 }
               ]
             },
@@ -1535,7 +1568,8 @@
                   "entity": "light.luzes_externas_switch_1",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Plafon"
                 },
                 {
                   "type": "tile",
@@ -1595,7 +1629,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Aparelhos"
                 },
                 {
                   "type": "tile",
@@ -1604,7 +1639,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Download"
                 },
                 {
                   "type": "tile",
@@ -1613,7 +1649,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Upload"
                 }
               ]
             }
@@ -1697,14 +1734,16 @@
                   "entity": "switch.tomada_inteligente_socket_1",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Tomada 1"
                 },
                 {
                   "type": "tile",
                   "entity": "switch.tomada_inteligente_socket_2",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Tomada 2"
                 }
               ]
             },
@@ -1831,14 +1870,16 @@
                   "entity": "switch.computador_socket_1",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Computador 1"
                 },
                 {
                   "type": "tile",
                   "entity": "switch.computador_socket_2",
                   "grid_options": {
                     "columns": 6
-                  }
+                  },
+                  "name": "Computador 2"
                 }
               ]
             },
@@ -1854,6 +1895,7 @@
                 {
                   "type": "tile",
                   "entity": "vacuum.dreame_us_415783444_mc1808",
+                  "name": "Aspirador",
                   "features": [
                     {
                       "type": "vacuum-commands",
@@ -1895,7 +1937,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Escova principal (horas)"
+                  "name": "Escova · horas"
                 },
                 {
                   "type": "tile",
@@ -1903,7 +1945,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Escova lateral (horas)"
+                  "name": "Lateral · horas"
                 },
                 {
                   "type": "tile",
@@ -1911,7 +1953,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Escova principal (vida)"
+                  "name": "Escova · vida"
                 },
                 {
                   "type": "tile",
@@ -1919,7 +1961,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Escova lateral (vida)"
+                  "name": "Lateral · vida"
                 },
                 {
                   "type": "tile",
@@ -1943,7 +1985,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Filtro (horas)"
+                  "name": "Filtro · horas"
                 },
                 {
                   "type": "tile",
@@ -1951,7 +1993,7 @@
                   "grid_options": {
                     "columns": 6
                   },
-                  "name": "Filtro (vida)"
+                  "name": "Filtro · vida"
                 }
               ]
             },
@@ -2014,7 +2056,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Teste ↓"
                 },
                 {
                   "type": "tile",
@@ -2023,7 +2066,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Ping"
                 },
                 {
                   "type": "tile",
@@ -2032,7 +2076,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Teste ↑"
                 },
                 {
                   "type": "tile",
@@ -2041,7 +2086,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Aparelhos"
                 },
                 {
                   "type": "tile",
@@ -2050,7 +2096,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Download"
                 },
                 {
                   "type": "tile",
@@ -2059,7 +2106,8 @@
                     "columns": 4,
                     "rows": 2
                   },
-                  "vertical": true
+                  "vertical": true,
+                  "name": "Upload"
                 }
               ]
             }

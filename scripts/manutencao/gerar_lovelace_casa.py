@@ -25,6 +25,7 @@ def ler(nome):
 AREAS = ler("core.area_registry")["areas"]
 DEVS = {d["id"]: d for d in ler("core.device_registry")["devices"]}
 ENTS = ler("core.entity_registry")["entities"]
+ENT_POR_ID = {e["entity_id"]: e for e in ENTS}
 
 IGNORAR_DOMINIOS = {"ai_task", "conversation", "stt", "tts", "event", "remote", "select", "notify",
                     "update", "button", "device_tracker", "input_boolean", "automation", "todo"}
@@ -55,10 +56,21 @@ def tile(eid, **extra):
 
 NOMES_ASPIRADOR = {
     "battery_level_p_2_1": "Bateria", "charging_state_p_2_2": "Carregamento", "fault_p_3_1": "Falhas",
-    "brush_life_level_p_26_2": "Escova principal (vida)", "brush_left_time_p_26_1": "Escova principal (horas)",
-    "brush_life_level_p_28_2": "Escova lateral (vida)", "brush_left_time_p_28_1": "Escova lateral (horas)",
-    "filter_life_level_p_27_1": "Filtro (vida)", "filter_left_time_p_27_2": "Filtro (horas)",
+    "brush_life_level_p_26_2": "Escova · vida", "brush_left_time_p_26_1": "Escova · horas",
+    "brush_life_level_p_28_2": "Lateral · vida", "brush_left_time_p_28_1": "Lateral · horas",
+    "filter_life_level_p_27_1": "Filtro · vida", "filter_left_time_p_27_2": "Filtro · horas",
 }
+
+
+def nome_rede(eid):
+    """Roteadores e SpeedTest: "Roteador Sala  Router Download Speed" corta no iPhone."""
+    if eid.startswith("sensor.speedtest_"):
+        return {"name": {"download": "Teste ↓", "upload": "Teste ↑", "ping": "Ping"}.get(eid.rsplit("_", 1)[-1], None) or eid}
+    for chave, nome in (("connected_device_number", "Aparelhos"), ("download_speed", "Download"),
+                        ("upload_speed", "Upload")):
+        if chave in eid:
+            return {"name": nome}
+    return {}
 
 
 def curto(e):
@@ -86,6 +98,19 @@ def secao(titulo, icone, cards, badges=None):
     return {"type": "grid", "cards": [heading(titulo, icone, badges)] + cards}
 
 
+AREA_NOME = {a["id"]: a["name"] for a in AREAS}
+
+
+def sem_area(e):
+    """Dentro da aba do cômodo o nome do cômodo sobra: "Plafon Área Gourmet" vira "Plafon"."""
+    n = e.get("name") or ""
+    an = AREA_NOME.get(e.get("area_id"), "")
+    for alvo in {an, an.replace("Area", "Área")} - {""}:
+        if n.endswith(" " + alvo) and n[: -len(alvo) - 1].strip():
+            return {"name": n[: -len(alvo) - 1].strip()}
+    return {}
+
+
 def card_luz(e):
     eid = e["entity_id"]
     modos = (e.get("capabilities") or {}).get("supported_color_modes") or []
@@ -97,7 +122,7 @@ def card_luz(e):
     if feats:
         return tile(eid, features=feats, features_position="bottom", vertical=False,
                     grid_options={"columns": 12})
-    return tile(eid, grid_options={"columns": 6})
+    return tile(eid, grid_options={"columns": 6}, **sem_area(e))
 
 
 def card_fan(e):
@@ -126,11 +151,17 @@ def subvisao(area):
             else:
                 grupos["midia"].append(tile(eid, grid_options={"columns": 6}))
         elif dom == "vacuum":
-            grupos["aspirador"].append(tile(eid, features=[{"type": "vacuum-commands", "commands": [
+            grupos["aspirador"].append(tile(eid, name="Aspirador", features=[{"type": "vacuum-commands", "commands": [
                 "start_pause", "stop", "return_home", "locate"]}], features_position="bottom",
                 grid_options={"columns": 12}))
         elif dom == "switch":
-            grupos["tomadas"].append(tile(eid, grid_options={"columns": 6}))
+            # "Computador Socket 1" corta no iPhone: vira "Computador 1"
+            extra = {}
+            orig = e.get("original_name") or ""
+            dev = (d.get("name_by_user") or d.get("name") or "").strip()
+            if not e.get("name") and dev and orig.split(" ")[0] in ("Socket", "Switch") and orig.split(" ")[-1].isdigit():
+                extra["name"] = f"{dev.replace('Tomada inteligente', 'Tomada')} {orig.split(' ')[-1]}"
+            grupos["tomadas"].append(tile(eid, grid_options={"columns": 6}, **extra))
         elif dom == "scene" or dom == "script":
             grupos["cenas"].append(tile(eid, vertical=True, grid_options={"columns": 6, "rows": 2}))
         elif dom == "binary_sensor":
@@ -141,7 +172,8 @@ def subvisao(area):
             continue  # a temperatura atual fica no topo da tela inicial
         elif dom == "sensor":
             if "roteador" in nome_dev or "speedtest" in nome_dev:
-                grupos["rede"].append(tile(eid, grid_options={"columns": 4, "rows": 2}, vertical=True))
+                grupos["rede"].append(tile(eid, grid_options={"columns": 4, "rows": 2}, vertical=True,
+                                           **nome_rede(eid)))
             elif "dreame" in eid:
                 grupos["aspirador_info"].append(tile(eid, grid_options={"columns": 6}, **curto(e)))
             elif any(k in eid for k in ("_energia", "_corrente", "_tensao")):
@@ -163,50 +195,90 @@ def subvisao(area):
             "sections": [{"type": "grid", "cards": [topo], "column_span": 3}] + secoes}
 
 
+CENAS = [("script.cena_chegar", "Chegar"), ("script.cena_cinema", "Cinema"),
+         ("script.cena_gamer", "Gamer"), ("script.cena_dormir", "Dormir")]
+
+
 def inicio():
+    # Pensado para iPhone (~390 px, uma coluna): cenas primeiro (o que se usa com uma mão), depois os
+    # cômodos em duas colunas com os atalhos embaixo do nome, e as câmeras por último.
     areas_cards = []
     for a in AREAS:
         areas_cards.append({
             "type": "area", "area": a["id"], "display_type": "compact",
             "navigation_path": "/lovelace-casa/" + a["id"],
-            "alert_classes": ["door", "motion"], "sensor_classes": ["temperature", "humidity"],
+            "alert_classes": ["door", "motion"], "sensor_classes": ["temperature"],
             "features": [{"type": "area-controls", "controls": ["light", "fan", "switch"]}],
-            "features_position": "inline", "grid_options": {"columns": 6},
+            "features_position": "bottom", "grid_options": {"columns": 6},
         })
-    cenas = [tile(s, vertical=True, grid_options={"columns": 3, "rows": 2},
+    cenas = [tile(s, name=n, vertical=True, hide_state=True, grid_options={"columns": 3, "rows": 2},
                   icon_tap_action={"action": "toggle"}, tap_action={"action": "more-info"})
-             for s in ("script.cena_chegar", "script.cena_cinema", "script.cena_gamer", "script.cena_dormir")]
+             for s, n in CENAS]
     return {
         "title": "Início", "path": "inicio", "icon": "mdi:home", "type": "sections", "max_columns": 3,
         "header": {"card": {"type": "markdown", "text_only": True, "content":
             "# {% set h = now().hour %}{{ 'Bom dia' if h < 12 else ('Boa tarde' if h < 18 else 'Boa noite') }}, André\n"
             "{{ states('sensor.luzes_acesas_total') }} luzes acesas · "
             "{{ states('sensor.sensor_temperatura_e_humidade_temperatura') }} °C na sala"}},
+        # três emblemas cabem numa linha do iPhone; luzes acesas já estão na saudação e o PC na aba Sistema
         "badges": [
             {"type": "entity", "entity": "person.andre", "show_name": False},
             # só a temperatura atual (o card de previsão saiu a pedido do André, 25/11/2026)
             {"type": "entity", "entity": "weather.forecast_casa", "name": "Lá fora", "show_name": True,
              "state_content": "temperature"},
             {"type": "entity", "entity": "binary_sensor.internet_no_ar", "name": "Internet", "show_name": True},
-            {"type": "entity", "entity": "sensor.luzes_acesas_total", "name": "Luzes acesas", "show_name": True,
-             "icon": "mdi:lightbulb-on"},
-            {"type": "entity", "entity": "binary_sensor.pc_andre", "name": "PC", "show_name": True},
         ],
         "sections": [
-            {"type": "grid", "column_span": 2, "cards": [heading("Cômodos", "mdi:floor-plan")] + areas_cards},
-            {"type": "grid", "cards": [
-                heading("Cenas", "mdi:palette")] + cenas + [
-                tile("scene.ligar_tv", vertical=True, grid_options={"columns": 6, "rows": 2},
-                     tap_action={"action": "more-info"}),
-                tile("sensor.luzes_acesas_total", grid_options={"columns": 6, "rows": 2}, vertical=True,
-                     icon="mdi:lightbulb-group"),
+            {"type": "grid", "cards": [heading("Cenas", "mdi:palette")] + cenas + [
+                tile("scene.ligar_tv", name="Ligar TV", hide_state=True, icon="mdi:television",
+                     grid_options={"columns": 12}, tap_action={"action": "more-info"},
+                     icon_tap_action={"action": "toggle"}),
             ]},
+            {"type": "grid", "column_span": 2, "cards": [heading("Cômodos", "mdi:floor-plan")] + areas_cards},
             {"type": "grid", "column_span": 3, "cards": [heading("Câmeras", "mdi:cctv")] + [
                 {"type": "picture-entity", "entity": c, "show_state": False, "show_name": True,
                  "camera_view": "auto", "grid_options": {"columns": 6}}
                 for c in ("camera.rua_canal_2", "camera.rua_canal_4")]},
         ],
     }
+
+
+NOMES_SISTEMA = {
+    "binary_sensor.pc_andre": "Ligado", "sensor.pc_andre_cpu_load": "Processador",
+    "sensor.pc_andre_memory_usage": "Memória", "sensor.pc_andre_c_disk_usage": "Disco C:",
+    "sensor.pc_andre_d_disk_usage": "Disco D:", "sensor.pc_andre_g_disk_usage": "Disco G:",
+    "sensor.pc_andre_uptime": "Ligado desde",
+    "binary_sensor.internet_no_ar": "Internet", "binary_sensor.rede_gateway": "Roteador",
+    "binary_sensor.rede_dvr": "DVR", "binary_sensor.rede_no_sala_online": "Nó Sala",
+    "binary_sensor.rede_no_gourmet_online": "Nó Gourmet", "binary_sensor.rede_internet_cloudflare": "Cloudflare",
+    "binary_sensor.rede_internet_google": "Google", "sensor.rede_diagnostico": "Diagnóstico",
+    "sensor.iphone_de_andre_geocoded_location": "iPhone · local", "sensor.iphone_de_andre_focus_name": "iPhone · foco",
+    "sensor.ipad_de_andre_geocoded_location": "iPad · local", "sensor.ipad_de_andre_steps": "iPad · passos",
+    "sensor.saude_passos": "Passos", "sensor.saude_distancia": "Distância", "sensor.saude_calorias": "Calorias",
+    "sensor.saude_sono": "Sono", "sensor.saude_fc_de_repouso": "FC de repouso", "sensor.saude_atualizado_em": "Atualizado",
+    "sensor.backup_backup_manager_state": "Estado", "sensor.backup_last_successful_automatic_backup": "Último backup",
+    "sensor.backup_next_scheduled_automatic_backup": "Próximo backup",
+    "sensor.luzes_sala_de_estar": "Sala", "sensor.luzes_cozinha": "Cozinha", "sensor.luzes_copa": "Copa",
+    "sensor.luzes_lavanderia": "Lavanderia", "sensor.luzes_area_gourmet": "Gourmet",
+    "sensor.luzes_quarto_do_luca": "Quarto Luca", "sensor.luzes_banheiro": "Banheiro",
+    "sensor.luzes_circulacao": "Circulação", "sensor.luzes_closet": "Closet",
+    "sensor.luzes_indisponiveis": "Indisponíveis", "sensor.luzes_acesas_total": "Luzes acesas",
+    "binary_sensor.iphone_de_andre_focus": "Foco iPhone", "binary_sensor.ipad_de_andre_focus": "Foco iPad",
+    "binary_sensor.iphone_de_andre_kiosk_screensaver": "Tela iPhone",
+}
+
+
+def nome_sistema(x):
+    if x in NOMES_SISTEMA:
+        return NOMES_SISTEMA[x]
+    e = ENT_POR_ID.get(x) or {}
+    if e.get("name"):
+        return None
+    n = e.get("original_name") or ""
+    for pre, novo in (("Iphone de André ", "iPhone · "), ("iPad de André ", "iPad · ")):
+        if n.startswith(pre):
+            return novo + n[len(pre):]
+    return None
 
 
 def sistema():
@@ -238,7 +310,9 @@ def sistema():
                                          "sensor.imap_")))
 
     def grade(lst, col=6):
-        return [tile(x, grid_options={"columns": col}) for x in lst]
+        # nome curto em português: no iPhone o tile de meia largura corta "PC André C:\ disk usage"
+        return [tile(x, grid_options={"columns": col}, **({"name": nome_sistema(x)} if nome_sistema(x) else {}))
+                for x in lst]
 
     secoes = [
         secao("PC André", "mdi:desktop-tower-monitor", [tile("binary_sensor.pc_andre", grid_options={"columns": 12})]
