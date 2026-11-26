@@ -26,6 +26,11 @@ Medido: porta fechou 23:18:52, TV ligou 23:18:56.
 > Condicione o comando ao estado atual e envie por **um caminho de cada vez**. Nunca dispare o mesmo
 > comando por integração local e de nuvem simultaneamente.
 
+O estado também atrasa: a integração local (SamsungTV) leva 2–10 s para perceber que a TV apagou, e a
+nuvem (SmartThings) ~1 s. Ler um caminho só, no instante do gatilho, reacendeu a TV em 25/11 e 26/11/2026
+(desligada pelo controle, porta fechada logo depois; em 17/11 a mesma corrida escapou por segundos). Para comando alternador: espere o estado
+assentar (`for:` no gatilho) e trate **qualquer** caminho dizendo `off` como desligado — na dúvida, não envie.
+
 ### R3 · Condição de horário que atravessa a meia-noite
 
 `after: '22:00:00'` sozinho cobre das 22h à meia-noite e para. Para a noite inteira, use `after` maior

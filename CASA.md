@@ -244,6 +244,10 @@ roteadores e a tela do navegador. **A luz do próprio quarto está incluída.**
 ⚠️ Esta TV Samsung desliga com a tecla POWER, que **alterna**: com a TV já
 apagada, "desligar" a acende. A automação só manda o comando com a TV ligada, e
 por um caminho de cada vez — local, e a nuvem só se o local não responder.
+Desde 26/11/2026 as luzes apagam na hora, mas a TV só é decidida **10 s depois**
+de a porta fechar, e basta **um** caminho (local ou nuvem) dizer que ela está
+desligada para o comando não ir: o caminho local leva 2–10 s para perceber que a
+TV apagou, e desligar pelo controle e fechar a porta logo em seguida a reacendia.
 
 **3. Porta do quarto aberta à noite acende o painel.** Das 22h às 6h, abrir a
 porta acende `light.painel` como luz de guia.

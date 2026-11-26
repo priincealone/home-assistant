@@ -6964,3 +6964,23 @@ existe mais), que passa por cima do padrão do sistema; foi removida (`frontend/
 o perfil voltou para "Automático (usar configurações do sistema)". Verificado: abrir `http://localhost:8123/` leva a `/lovelace-casa/inicio`.
 Outros aparelhos/usuários com escolha própria no perfil continuam no que escolheram. O commit leva também a ordem da barra lateral que já
 estava alterada no mesmo arquivo de preferências.
+
+### 26/11/2026 — Porta do quarto reacendia a TV já desligada
+Pedido do André: "fechar a porta do quarto, com a TV já desligada, inverte o estado". A automação já tinha a proteção de 15/09 (só
+mandar o desligar com a TV ligada, um caminho de cada vez), mas lia **só o caminho local** e **no instante** da porta.
+**Causa, medida no histórico** (14 dias, banco em `mode=ro`): depois de desligar pelo controle, a nuvem (SmartThings) acusa `off` em até
+~1 s e a TV local (SamsungTV) só 2 a 10 s depois. Em 25/11 (TV apagada 00:39:59, porta 00:39:59) e 26/11 (TV 00:02:41, porta 00:02:43)
+a local ainda dizia `on`; a automação mandou `media_player.turn_off` (o `off` local carrega o contexto da execução, com a porta como pai),
+o POWER alternou e a nuvem acusou a TV ligada 4–7 s depois. Em 17/11 22:34:12 a mesma corrida escapou: a local apagou antes de a
+automação chegar à TV (o `light.turn_off` vem antes e às vezes demora).
+**Correção** (`config/automations.yaml`, id `1757980800000`, `id`/`alias` mantidos): dois gatilhos — `porta_fechou` apaga as luzes na hora;
+`porta_fechada_10s` (`for: 00:00:10`, R5) decide a TV. Ramo local agora exige local fora de `off/standby/unavailable/unknown` **e** nuvem
+fora de `off/standby` (nuvem `unavailable` não bloqueia: a local decide sozinha); ramo da nuvem igual ao de antes. `description` explica.
+Regra registrada também na `docs/AUTOMATION-POLICY.md` (R2) e em `CASA.md`.
+**Verificado**: `check_config` 0; invariantes 0 violação (2 avisos antigos); recarregada pela tela Ferramentas > YAML > Automações (sem
+reinício); `on`, com os dois gatilhos e os dois ramos no `automation/config` da HA; templates renderizados na HA: estado atual → nenhum
+ramo (TV apagada), simulado local `on`/nuvem `off` → não envia, `on`/`on` → envia, `on`/`unavailable` → envia. Reaplicadas ao histórico as
+9 portas fechadas na janela: a regra nova não manda POWER em nenhuma das 3 corridas e nada muda nas outras 6.
+**Armadilhas**: o que sobra é o erro seguro — nuvem congelada em `off` com a TV ligada, ou HA reiniciando nos 10 s, deixa a TV ligada; porta
+fechada às 05:59:55 apaga as luzes mas a decisão da TV (06:00:05) cai fora da janela. **Não verificado**: uma noite real com a regra nova
+(a casa não foi acionada; a TV já estava apagada nos dois caminhos às 00:07 de 26/11).

@@ -7,6 +7,12 @@ Ordem cronológica inversa. O detalhe de cada uma está em `ESTADO_DASHBOARD.md`
 
 ---
 
+## 26/11/2026
+
+**Porta do quarto reacendia a TV já desligada** — causa: o caminho local da TV (SamsungTV) leva 2–10 s para perceber que ela apagou; desligada pelo controle e porta fechada logo depois, a automação lia `on` e mandava o POWER (alternador). Aconteceu em 25/11 e 26/11 (histórico, com o contexto da automação na mudança); em 17/11 a mesma corrida escapou por segundos. Correção em `config/automations.yaml`: luzes na hora; TV decidida 10 s depois (segundo gatilho com `for:`), e qualquer caminho em `off`/`standby` bloqueia o comando. Verificado: `check_config` 0, invariantes 0 violação, recarregada e `on`, templates renderizados na HA com estados simulados; reaplicada ao histórico, a regra nova não manda POWER em nenhum dos 3 casos de corrida (a antiga, lida no instante da porta, mandaria nos 3). **Não verificado**: uma noite real com a regra nova (a casa não foi acionada).
+
+---
+
 ## 13/10/2026 (f)
 
 **B-15 · Lógica pura testada** — `lib/energiaHistorico.ts` (histórico de energia, previsão) e `lib/estadosOtimistas.ts` (travas otimistas) extraídos sem mudar o comportamento (teste diferencial: 500 casos aleatórios idênticos ao código antigo); `tests/logica-pura.test.mjs`, 30 verificações. **O teste achou um defeito**: a primeira série da resposta virava sempre o PC, mesmo quando o `entity_id` dizia Luca; agora o `entity_id` manda. **B-07 · ESLint** — `eslint@9` + `eslint-config-next@16.3.3`, `eslint.config.mjs`, `npm run lint` com teto de 58 avisos (0 erros; erro ou aviso novo derruba, provado com defeitos plantados), `npm run typecheck` para o `tsc`. Achou e corrigiu um erro real: `useCallback` depois de `return` antecipado em `app/comodo/[id]/page.tsx`. Branches do painel ainda **não publicadas**: `test/logica-pura` e `chore/eslint` (empilhadas), enviadas ao GitHub.

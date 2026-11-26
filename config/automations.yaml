@@ -108,43 +108,79 @@
 
     Por isso o `choose`: o caminho local é o preferido, e o da nuvem só entra quando
     o local não está respondendo. Se a TV já estiver desligada, nenhum comando é enviado
-    — que é o correto e, aqui, também o seguro.'
+    — que é o correto e, aqui, também o seguro.
+
+    ⚠️ Segunda armadilha (corrigida em 26/11/2026): ler só o caminho local não basta,
+    porque ele demora a perceber que a TV apagou. Medido em 14 dias de histórico:
+    depois de desligar pelo controle, a nuvem (SmartThings) acusa `off` em até 1 s,
+    e a local (SamsungTV) só 2 a 10 s depois. Em 25/11 (00:39:59) e 26/11 (TV apagada
+    00:02:41, porta 00:02:43) a TV foi desligada e a porta fechada logo em seguida;
+    a local ainda dizia `on`, a automação mandou o POWER e a TV tornou a acender.
+
+    Daí duas proteções. (1) A TV só é decidida 10 s depois de a porta fechar — o
+    segundo gatilho, com `for:` (R5) —, tempo para os dois caminhos assentarem; as
+    luzes continuam apagando na hora, pelo primeiro gatilho. (2) Qualquer caminho
+    dizendo `off` ou `standby` vale como TV desligada: na dúvida, o POWER não vai.
+    O erro que sobra é o seguro: com a nuvem congelada em `off` e a TV ligada, ou
+    com o HA reiniciando nesses 10 s, a TV fica ligada — nunca acende sozinha.
+
+    `mode: single` serve: cada execução só manda comandos e termina na hora, então
+    o disparo dos 10 s encontra a anterior já encerrada.'
   mode: single
   triggers:
   - trigger: state
     entity_id: binary_sensor.porta_do_quarto_porta
     from: 'on'
     to: 'off'
+    id: porta_fechou
+  - trigger: state
+    entity_id: binary_sensor.porta_do_quarto_porta
+    from: 'on'
+    to: 'off'
+    for: '00:00:10'
+    id: porta_fechada_10s
   conditions:
   - condition: time
     after: '22:00:00'
     before: 06:00:00
   actions:
-  - action: light.turn_off
-    target:
-      entity_id: "{{ states.light | map(attribute='entity_id')\n   | reject('search',
-        'luz_de_fundo')\n   | reject('search', 'indicator_light')\n   | reject('search',
-        'browser_mod')\n   | list }}"
   - choose:
-    - alias: TV respondendo no caminho local e ligada
+    - alias: Porta acabou de fechar — apaga as luzes na hora
       conditions:
-      - condition: template
-        value_template: "{{ states('media_player.tv_un65du8000gxzd')\n   not in ['off',
-          'standby', 'unavailable', 'unknown'] }}"
+      - condition: trigger
+        id: porta_fechou
       sequence:
-      - action: media_player.turn_off
+      - action: light.turn_off
         target:
-          entity_id: media_player.tv_un65du8000gxzd
-    - alias: Caminho local mudo — tenta pela nuvem, se ela vir a TV ligada
+          entity_id: "{{ states.light | map(attribute='entity_id')\n   | reject('search',
+            'luz_de_fundo')\n   | reject('search', 'indicator_light')\n   | reject('search',
+            'browser_mod')\n   | list }}"
+    - alias: Porta fechada há 10 s — decide a TV com os dois caminhos já assentados
       conditions:
-      - condition: template
-        value_template: "{{ states('media_player.tv_un65du8000gxzd')\n     in ['unavailable',
-          'unknown']\n   and states('media_player.sala_de_estar_tv')\n     not in
-          ['off', 'standby', 'unavailable', 'unknown'] }}"
+      - condition: trigger
+        id: porta_fechada_10s
       sequence:
-      - action: media_player.turn_off
-        target:
-          entity_id: media_player.sala_de_estar_tv
+      - choose:
+        - alias: TV ligada no caminho local, e a nuvem não a vê desligada
+          conditions:
+          - condition: template
+            value_template: "{{ states('media_player.tv_un65du8000gxzd') not in ['off',
+              'standby', 'unavailable', 'unknown'] and states('media_player.sala_de_estar_tv')
+              not in ['off', 'standby'] }}"
+          sequence:
+          - action: media_player.turn_off
+            target:
+              entity_id: media_player.tv_un65du8000gxzd
+        - alias: Caminho local mudo — tenta pela nuvem, se ela vir a TV ligada
+          conditions:
+          - condition: template
+            value_template: "{{ states('media_player.tv_un65du8000gxzd')\n     in ['unavailable',
+              'unknown']\n   and states('media_player.sala_de_estar_tv')\n     not in
+              ['off', 'standby', 'unavailable', 'unknown'] }}"
+          sequence:
+          - action: media_player.turn_off
+            target:
+              entity_id: media_player.sala_de_estar_tv
 - id: '1757980800001'
   alias: Porta do quarto aberta à noite acende o painel
   description: 'O par da automação anterior: depois das 22h, abrir a porta do quarto
