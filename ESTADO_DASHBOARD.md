@@ -7037,3 +7037,14 @@ Com o kiosk-mode escondendo o cabeçalho, a margem de 4px do tema `casa_iphone` 
 ilha, que termina em ~48px). Medido no navegador simulando a margem de 59px: o texto começa a 73px do topo (antes ~28px). Nas outras
 telas o cabeçalho fica logo abaixo da ilha (não ao lado, como antes). `check_config` ok; tema recarregado sem reiniciar.
 **Falta** (André): conferir no iPhone; se ainda encostar, aumentar o desconto (ex.: `- 4px`) ou tirar a linha (margem cheia do aparelho).
+
+### 26/11/2026 — Erro "start_dashboard_dev.vbs" no logon: atalho esquecido
+A cada entrada no Windows aparecia o erro do Windows Script Host "Não é possível encontrar o arquivo de script
+`D:\HomeAssistant\dashboard-app\start_dashboard_dev.vbs`". Causa: em 15/09 o Painel Primário ganhou dois arranques automáticos, a
+tarefa `CasaDashboardAutoStart` e um atalho de redundância `CasaDashboard.lnk` na pasta Inicializar do usuário
+(`%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup`, rodando `wscript.exe` no `.vbs`). Ao apagar o painel em 29/10 só a tarefa saiu;
+o atalho ficou apontando para a pasta inexistente. Com a aprovação do André, o atalho foi **movido** (não apagado) para
+`backups/atalho_casadashboard_20261126/` (fora do git). Conferido: a pasta Inicializar ficou só com Espaço AA, `start_docker_clean.vbs`
+e TRIGGERcmd; as tarefas agendadas restantes (`CasaPainelSecundarioAutoStart`, `CasaGlancesPatch`, `GlancesWebServer`) apontam para
+scripts que existem; nenhuma chave `Run` do registro cita o painel. **Não verificado**: um logon real sem o aviso (não reiniciei o PC).
+**Para desfazer**: mover o `.lnk` de volta para a pasta Inicializar (inútil enquanto `dashboard-app/` não existir).
