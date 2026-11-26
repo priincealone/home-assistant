@@ -7030,3 +7030,10 @@ Perfil, Painel Secundário e Editar dashboard (abre com `?edit=1&disable_km`).
 Em 1024 px o cabeçalho continua e o "← Voltar" não aparece. 12 abas, 154 cards, 0 erros/avisos/entidades inexistentes.
 **Para desfazer**: abrir com `?disable_km` na URL (só naquela vez) ou tirar `kiosk_mode` do gerador e reaplicar; desinstalar pelo HACS.
 **Falta** (André): conferir no iPhone de verdade. O tema `casa_iphone` continua útil fora do dashboard Casa (Configurações etc.).
+
+### 26/11/2026 — "Bom dia, André" saiu de baixo da Dynamic Island
+Com o kiosk-mode escondendo o cabeçalho, a margem de 4px do tema `casa_iphone` deixava a saudação embaixo da ilha. O tema passou a
+`safe-area-inset-top: max(calc(env(safe-area-inset-top, 0px) - 10px), 0px)`: a margem do aparelho menos 10px (~49px num iPhone com
+ilha, que termina em ~48px). Medido no navegador simulando a margem de 59px: o texto começa a 73px do topo (antes ~28px). Nas outras
+telas o cabeçalho fica logo abaixo da ilha (não ao lado, como antes). `check_config` ok; tema recarregado sem reiniciar.
+**Falta** (André): conferir no iPhone; se ainda encostar, aumentar o desconto (ex.: `- 4px`) ou tirar a linha (margem cheia do aparelho).
