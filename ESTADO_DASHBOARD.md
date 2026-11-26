@@ -23,7 +23,7 @@ Documento de referência do que foi construído nesta sessão, pra retomar rapid
 ## Infraestrutura
 
 - **Instalação**: Docker Desktop (per-user, sem admin) rodando `ghcr.io/home-assistant/home-assistant:stable`, config em `C:\HomeAssistant\config`, porta 8123
-- **Auto-start**: script `C:\Users\adoli\start_docker_clean.ps1` (limpa sockets travados) disparado via `.vbs` na pasta Startup do Windows — resolve o bug recorrente do Docker Desktop travar em `sailor-ingest.sock` ao reiniciar sem reboot completo
+- **Auto-start**: script `C:\Users\adoli\start_docker_clean.ps1` (limpa sockets travados) disparado via `.vbs` na pasta Startup do Windows — resolve o bug recorrente do Docker Desktop travar em `sailor-ingest.sock` ao reiniciar sem reboot completo. É o **único** arranque do Docker: o "Start when you sign in" do próprio Docker fica **desligado** de propósito (dois arranques brigam). Desde 26/11/2026 só limpa se o Docker não responder; log em `C:\Users\adoli\start_docker_clean.log`
 - **Glances**: rodando via `pythonw`/wrapper `.vbs` oculto (tarefa agendada `GlancesWebServer`), com patch de timeout aplicado em `/usr/local/lib/python3.14/site-packages/glances_api/__init__.py` dentro do container — **esse patch se perde toda vez que o container é recriado do zero** (`docker run`), só sobrevive a `docker restart`. Se o card do PC mostrar "Indisponível" após recriar o container, reaplicar:
   ```
   docker exec homeassistant sed -i "s/client.get(url)/client.get(url, timeout=15)/g" /usr/local/lib/python3.14/site-packages/glances_api/__init__.py
@@ -7048,3 +7048,23 @@ o atalho ficou apontando para a pasta inexistente. Com a aprovação do André, 
 e TRIGGERcmd; as tarefas agendadas restantes (`CasaPainelSecundarioAutoStart`, `CasaGlancesPatch`, `GlancesWebServer`) apontam para
 scripts que existem; nenhuma chave `Run` do registro cita o painel. **Não verificado**: um logon real sem o aviso (não reiniciei o PC).
 **Para desfazer**: mover o `.lnk` de volta para a pasta Inicializar (inútil enquanto `dashboard-app/` não existir).
+
+### 26/11/2026 — HA fora do ar depois do login: o script de arranque derrubava o Docker
+O André desconectou o app do iPhone porque a HA não respondia: o Docker Desktop estava fechado. Linha do tempo (logs do Docker e do
+Windows): PC desligado pelo menu Iniciar às 00:39; ligado às 09:46; às 09:52:54 **algo** abriu o Docker (não identificado; talvez o
+Windows reabrindo apps); às 09:53:22 o `start_docker_clean.ps1` da pasta Inicializar fechou à força todos os processos do Docker
+(backend saiu com `0xffffffff`), esperou 2 s fixos e reabriu, mas a reabertura não pegou (nenhum `launching` depois disso no
+`Docker Desktop.exe.log`). A HA ficou fora até eu abrir o Docker à mão (voltou em ~40 s, LAN e Tailscale `100.74.130.30:8123`).
+**Armadilha**: cheguei a ligar o "AutoStart" do próprio Docker (`settings-store.json` + chave `Run`) achando que não havia arranque;
+desfeito em seguida, porque seria um terceiro arranque na mesma briga. `AutoStart` segue `false` e "Docker Desktop" segue desativado em
+`StartupApproved\Run`.
+**Correção** (com a aprovação do André): o script foi reescrito. (1) Se o Docker já responde (`docker version` com limite de 20 s),
+não faz nada; (2) se o Docker Desktop/backend já está abrindo, espera até 180 s ele responder; (3) só então faz a limpeza antiga
+(fecha tudo, **espera os processos fecharem** até 30 s, renomeia `Docker\run`), abre e confere por até 240 s, com uma segunda tentativa;
+(4) grava `C:\Users\adoli\start_docker_clean.log` (aparado em 200 KB). Backup da versão antiga: `start_docker_clean.ps1.bak-20261126`
+(e do JSON do Docker: `%APPDATA%\Docker\settings-store.json.bak-20261126`). O script fica fora do git (pasta do usuário).
+**Verificado**: sintaxe (parser do PowerShell, só ASCII); `Test-DockerEngine` dá `True` com o Docker no ar e `False` com motor
+inalcançável; rodado inteiro como no login, com o Docker no ar: saiu com 0 e "nada a fazer", HA seguiu respondendo.
+**Não verificado**: os caminhos "Docker abrindo" e "limpeza + reabertura" (exigiriam derrubar o Docker/HA); a prova real é o próximo
+login, conferindo o log. Pendente do André: reconectar o app do iPhone; se surgir "Iphone de André 2", as 3 automações com
+`notify.mobile_app_iphone_de_andre` e os cards do iPhone no "Casa" continuam no registro antigo.
