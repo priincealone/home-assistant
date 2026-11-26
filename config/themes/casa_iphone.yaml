@@ -1,0 +1,15 @@
+# Tema para o iPhone do André (pedido de 26/11/2026): no app Companion a barra de status fica
+# escondida, então a margem que a HA reserva para a Dynamic Island sobrava vazia e o cabeçalho
+# ocupava muito. Com este tema a margem do topo fica limitada a 4px (as abas sobem para a faixa da
+# ilha, à esquerda e à direita dela) e a barra de abas encolhe de 56 para 48px.
+#
+# Escolha POR APARELHO: no iPhone, Perfil > Tema > casa_iphone. Não use como tema padrão do
+# sistema: no iPad e em aparelho com barra de status visível o relógio cobriria as abas.
+# (Tema por visão não serve: a HA aplica o tema da visão só ao conteúdo, não ao cabeçalho.)
+# min(env(...)) mantém 0 onde não há entalhe. Os "modes" vazios mantêm o modo claro/escuro padrão.
+casa_iphone:
+  safe-area-inset-top: "min(env(safe-area-inset-top, 0px), 4px)"
+  header-height: "48px"
+  modes:
+    light: {}
+    dark: {}

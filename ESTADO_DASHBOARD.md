@@ -6997,3 +6997,15 @@ A pedido do André, a disposição foi revista para o iPhone (~390 px, uma colun
 **Verificado** em 390×844: 12 abas, 149 cards, 0 erros, 0 avisos, 0 entidades inexistentes, **nenhum nome cortado** (medido pelo
 `scrollWidth` de cada título) e sem rolagem lateral; conferido também em 1024×768 (cenas e cômodos lado a lado). Nenhum botão tocado.
 **Não verificado**: num iPhone de verdade (app Companion, área segura do entalhe); só emulação de largura no navegador.
+
+### 26/11/2026 — Cabeçalho compacto no iPhone (tema `casa_iphone`)
+Pedido do André: no iPhone o cabeçalho ocupava muito. Causa: a HA reserva no topo a margem da Dynamic Island
+(`--safe-area-inset-top`), mas o app Companion dele esconde a barra de status, então a faixa sobrava vazia. Novo tema
+`config/themes/casa_iphone.yaml`: `safe-area-inset-top: min(env(safe-area-inset-top, 0px), 4px)` (as abas sobem para a faixa da
+ilha, ao lado dela) e `header-height: 48px` (era 56). `modes: {light: {}, dark: {}}` vazios para manter o modo claro/escuro padrão.
+Recarregado com `frontend.reload_themes` (sem reiniciar); `check_config` ok.
+**Armadilha**: tema **por visão** (`theme:` na view) **não alcança o cabeçalho**: a HA aplica só ao conteúdo (testado: continuou 56 px).
+Por isso o tema vale **por aparelho**: no iPhone, Perfil > Tema > `casa_iphone`. **Não** usar como padrão do sistema: no iPad (relógio
+visível) e com a barra de status ligada, o relógio cobriria as abas.
+**Verificado** neste navegador, escolhendo o tema e desfazendo depois: cabeçalho 56→48 px, margem do topo controlada pelo tema, fundo
+escuro mantido. **Falta** (só o André): escolher o tema no iPhone e conferir que as abas ficam ao lado da ilha sem encostar nela.

@@ -331,4 +331,6 @@ def sistema():
 
 
 config = {"title": "Casa", "views": [inicio(), sistema()] + [subvisao(a) for a in AREAS]}
+# O cabeçalho compacto do iPhone vem do tema config/themes/casa_iphone.yaml, escolhido no perfil do
+# aparelho; "theme" por visão não alcança o cabeçalho (testado em 26/11/2026), por isso não vai aqui.
 print(json.dumps(config, ensure_ascii=False, indent=1))
