@@ -448,6 +448,30 @@
                   }
                 }
               ]
+            },
+            {
+              "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "tile",
+                  "entity": "binary_sensor.pc_andre",
+                  "name": "Sistema · PC, rede e celulares",
+                  "icon": "mdi:server",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/sistema"
+                  },
+                  "icon_tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/sistema"
+                  },
+                  "hide_state": true,
+                  "grid_options": {
+                    "columns": 12
+                  }
+                }
+              ]
             }
           ]
         },
@@ -456,6 +480,8 @@
           "path": "sistema",
           "icon": "mdi:server",
           "type": "sections",
+          "subview": true,
+          "back_path": "/lovelace-casa/inicio",
           "max_columns": 3,
           "sections": [
             {

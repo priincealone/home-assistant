@@ -7009,3 +7009,10 @@ Por isso o tema vale **por aparelho**: no iPhone, Perfil > Tema > `casa_iphone`.
 visível) e com a barra de status ligada, o relógio cobriria as abas.
 **Verificado** neste navegador, escolhendo o tema e desfazendo depois: cabeçalho 56→48 px, margem do topo controlada pelo tema, fundo
 escuro mantido. **Falta** (só o André): escolher o tema no iPhone e conferir que as abas ficam ao lado da ilha sem encostar nela.
+
+### 26/11/2026 — Sistema vira página separada; tela inicial sem abas
+A aba Sistema (PC, rede, celulares) é pouco usada: virou **subvisão** (`subview: true`, voltar para `/lovelace-casa/inicio`) e é aberta
+por um cartão "Sistema · PC, rede e celulares" no fim da tela inicial (o cartão só navega). Com uma única visão principal, a barra de abas
+some: o topo fica só com ☰, "Início" e ⋮. Verificado em 390 px: abas sumiram, o cartão abre a página Sistema com seta de voltar.
+**Cabeçalho inteiro**: a HA nativa não tem opção para escondê-lo (tema não esconde elemento). Só com plugin do HACS (ex.: kiosk-mode), que
+seria dependência nova; não instalado.

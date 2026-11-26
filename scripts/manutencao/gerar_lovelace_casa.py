@@ -239,6 +239,13 @@ def inicio():
                 {"type": "picture-entity", "entity": c, "show_state": False, "show_name": True,
                  "camera_view": "auto", "grid_options": {"columns": 6}}
                 for c in ("camera.rua_canal_2", "camera.rua_canal_4")]},
+            # Sistema é página separada (subvisão), pouco usada: assim a tela inicial fica sem abas (26/11/2026)
+            {"type": "grid", "column_span": 3, "cards": [
+                tile("binary_sensor.pc_andre", name="Sistema · PC, rede e celulares", icon="mdi:server",
+                     tap_action={"action": "navigate", "navigation_path": "/lovelace-casa/sistema"},
+                     icon_tap_action={"action": "navigate", "navigation_path": "/lovelace-casa/sistema"},
+                     hide_state=True, grid_options={"columns": 12}),
+            ]},
         ],
     }
 
@@ -327,7 +334,7 @@ def sistema():
     if resto:
         secoes.append(secao("Outros", "mdi:dots-horizontal", grade(resto)))
     return {"title": "Sistema", "path": "sistema", "icon": "mdi:server", "type": "sections",
-            "max_columns": 3, "sections": [s for s in secoes if len(s["cards"]) > 1]}
+            "subview": True, "back_path": "/lovelace-casa/inicio", "max_columns": 3, "sections": [s for s in secoes if len(s["cards"]) > 1]}
 
 
 config = {"title": "Casa", "views": [inicio(), sistema()] + [subvisao(a) for a in AREAS]}
