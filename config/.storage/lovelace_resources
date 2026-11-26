@@ -8,6 +8,11 @@
         "id": "bubble_card_js",
         "type": "module",
         "url": "/local/community/bubble-card/bubble-card.js?v=3.4.1"
+      },
+      {
+        "id": "8be73d19f6974b379d5bf2fbf558f145",
+        "url": "/hacsfiles/kiosk-mode/kiosk-mode.js?hacstag=4973191281600",
+        "type": "module"
       }
     ]
   }

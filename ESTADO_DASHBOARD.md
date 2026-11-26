@@ -7016,3 +7016,17 @@ por um cartão "Sistema · PC, rede e celulares" no fim da tela inicial (o cart�
 some: o topo fica só com ☰, "Início" e ⋮. Verificado em 390 px: abas sumiram, o cartão abre a página Sistema com seta de voltar.
 **Cabeçalho inteiro**: a HA nativa não tem opção para escondê-lo (tema não esconde elemento). Só com plugin do HACS (ex.: kiosk-mode), que
 seria dependência nova; não instalado.
+
+### 26/11/2026 — Cabeçalho escondido no iPhone com kiosk-mode
+Com a aprovação do André ("Sim, instale"), instalado pelo HACS o plugin **kiosk-mode** (`NemesisRE/kiosk-mode` v16.0.0, catálogo padrão,
+834 estrelas; arquivos em `config/www/community/kiosk-mode/`, fora do git; recurso `/hacsfiles/kiosk-mode/kiosk-mode.js` registrado pelo
+próprio HACS em `lovelace_resources`). Configuração na raiz do dashboard, gerada pelo gerador:
+`kiosk_mode: {mobile_settings: {hide_header: true, custom_width: 600}}` → sem cabeçalho só em tela de até 600 px (iPhone em pé); iPad,
+computador e iPhone deitado mantêm o cabeçalho.
+Como o cabeçalho levava o ☰, o ⋮ e a seta de voltar: cada subvisão ganhou um título "← Nome" (heading com `tap_action: navigate` e
+`visibility` por `media_query (max-width: 600px)`, então só aparece no celular), e a página Sistema ganhou "Atalhos": Configurações,
+Perfil, Painel Secundário e Editar dashboard (abre com `?edit=1&disable_km`).
+**Verificado**: em 390 px o cabeçalho some na tela inicial, nos cômodos e no Sistema; "← Cozinha" volta para o início; atalhos aparecem.
+Em 1024 px o cabeçalho continua e o "← Voltar" não aparece. 12 abas, 154 cards, 0 erros/avisos/entidades inexistentes.
+**Para desfazer**: abrir com `?disable_km` na URL (só naquela vez) ou tirar `kiosk_mode` do gerador e reaplicar; desinstalar pelo HACS.
+**Falta** (André): conferir no iPhone de verdade. O tema `casa_iphone` continua útil fora do dashboard Casa (Configurações etc.).

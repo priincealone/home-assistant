@@ -94,6 +94,24 @@ def heading(texto, icone=None, badges=None):
     return h
 
 
+# kiosk-mode (HACS, NemesisRE/kiosk-mode) esconde o cabeçalho até esta largura (iPhone); acima dela
+# (iPad, computador) o cabeçalho continua. Abrir com ?disable_km na URL desliga o kiosk-mode.
+LARGURA_CELULAR = 600
+SO_CELULAR = [{"condition": "screen", "media_query": f"(max-width: {LARGURA_CELULAR}px)"}]
+
+
+def voltar(titulo, destino="/lovelace-casa/inicio"):
+    """Substitui a seta de voltar do cabeçalho, que o kiosk-mode esconde no iPhone."""
+    return {"type": "heading", "heading": titulo, "heading_style": "title", "icon": "mdi:arrow-left",
+            "tap_action": {"action": "navigate", "navigation_path": destino}, "visibility": SO_CELULAR}
+
+
+def atalho(nome, icone, destino):
+    return {"type": "button", "name": nome, "icon": icone, "show_state": False, "icon_height": "32px",
+            "tap_action": {"action": "navigate", "navigation_path": destino},
+            "grid_options": {"columns": 6, "rows": 2}}
+
+
 def secao(titulo, icone, cards, badges=None):
     return {"type": "grid", "cards": [heading(titulo, icone, badges)] + cards}
 
@@ -192,7 +210,7 @@ def subvisao(area):
             "grid_options": {"columns": "full"}}
     return {"title": area["name"], "path": aid, "icon": area.get("icon") or ICONE_AREA.get(aid, "mdi:home"),
             "subview": True, "back_path": "/lovelace-casa/inicio", "type": "sections", "max_columns": 3,
-            "sections": [{"type": "grid", "cards": [topo], "column_span": 3}] + secoes}
+            "sections": [{"type": "grid", "cards": [voltar(area["name"]), topo], "column_span": 3}] + secoes}
 
 
 CENAS = [("script.cena_chegar", "Chegar"), ("script.cena_cinema", "Cinema"),
@@ -333,11 +351,21 @@ def sistema():
     ]
     if resto:
         secoes.append(secao("Outros", "mdi:dots-horizontal", grade(resto)))
+    # Sem cabeçalho no iPhone não há ☰ nem ⋮: estes atalhos levam ao resto da HA
+    menu = {"type": "grid", "column_span": 3, "cards": [
+        voltar("Sistema"), heading("Atalhos", "mdi:menu"),
+        atalho("Configurações", "mdi:cog", "/config/dashboard"),
+        atalho("Perfil", "mdi:account-circle", "/profile/general"),
+        atalho("Painel Secundário", "mdi:view-dashboard", "/painel-secundario"),
+        atalho("Editar dashboard", "mdi:pencil", "/lovelace-casa/inicio?edit=1&disable_km"),
+    ]}
     return {"title": "Sistema", "path": "sistema", "icon": "mdi:server", "type": "sections",
-            "subview": True, "back_path": "/lovelace-casa/inicio", "max_columns": 3, "sections": [s for s in secoes if len(s["cards"]) > 1]}
+            "subview": True, "back_path": "/lovelace-casa/inicio", "max_columns": 3,
+            "sections": [menu] + [s for s in secoes if len(s["cards"]) > 1]}
 
 
-config = {"title": "Casa", "views": [inicio(), sistema()] + [subvisao(a) for a in AREAS]}
+config = {"title": "Casa", "views": [inicio(), sistema()] + [subvisao(a) for a in AREAS],
+          "kiosk_mode": {"mobile_settings": {"hide_header": True, "custom_width": LARGURA_CELULAR}}}
 # O cabeçalho compacto do iPhone vem do tema config/themes/casa_iphone.yaml, escolhido no perfil do
 # aparelho; "theme" por visão não alcança o cabeçalho (testado em 26/11/2026), por isso não vai aqui.
 print(json.dumps(config, ensure_ascii=False, indent=1))

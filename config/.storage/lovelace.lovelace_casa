@@ -486,6 +486,94 @@
           "sections": [
             {
               "type": "grid",
+              "column_span": 3,
+              "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Sistema",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
+                  "type": "heading",
+                  "heading": "Atalhos",
+                  "heading_style": "title",
+                  "icon": "mdi:menu"
+                },
+                {
+                  "type": "button",
+                  "name": "Configurações",
+                  "icon": "mdi:cog",
+                  "show_state": false,
+                  "icon_height": "32px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/config/dashboard"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Perfil",
+                  "icon": "mdi:account-circle",
+                  "show_state": false,
+                  "icon_height": "32px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/profile/general"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Painel Secundário",
+                  "icon": "mdi:view-dashboard",
+                  "show_state": false,
+                  "icon_height": "32px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/painel-secundario"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                },
+                {
+                  "type": "button",
+                  "name": "Editar dashboard",
+                  "icon": "mdi:pencil",
+                  "show_state": false,
+                  "icon_height": "32px",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio?edit=1&disable_km"
+                  },
+                  "grid_options": {
+                    "columns": 6,
+                    "rows": 2
+                  }
+                }
+              ]
+            },
+            {
+              "type": "grid",
               "cards": [
                 {
                   "type": "heading",
@@ -961,6 +1049,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Sala de estar",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "sala_de_estar",
                   "display_type": "compact",
@@ -1237,6 +1341,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Cozinha",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "cozinha",
                   "display_type": "compact",
@@ -1288,6 +1408,22 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Quarto",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
                 {
                   "type": "area",
                   "area": "quarto",
@@ -1398,6 +1534,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Banheiro",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "banheiro",
                   "display_type": "compact",
@@ -1457,6 +1609,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Copa",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "copa",
                   "display_type": "compact",
@@ -1509,6 +1677,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Circulação",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "corredor",
                   "display_type": "compact",
@@ -1560,6 +1744,22 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Area Gourmet",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
                 {
                   "type": "area",
                   "area": "area_gourmet",
@@ -1694,6 +1894,22 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Quarto Luca",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
                 {
                   "type": "area",
                   "area": "quarto_luca",
@@ -1830,6 +2046,22 @@
             {
               "type": "grid",
               "cards": [
+                {
+                  "type": "heading",
+                  "heading": "Closet",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
                 {
                   "type": "area",
                   "area": "closet",
@@ -2152,6 +2384,22 @@
               "type": "grid",
               "cards": [
                 {
+                  "type": "heading",
+                  "heading": "Lavanderia",
+                  "heading_style": "title",
+                  "icon": "mdi:arrow-left",
+                  "tap_action": {
+                    "action": "navigate",
+                    "navigation_path": "/lovelace-casa/inicio"
+                  },
+                  "visibility": [
+                    {
+                      "condition": "screen",
+                      "media_query": "(max-width: 600px)"
+                    }
+                  ]
+                },
+                {
                   "type": "area",
                   "area": "lavanderia",
                   "display_type": "compact",
@@ -2247,7 +2495,13 @@
             }
           ]
         }
-      ]
+      ],
+      "kiosk_mode": {
+        "mobile_settings": {
+          "hide_header": true,
+          "custom_width": 600
+        }
+      }
     }
   }
 }
